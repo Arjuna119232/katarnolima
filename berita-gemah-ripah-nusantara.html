@@ -1,0 +1,190 @@
+<!-- @ts-nocheck -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pesta Kemerdekaan RI 81 - Gemah Ripah Nusantara | KATARNOLIMA RW 05</title>
+<meta property="og:image" content="https://arjuna119232.github.io/katarnolima/img/logo-resmi-karang-taruna.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#fdfcf6;color:#090d16}
+.header{position:sticky;top:0;z-index:50;background:#0f1115;border-bottom:3px solid #fbbf24}
+.header-inner{max-width:1280px;margin:auto;padding:12px 20px;min-height:64px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.logo{display:flex;gap:10px;align-items:center;text-decoration:none;min-width:0}
+.logo-text b{font-family:'Bebas Neue';color:#fff;font-size:24px;letter-spacing:.05em;line-height:.9;display:block;white-space:nowrap}
+.logo-text span{color:#fbbf24;font-size:10px;letter-spacing:.2em;font-weight:800;display:block;white-space:nowrap}
+.nav{display:flex;gap:8px;flex-shrink:0}
+.btn{padding:10px 16px;border-radius:999px;font-size:13px;font-weight:800;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;white-space:nowrap}
+.btn-back{background:#fff;color:#111827}
+.btn-share{background:#fbbf24;color:#111827}
+
+/* DESKTOP FIX */
+.hero{max-width:1280px;margin:32px auto 24px;padding:0 20px;display:grid;grid-template-columns:1.6fr 1fr;gap:28px;align-items:start}
+.slider-wrap{border:4px solid #090d16;border-radius:28px;overflow:hidden;box-shadow:8px 8px 0 #090d16;background:#090d16;position:relative;height:480px}
+.slides{display:flex;transition:transform.6s cubic-bezier(.4,0,.2,1);height:100%}
+.slides img{width:100%;height:100%;object-fit:cover;flex-shrink:0}
+.slider-dots{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);display:flex;gap:6px;background:rgba(0,0,0,.5);padding:6px 10px;border-radius:999px;backdrop-filter:blur(6px)}
+.dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.5);transition:.3s}
+.dot.active{background:#fbbf24;width:22px}
+.slider-label{position:absolute;top:14px;left:14px;background:#fbbf24;color:#090d16;padding:6px 12px;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.1em}
+.badge{display:inline-flex;background:#1a3d1a;color:#d9f99d;padding:6px 12px;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.15em;margin-bottom:12px}
+h1{font-family:'Plus Jakarta Sans',sans-serif;font-size:38px;font-weight:800;line-height:1.1;color:#111827;letter-spacing:-0.02em}
+h1 span{color:#1a3d1a}
+.subtitle{font-family:'Plus Jakarta Sans',sans-serif;font-size:20px;font-weight:800;color:#1a3d1a;margin-top:8px}
+.meta{margin-top:12px;display:flex;flex-wrap:wrap;gap:10px}
+.meta-item{background:#090d16;color:#fff;border-radius:12px;padding:8px 12px;font-size:12px}
+.meta-item.green{background:#d9f99d;color:#1a3d1a;border:2px solid #1a3d1a;font-weight:800}
+.content{max-width:1280px;margin:auto;padding:0 20px 40px;display:grid;grid-template-columns:1.15fr.85fr;gap:24px}
+.card{background:#fff;border:3px solid #090d16;border-radius:22px;padding:22px;box-shadow:6px 6px 0 #090d16;margin-bottom:20px}
+.card h3{font-family:'Bebas Neue';font-size:28px;letter-spacing:.02em}
+.list{display:grid;gap:12px;margin-top:14px}
+.list-item{display:flex;gap:14px;align-items:center;padding:14px 16px;border:2px solid #090d16;border-left:6px solid #1a3d1a;border-radius:14px;background:#fff}
+.icon{width:42px;height:42px;border-radius:10px;background:#f3f4d9;border:2px solid #090d16;display:grid;place-items:center;font-size:20px;flex-shrink:0}
+.list-item b{font-size:14px;display:block}
+.list-item small{font-size:12px;color:#666}
+.contact-card{background:#fff;border:3px solid #090d16;border-radius:22px;box-shadow:6px 6px 0 #090d16;overflow:hidden}
+.contact-head{background:#1a3d1a;padding:18px 20px;color:#d9f99d}
+.contact-head span{font-size:10px;letter-spacing:.2em;font-weight:800;opacity:.8}
+.contact-head h3{font-family:'Bebas Neue';font-size:32px;color:#fbbf24;line-height:.9;margin-top:4px}
+.contact-body{padding:12px;display:grid;gap:10px;background:#fdfcf6}
+.contact-row{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border:2px solid #090d16;border-radius:12px;background:#fff}
+.contact-row.nm{font-weight:800;font-size:13px}
+.contact-row a{padding:8px 14px;background:#090d16;color:#fbbf24;border-radius:999px;font-weight:800;font-size:13px;text-decoration:none}
+
+/* Responsive */
+@media(max-width:1024px){
+ .hero{grid-template-columns:1fr;margin-top:20px}
+ .slider-wrap{height:380px}
+ .content{grid-template-columns:1fr}
+}
+@media(max-width:480px){
+ .header-inner{padding:8px 12px;min-height:56px}
+ .logo-text b{font-size:18px}.logo-text span{font-size:8px}
+ .btn{padding:8px 10px;font-size:11px}
+ .slider-wrap{height:260px}
+  h1{font-size:26px}
+}
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="header-inner">
+    <a class="logo" href="index.html">
+      <img src="img/logo-resmi-karang-taruna.jpg" alt="Logo" style="width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid #fbbf24;background:#000;flex-shrink:0">
+      <div class="logo-text"><b>KATARNOLIMA</b><span>RW 05 • PONCOL JAYA</span></div>
+    </a>
+    <div class="nav">
+      <a class="btn btn-back" href="index.html">Kembali</a>
+      <a class="btn btn-share" href="https://wa.me/?text=https://arjuna119232.github.io/katarnolima/berita-gemah-ripah-nusantara.html" target="_blank">Bagikan WA</a>
+    </div>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="slider-wrap" id="slider">
+    <div class="slider-label">📸 DOKUMENTASI KEGIATAN</div>
+    <div class="slides" id="slides">
+      <img src="img/kegiatan-1.jpg" alt="Kegiatan 1">
+      <img src="img/kegiatan-2.jpg" alt="Kegiatan 2">
+      <img src="img/kegiatan-3.jpg" alt="Kegiatan 3">
+      <img src="img/kegiatan-4.jpg" alt="Kegiatan 4">
+      <img src="img/kegiatan-5.jpg" alt="Kegiatan 5">
+    </div>
+    <div class="slider-dots" id="dots"></div>
+  </div>
+  <div>
+    <div style="padding:6px 4px 4px 8px">
+      <div class="badge">81 INDONESIA BERDAULAT ADIL MAKMUR • KATARNOLIMA</div>
+      <h1>Pesta Hari Raya Kemerdekaan<br><span>Warge-Wargi Poncol Jaya</span></h1>
+      <h2 class="subtitle">Gemah Ripah Nusantara</h2>
+      <div style="background:#7a1e1e;color:#fff;display:inline-block;padding:8px 14px;border-radius:8px;font-weight:700;font-size:13px;margin-top:12px">SRIWEDARI DI BUMI PERTIWI - TELAH TERLAKSANA</div>
+      <div class="meta">
+        <div class="meta-item green">📅 SABTU, 12 SEPTEMBER 2026</div>
+        <div class="meta-item">📍 SEPANJANG JALAN PONCOL JAYA</div>
+        <div class="meta-item">⏰ 07.00 - 24.00</div>
+      </div>
+      <p style="margin-top:16px;font-size:15px;line-height:1.7;font-weight:600">"Acara telah sukses dilaksanakan - Terima kasih warge-wargi Poncol Jaya!"</p>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <div>
+    <div class="card">
+      <h3>🎉 Rangkaian Acara Yang Telah Terlaksana</h3>
+      <div class="list">
+        <div class="list-item"><div class="icon">☀️</div><div><b>Senam Pagi Bersama</b><small>07.00 WIB • Full Warga</small></div></div>
+        <div class="list-item"><div class="icon">🛒</div><div><b>Bazzar Warge-Wargi</b><small>UMKM & Kuliner • Ludes dalam 3 jam</small></div></div>
+        <div class="list-item"><div class="icon">🏆</div><div><b>Pembagian Hadiah</b><small>20.30 WIB • Panggung Utama</small></div></div>
+        <div class="list-item"><div class="icon">🎸</div><div><b>Live Penampilan</b><small>21.00-24.00 • Joget Bareng</small></div></div>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div class="contact-card">
+      <div class="contact-head">
+        <span>SEKRETARIAT PANITIA • TERIMA KASIH WARGA</span>
+        <h3>SAMPAI JUMPA DI 82!</h3>
+        <div style="font-size:13px;margin-top:8px;line-height:1.5;opacity:.9">Dokumentasi lengkap & sertifikat panitia hubungi kontak di bawah.</div>
+      </div>
+      <div class="contact-body">
+        <div class="contact-row"><div class="nm">PIPIT • Sie Acara</div><a href="https://wa.me/6282298512104">💬 WA</a></div>
+        <div class="contact-row"><div class="nm">IDAM • Sie Acara</div><a href="https://wa.me/6285924597484">💬 WA</a></div>
+        <div class="contact-row"><div class="nm">ALFARIZI • Dokumentasi</div><a href="https://wa.me/6288706640925">💬 WA</a></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer style="background:#090d16;border-top:4px solid #fbbf24;padding:28px 16px 20px;color:#fff;text-align:center">
+  <div style="max-width:1280px;margin:auto">
+    <div style="display:flex;justify-content:center;gap:12px;margin-bottom:16px;flex-wrap:wrap">
+      <a href="https://instagram.com/katarnolima" target="_blank" style="display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border:2px solid #fff;border-radius:999px;color:#fff;text-decoration:none;font-weight:800;font-size:13px">
+        📸 Instagram
+      </a>
+      <a href="https://wa.me/6289673580756" target="_blank" style="display:inline-flex;align-items:center;gap:8px;padding:10px 18px;background:#fbbf24;color:#111827;border-radius:999px;text-decoration:none;font-weight:800;font-size:13px;border:2px solid #fbbf24">
+        💬 WhatsApp Humas
+      </a>
+    </div>
+    <div style="font-size:13px;opacity:.8;letter-spacing:.04em">
+      © 2026 KATARNOLIMA RW 05
+    </div>
+  </div>
+</footer>
+
+<script>
+// @ts-nocheck
+const slides = document.getElementById('slides');
+const dotsWrap = document.getElementById('dots');
+const imgs = slides.querySelectorAll('img');
+let idx = 0;
+imgs.forEach((_, i) => {
+  const d = document.createElement('div');
+  d.className = 'dot' + (i === 0? ' active' : '');
+  d.onclick = () => goTo(i);
+  dotsWrap.appendChild(d);
+});
+const dots = dotsWrap.querySelectorAll('.dot');
+/** @param {number} n */
+function goTo(n){
+  idx = n;
+  slides.style.transform = `translateX(-${idx*100}%)`;
+  dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+}
+function next(){
+  idx = (idx + 1) % imgs.length;
+  goTo(idx);
+}
+setInterval(next, 3500);
+let startX = 0;
+slides.addEventListener('touchstart', e => startX = e.touches[0].clientX, {passive:true});
+slides.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - startX;
+  if(dx < -50) next();
+  if(dx > 50){ idx = (idx - 1 + imgs.length) % imgs.length; goTo(idx); }
+}, {passive:true});
+</script>
+</body>
+  </html>
