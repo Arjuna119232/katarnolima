@@ -18,7 +18,17 @@ jobs:
         run: |
           npm init -y
           npm install @capacitor/core @capacitor/cli @capacitor/android
-          printf '%s\n' '{"appId":"com.katarnolima.rw05","appName":"KATARNOLIMA RW05","webDir":"www","server":{"url":"https://arjuna119232.github.io/katarnolima/","cleartext":true}}' > capacitor.config.json
+          cat > capacitor.config.json <<'JSON'
+          {
+            "appId": "com.katarnolima.rw05",
+            "appName": "KATARNOLIMA RW05",
+            "webDir": "www",
+            "server": {
+              "url": "https://arjuna119232.github.io/katarnolima/",
+              "cleartext": true
+            }
+          }
+          JSON
           mkdir -p www
           echo "<h1>Loading KATARNOLIMA</h1>" > www/index.html
           npx cap add android
