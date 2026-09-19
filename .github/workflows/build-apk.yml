@@ -1,31 +1,41 @@
-name: Build KATARNOLIMA APK
+name: Build APK
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main ]
+  workflow_dispatch:
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: 20
-      - uses: actions/setup-java@v4
+          node-version: '20'
+      - name: Setup Java (JDK 17)
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
-      - name: Build APK
+      - name: Install dependencies & Capacitor CLI
         run: |
           npm init -y
           npm install @capacitor/core @capacitor/cli @capacitor/android
-          node -e "require('fs').writeFileSync('capacitor.config.json', JSON.stringify({appId:'com.katarnolima.rw05',appName:'KATARNOLIMA RW05',webDir:'www',server:{url:'https://arjuna119232.github.io/katarnolima/',cleartext:true}}))"
+      - name: Prepare and sync Capacitor
+        run: |
+          echo '{"appId":"com.katarnolima.rw05","appName":"KATARNOLIMA RW05","webDir":"www"}' > capacitor.config.json
           mkdir -p www
-          echo "<h1>Loading KATARNOLIMA</h1>" > www/index.html
-          npx cap add android
-          cd android
-          chmod +x gradlew
-          ./gradlew assembleDebug
-      - uses: actions/upload-artifact@v4
+          cp index.html script.js style.css berita-gemah-ripah-nusantara.html www/
+          cp -r img video www/ 2>/dev/null || true
+          chmod +x android/gradlew 2>/dev/null || true
+          npx cap add android || true
+          npx cap sync android
+      - name: Build APK via Gradle
+        working-directory: android
+        run: ./gradlew assembleDebug
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
         with:
-          name: KATARNOLIMA-RW05-APK
+          name: app-debug
           path: android/app/build/outputs/apk/debug/app-debug.apk
