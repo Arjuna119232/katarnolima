@@ -3,39 +3,51 @@ on:
   push:
     branches: [ main ]
   workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+
       - name: Setup Java (JDK 17)
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
-      - name: Install dependencies & Capacitor CLI
+
+      - name: Install dependencies
         run: |
-          npm init -y
+          npm init -y 2>/dev/null || true
           npm install @capacitor/core @capacitor/cli @capacitor/android
-      - name: Prepare and sync Capacitor
+
+      - name: Prepare web assets and config
         run: |
-          echo '{"appId":"com.katarnolima.rw05","appName":"KATARNOLIMA RW05","webDir":"www"}' > capacitor.config.json
           mkdir -p www
-          cp index.html script.js style.css berita-gemah-ripah-nusantara.html www/
+          cp index.html script.js style.css berita-gemah-ripah-nusantara.html www/ 2>/dev/null || true
           cp -r img video www/ 2>/dev/null || true
-          chmod +x android/gradlew 2>/dev/null || true
+          node -e "require('fs').writeFileSync('capacitor.config.json', JSON.stringify({appId: 'com.katarnolima.rw05', appName: 'KATARNOLIMA', webDir: 'www', bundledWebRuntime: false}, null, 2))"
+          ls -la www/
+
+      - name: Add and sync Capacitor Android
+        run: |
           npx cap add android || true
           npx cap sync android
-      - name: Build APK via Gradle
+
+      - name: Make gradlew executable and build APK
         working-directory: android
-        run: ./gradlew assembleDebug
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: app-debug
+          name: KATARNOLIMA-RW05-v${{ github.run_number }}
           path: android/app/build/outputs/apk/debug/app-debug.apk
