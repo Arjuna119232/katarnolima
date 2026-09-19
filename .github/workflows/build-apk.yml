@@ -1,4 +1,5 @@
 name: Build APK
+
 on:
   push:
     branches: [ main ]
@@ -24,30 +25,36 @@ jobs:
 
       - name: Install dependencies
         run: |
-          npm init -y 2>/dev/null || true
+          npm init -y || true
           npm install @capacitor/core @capacitor/cli @capacitor/android
 
-      - name: Prepare web assets and config
+      - name: Prepare web assets
         run: |
           mkdir -p www
           cp index.html script.js style.css berita-gemah-ripah-nusantara.html www/ 2>/dev/null || true
           cp -r img video www/ 2>/dev/null || true
-          node -e "require('fs').writeFileSync('capacitor.config.json', JSON.stringify({appId: 'com.katarnolima.rw05', appName: 'KATARNOLIMA', webDir: 'www', bundledWebRuntime: false}, null, 2))"
-          ls -la www/
+          cat << 'EOF' > capacitor.config.json
+          {
+            "appId": "com.katarnolima.rw05",
+            "appName": "KATARNOLIMA",
+            "webDir": "www"
+          }
+          EOF
 
-      - name: Add and sync Capacitor Android
+      - name: Capacitor Sync
         run: |
           npx cap add android || true
           npx cap sync android
 
-      - name: Make gradlew executable and build APK
-        working-directory: android
+      - name: Build APK
         run: |
+          cd android
           chmod +x gradlew
           ./gradlew assembleDebug
 
-      - name: Upload APK artifact
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: KATARNOLIMA-RW05-v${{ github.run_number }}
+          name: app-debug-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
+          
