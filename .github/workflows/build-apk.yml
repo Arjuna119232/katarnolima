@@ -9,8 +9,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
       - name: Set up Node.js 20
         uses: actions/setup-node@v4
         with:
@@ -34,24 +33,27 @@ jobs:
         run: |
           npx cap add android || true
           npx cap sync android
-      - name: Install Pillow
-        run: pip install pillow -q
       - name: Ganti Icon
-        shell: python
         run: |
+          pip install pillow -q
+          python3 -c "
           from PIL import Image
-          im = Image.open("img/logo-resmi-karang-taruna.jpg").convert("RGBA")
+          im = Image.open('img/logo-resmi-karang-taruna.jpg').convert('RGBA')
           size=1024
-          bg=Image.new("RGBA",(size,size),(255,255,255,0))
+          bg=Image.new('RGBA',(size,size),(255,255,255,0))
           max_side=int(size*0.82)
           im.thumbnail((max_side,max_side),Image.LANCZOS)
           bg.paste(im,((size-im.width)//2,(size-im.height)//2),im)
-          maps={"mipmap-mdpi":48,"mipmap-hdpi":72,"mipmap-xhdpi":96,"mipmap-xxhdpi":144,"mipmap-xxxhdpi":192}
+          maps={'mipmap-mdpi':48,'mipmap-hdpi':72,'mipmap-xhdpi':96,'mipmap-xxhdpi':144,'mipmap-xxxhdpi':192}
+          import os
           for f,px in maps.items():
             o=bg.resize((px,px),Image.LANCZOS)
-            o.save(f"android/app/src/main/res/{f}/ic_launcher.png")
-            o.save(f"android/app/src/main/res/{f}/ic_launcher_round.png")
-          print("Icon fixed")
+            p1=os.path.join('android/app/src/main/res',f,'ic_launcher.png')
+            p2=os.path.join('android/app/src/main/res',f,'ic_launcher_round.png')
+            o.save(p1)
+            o.save(p2)
+          print('Icon fixed')
+          "
       - name: Build APK
         working-directory: android
         run: |
