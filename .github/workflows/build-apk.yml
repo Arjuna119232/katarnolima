@@ -29,7 +29,7 @@ jobs:
       - name: Install Capacitor & Dependencies
         run: |
           npm init -y || true
-          npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/app
+          npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/app @capacitor/push-notifications
           pip install pillow -q
 
       - name: Populate Web Assets
@@ -43,10 +43,13 @@ jobs:
                     ./ www/
           echo '{"appId":"com.katarnolima.rw05","appName":"KATARNOLIMA","webDir":"www"}' > capacitor.config.json
 
-      - name: Init/Sync Android
+      - name: Init/Sync Android & Copy Firebase Config
         run: |
           npx cap add android || true
           npx cap sync android
+          if [ -f "google-services.json" ]; then
+            cp google-services.json android/app/google-services.json
+          fi
 
       - name: Apply HD Safe-Zone Icon
         run: |
