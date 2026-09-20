@@ -35,7 +35,8 @@ jobs:
       - name: Populate Web Assets
         run: |
           mkdir -p www
-          cp index.html script.js style.css berita-gemah-ripah-nusantara.html www/ 2>/dev/null || true
+          # Copy SEMUA file HTML, JS, CSS yang ada di repo ke folder www/
+          cp *.html *.js *.css www/ 2>/dev/null || true
           cp -r img video www/ 2>/dev/null || true
           echo '{"appId":"com.katarnolima.rw05","appName":"KATARNOLIMA","webDir":"www"}' > capacitor.config.json
 
@@ -50,7 +51,6 @@ jobs:
           import os, glob
           from PIL import Image
 
-          # Pakai file baru: katar-app-icon.png
           src_path = 'img/katar-app-icon.png'
           if not os.path.exists(src_path):
               print('File img/katar-app-icon.png tidak ditemukan!')
@@ -58,7 +58,6 @@ jobs:
 
           im = Image.open(src_path).convert('RGBA')
 
-          # 1. Hapus XML adaptive bawaan Capacitor agar tidak nge-zoom paksa
           res_dir = 'android/app/src/main/res'
           for xml_file in glob.glob(f'{res_dir}/mipmap-*/ic_launcher*.xml') + glob.glob(f'{res_dir}/drawable*/ic_launcher*.xml'):
               try:
@@ -66,20 +65,16 @@ jobs:
               except Exception:
                   pass
 
-          # 2. Buat kanvas HD 2048x2048 transparan
           canvas_size = 2048
           canvas = Image.new('RGBA', (canvas_size, canvas_size), (255, 255, 255, 0))
 
-          # 3. Scale logo ke 65% dari kanvas (Safe Zone agar presisi & tidak kepotong)
           target_logo_size = int(canvas_size * 0.65)
           im.thumbnail((target_logo_size, target_logo_size), Image.Resampling.LANCZOS)
 
-          # 4. Tempel di tengah
           pos_x = (canvas_size - im.width) // 2
           pos_y = (canvas_size - im.height) // 2
           canvas.paste(im, (pos_x, pos_y), im)
 
-          # 5. Generate ke semua folder mipmap Android dengan downscale lanczos HD
           maps = {
               'mipmap-mdpi': 48,
               'mipmap-hdpi': 72,
@@ -98,7 +93,7 @@ jobs:
               resized_icon.save(os.path.join(target_dir, 'ic_launcher_round.png'))
               resized_icon.save(os.path.join(target_dir, 'ic_launcher_foreground.png'))
 
-          print('Ikon katar-app-icon.png Berhasil Diterapkan!')
+          print('Ikon Berhasil Diterapkan!')
           "
 
       - name: Build APK
