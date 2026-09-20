@@ -10,10 +10,10 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: '20' }
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: '21'
 
       - name: Install Capacitor
         run: |
@@ -34,27 +34,17 @@ jobs:
 
       - name: GANTI ICON JADI LOGO RESMI
         run: |
-          python3 -c "from PIL import Image; Image.open('img/logo-resmi-karang-taruna.jpg').convert('RGBA').save('icon.png')" || cp img/logo-resmi-karang-taruna.jpg icon.png
+          pip install pillow -q || pip3 install pillow -q
+          python3 -c "from PIL import Image; im=Image.open('img/logo-resmi-karang-taruna.jpg'); im=im.convert('RGBA'); im.save('icon.png')"
           for d in mipmap-hdpi mipmap-mdpi mipmap-xhdpi mipmap-xxhdpi mipmap-xxxhdpi; do
             cp icon.png android/app/src/main/res/$d/ic_launcher.png
             cp icon.png android/app/src/main/res/$d/ic_launcher_round.png
           done
+          echo "Icon diganti!"
 
       - name: Fix Kotlin & Build APK
         working-directory: android
         run: |
-          sed -i '/kotlin-stdlib/d' app/build.gradle || true
-          sed -i '/resolutionStrategy/d' app/build.gradle || true
-          sed -i '/configurations.all/d' app/build.gradle || true
-          cat << 'EOF' >> app/build.gradle
-          configurations.all {
-              resolutionStrategy {
-                  force 'org.jetbrains.kotlin:kotlin-stdlib:1.8.22'
-                  force 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22'
-                  force 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22'
-              }
-          }
-          EOF
           chmod +x gradlew
           ./gradlew assembleDebug
 
