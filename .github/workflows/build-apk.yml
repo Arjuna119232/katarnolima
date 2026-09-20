@@ -44,19 +44,42 @@ jobs:
           npx cap add android || true
           npx cap sync android
 
-      - name: Apply HD PNG Icon
+      - name: Apply Perfect Safe-Zone HD Icon
         run: |
           python3 -c "
-          import os
+          import os, glob
           from PIL import Image
 
-          src_path = 'img/logo-hd.png'
+          # Pakai file baru: katar_app_icon_red.png
+          src_path = 'img/katar_app_icon_red.png'
           if not os.path.exists(src_path):
-              print('Error: File img/logo-hd.png tidak ditemukan!')
+              print('File img/katar_app_icon_red.png tidak ditemukan!')
               exit(1)
 
           im = Image.open(src_path).convert('RGBA')
 
+          # 1. Hapus XML adaptive bawaan Capacitor agar tidak nge-zoom/crop paksa
+          res_dir = 'android/app/src/main/res'
+          for xml_file in glob.glob(f'{res_dir}/mipmap-*/ic_launcher*.xml') + glob.glob(f'{res_dir}/drawable*/ic_launcher*.xml'):
+              try:
+                  os.remove(xml_file)
+              except Exception:
+                  pass
+
+          # 2. Buat kanvas HD 1080x1080 transparan
+          canvas_size = 1080
+          canvas = Image.new('RGBA', (canvas_size, canvas_size), (255, 255, 255, 0))
+
+          # 3. Scale logo ke 60% dari kanvas (Safe Zone agar tidak kepotong)
+          target_logo_size = int(canvas_size * 0.60)
+          im.thumbnail((target_logo_size, target_logo_size), Image.Resampling.LANCZOS)
+
+          # 4. Tempel tepat di tengah
+          pos_x = (canvas_size - im.width) // 2
+          pos_y = (canvas_size - im.height) // 2
+          canvas.paste(im, (pos_x, pos_y), im)
+
+          # 5. Generate ke semua folder mipmap Android
           maps = {
               'mipmap-mdpi': 48,
               'mipmap-hdpi': 72,
@@ -65,19 +88,17 @@ jobs:
               'mipmap-xxxhdpi': 192
           }
 
-          res_dir = 'android/app/src/main/res'
-
           for folder, px in maps.items():
               target_dir = os.path.join(res_dir, folder)
               os.makedirs(target_dir, exist_ok=True)
               
-              o = im.resize((px, px), Image.Resampling.LANCZOS)
+              resized_icon = canvas.resize((px, px), Image.Resampling.LANCZOS)
               
-              o.save(os.path.join(target_dir, 'ic_launcher.png'))
-              o.save(os.path.join(target_dir, 'ic_launcher_round.png'))
-              o.save(os.path.join(target_dir, 'ic_launcher_foreground.png'))
+              resized_icon.save(os.path.join(target_dir, 'ic_launcher.png'))
+              resized_icon.save(os.path.join(target_dir, 'ic_launcher_round.png'))
+              resized_icon.save(os.path.join(target_dir, 'ic_launcher_foreground.png'))
 
-          print('Ikon PNG HD Berhasil Diterapkan!')
+          print('Ikon katar_app_icon_red.png Berhasil Diterapkan!')
           "
 
       - name: Build APK
