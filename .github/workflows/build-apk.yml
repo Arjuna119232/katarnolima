@@ -29,7 +29,7 @@ jobs:
       - name: Install Capacitor & Dependencies
         run: |
           npm init -y || true
-          npm install @capacitor/core @capacitor/cli @capacitor/android
+          npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/app
           pip install pillow -q
 
       - name: Populate Web Assets
