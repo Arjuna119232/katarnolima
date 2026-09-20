@@ -11,7 +11,19 @@ document.addEventListener('DOMContentLoaded', function(){
   if(fabClose && fabContainer){ fabClose.addEventListener('click', function(e){ e.stopPropagation(); fabContainer.classList.remove('active'); }); }
   document.addEventListener('click', function(e){ if(!fabContainer) return; const target = e.target; if(!fabContainer.contains(target)){ fabContainer.classList.remove('active'); } });
 
-  // --- FIX BACK BUTTON ANDROID (CAPACITOR & WEB HISTORY) ---
+  // MODAL (Dideklarasikan di atas agar bisa diakses fungsi back)
+  const modal = document.getElementById('universal-modal');
+  const modalTitle = document.getElementById('modal-title');
+  const modalBody = document.getElementById('modal-body');
+  const modalClose = document.getElementById('modal-close');
+  const modalData = { sembako:{title:'Harga Sembako RW 05',body:'Beras Rp 12.500, Telur Rp 28.000, Minyak Rp 14.000 di Warung RW'}, ronda:{title:'Jadwal Ronda',body:'Senin RT01, Selasa RT02, Rabu RT03, Kamis RT04, Jumat RT05, Sabtu RT06, Minggu Linmas. 22:00-04:00'}, bersih:{title:'Lingkungan Bersih',body:'Kerja Bakti Minggu ke-3 jam 07:00 di Lapangan'}, posyandu:{title:'Posyandu',body:'Minggu ke-2 & 3 di Balai'}, datawarga:{title:'Data Warga',body:'Wajib lapor RT kalau pindah'} };
+  function openModal(t,b){ if(!modal||!modalTitle||!modalBody) return; modalTitle.innerHTML=t; modalBody.innerHTML=b; modal.classList.add('active'); document.body.style.overflow='hidden'; }
+  function closeModal(){ if(!modal) return; modal.classList.remove('active'); document.body.style.overflow=''; }
+  document.querySelectorAll('[data-modal]').forEach(function(el){ el.addEventListener('click', function(e){ e.preventDefault(); const k=this.getAttribute('data-modal'); const d=modalData[k]; if(d) openModal(d.title,d.body); }); });
+  if(modalClose) modalClose.addEventListener('click', closeModal);
+  if(modal) modal.addEventListener('click', function(e){ if(e.target===modal) closeModal(); });
+
+  // --- FIX BACK BUTTON ANDROID (CAPACITOR NATIVE) ---
   
   function goBackSafe(){
     if(window.history.length > 1){
@@ -21,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function(){
     }
   }
 
-  // Pasang ke semua tombol back manual di UI (misal ikon panah kembali)
+  // Tombol back manual di UI
   document.querySelectorAll('.back, #backBtn').forEach(function(el){
     el.addEventListener('click', function(e){
       e.preventDefault();
@@ -29,9 +41,11 @@ document.addEventListener('DOMContentLoaded', function(){
     });
   });
 
-  // Logika 2x tekan back khusus di Halaman Utama (index.html)
+  // Deteksi Halaman Utama lebih akurat untuk WebView Android
+  const currentPath = window.location.pathname;
+  const isHomePage = currentPath.endsWith('index.html') || currentPath.endsWith('/') || currentPath === '' || window.location.href.endsWith('/public/');
+
   let backPressedOnce = false;
-  const isHomePage = window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname.endsWith('/');
 
   function handleExitApp() {
     if (backPressedOnce) {
@@ -48,26 +62,31 @@ document.addEventListener('DOMContentLoaded', function(){
     }
   }
 
-  // Intersepsi tombol Back fisik / Navbar Android melalui Capacitor Native
-  if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
-    window.Capacitor.Plugins.App.addListener('backButton', function() {
-      // Jika modal sedang terbuka, tutup modalnya dulu
-      if (modal && modal.classList.contains('active')) {
-        closeModal();
-        return;
-      }
+  // Fungsi penangkap tombol back Android
+  const onHardwareBackButton = () => {
+    // 1. Jika modal terbuka, tutup modal dulu
+    if (modal && modal.classList.contains('active')) {
+      closeModal();
+      return;
+    }
 
-      // Jika di halaman utama, jalankan konfirmasi 2x tekan
-      if (isHomePage) {
-        handleExitApp();
-      } else {
-        // Jika di halaman lain, mundur safe ke halaman sebelumnya
-        goBackSafe();
-      }
-    });
+    // 2. Jika di Halaman Utama, jalankan konfirmasi 2x tekan
+    if (isHomePage) {
+      handleExitApp();
+    } else {
+      // 3. Jika di halaman lain (cari-warga, aduan-warga, dll)
+      goBackSafe();
+    }
+  };
+
+  // Registrasi event listener Capacitor secara fleksibel
+  if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
+    window.Capacitor.Plugins.App.addListener('backButton', onHardwareBackButton);
+  } else {
+    document.addEventListener('backbutton', onHardwareBackButton, false);
   }
 
-  // Backup fallback untuk browser / WebView non-native
+  // Backup fallback untuk browser / WebView biasa
   if (isHomePage) {
     history.pushState(null, '', location.href);
     window.addEventListener('popstate', function(){
@@ -75,16 +94,4 @@ document.addEventListener('DOMContentLoaded', function(){
       history.pushState(null, '', location.href);
     });
   }
-
-  // MODAL
-  const modal = document.getElementById('universal-modal');
-  const modalTitle = document.getElementById('modal-title');
-  const modalBody = document.getElementById('modal-body');
-  const modalClose = document.getElementById('modal-close');
-  const modalData = { sembako:{title:'Harga Sembako RW 05',body:'Beras Rp 12.500, Telur Rp 28.000, Minyak Rp 14.000 di Warung RW'}, ronda:{title:'Jadwal Ronda',body:'Senin RT01, Selasa RT02, Rabu RT03, Kamis RT04, Jumat RT05, Sabtu RT06, Minggu Linmas. 22:00-04:00'}, bersih:{title:'Lingkungan Bersih',body:'Kerja Bakti Minggu ke-3 jam 07:00 di Lapangan'}, posyandu:{title:'Posyandu',body:'Minggu ke-2 & 3 di Balai'}, datawarga:{title:'Data Warga',body:'Wajib lapor RT kalau pindah'} };
-  function openModal(t,b){ if(!modal||!modalTitle||!modalBody) return; modalTitle.innerHTML=t; modalBody.innerHTML=b; modal.classList.add('active'); document.body.style.overflow='hidden'; }
-  function closeModal(){ if(!modal) return; modal.classList.remove('active'); document.body.style.overflow=''; }
-  document.querySelectorAll('[data-modal]').forEach(function(el){ el.addEventListener('click', function(e){ e.preventDefault(); const k=this.getAttribute('data-modal'); const d=modalData[k]; if(d) openModal(d.title,d.body); }); });
-  if(modalClose) modalClose.addEventListener('click', closeModal);
-  if(modal) modal.addEventListener('click', function(e){ if(e.target===modal) closeModal(); });
 });
