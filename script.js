@@ -1,97 +1,45 @@
 // @ts-nocheck
-document.addEventListener('DOMContentLoaded', function() {
-  // 1. MENU HAMBURGER MOBILE
-  var hamburger = document.querySelector('.hamburger');
-  var nav = document.querySelector('.nav-menu') || document.querySelector('nav');
+document.addEventListener('DOMContentLoaded', function(){
+  // FIX CARI PINDAH HALAMAN
+  /** @type {HTMLElement | null} */ const goCari = document.getElementById('goCari');
+  if(goCari){ goCari.addEventListener('click', function(e){ e.preventDefault(); window.location.href='cari-warga.html'; }); }
 
-  if (hamburger && nav) {
-    hamburger.addEventListener('click', function() {
-      nav.classList.toggle('active');
-      nav.classList.toggle('mobile-open');
-      hamburger.textContent = (nav.classList.contains('active') || nav.classList.contains('mobile-open')) ? '✕' : '☰';
-    });
+  // FIX FAB MERAH - INI KUNCINYA BIAR MUNCUL LAGI
+  /** @type {HTMLElement | null} */ const fabContainer = document.getElementById('fabContainer');
+  /** @type {HTMLElement | null} */ const fabMain = document.getElementById('fabMain');
+  /** @type {HTMLElement | null} */ const fabClose = document.getElementById('fabClose');
 
-    document.querySelectorAll('nav a, .nav-menu a').forEach(function(link) {
-      link.addEventListener('click', function() {
-        nav.classList.remove('active');
-        nav.classList.remove('mobile-open');
-        hamburger.textContent = '☰';
-      });
+  if(fabMain && fabContainer){
+    fabMain.addEventListener('click', function(e){
+      e.stopPropagation();
+      fabContainer.classList.add('active');
+      console.log('FAB dibuka');
     });
   }
-
-  // 2. LOGIKA MODAL POP-UP
-  var modal = document.getElementById('universal-modal');
-  var modalTitle = document.getElementById('modal-title');
-  var modalBody = document.getElementById('modal-body');
-  var modalClose = document.getElementById('modal-close');
-
-  function openModal(title, body) {
-    if (!modal || !modalTitle || !modalBody) return;
-    modalTitle.textContent = title;
-    modalBody.innerHTML = body;
-    modal.classList.add('show');
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-  }
-
-  function closeModal() {
-    if (!modal) return;
-    modal.classList.remove('show');
-    modal.classList.remove('active');
-    document.body.style.overflow = '';
-  }
-
-  if (modalClose) {
-    modalClose.addEventListener('click', closeModal);
-  }
-
-  if (modal) {
-    modal.addEventListener('click', function(e) { 
-      if (e.target === modal) closeModal(); 
+  if(fabClose && fabContainer){
+    fabClose.addEventListener('click', function(e){
+      e.stopPropagation();
+      fabContainer.classList.remove('active');
+      console.log('FAB ditutup');
     });
   }
-
-  document.addEventListener('keydown', function(e) { 
-    if (e.key === 'Escape') closeModal(); 
-  });
-
-  // 3. DATA KONTEN MODAL
-  var contents = {
-    pengumuman: {
-      title: 'Info Iuran Naik - Oktober 2026',
-      body: '<div style="display:flex;gap:12px;margin-bottom:16px;"><img src="img/logo-resmi-karang-taruna.jpg" style="width:48px;height:48px;border-radius:50%;background:#000;border:2px solid #fbbf24;padding:2px;"><div><b>KATARNOLIMA RW 05</b><br><span style="font-size:12px;color:#64748b;">Pengumuman Resmi</span></div></div><p style="font-weight:700;">Penyesuaian Iuran Warga</p><p style="font-size:14px;color:#475569;margin-top:8px;line-height:1.6;">Mulai Oktober 2026:<br>Kebersihan: Rp 20.000 jadi <b>Rp 25.000</b><br>Keamanan: Rp 15.000 jadi <b>Rp 20.000</b><br>Total: <b>Rp 45.000 / KK / bulan</b></p><a href="https://wa.me/6289673580756?text=Halo%20Kak%20Arjuna%20tanya%20iuran%20naik" target="_blank" rel="noopener noreferrer" style="margin-top:14px;display:inline-block;background:#090d16;color:white;padding:12px 20px;border-radius:100px;font-weight:700;text-decoration:none;">Tanya Humas WA</a>'
-    },
-    siskamling: {
-      title: 'Jadwal Siskamling - RT01 Senin',
-      body: '<p style="font-size:13px;color:#64748b;margin-bottom:12px;">Jadwal jaga malam RW 05</p><div style="display:flex;flex-direction:column;gap:8px;"><div style="padding:12px;background:#fffbeb;border-radius:12px;border:2px solid #fbbf24;display:flex;justify-content:space-between;"><div><b>Senin - RT01</b></div><span style="color:#d97706;font-weight:800;">20:00-04:00</span></div><div style="padding:12px;background:#f8fafc;border-radius:12px;border:1px solid #e2e8f0;display:flex;justify-content:space-between;"><div><b>Selasa - RT02</b></div><span>20:00-04:00</span></div><div style="padding:12px;background:#f8fafc;border-radius:12px;border:1px solid #e2e8f0;display:flex;justify-content:space-between;"><div><b>Rabu - RT03</b></div><span>20:00-04:00</span></div><div style="padding:12px;background:#f8fafc;border-radius:12px;border:1px solid #e2e8f0;display:flex;justify-content:space-between;"><div><b>Kamis - RT04</b></div><span>20:00-04:00</span></div></div>'
-    },
-    kas: {
-      title: 'Laporan Kas - Dikosongkan',
-      body: '<div style="text-align:center;padding:16px;"><p style="font-weight:700;">Laporan Kas Dikosongkan Dulu</p><p style="font-size:13px;color:#64748b;margin-top:6px;">Hubungi Bendahara Bang Idam via Humas.</p></div><a href="https://wa.me/6289673580756?text=Tanya%20laporan%20kas%20RW05" target="_blank" rel="noopener noreferrer" style="display:block;text-align:center;background:#090d16;color:white;padding:12px;border-radius:100px;font-weight:700;text-decoration:none;">Hubungi Bendahara</a>'
-    },
-    agenda1: { 
-      title: 'Kerja Bakti 21 Sep', 
-      body: '<p>21 Sep 2026 - 07:00 WIB<br>Lapangan RW 05<br><br>Bersih-bersih lingkungan, bawa alat kebersihan.</p><a href="https://wa.me/6289673580756?text=Ikut%20kerja%20bakti%2021%20Sep" target="_blank" rel="noopener noreferrer" style="margin-top:10px;display:inline-block;background:#22c55e;color:white;padding:10px 18px;border-radius:100px;font-weight:700;text-decoration:none;">Ikut</a>' 
-    },
-    agenda2: { 
-      title: 'Rapat Maulid 28 Sep', 
-      body: '<p>28 Sep 2026 - 20:00 WIB<br>Balai Warga RW 05<br><br>Rapat persiapan Maulid Nabi dan HUT KATARNOLIMA.</p>' 
-    },
-    agenda3: { 
-      title: 'Santunan Anak Yatim', 
-      body: '<p>04 Okt 2026<br>Masjid Al-Huda<br><br>Kolaborasi DKM. Penyaluran santunan.</p>' 
+  document.addEventListener('click', function(e){
+    if(!fabContainer) return;
+    /** @type {any} */ const target = e.target;
+    if(!fabContainer.contains(target)){
+      fabContainer.classList.remove('active');
     }
-  };
-
-  // 4. EVENT LISTENER UNTUK TOMBOL MODAL
-  document.querySelectorAll('[data-modal]').forEach(function(btn) {
-    btn.addEventListener('click', function(e) {
-      e.preventDefault();
-      var key = btn.getAttribute('data-modal');
-      if (contents[key]) {
-        openModal(contents[key].title, contents[key].body);
-      }
-    });
   });
+
+  // MODAL
+  const modal = document.getElementById('universal-modal');
+  const modalTitle = document.getElementById('modal-title');
+  const modalBody = document.getElementById('modal-body');
+  const modalClose = document.getElementById('modal-close');
+  /** @type {any} */ const modalData = { sembako:{title:'Harga Sembako RW 05',body:'Beras Rp 12.500, Telur Rp 28.000'}, ronda:{title:'Jadwal Ronda',body:'Senin RT01, Selasa RT02, Rabu RT03, Kamis RT04, Jumat RT05, Sabtu RT06, Minggu Linmas. 22:00-04:00'}, bersih:{title:'Lingkungan Bersih',body:'Kerja Bakti Minggu ke-3 jam 07:00 di Lapangan'}, pemuda:{title:'Pemuda KATAR',body:'34 anggota aktif'}, posyandu:{title:'Posyandu',body:'Minggu ke-2 & 3 di Balai'}, datawarga:{title:'Data Warga',body:'Wajib lapor RT'} };
+  function openModal(/** @type {string} */ t, /** @type {string} */ b){ if(!modal||!modalTitle||!modalBody) return; modalTitle.innerHTML=t; modalBody.innerHTML=b; modal.classList.add('active'); document.body.style.overflow='hidden'; }
+  function closeModal(){ if(!modal) return; modal.classList.remove('active'); document.body.style.overflow=''; }
+  document.querySelectorAll('[data-modal]').forEach(function(/** @type {any} */ el){ el.addEventListener('click', function(/** @type {any} */ e){ e.preventDefault(); /** @type {string} */ const k=this.getAttribute('data-modal'); /** @type {any} */ const d=modalData[k]; if(d) openModal(d.title,d.body); }); });
+  if(modalClose) modalClose.addEventListener('click', closeModal);
+  if(modal) modal.addEventListener('click', function(/** @type {any} */ e){ if(e.target===modal) closeModal(); });
 });
