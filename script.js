@@ -8,10 +8,10 @@ document.addEventListener('DOMContentLoaded', function(){
   const fabMain = document.getElementById('fabMain');
   const fabClose = document.getElementById('fabClose');
   if(fabMain && fabContainer){ fabMain.addEventListener('click', function(e){ e.stopPropagation(); fabContainer.classList.add('active'); }); }
-  if(fabClose && fabContainer){ fabClose.addEventListener('click', function(e){ e.stopPropagation(); fabContainer.classList.remove('active'); }); }
+  if(fabClose && fabContainer){ fabClose.addEventListener('click', function(e){ e.stopPropagation(); fabClose.classList.remove('active'); }); }
   document.addEventListener('click', function(e){ if(!fabContainer) return; const target = e.target; if(!fabContainer.contains(target)){ fabContainer.classList.remove('active'); } });
 
-  // MODAL (Dideklarasikan di atas agar bisa diakses fungsi back)
+  // MODAL (Dideklarasikan di awal agar bisa diakses fungsi Back)
   const modal = document.getElementById('universal-modal');
   const modalTitle = document.getElementById('modal-title');
   const modalBody = document.getElementById('modal-body');
@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', function(){
     }
   }
 
-  // Fungsi penangkap tombol back Android
+  // Penangkap tombol back Android
   const onHardwareBackButton = () => {
     // 1. Jika modal terbuka, tutup modal dulu
     if (modal && modal.classList.contains('active')) {
@@ -79,14 +79,14 @@ document.addEventListener('DOMContentLoaded', function(){
     }
   };
 
-  // Registrasi event listener Capacitor secara fleksibel
+  // Registrasi event listener backButton
   if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
     window.Capacitor.Plugins.App.addListener('backButton', onHardwareBackButton);
   } else {
     document.addEventListener('backbutton', onHardwareBackButton, false);
   }
 
-  // Backup fallback untuk browser / WebView biasa
+  // Fallback untuk browser / WebView biasa
   if (isHomePage) {
     history.pushState(null, '', location.href);
     window.addEventListener('popstate', function(){
@@ -94,4 +94,37 @@ document.addEventListener('DOMContentLoaded', function(){
       history.pushState(null, '', location.href);
     });
   }
+
+  // --- REGISTRASI PUSH NOTIFICATION FIREBASE ---
+
+  function setupPushNotifications() {
+    if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.PushNotifications) {
+      const PushNotifications = window.Capacitor.Plugins.PushNotifications;
+
+      // Minta izin notifikasi ke pengguna Android
+      PushNotifications.requestPermissions().then(function(result) {
+        if (result.receive === 'granted') {
+          // Jika diizinkan, daftarkan HP ke Firebase
+          PushNotifications.register();
+        }
+      });
+
+      // Berhasil terdaftar & mendapat Token dari Firebase
+      PushNotifications.addListener('registration', function(token) {
+        console.log('Firebase Push Token:', token.value);
+      });
+
+      // Tangkap notifikasi yang masuk ketika aplikasi sedang dibuka
+      PushNotifications.addListener('pushNotificationReceived', function(notification) {
+        const toast = document.createElement('div');
+        toast.textContent = (notification.title ? notification.title + ': ' : '') + (notification.body || 'Ada pesan baru');
+        toast.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#e53935;color:#fff;padding:12px 20px;border-radius:12px;font-size:14px;z-index:10000;box-shadow:0 8px 22px rgba(0,0,0,0.4);width:85%;max-width:360px;text-align:center;';
+        document.body.appendChild(toast);
+        setTimeout(function(){ toast.remove(); }, 4000);
+      });
+    }
+  }
+
+  // Jalankan setup push notification
+  setupPushNotifications();
 });
