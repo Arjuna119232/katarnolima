@@ -1,55 +1,82 @@
 name: Build Android APK
+
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: '20' }
-      - uses: actions/setup-java@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '21'
 
-      - name: Install Capacitor
+      - name: Install Capacitor & Dependencies
         run: |
           npm init -y || true
-          npm install @capacitor/core @capacitor/cli @capacitor/android
+          npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/assets pillow
 
-      - name: Populate Web Assets
+      - name: Populate Web Assets into www/
         run: |
           mkdir -p www
           cp index.html script.js style.css berita-gemah-ripah-nusantara.html www/ 2>/dev/null || true
           cp -r img video www/ 2>/dev/null || true
-          echo '{"appId":"com.katarnolima.rw05","appName":"KATARNOLIMA","webDir":"www"}' > capacitor.config.json
+          cat << 'EOF' > capacitor.config.json
+          {
+            "appId": "com.katarnolima.rw05",
+            "appName": "KATARNOLIMA",
+            "webDir": "www"
+          }
+          EOF
 
-      - name: Init/Sync Android
+      - name: Init/Sync Android Project
         run: |
           npx cap add android || true
           npx cap sync android
 
-      - name: GANTI ICON JADI LOGO RESMI
+      - name: Ganti Icon Aplikasi
         run: |
           pip install pillow -q || pip3 install pillow -q
-          python3 -c "from PIL import Image; im=Image.open('img/logo-resmi-karang-taruna.jpg'); im=im.convert('RGBA'); im.save('icon.png')"
+          python3 -c "from PIL import Image; im=Image.open('img/logo-resmi-karang-taruna.jpg'); im.convert('RGBA').save('icon.png')"
           for d in mipmap-hdpi mipmap-mdpi mipmap-xhdpi mipmap-xxhdpi mipmap-xxxhdpi; do
-            cp icon.png android/app/src/main/res/$d/ic_launcher.png
-            cp icon.png android/app/src/main/res/$d/ic_launcher_round.png
+            cp icon.png android/app/src/main/res/$d/ic_launcher.png 2>/dev/null || true
+            cp icon.png android/app/src/main/res/$d/ic_launcher_round.png 2>/dev/null || true
+            cp icon.png android/app/src/main/res/$d/ic_launcher_foreground.png 2>/dev/null || true
           done
-          echo "Icon diganti!"
 
-      - name: Fix Kotlin & Build APK
+      - name: Fix Kotlin Conflict & Build APK via Gradle
         working-directory: android
         run: |
+          cat << 'EOF' >> app/build.gradle
+
+          configurations.all {
+              resolutionStrategy {
+                  force 'org.jetbrains.kotlin:kotlin-stdlib:1.8.22'
+                  force 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22'
+                  force 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22'
+              }
+          }
+          EOF
           chmod +x gradlew
           ./gradlew assembleDebug
 
-      - name: Upload APK
+      - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: KATARNOLIMA-RW05-v${{ github.run_number }}
+          name: app-debug
           path: android/app/build/outputs/apk/debug/app-debug.apk
+          
