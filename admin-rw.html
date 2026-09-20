@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin RW 05 - Input NIK</title>
+<style>
+*{box-sizing:border-box;font-family:system-ui,sans-serif}
+body{max-width:440px;margin:0 auto;padding:16px;background:#ffffff;color:#0f172a}
+h1{font-size:18px;font-weight:900;margin:0 0 4px 0}
+p.sub{font-size:12px;color:#64748b;margin:0 0 16px 0}
+input{width:100%;padding:14px 16px;border:1.5px solid #cbd5e1;border-radius:12px;margin-bottom:10px;font-size:15px;outline:none}
+button{width:100%;padding:16px;background:#111827;color:#fbbf24;border:none;border-radius:12px;font-weight:800;font-size:15px}
+.item{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;margin-top:10px;font-size:13px;display:flex;justify-content:space-between}
+#list{margin-top:16px}
+.badge{background:#111;color:#fff;padding:2px 8px;border-radius:20px;font-size:11px}
+</style>
+</head>
+<body>
+<h1>🔑 Admin RW 05 - Input Daftar NIK</h1>
+<p class="sub">Data otomatis di-hash SHA-256 aman. Cek di Firebase > Firestore > Data.</p>
+<input id="nama" placeholder="Nama Lengkap - BUDI SANTOSO">
+<input id="nik" inputmode="numeric" maxlength="16" placeholder="NIK 16 digit">
+<input id="rt" placeholder="RT - Contoh: RT 03">
+<button id="btnSimpan">Simpan ke Master RW 05</button>
+<div id="list"></div>
+<div id="log" style="margin-top:12px;font-size:11px;color:#94a3b8"></div>
+<script type="module">
+// @ts-nocheck
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, doc, setDoc, getDocs, collection, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const firebaseConfig = {
+  apiKey: "AIzaSyCZtvImbyZmqoEoY1hYZcuCbUpIl3R1fhE",
+  authDomain: "katarnolima-rw05.firebaseapp.com",
+  projectId: "katarnolima-rw05",
+  storageBucket: "katarnolima-rw05.firebasestorage.app",
+  messagingSenderId: "965647612835",
+  appId: "1:965647612835:web:b712367f0d8beb7c5bf816"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+async function hashNIK(textParam){
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(textParam));
+  return [...new Uint8Array(buf)].map((b)=>b.toString(16).padStart(2,'0')).join('');
+}
+async function loadList(){
+  const snap = await getDocs(collection(db, "master_rw05"));
+  const div = document.getElementById('list');
+  div.innerHTML = `<b>Total: ${snap.size} Warga</b>`;
+  snap.forEach((docSnap)=>{
+    const data = docSnap.data();
+    div.innerHTML += `<div class="item"><span>${data.nama} - ${data.rt}</span><span class="badge">•••• ${data.nikLast4}</span></div>`;
+  });
+  document.getElementById('log').textContent = "Firestore OK - Project: katarnolima-rw05";
+}
+loadList();
+document.getElementById('btnSimpan').onclick = async () => {
+  const nama = document.getElementById('nama').value.trim().toUpperCase();
+  const nik = document.getElementById('nik').value.trim();
+  const rt = document.getElementById('rt').value.trim().toUpperCase();
+  if(nama.length<3 || nik.length!==16){ alert('Isi nama & NIK 16 digit'); return; }
+  const nikHash = await hashNIK(nik);
+  await setDoc(doc(db, "master_rw05", nikHash), { nama, rt, nikLast4: nik.slice(-4), createdAt: serverTimestamp() });
+  alert('Berhasil: ' + nama);
+  document.getElementById('nama').value=''; document.getElementById('nik').value='';
+  loadList();
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Info RW 05 - KATARNOLIMA</title>
+<link rel="stylesheet" href="style.css?v=25">
+<style>
+*{ -webkit-tap-highlight-color:transparent!important; }
+body{background:#0f0f0f!important}
+.info-dark{width:100%;max-width:440px;margin:0 auto;background:#121212;min-height:100vh;padding-bottom:90px;color:#fff}
+.dark-header{padding:14px 16px;display:flex;align-items:center;gap:12px;background:#121212;position:sticky;top:0;z-index:20}
+.dark-header .back{width:40px;height:40px;background:#1e1e1e;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;cursor:pointer;border:1px solid #2a2a2a}
+.dark-header h1{flex:1;font-size:16px;font-weight:700;color:#fff;text-align:center;margin-right:40px}
+.update-dark{margin:16px;background:linear-gradient(135deg,#1e293b 0%,#0f172a 100%);border-radius:20px;padding:16px;display:flex;gap:14px;align-items:center;position:relative;overflow:hidden;border:1px solid #1e293b;cursor:pointer}
+.update-thumb{width:56px;height:56px;background:#fbbf24;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0}
+.update-dark-text{flex:1;min-width:0}
+.update-dark-text h3{font-size:14px;font-weight:800;line-height:1.2;color:#fff}
+.update-dark-text p{font-size:11px;color:#94a3b8;margin-top:4px;line-height:1.3}
+.btn-update{padding:8px 16px;background:#2a2a2a;color:#fff;border-radius:999px;font-size:12px;font-weight:700;border:1px solid #3a3a3a;cursor:pointer;flex-shrink:0}
+.btn-update.new{background:#fbbf24;color:#000;border-color:#fbbf24}
+.filter-dark{display:flex;gap:8px;padding:12px 16px;overflow-x:auto;white-space:nowrap;scrollbar-width:none;background:#121212;border-bottom:1px solid #1e1e1e}
+.filter-dark .f-tab{padding:8px 16px;border-radius:999px;border:1px solid #2a2a2a;background:#1e1e1e;font-size:12px;font-weight:600;color:#94a3b8;flex-shrink:0;cursor:pointer}
+.filter-dark .f-tab.active{background:#fff;color:#000;border-color:#fff;font-weight:800}
+.berita-dark{display:flex;gap:14px;padding:16px;align-items:flex-start;border-bottom:1px solid #1e1e1e;cursor:pointer;background:#121212}
+.berita-dark-thumb{width:64px;height:64px;background:#1e1e1e;border-radius:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid #2a2a2a;font-size:22px}
+.berita-dark-content{flex:1;min-width:0}
+.berita-dark-cat{display:inline-block;padding:4px 10px;border-radius:999px;font-size:10px;font-weight:700;margin-bottom:6px}
+.cat-kegiatan{background:rgba(251,191,36,0.15);color:#fbbf24}
+.cat-pengumuman{background:rgba(96,165,250,0.15);color:#60a5fa}
+.cat-posyandu{background:rgba(74,222,128,0.15);color:#4ade80}
+.cat-update{background:#fbbf24;color:#000}
+.berita-dark-content h3{font-size:13px;font-weight:600;color:#e5e7eb;line-height:1.35}
+.berita-dark-meta{font-size:11px;color:#6b7280;margin-top:6px}
+</style>
+</head>
+<body>
+<div class="info-dark">
+  <div class="dark-header">
+    <div class="back" id="backBtn">←</div>
+    <h1>Info RW 05 - KATARNOLIMA</h1>
+  </div>
+
+  <div class="filter-dark">
+    <div class="f-tab active" onclick="setFilter('semua',this)">Semua</div>
+    <div class="f-tab" onclick="setFilter('kegiatan',this)">Kegiatan</div>
+    <div class="f-tab" onclick="setFilter('pengumuman',this)">Pengumuman</div>
+    <div class="f-tab" onclick="setFilter('iuran',this)">Iuran</div>
+  </div>
+
+  <div id="beritaList">
+    <div class="berita-dark" data-cat="kegiatan">
+      <div class="berita-dark-thumb">🌸</div>
+      <div class="berita-dark-content">
+        <span class="berita-dark-cat cat-kegiatan">Kegiatan</span>
+        <h3>Kerja Bakti Akbar RW 05 Minggu Ke-3 di Lapangan Poncol Jaya</h3>
+        <div class="berita-dark-meta">20 Sep 2026 • Balai Warga RW 05</div>
+      </div>
+    </div>
+    <div class="berita-dark" data-cat="pengumuman">
+      <div class="berita-dark-thumb">📢</div>
+      <div class="berita-dark-content">
+        <span class="berita-dark-cat cat-pengumuman">Pengumuman</span>
+        <h3>Jadwal Ronda Malam Bulan Ini - RT 01 Sampai RT 07</h3>
+        <div class="berita-dark-meta">19 Sep 2026 • 22:00 - 04:00 WIB</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="script.js?v=25"></script>
+<script>
+// @ts-nocheck
+
+/**
+ * @param {string} cat
+ * @param {HTMLElement} el
+ */
+function setFilter(cat, el) {
+  document.querySelectorAll('.filter-dark .f-tab').forEach(tab => tab.classList.remove('active'));
+  if (el) el.classList.add('active');
+
+  document.querySelectorAll('#beritaList .berita-dark').forEach(item => {
+    if (cat === 'semua' || item.getAttribute('data-cat') === cat) {
+      /** @type {HTMLElement} */ (item).style.display = 'flex';
+    } else {
+      /** @type {HTMLElement} */ (item).style.display = 'none';
+    }
+  });
+}
+</script>
+</body>
+</html>

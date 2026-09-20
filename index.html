@@ -3,21 +3,43 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KATARNOLIMA RW 05</title>
+<title>KATARNOLIMA RW 05 - Beranda</title>
 <link rel="icon" href="img/logo-resmi-karang-taruna.jpg">
-<link rel="stylesheet" href="style.css?v=24">
+<link rel="stylesheet" href="style.css?v=25">
+<style>
+.saldo-live{color:#fbbf24;font-weight:900}
+.live-badge{font-size:10px;background:#22c55e;color:#fff;padding:2px 6px;border-radius:20px;margin-left:6px;animation:pulse 1.5s infinite}
+@keyframes pulse{0%{opacity:1}50%{opacity:.4}100%{opacity:1}}
+
+/* MODAL FORCE UPDATE OVERLAY */
+.force-update-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(14px);z-index:99999;display:none;align-items:center;justify-content:center;padding:20px}
+.force-update-overlay.show{display:flex}
+.force-update-box{background:#1e1e1e;border:1px solid #2a2a2a;border-radius:24px;max-width:360px;width:100%;padding:24px;text-align:center}
+.force-update-box .icon-big{width:72px;height:72px;background:#fbbf24;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto 16px}
+.update-now-btn{width:100%;margin-top:18px;background:#fbbf24;color:#000;border:none;padding:14px;border-radius:14px;font-weight:900;font-size:14px;cursor:pointer}
+</style>
 </head>
 <body>
 <div class="app-jaki">
   <div class="jaki-banner-abad">
-    <div class="banner-left"><div class="logo-5">05</div><div class="abad-text"><b>KATAR<br>NOLIMA</b><span>RW 05 Poncol Jaya<br>Guyub • Rukun • Maju Bersama</span></div></div>
+    <div class="banner-left">
+      <div class="logo-5">05</div>
+      <div class="abad-text"><b>KATAR<br>NOLIMA</b><span>RW 05 Poncol Jaya<br>Guyub • Rukun • Maju Bersama</span></div>
+    </div>
     <div class="jaki-logo">RW05</div>
     <div class="banner-blue-cut"><h2>Mengabdi dengan<br>Aksi Nyata</h2></div>
   </div>
-  <div class="jaki-search-wrap" id="goCari"><div class="jaki-search"><span>🔍</span><input type="text" placeholder="Cari Layanan di RW 05..." readonly style="pointer-events:none"></div></div>
+
+  <div class="jaki-search-wrap" id="goCari">
+    <div class="jaki-search">
+      <span>🔍</span>
+      <input type="text" placeholder="Cari Layanan di RW 05..." readonly style="pointer-events:none">
+    </div>
+  </div>
+
   <div class="grid-8">
     <a class="g8-item" href="aduan-warga.html"><div class="g8-icon">📢</div><p>Aduan<br>Warga</p></a>
-    <a class="g8-item" href="berita.html"><div class="g8-icon">📰</div><p>Kabar<br>RW</p></a>
+    <a class="g8-item" href="info.html"><div class="g8-icon">🔔</div><p>Info<br>RW</p></a>
     <a class="g8-item" href="iuran-warga.html"><div class="g8-icon">💰</div><p>Iuran<br>Warga</p></a>
     <a class="g8-item" data-modal="sembako"><div class="g8-icon">🛒</div><p>Harga<br>Sembako</p></a>
     <a class="g8-item" data-modal="ronda"><div class="g8-icon">🛡️</div><p>Jadwal<br>Ronda</p></a>
@@ -25,22 +47,240 @@
     <a class="g8-item" href="https://maps.app.goo.gl/3Xte1yjgYiVT49XK7" target="_blank"><div class="g8-icon blue">📍</div><p>Peta<br>Balai</p></a>
     <a class="g8-item" href="semua-layanan.html"><div class="g8-icon">⊞</div><p>Semua<br>Layanan</p></a>
   </div>
-  <div class="kas-card"><div class="kas-top"><span>Kas Karang Taruna RW 05</span><span class="saldo">Rp 2.450.000</span></div><div class="kas-bot"><span>Transparan & Update</span><button onclick="location.href='iuran-warga.html'">Lihat Rincian</button></div></div>
-  <div class="mitigasi-card"><div><h3>Yuk Ikut Kerja Bakti<br>Minggu Ini!</h3><button>Daftar Hadir</button></div><div class="mit-icon">🚜</div></div>
-  <div id="kategori" class="section-jaki"><h2 class="h2-jaki">Jelajahi Layanan RW 05</h2><div class="kategori-grid"><div class="kat-card" data-modal="posyandu"><span>👶</span><p>Posyandu</p></div><div class="kat-card" data-modal="datawarga"><span>📋</span><p>Data Warga</p></div><div class="kat-card" data-modal="ronda"><span>🌙</span><p>Ronda Malam</p></div><div class="kat-card" data-modal="belajar"><span>📚</span><p>Belajar Bersama</p></div></div></div>
-  <div class="section-jaki" style="padding-top:26px">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><h2 class="h2-jaki">Rekomendasi Buat Kamu</h2><a href="semua-layanan.html" style="color:#2563eb;font-size:13px;font-weight:600;text-decoration:none">Lihat Semua</a></div>
-    <div class="rekom-card"><div class="rekom-img" style="background:#a7e3f7"><div style="font-size:60px">🏝️</div></div><div class="rekom-text"><span class="rekom-label">Fitur Khusus RW 05</span><h3>Balai Warga &<br>Rumah Singgah</h3><p>Pakai fitur <b>Pinjam Balai dan Rumah Singgah.</b></p></div></div>
-    <div class="rekom-card"><div class="rekom-img" style="background:#c6e8ff"><div style="font-size:50px">👩‍🌾</div></div><div class="rekom-text"><span class="rekom-label">Panduan</span><h3>Warga Baru<br>di RW 05</h3><p>Bersama <b>Lapor Diri dan 6 fitur lainnya.</b></p></div></div>
-    <div class="rekom-card"><div class="rekom-img" style="background:#0ed896"><div style="font-size:44px;background:#0a1d56;color:#fff;padding:12px 18px;border-radius:12px">RW05</div></div><div class="rekom-text"><span class="rekom-label">Wajib Coba</span><h3>Pengguna Baru<br>KATARNOLIMA</h3><p>Mulai buka fitur <b>Laporan Warga dan 4 fitur lainnya.</b></p></div></div>
-    <div class="rekom-card"><div class="rekom-img" style="background:#ffe4b5"><div style="font-size:50px">🚲</div></div><div class="rekom-text"><span class="rekom-label">Panduan</span><h3>Keliling RW 05<br>dengan KATARNOLIMA</h3><p>Pakai fitur <b>Peta Balai dan 4 fitur lainnya.</b></p></div></div>
-    <div style="text-align:center;padding:32px 16px 0;color:#64748b;font-size:13px;line-height:1.5">Kamu sudah sampai di akhir halaman. Tidak menemukan yang kamu cari?<br><a href="https://wa.me/6289673580756?text=Saran%20Fitur%20RW05" style="color:#2563eb;font-weight:700;text-decoration:none">Yuk kirim saranmu!</a></div>
+
+  <div class="kas-card">
+    <div class="kas-top">
+      <span>Kas Karang Taruna RW 05 <span class="live-badge">LIVE</span></span>
+      <span class="saldo saldo-live" id="saldoLive">Rp 0</span>
+    </div>
+    <div class="kas-bot">
+      <span id="kasUpdate">Transparan & Update • Live</span>
+      <button onclick="location.href='iuran-warga.html'">Lihat Rincian</button>
+    </div>
   </div>
+
+  <div class="mitigasi-card">
+    <div>
+      <h3>Yuk Ikut Kerja Bakti<br>Minggu Ini!</h3>
+      <button onclick="location.href='info.html'">Daftar Hadir</button>
+    </div>
+    <div class="mit-icon">🚜</div>
+  </div>
+
+  <div id="kategori" class="section-jaki">
+    <h2 class="h2-jaki">Jelajahi Layanan RW 05</h2>
+    <div class="kategori-grid">
+      <div class="kat-card" data-modal="posyandu"><span>👶</span><p>Posyandu</p></div>
+      <div class="kat-card" data-modal="datawarga"><span>📋</span><p>Data Warga</p></div>
+      <div class="kat-card" data-modal="ronda"><span>🌙</span><p>Ronda Malam</p></div>
+      <div class="kat-card" data-modal="belajar"><span>📚</span><p>Belajar Bersama</p></div>
+    </div>
+  </div>
+
+  <div class="section-jaki" style="padding-top:26px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <h2 class="h2-jaki">Rekomendasi Buat Kamu</h2>
+      <a href="semua-layanan.html" style="color:#2563eb;font-size:13px;font-weight:600;text-decoration:none">Lihat Semua</a>
+    </div>
+    <div class="rekom-card" onclick="location.href='info.html'">
+      <div class="rekom-img" style="background:#a7e3f7"><div style="font-size:60px">🏝️</div></div>
+      <div class="rekom-text">
+        <span class="rekom-label">Fitur Khusus RW 05</span>
+        <h3>Balai Warga &<br>Rumah Singgah</h3>
+        <p>Pakai fitur <b>Pinjam Balai dan Rumah Singgah.</b></p>
+      </div>
+    </div>
+    <div class="rekom-card" onclick="location.href='semua-layanan.html'">
+      <div class="rekom-img" style="background:#c6e8ff"><div style="font-size:50px">👩‍🌾</div></div>
+      <div class="rekom-text">
+        <span class="rekom-label">Panduan</span>
+        <h3>Warga Baru<br>di RW 05</h3>
+        <p>Bersama <b>Lapor Diri dan 6 fitur lainnya.</b></p>
+      </div>
+    </div>
+    <div class="rekom-card" onclick="location.href='aduan-warga.html'">
+      <div class="rekom-img" style="background:#0ed896"><div style="font-size:44px;background:#0a1d56;color:#fff;padding:12px 18px;border-radius:12px">RW05</div></div>
+      <div class="rekom-text">
+        <span class="rekom-label">Wajib Coba</span>
+        <h3>Pengguna Baru<br>KATARNOLIMA</h3>
+        <p>Mulai buka fitur <b>Laporan Warga dan 4 fitur lainnya.</b></p>
+      </div>
+    </div>
+    <div class="rekom-card" onclick="window.open('https://maps.app.goo.gl/3Xte1yjgYiVT49XK7','_blank')">
+      <div class="rekom-img" style="background:#ffe4b5"><div style="font-size:50px">🚲</div></div>
+      <div class="rekom-text">
+        <span class="rekom-label">Panduan</span>
+        <h3>Keliling RW 05<br>dengan KATARNOLIMA</h3>
+        <p>Pakai fitur <b>Peta Balai dan 4 fitur lainnya.</b></p>
+      </div>
+    </div>
+
+    <div style="text-align:center;padding:32px 16px 0;color:#64748b;font-size:13px;line-height:1.5">
+      Kamu sudah sampai di akhir halaman. Tidak menemukan yang kamu cari?<br>
+      <a href="https://wa.me/6289673580756?text=Saran%20Fitur%20RW05" style="color:#2563eb;font-weight:700;text-decoration:none">Yuk kirim saranmu!</a>
+    </div>
+  </div>
+
   <div style="height:140px"></div>
-  <nav class="jaki-nav"><a class="active" href="index.html">🏠<span>Beranda</span></a><a>📋<span>Kegiatan</span></a><a class="center" href="aduan-warga.html"><div class="cam">📷</div><span>Lapor</span></a><a href="berita.html">🔔<span>Info</span></a><a>👤<span>Profil</span></a></nav>
+
+  <!-- BOTTOM NAVBAR -->
+  <nav class="jaki-nav">
+    <a class="active" href="index.html">🏠<span>Beranda</span></a>
+    <a href="kegiatan.html">📋<span>Kegiatan</span></a>
+    <a class="center" href="aduan-warga.html"><div class="cam">📷</div><span>Lapor</span></a>
+    <a href="info.html">🔔<span>Info</span></a>
+    <a href="profil.html">👤<span>Profil</span></a>
+  </nav>
 </div>
-<div class="fab-container" id="fabContainer"><div class="fab-options" id="fabOptions"><div class="fab-option" onclick="window.open('tel:112','_self')"><span class="fab-label">Panggilan Darurat 112</span><div class="fab-icon">📞<small>112</small></div></div><div class="fab-option" onclick="window.open('https://wa.me/6289673580756?text=Butuh%20Ambulans%20RW05','_blank')"><span class="fab-label">Ambulans RW 05</span><div class="fab-icon">🚑</div></div><div class="fab-option" onclick="window.open('https://wa.me/6289673580756?text=Lapor%20Banjir%20RW05','_blank')"><span class="fab-label">Lapor Banjir</span><div class="fab-icon">🌊</div></div></div><div class="fab-darurat" id="fabMain">🚨</div><div class="fab-close" id="fabClose">✕</div></div>
-<div id="universal-modal" class="modal-overlay"><div class="modal-box"><div class="modal-header"><h3 id="modal-title">Info RW 05</h3><div id="modal-close" class="modal-close">✕</div></div><div id="modal-body" class="modal-body"></div></div></div>
-<script src="script.js?v=24"></script>
+
+<!-- FAB DARURAT -->
+<div class="fab-container" id="fabContainer">
+  <div class="fab-options" id="fabOptions">
+    <div class="fab-option" onclick="window.open('tel:112','_self')">
+      <span class="fab-label">Panggilan Darurat 112</span>
+      <div class="fab-icon">📞<small>112</small></div>
+    </div>
+    <div class="fab-option" onclick="window.open('https://wa.me/6289673580756?text=Butuh%20Ambulans%20RW05','_blank')">
+      <span class="fab-label">Ambulans RW 05</span>
+      <div class="fab-icon">🚑</div>
+    </div>
+    <div class="fab-option" onclick="window.open('https://wa.me/6289673580756?text=Lapor%20Banjir%20RW05','_blank')">
+      <span class="fab-label">Lapor Banjir</span>
+      <div class="fab-icon">🌊</div>
+    </div>
+  </div>
+  <div class="fab-darurat" id="fabMain">🚨</div>
+  <div class="fab-close" id="fabClose">✕</div>
+</div>
+
+<!-- MODAL SERBAGUNA -->
+<div id="universal-modal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 id="modal-title">Info RW 05</h3>
+      <div id="modal-close" class="modal-close">✕</div>
+    </div>
+    <div id="modal-body" class="modal-body"></div>
+  </div>
+</div>
+
+<!-- POPUP UTAMA FORCE UPDATE VERSI LAMA -->
+<div class="force-update-overlay" id="forceUpdateModal">
+  <div class="force-update-box">
+    <div class="icon-big">🚀</div>
+    <h2 style="color:#fff;font-weight:900">Update Diperlukan</h2>
+    <p style="color:#9ca3af;font-size:12px;margin-top:8px">Versi kamu: <span id="myVer">v2.0.0</span></p>
+    <p style="margin-top:8px;font-size:11px;color:#ef4444;font-weight:700">⚠️ Wajib update untuk melanjutkan</p>
+    <button class="update-now-btn" id="btnForceUpdate">Update Sekarang</button>
+  </div>
+</div>
+
+<script src="script.js?v=25"></script>
+
+<script type="module">
+// @ts-nocheck
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, doc, onSnapshot, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCZtvImbyZmqoEoY1hYZcuCbUpIl3R1fhE",
+  authDomain: "katarnolima-rw05.firebaseapp.com",
+  projectId: "katarnolima-rw05",
+  storageBucket: "katarnolima-rw05.firebasestorage.app",
+  messagingSenderId: "965647612835",
+  appId: "1:965647612835:web:b712367f0d8beb7c5bf816"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+function listenSaldoLive() {
+  const ref = doc(db, "kas_rw05", "saldo_utama");
+  
+  onSnapshot(ref, 
+    /** @param {any} snap */
+    async (snap) => {
+      if (!snap.exists()) {
+        await setDoc(ref, { total: 0, updatedAt: serverTimestamp() });
+        const saldoEl = document.getElementById('saldoLive');
+        const updateEl = document.getElementById('kasUpdate');
+        if (saldoEl) saldoEl.textContent = "Rp 0";
+        if (updateEl) updateEl.textContent = "Transparan & Update • Live";
+      } else {
+        const total = snap.data().total || 0;
+        const saldoEl = document.getElementById('saldoLive');
+        const updateEl = document.getElementById('kasUpdate');
+        if (saldoEl) saldoEl.textContent = "Rp " + total.toLocaleString('id-ID');
+        const now = new Date();
+        if (updateEl) updateEl.textContent = "Transparan & Update • Live " + now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
+      }
+    }, 
+    /** @param {any} error */
+    (error) => {
+      console.log("Firebase error:", error);
+      const saldoEl = document.getElementById('saldoLive');
+      if (saldoEl) saldoEl.textContent = "Rp 0";
+    }
+  );
+}
+
+// LOGIKA PENGECEKAN UPDATE APLIKASI SAAT PERTAMA KALI DIBUKA
+const GITHUB_REPO = "Arjuna119232/katarnolima";
+const CURRENT_APP_VERSION = "2.0.0";
+
+/**
+ * @param {string} current
+ * @param {string} target
+ */
+function isVersionLower(current, target) {
+  const v1 = current.replace(/^v/, '').split('.').map(Number);
+  const v2 = target.replace(/^v/, '').split('.').map(Number);
+  for (let i = 0; i < Math.max(v1.length, v2.length); i++) {
+    const num1 = v1[i] || 0;
+    const num2 = v2[i] || 0;
+    if (num1 < num2) return true;
+    if (num1 > num2) return false;
+  }
+  return false;
+}
+
+/** @type {() => Promise<void>} */
+async function checkAppUpdates() {
+  try {
+    const response = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/releases/latest`);
+    if (!response.ok) return;
+
+    const data = await response.json();
+    const latestVersion = data.tag_name || '';
+    const downloadUrl = (data.assets && data.assets.length > 0) ? data.assets[0].browser_download_url : data.html_url;
+
+    const myVerEl = document.getElementById('myVer');
+    if (myVerEl) myVerEl.innerText = 'v' + CURRENT_APP_VERSION;
+
+    if (latestVersion && isVersionLower(CURRENT_APP_VERSION, latestVersion)) {
+      const modalEl = document.getElementById('forceUpdateModal');
+      if (modalEl) modalEl.classList.add('show');
+
+      const triggerUpdate = () => { 
+        if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Browser) {
+          window.Capacitor.Plugins.Browser.open({ url: downloadUrl });
+        } else {
+          window.open(downloadUrl, '_system');
+        }
+      };
+      
+      const btnForceEl = document.getElementById('btnForceUpdate');
+      if (btnForceEl) btnForceEl.onclick = triggerUpdate;
+    }
+  } catch (err) {
+    console.error("Gagal mengecek update:", err);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  listenSaldoLive();
+  checkAppUpdates();
+});
+</script>
 </body>
 </html>
