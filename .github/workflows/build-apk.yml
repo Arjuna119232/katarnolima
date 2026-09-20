@@ -34,10 +34,11 @@ jobs:
         run: |
           npx cap add android || true
           npx cap sync android
+      - name: Install Pillow
+        run: pip install pillow -q
       - name: Ganti Icon
+        shell: python
         run: |
-          pip install pillow -q
-          python3 << 'PY'
           from PIL import Image
           im = Image.open("img/logo-resmi-karang-taruna.jpg").convert("RGBA")
           size=1024
@@ -50,19 +51,11 @@ jobs:
             o=bg.resize((px,px),Image.LANCZOS)
             o.save(f"android/app/src/main/res/{f}/ic_launcher.png")
             o.save(f"android/app/src/main/res/{f}/ic_launcher_round.png")
-          PY
+          print("Icon fixed")
       - name: Build APK
         working-directory: android
         run: |
-          cat << 'EOF' >> app/build.gradle
-          configurations.all {
-            resolutionStrategy {
-              force 'org.jetbrains.kotlin:kotlin-stdlib:1.8.22'
-              force 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22'
-              force 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22'
-            }
-          }
-          EOF
+          printf "\nconfigurations.all {\n resolutionStrategy {\n force 'org.jetbrains.kotlin:kotlin-stdlib:1.8.22'\n force 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22'\n force 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22'\n }\n}\n" >> app/build.gradle
           chmod +x gradlew
          ./gradlew assembleDebug
       - name: Upload APK
