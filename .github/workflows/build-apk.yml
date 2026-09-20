@@ -44,35 +44,19 @@ jobs:
           npx cap add android || true
           npx cap sync android
 
-      - name: Ganti Icon Aplikasi (HD & Sharp Filter)
+      - name: Apply HD PNG Icon
         run: |
           python3 -c "
           import os
-          from PIL import Image, ImageFilter
+          from PIL import Image
 
-          src_path = 'img/logo-resmi-karang-taruna.jpg'
+          src_path = 'img/logo-hd.png'
           if not os.path.exists(src_path):
-              print('File logo tidak ditemukan!')
+              print('Error: File img/logo-hd.png tidak ditemukan!')
               exit(1)
 
-          # Buka gambar asli
           im = Image.open(src_path).convert('RGBA')
 
-          # Terapkan penajaman ringan pada sumber jika ukurannya kecil
-          im = im.filter(ImageFilter.DETAIL)
-
-          # Kanvas HD 1024x1024
-          size = 1024
-          bg = Image.new('RGBA', (size, size), (255, 255, 255, 0))
-          
-          # Skala 75% dari kanvas agar proporsional
-          max_side = int(size * 0.75)
-          
-          # Resize resolusi tinggi menggunakan Resampling.LANCZOS
-          im_resized = im.resize((max_side, max_side), Image.Resampling.LANCZOS)
-          bg.paste(im_resized, ((size - max_side) // 2, (size - max_side) // 2), im_resized)
-
-          # Ukuran mipmap Android
           maps = {
               'mipmap-mdpi': 48,
               'mipmap-hdpi': 72,
@@ -87,15 +71,13 @@ jobs:
               target_dir = os.path.join(res_dir, folder)
               os.makedirs(target_dir, exist_ok=True)
               
-              # Downscale dengan presisi dari sumber HD ke tiap folder mipmap
-              o = bg.resize((px, px), Image.Resampling.LANCZOS)
-              o = o.filter(ImageFilter.SHARPEN)
+              o = im.resize((px, px), Image.Resampling.LANCZOS)
               
-              o.save(os.path.join(target_dir, 'ic_launcher.png'), quality=100)
-              o.save(os.path.join(target_dir, 'ic_launcher_round.png'), quality=100)
-              o.save(os.path.join(target_dir, 'ic_launcher_foreground.png'), quality=100)
+              o.save(os.path.join(target_dir, 'ic_launcher.png'))
+              o.save(os.path.join(target_dir, 'ic_launcher_round.png'))
+              o.save(os.path.join(target_dir, 'ic_launcher_foreground.png'))
 
-          print('Ikon HD & Tajam Berhasil Di-generate!')
+          print('Ikon PNG HD Berhasil Diterapkan!')
           "
 
       - name: Build APK
