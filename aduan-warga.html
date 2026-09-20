@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Aduan Warga - KATARNOLIMA RW 05</title>
+<link rel="icon" href="img/logo-resmi-karang-taruna.jpg">
+<link rel="stylesheet" href="style.css?v=17">
+<style>
+.aduan-page{max-width:440px;margin:0 auto;background:#fff;min-height:100vh;position:relative}
+.aduan-header{display:flex;align-items:center;gap:10px;padding:12px 12px 12px;background:#fff;position:sticky;top:0;z-index:20;border-bottom:1px solid #f1f5f9}
+.aduan-header .back{width:38px;height:38px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:#fff;flex-shrink:0}
+.aduan-search{flex:1;background:#f1f5f9;border-radius:28px;display:flex;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;border:1px solid #f1f5f9}
+.aduan-search input{border:none;outline:none;width:100%;background:transparent;font-size:14px;color:#0f172a;pointer-events:none}
+.form-wrap{padding:20px 16px 130px}
+.form-wrap h2{font-size:22px;font-weight:900;color:#0f172a;line-height:1.2}
+.form-wrap .sub{font-size:13px;color:#64748b;margin:6px 0 20px;line-height:1.4}
+.card-info{background:#fef3c7;border-radius:16px;padding:14px 16px;margin-bottom:18px;border:1px solid #fde68a;display:flex;gap:10px}
+.card-info .icon{font-size:22px;flex-shrink:0}
+.card-info h4{font-size:13px;font-weight:800;color:#000}
+.card-info p{font-size:11px;color:#475569;margin-top:3px;line-height:1.4}
+.input{width:100%;padding:14px 16px;border:1px solid #e2e8f0;border-radius:14px;font-size:14px;margin-bottom:12px;outline:none;background:#fff;color:#0f172a}
+.input:focus{border-color:#fbbf24;box-shadow:0 0 0 3px rgba(251,191,36,0.2)}
+.input::placeholder{color:#94a3b8}
+textarea.input{resize:none}
+.btn-kirim{width:100%;background:#111;color:#fbbf24;padding:16px;border:none;border-radius:14px;font-weight:900;font-size:14px;cursor:pointer;box-shadow:0 8px 20px rgba(0,0,0,0.2)}
+.btn-kirim:active{transform:scale(0.98)}
+.info-footer{text-align:center;font-size:11px;color:#94a3b8;margin-top:18px;line-height:1.4}
+.jaki-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:440px;background:#fff;border-top:1px solid #e2e8f0;display:flex;justify-content:space-around;padding:8px 0 12px;z-index:100}
+.jaki-nav a{font-size:10px;color:#64748b;display:flex;flex-direction:column;align-items:center;gap:4px;font-weight:500;min-width:56px;text-align:center;text-decoration:none}
+.jaki-nav a.active{color:#000;font-weight:800}
+.jaki-nav a.center .cam{width:60px;height:60px;background:#fbbf24;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#000;font-size:26px;margin-top:-32px;box-shadow:0 8px 22px rgba(251,191,36,0.5);border:4px solid #fff}
+</style>
+</head>
+<body>
+<div class="aduan-page">
+  <!-- HEADER + SEARCH FIX PINDAH HALAMAN -->
+  <div class="aduan-header">
+    <a href="index.html" class="back">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="black" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+    </a>
+    <div class="aduan-search" id="goCari" onclick="location.href='cari-warga.html'">
+      <span>🔍</span>
+      <input type="text" placeholder="Cari di Aduan Warga..." readonly>
+    </div>
+  </div>
+
+  <!-- FORM ADUAN -->
+  <div class="form-wrap">
+    <h2>Laporan Warga<br>RW 05</h2>
+    <p class="sub">Lapor masalah di RW 05 jadi mudah, respon &lt; 15 menit oleh Linmas & Ketua RW</p>
+
+    <div class="card-info">
+      <div class="icon">🚨</div>
+      <div>
+        <h4>Darurat? Klik FAB Merah di Kanan Bawah</h4>
+        <p>Tombol 🚨 buat banjir, kebakaran, tawuran - langsung telpon 112 & WA Linmas RW 05</p>
+      </div>
+    </div>
+
+    <input class="input" id="nama" placeholder="Nama Lengkap (contoh: Arjuna Mahendra)">
+    <input class="input" id="rt" placeholder="RT (contoh: RT 03)">
+    <select class="input" id="kategori">
+      <option value="">Kategori Aduan</option>
+      <option>Lampu Jalan Mati</option>
+      <option>Sampah Menumpuk</option>
+      <option>Jalan Rusak / Berlubang</option>
+      <option>Saluran Mampet / Banjir</option>
+      <option>Keamanan / Ronda</option>
+      <option>Kebersihan Lingkungan</option>
+      <option>Lainnya</option>
+    </select>
+    <textarea class="input" id="pesan" rows="4" placeholder="Ceritakan masalahnya dengan jelas... Contoh: Lampu jalan depan balai mati 2 hari"></textarea>
+    <input class="input" type="file" id="foto" accept="image/*">
+
+    <button class="btn-kirim" id="btnKirim">Kirim Aduan via WhatsApp</button>
+    
+    <div class="info-footer">
+      Laporan akan diteruskan ke Ketua RW 05 & Linmas<br>
+      Transparan • Cepat • Guyub Rukun Maju Bersama
+    </div>
+  </div>
+
+  <!-- FAB DARURAT -->
+  <div class="fab-container" id="fabContainer">
+    <div class="fab-options" id="fabOptions">
+      <div class="fab-option" onclick="window.open('tel:112','_self')">
+        <span class="fab-label">Panggilan Darurat</span>
+        <div class="fab-icon">📞<small>112</small></div>
+      </div>
+      <div class="fab-option" onclick="window.open('https://wa.me/6289673580756?text=Butuh%20Ambulans%20RW05%20DARURAT','_blank')">
+        <span class="fab-label">Ambulans RW 05</span>
+        <div class="fab-icon">🚑</div>
+      </div>
+    </div>
+    <div class="fab-darurat" id="fabMain">🚨</div>
+    <div class="fab-close" id="fabClose">✕</div>
+  </div>
+
+  <!-- NAV -->
+  <nav class="jaki-nav">
+    <a href="index.html">🏠<span>Beranda</span></a>
+    <a>📋<span>Kegiatan</span></a>
+    <a class="center active" href="aduan-warga.html"><div class="cam">📷</div><span>Lapor</span></a>
+    <a href="berita.html">🔔<span>Info</span></a>
+    <a>👤<span>Profil</span></a>
+  </nav>
+</div>
+
+<script>
+// @ts-nocheck
+document.addEventListener('DOMContentLoaded', function(){
+  /** @type {HTMLElement | null} */ const fabContainer = document.getElementById('fabContainer');
+  /** @type {HTMLElement | null} */ const fabMain = document.getElementById('fabMain');
+  /** @type {HTMLElement | null} */ const fabClose = document.getElementById('fabClose');
+  if(fabMain){ fabMain.addEventListener('click', function(e){ e.stopPropagation(); if(fabContainer) fabContainer.classList.add('active'); }); }
+  if(fabClose){ fabClose.addEventListener('click', function(e){ e.stopPropagation(); if(fabContainer) fabContainer.classList.remove('active'); }); }
+
+  const btn = document.getElementById('btnKirim');
+  if(btn){
+    btn.addEventListener('click', function(){
+      /** @type {HTMLInputElement} */ const nama = document.getElementById('nama');
+      /** @type {HTMLInputElement} */ const rt = document.getElementById('rt');
+      /** @type {HTMLSelectElement} */ const kategori = document.getElementById('kategori');
+      /** @type {HTMLTextAreaElement} */ const pesan = document.getElementById('pesan');
+      
+      const text = 'Halo RW 05, mau lapor aduan:%0A%0A' +
+        'Nama: ' + encodeURIComponent(nama.value || '-') + '%0A' +
+        'RT: ' + encodeURIComponent(rt.value || '-') + '%0A' +
+        'Kategori: ' + encodeURIComponent(kategori.value || '-') + '%0A' +
+        'Pesan: ' + encodeURIComponent(pesan.value || '-') + '%0A%0A' +
+        'Dari Aplikasi KATARNOLIMA RW 05';
+
+      window.open('https://wa.me/6289673580756?text=' + text, '_blank');
+    });
+  }
+
+  // FIX KLIK CARI PINDAH HALAMAN (BIAR GAK STUCK DI HALAMAN INI)
+  /** @type {HTMLElement | null} */ const goCari = document.getElementById('goCari');
+  if(goCari){
+    goCari.addEventListener('click', function(e){
+      e.preventDefault();
+      window.location.href = 'cari-warga.html';
+    });
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Semua Layanan - KATARNOLIMA RW 05</title>
+<link rel="icon" href="img/logo-resmi-karang-taruna.jpg">
+<link rel="stylesheet" href="style.css?v=19">
+<style>
+/* FULL LAYAR FIX - JANGAN PAKAI DISPLAY FLEX DI BODY */
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+html,body{background:#fff!important;width:100%;height:100%;display:block!important;margin:0!important;padding:0!important}
+.layanan-page{background:#fff;width:100%;min-height:100vh;max-width:440px;margin:0 auto;display:block}
+.layanan-header{display:flex;align-items:center;gap:10px;padding:12px;background:#fff;position:sticky;top:0;z-index:20;border-bottom:1px solid #f1f5f9;width:100%}
+.layanan-header .back{width:38px;height:38px;display:flex;align-items:center;justify-content:center;border-radius:50%;flex-shrink:0}
+.layanan-search{flex:1;background:#f1f5f9;border-radius:28px;display:flex;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;border:1px solid #f1f5f9}
+.layanan-search input{border:none;outline:none;width:100%;background:transparent;font-size:14px;color:#0f172a;pointer-events:none}
+.layanan-tabs{display:flex;border-bottom:1px solid #e2e8f0;background:#fff;position:sticky;top:60px;z-index:19;width:100%}
+.tab{flex:1;text-align:center;padding:14px 0 12px;font-size:14px;font-weight:600;color:#64748b;position:relative;cursor:pointer}
+.tab.active{color:#0f172a;font-weight:800}
+.tab.active:after{content:'';position:absolute;bottom:-1px;left:30%;right:30%;height:3px;background:#22d3a3;border-radius:999px}
+.section-title{font-size:14px;font-weight:800;color:#000;padding:22px 16px 8px;background:#fff;width:100%}
+.jaki-item{display:flex;gap:14px;padding:14px 16px;align-items:flex-start;cursor:pointer;width:100%}
+.jaki-item:active{background:#f8fafc}
+.jaki-icon{width:52px;height:52px;border-radius:50%;background:#e8f0fe;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
+.jaki-item h4{font-size:15px;font-weight:700;color:#000;line-height:1.2}
+.jaki-item p{font-size:13px;color:#475569;margin-top:4px;line-height:1.3}
+.kategori-card{display:flex;align-items:center;gap:14px;padding:16px;border:1px solid #e2e8f0;border-radius:16px;margin:10px 16px;background:#fff;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="layanan-page">
+  <div class="layanan-header">
+    <a href="index.html" class="back"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="black" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg></a>
+    <div class="layanan-search" onclick="location.href='cari-warga.html'"><span>🔍</span><input type="text" placeholder="Cari Layanan di RW 05" readonly></div>
+  </div>
+
+  <div class="layanan-tabs">
+    <div class="tab active" id="tabUnggulan" onclick="switchTab('unggulan')">Unggulan</div>
+    <div class="tab" id="tabKategori" onclick="switchTab('kategori')">Kategori</div>
+  </div>
+
+  <div id="viewUnggulan">
+    <div class="section-title">Laporan dan Kedaruratan</div>
+    <div class="jaki-item" onclick="location.href='aduan-warga.html'"><div class="jaki-icon">📢</div><div><h4>Laporan Warga</h4><p>Lapor masalah di RW 05 jadi mudah</p></div></div>
+    <div class="jaki-item" onclick="window.open('tel:112','_self')"><div class="jaki-icon">📞</div><div><h4>Kontak Darurat</h4><p>Nomor penting di kala genting</p></div></div>
+    <div class="jaki-item" onclick="window.open('tel:112','_self')"><div class="jaki-icon">🚑</div><div><h4>Ambulans</h4><p>Panggil ambulans 24 jam, gratis!</p></div></div>
+
+    <div class="section-title">Kesehatan</div>
+    <div class="jaki-item"><div class="jaki-icon">👶</div><div><h4>Antrean Posyandu</h4><p>Buat janji berobat tanpa antre</p></div></div>
+
+    <div class="section-title">Sosial dan Ekonomi</div>
+    <div class="jaki-item" onclick="location.href='iuran-warga.html'"><div class="jaki-icon">💰</div><div><h4>Iuran Warga</h4><p>Cek tagihan iuran bulanan</p></div></div>
+    <div class="jaki-item"><div class="jaki-icon">🛒</div><div><h4>Harga Sembako</h4><p>Cek harga pangan murah di warung RW</p></div></div>
+    <div class="jaki-item"><div class="jaki-icon">🏪</div><div><h4>Lapak UMKM Warga</h4><p>Warung, laundry, catering warga RW 05</p></div></div>
+
+    <div class="section-title">Transportasi</div>
+    <div class="jaki-item"><div class="jaki-icon">🚌</div><div><h4>Transportasi Warga</h4><p>Bantu kamu keliling RW 05</p></div></div>
+
+    <div class="section-title">Informasi Publik</div>
+    <div class="jaki-item" onclick="location.href='berita.html'"><div class="jaki-icon">📰</div><div><h4>Berita</h4><p>Baca berita resmi yang bebas hoaks</p></div></div>
+    <div class="jaki-item"><div class="jaki-icon">📍</div><div><h4>Peta</h4><p>Cek lokasi fasilitas dan ruang publik terdekat</p></div></div>
+    <div class="jaki-item"><div class="jaki-icon">📶</div><div><h4>WiFi Gratis</h4><p>Cari titik WiFi gratis di sekitarmu</p></div></div>
+
+    <div class="section-title">Lingkungan</div>
+    <div class="jaki-item"><div class="jaki-icon">🌊</div><div><h4>Pantau Banjir</h4><p>Pantau titik banjir agar kamu makin aman</p></div></div>
+    <div class="jaki-item"><div class="jaki-icon">🌱</div><div><h4>Kualitas Lingkungan</h4><p>Cari tahu kebersihan terkini</p></div></div>
+
+    <div class="section-title">Layanan Khusus RW 05</div>
+    <div class="jaki-item"><div class="jaki-icon">🏠</div><div><h4>Rumah Singgah Balai</h4><p>Fasilitasi warga untuk pakai balai RW 05</p></div></div>
+    <div class="jaki-item"><div class="jaki-icon">📚</div><div><h4>Belajar Bersama</h4><p>Bimbel gratis tiap Sabtu sore di Balai</p></div></div>
+
+    <div style="padding:30px 16px 120px;text-align:center;color:#64748b;font-size:13px;width:100%">Kamu sudah sampai di akhir halaman. Tidak menemukan yang kamu cari?<br><a href="https://wa.me/6289673580756?text=Saran%20Layanan%20RW05" style="color:#2563eb;font-weight:700;text-decoration:none">Yuk, kirim saranmu.</a></div>
+  </div>
+
+  <div id="viewKategori" style="display:none;width:100%">
+    <div class="kategori-card" onclick="switchTab('unggulan')"><div style="font-size:22px">🚨</div><div style="flex:1"><h4 style="font-size:14px;font-weight:700">Laporan dan Kedaruratan</h4><p style="font-size:11px;color:#64748b">3 layanan</p></div><span>›</span></div>
+    <div class="kategori-card" onclick="switchTab('unggulan')"><div style="font-size:22px">❤️</div><div style="flex:1"><h4 style="font-size:14px;font-weight:700">Kesehatan</h4><p style="font-size:11px;color:#64748b">1 layanan</p></div><span>›</span></div>
+    <div class="kategori-card" onclick="switchTab('unggulan')"><div style="font-size:22px">🤝</div><div style="flex:1"><h4 style="font-size:14px;font-weight:700">Sosial dan Ekonomi</h4><p style="font-size:11px;color:#64748b">3 layanan</p></div><span>›</span></div>
+    <div class="kategori-card" onclick="switchTab('unggulan')"><div style="font-size:22px">🚌</div><div style="flex:1"><h4 style="font-size:14px;font-weight:700">Transportasi</h4><p style="font-size:11px;color:#64748b">1 layanan</p></div><span>›</span></div>
+    <div class="kategori-card" onclick="switchTab('unggulan')"><div style="font-size:22px">📢</div><div style="flex:1"><h4 style="font-size:14px;font-weight:700">Informasi Publik</h4><p style="font-size:11px;color:#64748b">3 layanan</p></div><span>›</span></div>
+    <div class="kategori-card" onclick="switchTab('unggulan')"><div style="font-size:22px">🌱</div><div style="flex:1"><h4 style="font-size:14px;font-weight:700">Lingkungan</h4><p style="font-size:11px;color:#64748b">2 layanan</p></div><span>›</span></div>
+    <div class="kategori-card" onclick="switchTab('unggulan')"><div style="font-size:22px">⭐</div><div style="flex:1"><h4 style="font-size:14px;font-weight:700">Layanan Khusus RW 05</h4><p style="font-size:11px;color:#64748b">2 layanan</p></div><span>›</span></div>
+  </div>
+</div>
+<script>
+// @ts-nocheck
+/** @param {string} tab */
+function switchTab(tab){
+  /** @type {HTMLElement} */ const unggulan = document.getElementById('viewUnggulan');
+  /** @type {HTMLElement} */ const kategori = document.getElementById('viewKategori');
+  /** @type {HTMLElement} */ const tabU = document.getElementById('tabUnggulan');
+  /** @type {HTMLElement} */ const tabK = document.getElementById('tabKategori');
+  if(tab === 'unggulan'){
+    unggulan.style.display = 'block';
+    kategori.style.display = 'none';
+    tabU.classList.add('active');
+    tabK.classList.remove('active');
+  } else {
+    unggulan.style.display = 'none';
+    kategori.style.display = 'block';
+    tabK.classList.add('active');
+    tabU.classList.remove('active');
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Cari Layanan di RW 05</title>
+<link rel="icon" href="img/logo-resmi-karang-taruna.jpg">
+<link rel="stylesheet" href="style.css?v=18">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+body{background:#fff!important;display:block!important}
+.cari-page{background:#fff;width:100%;min-height:100vh;max-width:440px;margin:0 auto}
+.cari-header{display:flex;align-items:center;gap:10px;padding:12px 12px 12px;background:#fff;position:sticky;top:0;z-index:20;border-bottom:1px solid #f1f5f9}
+.cari-header.back{width:38px;height:38px;display:flex;align-items:center;justify-content:center;border-radius:50%;flex-shrink:0}
+.cari-bar{flex:1;background:#f1f5f9;border-radius:28px;display:flex;align-items:center;gap:10px;padding:11px 16px;border:1px solid #f1f5f9}
+.cari-bar input{border:none;outline:none;width:100%;background:transparent;font-size:14px;color:#0f172a}
+.cari-bar.clear{width:22px;height:22px;background:#111;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;cursor:pointer;display:none;flex-shrink:0}
+.cari-bar.has-value.clear{display:flex}
+.section-title{font-size:14px;font-weight:800;color:#000;padding:22px 16px 8px;background:#fff}
+.jaki-item{display:flex;gap:14px;padding:14px 16px;align-items:flex-start;cursor:pointer}
+.jaki-item:active{background:#f8fafc}
+.jaki-icon{width:52px;height:52px;border-radius:50%;background:#e8f0fe;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
+.jaki-item h4{font-size:15px;font-weight:700;color:#000;line-height:1.2}
+.jaki-item p{font-size:13px;color:#475569;margin-top:4px;line-height:1.3}
+.divider{height:8px;background:#f1f5f9;margin-top:8px}
+</style>
+</head>
+<body>
+<div class="cari-page">
+  <div class="cari-header">
+    <a href="index.html" class="back"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="black" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg></a>
+    <div class="cari-bar" id="cariBar"><span>🔍</span><input id="cariInput" type="text" placeholder="Cari Layanan di RW 05" autofocus><div class="clear" id="clearBtn">✕</div></div>
+  </div>
+  <div id="content"></div>
+</div>
+<script>
+// @ts-nocheck
+/** @type {Array<{title:string,desc:string,icon:string,cat:string,group:string,link:string}>} */
+const layananRW = [
+  {title:'Laporan Warga', desc:'Lapor masalah di RW 05 jadi mudah', icon:'📢', cat:'unggulan', group:'Laporan dan Kedaruratan', link:'aduan-warga.html'},
+  {title:'Kontak Darurat', desc:'Nomor penting di kala genting', icon:'📞', cat:'unggulan', group:'Laporan dan Kedaruratan', link:'tel:112'},
+  {title:'Ambulans', desc:'Panggil ambulans 24 jam, gratis!', icon:'🚑', cat:'unggulan', group:'Laporan dan Kedaruratan', link:'tel:112'},
+  {title:'Antrean Posyandu', desc:'Buat janji berobat tanpa antre', icon:'👶', cat:'unggulan', group:'Kesehatan', link:'#'},
+  {title:'Iuran Warga', desc:'Cek tagihan iuran bulanan', icon:'💰', cat:'unggulan', group:'Sosial dan Ekonomi', link:'iuran-warga.html'},
+  {title:'Harga Sembako', desc:'Cek harga pangan murah di warung RW', icon:'🛒', cat:'unggulan', group:'Sosial dan Ekonomi', link:'#'},
+  {title:'Lapak UMKM Warga', desc:'Warung, laundry, catering warga RW 05', icon:'🏪', cat:'portal', group:'Sosial dan Ekonomi', link:'#'},
+  {title:'Berita', desc:'Baca berita resmi yang bebas hoaks', icon:'📰', cat:'unggulan', group:'Informasi Publik', link:'berita.html'},
+  {title:'Peta', desc:'Cek lokasi fasilitas dan ruang publik terdekat', icon:'📍', cat:'unggulan', group:'Informasi Publik', link:'https://maps.app.goo.gl/3Xte1yjgYiVT49XK7'},
+  {title:'WiFi Gratis', desc:'Cari titik WiFi gratis di sekitarmu', icon:'📶', cat:'unggulan', group:'Informasi Publik', link:'#'},
+  {title:'Pantau Banjir', desc:'Pantau titik banjir agar kamu makin aman', icon:'🌊', cat:'unggulan', group:'Lingkungan', link:'#'},
+  {title:'Kualitas Lingkungan', desc:'Cari tahu kebersihan & kerja bakti terkini', icon:'🌱', cat:'unggulan', group:'Lingkungan', link:'#'},
+  {title:'Rumah Singgah Balai', desc:'Fasilitasi warga pakai balai RW 05', icon:'🏠', cat:'unggulan', group:'Layanan Khusus RW 05', link:'#'},
+];
+
+const cariInput = /** @type {HTMLInputElement} */ (document.getElementById('cariInput'));
+const cariBar = document.getElementById('cariBar');
+const clearBtn = document.getElementById('clearBtn');
+const content = document.getElementById('content');
+
+/** @param {any[]} list */
+function renderGrouped(list){
+  // URUT ABJAD A-Z DALAM GROUP
+  list.sort(function(a,b){ return a.title.localeCompare(b.title); });
+  const groups = {};
+  list.forEach(function(item){
+    if(!groups[item.group]) groups[item.group] = [];
+    groups[item.group].push(item);
+  });
+  let html = '';
+  Object.keys(groups).forEach(function(g){
+    html += '<div class="section-title">'+g+'</div>';
+    html += groups[g].map(function(item){
+      return '<div class="jaki-item" onclick="window.location.href=\''+item.link+'\'"><div class="jaki-icon">'+item.icon+'</div><div><h4>'+item.title+'</h4><p>'+item.desc+'</p></div></div>';
+    }).join('');
+  });
+  content.innerHTML = html + '<div style="padding:30px 16px 120px;text-align:center;color:#64748b;font-size:13px">Kamu sudah di akhir halaman.<br><a href="https://wa.me/6289673580756" style="color:#2563eb;font-weight:700">Yuk, kirim saranmu.</a></div>';
+}
+
+function render(){
+  const q = cariInput.value.toLowerCase().trim();
+  if(q === ''){
+    cariBar.classList.remove('has-value');
+    // DEFAULT: TAMPIL SEMUA FULL LAYAR KAYAK FOTO 2 LU
+    renderGrouped(layananRW.slice());
+    return;
+  }
+  cariBar.classList.add('has-value');
+  /** @type {any[]} */ let filtered = layananRW.filter(function(/** @type {any} */ item){ return item.title.toLowerCase().includes(q) || item.desc.toLowerCase().includes(q); });
+  if(filtered.length === 0){
+    content.innerHTML = '<div style="text-align:center;padding:80px 20px;color:#94a3b8">Tidak ada layanan "'+cariInput.value+'"<br>ketik <b>a</b> untuk lihat semua urut abjad A-Z</div>';
+    return;
+  }
+  renderGrouped(filtered);
+}
+
+cariInput.addEventListener('input', render);
+clearBtn.addEventListener('click', function(){ cariInput.value=''; render(); cariInput.focus(); });
+
+// LANGSUNG FULL LAYAR PAS BUKA HALAMAN
+render();
+setTimeout(function(){ cariInput.focus(); }, 200);
+</script>
+</body>
+</html>

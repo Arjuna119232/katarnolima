@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Iuran Warga - KATARNOLIMA RW 05</title>
+<link rel="stylesheet" href="style.css?v=17">
+<style>
+.iuran-page{max-width:440px;margin:0 auto;background:#fff;min-height:100vh}
+.iuran-header{display:flex;align-items:center;gap:10px;padding:12px;background:#fff;position:sticky;top:0;z-index:20;border-bottom:1px solid #f1f5f9}
+.iuran-search{flex:1;background:#f1f5f9;border-radius:28px;display:flex;align-items:center;gap:10px;padding:12px 16px;cursor:pointer}
+.iuran-search input{border:none;outline:none;width:100%;background:transparent;font-size:14px;pointer-events:none}
+.iuran-body{padding:16px 16px 120px}
+.saldo-card{background:#111;border-radius:20px;padding:20px;color:#fff;margin-bottom:16px}
+.saldo-card p{font-size:12px;color:#94a3b8}
+.saldo-card h2{font-size:28px;font-weight:900;margin:8px 0;color:#fbbf24}
+.saldo-card span{font-size:11px;background:#fbbf24;color:#000;padding:4px 10px;border-radius:999px;font-weight:700}
+.list-iuran{border:1px solid #e2e8f0;border-radius:16px;padding:16px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
+.list-iuran h4{font-size:14px;font-weight:700}
+.list-iuran p{font-size:11px;color:#64748b;margin-top:2px}
+.btn-bayar{background:#fbbf24;color:#000;border:none;padding:10px 18px;border-radius:999px;font-weight:800;font-size:12px;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="iuran-page">
+  <div class="iuran-header">
+    <a href="index.html"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="black" stroke-width="2.5"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg></a>
+    <div class="iuran-search" id="goCari" onclick="location.href='cari-warga.html'"><span>🔍</span><input type="text" placeholder="Cari iuran..." readonly></div>
+  </div>
+  <div class="iuran-body">
+    <div class="saldo-card"><p>Kas Karang Taruna RW 05</p><h2>Rp 2.450.000</h2><span>Transparan • Update 20 Sep 2026</span></div>
+    <div style="font-size:13px;font-weight:800;margin:16px 0 10px">Tagihan Kamu</div>
+    <div class="list-iuran"><div><h4>Iuran September 2026</h4><p>RT 03 • Arjuna Mahendra • Rp 45.000</p></div><button class="btn-bayar" onclick="window.open('https://wa.me/6289673580756?text=Bayar%20Iuran%20September','_blank')">Bayar</button></div>
+    <div class="list-iuran"><div><h4>Iuran Agustus 2026</h4><p>Lunas • 15 Agustus 2026</p></div><span style="color:#22c55e;font-weight:800;font-size:12px">✓ Lunas</span></div>
+    <div class="list-iuran"><div><h4>Iuran Juli 2026</h4><p>Lunas • 12 Juli 2026</p></div><span style="color:#22c55e;font-weight:800;font-size:12px">✓ Lunas</span></div>
+    <div style="margin-top:24px;padding:16px;background:#f8fafc;border-radius:16px;font-size:12px;line-height:1.5;color:#475569"><b>Info:</b> Iuran wajib Rp 45.000/bulan/KK untuk kebersihan, ronda, kas pemuda, dan kegiatan RW 05. Bayar via transfer atau tunai ke Bendahara RT.</div>
+  </div>
+  <nav class="jaki-nav"><a href="index.html">🏠<span>Beranda</span></a><a>📋<span>Kegiatan</span></a><a class="center" href="aduan-warga.html"><div class="cam">📷</div><span>Lapor</span></a><a href="berita.html">🔔<span>Info</span></a><a>👤<span>Profil</span></a></nav>
+</div>
+<script src="script.js?v=17"></script>
+</body>
+</html>
