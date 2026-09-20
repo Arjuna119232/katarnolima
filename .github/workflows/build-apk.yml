@@ -48,9 +48,19 @@ jobs:
           npx cap add android || true
           npx cap sync android
 
-      - name: Make Gradlew Executable & Build Debug APK
+      - name: Fix Kotlin Conflict & Build APK via Gradle
         working-directory: android
         run: |
+          cat << 'EOF' >> app/build.gradle
+
+          configurations.all {
+              resolutionStrategy {
+                  force 'org.jetbrains.kotlin:kotlin-stdlib:1.8.22'
+                  force 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22'
+                  force 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22'
+              }
+          }
+          EOF
           chmod +x gradlew
           ./gradlew assembleDebug
 
