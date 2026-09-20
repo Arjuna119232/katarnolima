@@ -32,12 +32,18 @@ jobs:
           npm install @capacitor/core @capacitor/cli @capacitor/android
           pip install pillow -q
 
-      - name: Populate Web Assets
+      - name: Populate Web Assets (Otomatis Copy Semua File Repo)
         run: |
           mkdir -p www
-          # Copy SEMUA file HTML, JS, CSS yang ada di repo ke folder www/
-          cp *.html *.js *.css www/ 2>/dev/null || true
-          cp -r img video www/ 2>/dev/null || true
+          # Salin SEMUA file & folder kecuali folder bawaan git/github/android/node
+          rsync -av --exclude='.git' \
+                    --exclude='.github' \
+                    --exclude='android' \
+                    --exclude='node_modules' \
+                    --exclude='www' \
+                    ./ www/
+          
+          # Buat config Capacitor
           echo '{"appId":"com.katarnolima.rw05","appName":"KATARNOLIMA","webDir":"www"}' > capacitor.config.json
 
       - name: Init/Sync Android
@@ -51,10 +57,12 @@ jobs:
           import os, glob
           from PIL import Image
 
+          # Cari ikon paling HD di folder img/ secara otomatis
           src_path = 'img/katar-app-icon.png'
           if not os.path.exists(src_path):
-              print('File img/katar-app-icon.png tidak ditemukan!')
-              exit(1)
+              src_path = 'img/logo-hd.png'
+          if not os.path.exists(src_path):
+              src_path = 'img/logo-resmi-karang-taruna.jpg'
 
           im = Image.open(src_path).convert('RGBA')
 
