@@ -1,58 +1,52 @@
 name: Build Android APK
-
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   workflow_dispatch:
-
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js 20
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
-          java-version: '21'
+          java-version: '17'
 
-      - name: Install Capacitor & Dependencies
+      - name: Install Capacitor
         run: |
           npm init -y || true
           npm install @capacitor/core @capacitor/cli @capacitor/android
 
-      - name: Populate Web Assets into www/
+      - name: Populate Web Assets
         run: |
           mkdir -p www
           cp index.html script.js style.css berita-gemah-ripah-nusantara.html www/ 2>/dev/null || true
           cp -r img video www/ 2>/dev/null || true
-          cat << 'EOF' > capacitor.config.json
-          {
-            "appId": "com.katarnolima.rw05",
-            "appName": "KATARNOLIMA",
-            "webDir": "www"
-          }
-          EOF
+          echo '{"appId":"com.katarnolima.rw05","appName":"KATARNOLIMA","webDir":"www"}' > capacitor.config.json
 
-      - name: Init/Sync Android Project
+      - name: Init/Sync Android
         run: |
           npx cap add android || true
           npx cap sync android
 
-      - name: Fix Kotlin Conflict & Build APK via Gradle
+      - name: GANTI ICON JADI LOGO RESMI
+        run: |
+          python3 -c "from PIL import Image; Image.open('img/logo-resmi-karang-taruna.jpg').convert('RGBA').save('icon.png')" || cp img/logo-resmi-karang-taruna.jpg icon.png
+          for d in mipmap-hdpi mipmap-mdpi mipmap-xhdpi mipmap-xxhdpi mipmap-xxxhdpi; do
+            cp icon.png android/app/src/main/res/$d/ic_launcher.png
+            cp icon.png android/app/src/main/res/$d/ic_launcher_round.png
+          done
+
+      - name: Fix Kotlin & Build APK
         working-directory: android
         run: |
+          sed -i '/kotlin-stdlib/d' app/build.gradle || true
+          sed -i '/resolutionStrategy/d' app/build.gradle || true
+          sed -i '/configurations.all/d' app/build.gradle || true
           cat << 'EOF' >> app/build.gradle
-
           configurations.all {
               resolutionStrategy {
                   force 'org.jetbrains.kotlin:kotlin-stdlib:1.8.22'
@@ -64,8 +58,8 @@ jobs:
           chmod +x gradlew
           ./gradlew assembleDebug
 
-      - name: Upload APK Artifact
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: app-debug
+          name: KATARNOLIMA-RW05-v${{ github.run_number }}
           path: android/app/build/outputs/apk/debug/app-debug.apk
