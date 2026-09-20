@@ -32,18 +32,15 @@ jobs:
           npm install @capacitor/core @capacitor/cli @capacitor/android
           pip install pillow -q
 
-      - name: Populate Web Assets (Otomatis Copy Semua File Repo)
+      - name: Populate Web Assets
         run: |
           mkdir -p www
-          # Salin SEMUA file & folder kecuali folder bawaan git/github/android/node
           rsync -av --exclude='.git' \
                     --exclude='.github' \
                     --exclude='android' \
                     --exclude='node_modules' \
                     --exclude='www' \
                     ./ www/
-          
-          # Buat config Capacitor
           echo '{"appId":"com.katarnolima.rw05","appName":"KATARNOLIMA","webDir":"www"}' > capacitor.config.json
 
       - name: Init/Sync Android
@@ -57,7 +54,6 @@ jobs:
           import os, glob
           from PIL import Image
 
-          # Cari ikon paling HD di folder img/ secara otomatis
           src_path = 'img/katar-app-icon.png'
           if not os.path.exists(src_path):
               src_path = 'img/logo-hd.png'
@@ -104,7 +100,11 @@ jobs:
           print('Ikon Berhasil Diterapkan!')
           "
 
-      - name: Build APK
+      - name: Decode Keystore from GitHub Secrets
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/release.p12
+
+      - name: Build Signed Release APK
         working-directory: android
         run: |
           cat << 'EOF' >> app/build.gradle
@@ -116,22 +116,44 @@ jobs:
                   force 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22'
               }
           }
+
+          android {
+              signingConfigs {
+                  release {
+                      storeFile file('release.p12')
+                      storeType 'PKCS12'
+                      storePassword System.getenv("KEYSTORE_PASSWORD")
+                      keyAlias System.getenv("KEY_ALIAS")
+                      keyPassword System.getenv("KEY_PASSWORD")
+                  }
+              }
+              buildTypes {
+                  release {
+                      signingConfig signingConfigs.release
+                      minifyEnabled false
+                  }
+              }
+          }
           EOF
           chmod +x gradlew
-          ./gradlew assembleDebug
+          ./gradlew assembleRelease
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
-      - name: Upload APK
+      - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: app-debug
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          name: app-release
+          path: android/app/build/outputs/apk/release/app-release.apk
 
-      - name: Release APK
+      - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ github.run_number }}
           name: KATARNOLIMA RW05 v${{ github.run_number }}
-          files: android/app/build/outputs/apk/debug/app-debug.apk
+          files: android/app/build/outputs/apk/release/app-release.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
