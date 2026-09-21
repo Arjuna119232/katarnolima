@@ -27,7 +27,45 @@ document.addEventListener('DOMContentLoaded', function(){
   mintaIzinNotifikasiWeb();
 
   // ==========================================
-  // 3. INDIKATOR DETEKSI KONEKSI INTERNET OFFLINE
+  // 3. STANDAR WEB API: KAMERA & LOKASI
+  // ==========================================
+  window.requestCameraStream = async function() {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+      console.log('Kamera diizinkan.');
+      return stream;
+    } catch (err) {
+      console.error('Akses kamera ditolak atau tidak didukung:', err);
+      alert('⚠️ Akses kamera ditolak/tidak tersedia di perangkat ini.');
+      return null;
+    }
+  };
+
+  window.requestGeoLocation = function(callbackSuccess, callbackError) {
+    if (!navigator.geolocation) {
+      alert('⚠️ Geolocation tidak didukung oleh browser/perangkat ini.');
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const coords = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+          accuracy: position.coords.accuracy
+        };
+        if (typeof callbackSuccess === 'function') callbackSuccess(coords);
+      },
+      (error) => {
+        console.warn('Gagal ambil lokasi:', error.message);
+        alert('⚠️ Gagal mendapatkan lokasi GPS. Pastikan GPS aktif.');
+        if (typeof callbackError === 'function') callbackError(error);
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+    );
+  };
+
+  // ==========================================
+  // 4. INDIKATOR DETEKSI KONEKSI INTERNET OFFLINE
   // ==========================================
   (function() {
     const netBanner = document.createElement('div');
@@ -66,7 +104,7 @@ document.addEventListener('DOMContentLoaded', function(){
   })();
 
   // ==========================================
-  // 4. LOGIKA PENCARIAN & FAB DARURAT
+  // 5. LOGIKA PENCARIAN & FAB DARURAT
   // ==========================================
   var goCari = document.getElementById('goCari');
   if(goCari){ goCari.addEventListener('click', function(e){ e.preventDefault(); window.location.href='cari-warga.html'; }); }
@@ -107,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function(){
   });
 
   // ==========================================
-  // 5. LOGIKA MODAL SERBAGUNA (TAMPILAN MODERN + IKON)
+  // 6. LOGIKA MODAL SERBAGUNA (TAMPILAN MODERN + IKON)
   // ==========================================
   var modal = document.getElementById('universal-modal');
   var modalTitle = document.getElementById('modal-title');
@@ -264,7 +302,7 @@ document.addEventListener('DOMContentLoaded', function(){
   if(modal) modal.addEventListener('click', function(e){ if(e.target===modal) closeModal(); });
 
   // ==========================================
-  // 6. LOGIKA NAVIGASI BACK & HARDWARE BUTTON HP
+  // 7. LOGIKA NAVIGASI BACK & HARDWARE BUTTON HP
   // ==========================================
   function goBackSafe(){ if(window.history.length > 1){ window.history.back(); } else { window.location.href = 'index.html'; } }
   document.querySelectorAll('.back, #backBtn').forEach(function(el){ el.addEventListener('click', function(e){ e.preventDefault(); goBackSafe(); }); });
@@ -298,7 +336,7 @@ document.addEventListener('DOMContentLoaded', function(){
   if (isHomePage) { history.pushState(null, '', location.href); window.addEventListener('popstate', function(){ handleExitApp(); history.pushState(null, '', location.href); }); }
 
   // ==========================================
-  // 7. PUSH NOTIFICATIONS FIREBASE / CAPACITOR
+  // 8. PUSH NOTIFICATIONS FIREBASE / CAPACITOR
   // ==========================================
   function setupPushNotifications() {
     if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.PushNotifications) {
@@ -317,7 +355,7 @@ document.addEventListener('DOMContentLoaded', function(){
   setupPushNotifications();
 
   // ==========================================
-  // 8. EFEK RIPPLE SAAT TOMBOL DIKLIK
+  // 9. EFEK RIPPLE SAAT TOMBOL DIKLIK
   // ==========================================
   function addRippleEffect(e){
     var el = this;
