@@ -26,11 +26,13 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f8fafc;color:#0f172a
 .comment-avatar{width:38px;height:38px;border-radius:50%;background:#e0f2fe;color:#0369a1;display:grid;place-items:center;font-weight:800;font-size:14px;flex-shrink:0;overflow:hidden}
 .comment-avatar img{width:100%;height:100%;object-fit:cover}
 .comment-main{flex:1;min-width:0}
-.comment-header-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px}
-.comment-user-info{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.comment-header-row{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:4px}
+.comment-user-info{display:flex;flex-direction:column;gap:2px}
+.comment-name-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .comment-name{font-size:13px;font-weight:700;color:#0f172a}
 .badge-verif{background:#dbeafe;color:#1d4ed8;font-size:9px;font-weight:700;padding:1px 6px;border-radius:999px}
-.comment-time{font-size:11px;color:#94a3b8}
+.comment-rt{font-size:11px;color:#64748b;font-weight:600}
+.comment-time{font-size:11px;color:#94a3b8;flex-shrink:0}
 .comment-text{font-size:13px;color:#334155;line-height:1.45;word-break:break-word}
 
 .comment-input-area{position:fixed;bottom:72px;left:50%;transform:translateX(-50%);width:100%;max-width:440px;padding:10px 16px;background:#fff;border-top:1px solid #e2e8f0;display:flex;align-items:center;gap:8px;z-index:25}
@@ -118,7 +120,11 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f8fafc;color:#0f172a
       window.location.href = 'profil.html';
       return false;
     }
-    return userSession || { nama: firebaseUser?.email ? firebaseUser.email.split('@')[0] : 'Warga Terverifikasi', photo: null };
+    return userSession || { 
+      nama: firebaseUser?.email ? firebaseUser.email.split('@')[0] : 'Warga Terverifikasi', 
+      rt: 'RT 03 / RW 05', 
+      photo: null 
+    };
   }
 
   const feedBody = document.getElementById('feedBody');
@@ -144,6 +150,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f8fafc;color:#0f172a
     card.className = 'comment-card';
     
     const userName = item.userName || 'Warga Terverifikasi';
+    const userRt = item.userRt || 'RT 03 / RW 05';
     const userPhoto = item.userPhoto || null;
     const avatarContent = userPhoto 
       ? `<img src="${userPhoto}" alt="Avatar">` 
@@ -155,8 +162,11 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f8fafc;color:#0f172a
       <div class="comment-main">
         <div class="comment-header-row">
           <div class="comment-user-info">
-            <span class="comment-name">${userName}</span>
-            <span class="badge-verif">✔ Terverifikasi</span>
+            <div class="comment-name-row">
+              <span class="comment-name">${userName}</span>
+              <span class="badge-verif">✔ Terverifikasi</span>
+            </div>
+            <span class="comment-rt">${userRt}</span>
           </div>
           <span class="comment-time">${timeStr}</span>
         </div>
@@ -200,6 +210,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f8fafc;color:#0f172a
     if (!val) return;
     
     const currentName = verifiedUser.nama || 'Warga Terverifikasi';
+    const currentRt = verifiedUser.rt || 'RT 03 / RW 05';
     const currentPhoto = verifiedUser.photo || null;
 
     if (sendBtn) sendBtn.disabled = true;
@@ -207,6 +218,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f8fafc;color:#0f172a
     try {
       await addDoc(collection(db, "diskusi_rw05"), {
         userName: currentName,
+        userRt: currentRt,
         userPhoto: currentPhoto,
         text: val,
         createdAt: serverTimestamp()

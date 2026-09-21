@@ -72,7 +72,7 @@ td{padding:10px 12px;border-top:1px solid #f1f5f9;vertical-align:top}
   <div class="admin-gate-box">
     <div style="width:64px;height:64px;background:#fef3c7;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 12px">🔒</div>
     <h2 style="font-size:18px;font-weight:900">Admin RW 05 Terkunci</h2>
-    <p style="font-size:11px;color:#64748b;margin-top:6px;line-height:1.4">Login admin Firebase untuk akses kontrol live.</p>
+    <p style="font-size:11px;color:#64748b;margin-top:6px;line-height:1.4">Login admin Firebase untuk akses kontrol database warga.</p>
     <input id="gateEmail" type="email" placeholder="Email admin" style="width:100%;padding:12px;border:1.5px solid #cbd5e1;border-radius:10px;margin-top:14px;font-size:13px">
     <input id="gatePass" type="password" placeholder="Password admin" style="width:100%;padding:12px;border:1.5px solid #cbd5e1;border-radius:10px;margin-top:10px;font-size:13px">
     <div id="gateError" style="font-size:11px;color:#ef4444;font-weight:700;margin-top:8px;display:none"></div>
@@ -99,8 +99,8 @@ td{padding:10px 12px;border-top:1px solid #f1f5f9;vertical-align:top}
       <button class="menu-item" data-tab="aduan"><span class="icon">📥</span> Aduan Warga <span id="badgeAduan" style="margin-left:auto;background:#ef4444;color:#fff;padding:2px 6px;border-radius:999px;font-size:10px;display:none">0</span></button>
       <button class="menu-item" data-tab="diskusi"><span class="icon">💬</span> Moderasi Diskusi</button>
 
-      <div class="menu-label">Manajemen Warga & Keuangan</div>
-      <button class="menu-item" data-tab="warga"><span class="icon">👥</span> Data Warga (NIK)</button>
+      <div class="menu-label">Manajemen Database & Keuangan</div>
+      <button class="menu-item" data-tab="warga"><span class="icon">👥</span> Database Akun Warga</button>
       <button class="menu-item" data-tab="keuangan"><span class="icon">💰</span> Saldo Kas & Iuran</button>
 
       <div class="menu-label">Sistem</div>
@@ -111,7 +111,7 @@ td{padding:10px 12px;border-top:1px solid #f1f5f9;vertical-align:top}
   <main class="main">
     <div class="topbar">
       <button class="hamburger" id="hamburger">☰</button>
-      <div style="display:flex;align-items:center;gap:8px"><span class="live-dot"></span><span style="font-size:12px;font-weight:800">LIVE EDIT MODE</span><span style="font-size:11px;background:#f1f5f9;padding:4px 8px;border-radius:6px" id="adminEmailLabel">Admin</span></div>
+      <div style="display:flex;align-items:center;gap:8px"><span class="live-dot"></span><span style="font-size:12px;font-weight:800">DATABASE VIEW MODE</span><span style="font-size:11px;background:#f1f5f9;padding:4px 8px;border-radius:6px" id="adminEmailLabel">Admin</span></div>
       <div style="font-size:11px;color:#64748b">Sinkronisasi Realtime Firestore</div>
     </div>
 
@@ -120,7 +120,7 @@ td{padding:10px 12px;border-top:1px solid #f1f5f9;vertical-align:top}
       <!-- DASHBOARD -->
       <div class="tab-content active" id="tab-dashboard">
         <div class="stats-grid">
-          <div class="stat-card"><div class="label">Total Warga</div><div class="value" id="statWarga">0</div><div class="sub">Terdaftar NIK</div></div>
+          <div class="stat-card"><div class="label">Total Akun Warga</div><div class="value" id="statWarga">0</div><div class="sub">Terdaftar Mandiri</div></div>
           <div class="stat-card"><div class="label">Aduan Masuk</div><div class="value" id="statAduan">0</div><div class="sub" style="color:#ef4444">Masuk / Realtime</div></div>
           <div class="stat-card"><div class="label">Berita Aktif</div><div class="value" id="statBerita">0</div><div class="sub">Terpublikasi</div></div>
           <div class="stat-card"><div class="label">Saldo Kas</div><div class="value" style="font-size:18px" id="statSaldo">Rp 0</div><div class="sub">Live Akumulasi</div></div>
@@ -161,14 +161,15 @@ td{padding:10px 12px;border-top:1px solid #f1f5f9;vertical-align:top}
         </div>
       </div>
 
-      <!-- WARGA NIK -->
+      <!-- DATABASE AKUN WARGA (HANYA VIEW & HAPUS AKUN) -->
       <div class="tab-content" id="tab-warga">
         <div class="card">
-          <div class="card-title">👥 Database NIK Warga RW 05</div>
+          <div class="card-title">👥 Database Akun Warga Terdaftar (Pendaftaran Mandiri oleh Warga)</div>
+          <p style="font-size:12px;color:#64748b;margin-bottom:14px;">Warga mendaftar mandiri via halaman Profil. Admin mengelola data & menghapus akun jika diperlukan.</p>
           <div class="table-wrap">
             <table>
-              <thead><tr><th>Nama</th><th>RT</th><th>NIK (Hash)</th><th>Aksi</th></tr></thead>
-              <tbody id="listWargaAdmin"><tr><td colspan="4" style="text-align:center;color:#94a3b8">Memuat...</td></tr></tbody>
+              <thead><tr><th>Nama Lengkap</th><th>RT / Wilayah</th><th>Email Terdaftar</th><th>Aksi Kontrol</th></tr></thead>
+              <tbody id="listWargaAdmin"><tr><td colspan="4" style="text-align:center;color:#94a3b8">Memuat database...</td></tr></tbody>
             </table>
           </div>
         </div>
@@ -616,7 +617,7 @@ function initAdmin(){
   };
 
   const statWarga = document.getElementById('statWarga');
-  if(statWarga) onSnapshot(collection(db,"data_warga"), (snap)=>{statWarga.textContent=snap.size;});
+  if(statWarga) onSnapshot(collection(db,"users_profile"), (snap)=>{statWarga.textContent=snap.size;});
 
   const statAduan = document.getElementById('statAduan');
   const badgeAduan = document.getElementById('badgeAduan');
@@ -679,16 +680,21 @@ function initAdmin(){
 
   const listWargaAdmin = document.getElementById('listWargaAdmin');
   if(listWargaAdmin){
-    onSnapshot(query(collection(db,"data_warga"),orderBy("createdAt","desc")), (snap)=>{
+    onSnapshot(query(collection(db,"users_profile"),orderBy("createdAt","desc")), (snap)=>{
       let html='';
       snap.forEach((docItem)=>{
         const d=docItem.data()||{};
-        html+=`<tr><td><b>${d.nama||'-'}</b></td><td>${d.rt||'-'}</td><td style="font-family:monospace;font-size:10px">${docItem.id.slice(0,12)}...</td><td><button class="btn btn-red btn-sm" onclick="window.hapusWarga('${docItem.id}')">Hapus</button></td></tr>`;
+        html+=`<tr>
+          <td><b>${d.nama||'-'}</b></td>
+          <td>${d.rt||'-'}</td>
+          <td style="font-family:monospace;font-size:11px">${d.email||'-'}</td>
+          <td><button class="btn btn-red btn-sm" onclick="window.hapusWarga('${docItem.id}')">Hapus Akun</button></td>
+        </tr>`;
       });
-      listWargaAdmin.innerHTML=html||'<tr><td colspan="4" style="text-align:center;color:#94a3b8">Belum ada warga.</td></tr>';
+      listWargaAdmin.innerHTML=html||'<tr><td colspan="4" style="text-align:center;color:#94a3b8">Belum ada akun warga mendaftar.</td></tr>';
     });
   }
-  window.hapusWarga = async function(id){ if(confirm('Hapus warga?')) await deleteDoc(doc(db,"data_warga",id)); };
+  window.hapusWarga = async function(id){ if(confirm('Hapus akun warga ini dari database?')) await deleteDoc(doc(db,"users_profile",id)); };
 }
 </script>
 </body>
