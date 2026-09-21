@@ -1,4 +1,4 @@
-name: Build Android APK
+name: Build Signed Android APK v2.0
 
 on:
   push:
@@ -103,6 +103,17 @@ jobs:
           print('Ikon Berhasil Diterapkan!')
           "
 
+      - name: Bump Version to v2.0 in build.gradle
+        run: |
+          BUILD_GRADLE="android/app/build.gradle"
+          if grep -q "versionCode" "$BUILD_GRADLE"; then
+            sed -i 's/versionCode [0-9]*/versionCode 2/g' "$BUILD_GRADLE"
+            sed -i 's/versionName "[^"]*"/versionName "2.0"/g' "$BUILD_GRADLE"
+          else
+            echo "Menambahkan konfigurasi versi ke defaultConfig..."
+            sed -i '/defaultConfig {/a \        versionCode 2\n        versionName "2.0"' "$BUILD_GRADLE"
+          fi
+
       - name: Decode Keystore from GitHub Secrets
         run: |
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/release.p12
@@ -148,15 +159,14 @@ jobs:
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: app-release
+          name: app-release-v2.0
           path: android/app/build/outputs/apk/release/app-release.apk
 
-      - name: Create GitHub Release
+      - name: Create GitHub Release v2.0
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: v${{ github.run_number }}
-          name: KATARNOLIMA RW05 v${{ github.run_number }}
+          tag_name: v2.0.${{ github.run_number }}
+          name: KATARNOLIMA RW05 v2.0 (Build ${{ github.run_number }})
           files: android/app/build/outputs/apk/release/app-release.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
