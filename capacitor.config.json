@@ -1,12 +1,9 @@
 {
   "appId": "com.katarnolima.rw05",
   "appName": "KATARNOLIMA RW05",
-  "webDir": "www",
+  "webDir": ".",
   "server": {
     "url": "https://arjuna119232.github.io/katarnolima/",
-    "cleartext": true
-  },
-  "android": {
-    "allowMixedContent": true
+    "androidScheme": "https"
   }
 }

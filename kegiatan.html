@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Kegiatan RW 05 - KATARNOLIMA</title>
+<link rel="icon" href="img/logo-resmi-karang-taruna.jpg">
+<link rel="stylesheet" href="style.css?v=26">
+<style>
+*{ -webkit-tap-highlight-color:transparent!important; margin:0; padding:0; box-sizing:border-box; }
+body {
+  background: #f8fafc !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+.kegiatan-container {
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto;
+  background: #ffffff;
+  min-height: 100vh;
+  padding-bottom: 120px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.05);
+  position: relative;
+}
+
+/* HEADER MODERN */
+.light-header {
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  border-bottom: 1px solid #f1f5f9;
+}
+.btn-back-modern {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0f172a;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+}
+.btn-back-modern:active {
+  background: #e2e8f0;
+  transform: scale(0.95);
+}
+.btn-back-modern svg {
+  width: 20px;
+  height: 20px;
+  stroke: #0f172a;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+.light-header h1 {
+  flex: 1;
+  font-size: 16px;
+  font-weight: 800;
+  color: #0f172a;
+  text-align: center;
+  margin-right: 40px;
+}
+
+/* CARDS KEGIATAN */
+.kegiatan-list {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.card-kegiatan {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+  transition: transform 0.2s;
+}
+.card-kegiatan:active {
+  transform: scale(0.98);
+}
+.card-img-placeholder {
+  width: 100%;
+  height: 140px;
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+}
+.card-body {
+  padding: 16px;
+}
+.badge-status {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+.badge-akan-datang { background: #dbeafe; color: #2563eb; }
+.badge-selesai { background: #f1f5f9; color: #64748b; }
+
+.card-body h3 {
+  font-size: 15px;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 6px;
+  line-height: 1.3;
+}
+.card-body p {
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+.meta-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 11px;
+  color: #94a3b8;
+  font-weight: 600;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 10px;
+}
+</style>
+</head>
+<body>
+<div class="kegiatan-container">
+  <!-- HEADER -->
+  <div class="light-header">
+    <button class="btn-back-modern" id="backBtn" onclick="history.back()" aria-label="Kembali">
+      <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </button>
+    <h1>Kegiatan RW 05</h1>
+  </div>
+
+  <!-- LIST KEGIATAN -->
+  <div class="kegiatan-list">
+    <div class="card-kegiatan">
+      <div class="card-img-placeholder">⚽</div>
+      <div class="card-body">
+        <span class="badge-status badge-akan-datang">MENDATANG</span>
+        <h3>Turnamen Olahraga & Seni Karang Taruna</h3>
+        <p>Pertandingan persahabatan antar RT se-RW 05 Poncol Jaya. Mari meriahkan dan dukung RT kamu!</p>
+        <div class="meta-info">
+          <span>📅 Minggu Depan</span>
+          <span>📍 Lapangan RW 05</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-kegiatan">
+      <div class="card-img-placeholder" style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%)">🧹</div>
+      <div class="card-body">
+        <span class="badge-status badge-selesai">SELESAI</span>
+        <h3>Kerja Bakti Kebersihan Saluran Air</h3>
+        <p>Aksi gotong royong warga membersihkan selokan penampungan air untuk mencegah genangan musim hujan.</p>
+        <div class="meta-info">
+          <span>📅 15 Sep 2026</span>
+          <span>📍 Wilayah RT 01 - RT 07</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAVBAR KONSISTEN PRESISI -->
+  <nav class="jaki-nav">
+    <a href="index.html">🏠<span>Beranda</span></a>
+    <a class="active" href="kegiatan.html">📋<span>Kegiatan</span></a>
+    <a class="center" href="aduan-warga.html"><div class="cam">📷</div><span>Lapor</span></a>
+    <a href="info.html">🔔<span>Info</span></a>
+    <a href="profil.html">👤<span>Profil</span></a>
+  </nav>
+</div>
+
+<script src="script.js?v=26"></script>
+</body>
+</html>

@@ -1,0 +1,345 @@
+<!-- @ts-nocheck -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Dashboard Admin - KATARNOLIMA</title>
+<link rel="icon" href="img/logo-resmi-karang-taruna.jpg">
+<link rel="stylesheet" href="style.css?v=36">
+<style>
+*{ -webkit-tap-highlight-color:transparent!important; margin:0; padding:0; box-sizing:border-box; }
+body { background: #f8fafc !important; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+.container { width: 100%; max-width: 480px; margin: 0 auto; background: #fff; min-height: 100vh; padding: 20px 16px 100px; }
+
+/* CARD & PANEL UTAMA */
+.card-admin { background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); margin-top: 16px; }
+.input-custom { width: 100%; padding: 11px 14px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 13px; outline: none; margin-bottom: 12px; }
+.btn-primary { width: 100%; padding: 12px; background: #0f172a; color: #fff; border: none; border-radius: 10px; font-weight: 800; font-size: 13px; cursor: pointer; }
+.btn-action { padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 11px; border: none; cursor: pointer; }
+.btn-success { background: #22c55e; color: #fff; }
+.btn-danger { background: #ef4444; color: #fff; }
+
+/* STATISTIK GRID */
+.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+.stat-card { background: #f1f5f9; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0; text-align: center; }
+.stat-val { font-size: 18px; font-weight: 900; color: #0f172a; margin-top: 2px; }
+.stat-lbl { font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase; }
+
+/* TABEL & LIST DATA */
+.data-item { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; margin-bottom: 10px; font-size: 13px; display: flex; justify-content: space-between; align-items: center; }
+.data-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.badge { font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 20px; text-transform: uppercase; background: #111; color: #fff; }
+.badge-pending { background: #fef3c7; color: #d97706; }
+.badge-done { background: #dcfce7; color: #15803d; }
+
+#dashboardView { display: none; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div style="display:flex;align-items:center;gap:12px">
+    <div onclick="history.back()" style="width:36px;height:36px;background:#f1f5f9;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer">⬅️</div>
+    <h2 style="font-size:16px;font-weight:800;color:#0f172a">Portal Pengurus RW 05</h2>
+  </div>
+
+  <!-- FORM LOGIN ADMIN -->
+  <div class="card-admin" id="loginView">
+    <h3 style="font-size:14px;font-weight:800;margin-bottom:6px">🔒 Login Admin / Pengurus</h3>
+    <p style="font-size:12px;color:#64748b;margin-bottom:16px">Masukkan akun resmi Karang Taruna RW 05</p>
+    
+    <form id="formLogin">
+      <input type="email" id="emailAdmin" class="input-custom" placeholder="Email Admin" required>
+      <input type="password" id="passAdmin" class="input-custom" placeholder="Kata Sandi" required>
+      <button type="submit" id="btnLogin" class="btn-primary">Masuk Dashboard</button>
+    </form>
+  </div>
+
+  <!-- DASHBOARD SETELAH LOGIN -->
+  <div id="dashboardView">
+    <!-- PANEL HEADER ADMIN -->
+    <div class="card-admin" style="background:#0f172a;color:#fff">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <h3 style="font-size:14px;font-weight:800">👋 Hallo, Admin RW 05</h3>
+          <p style="font-size:11px;color:#38bdf8;margin-top:2px">Sesi Login Aktif</p>
+        </div>
+        <button id="btnLogout" class="btn-action btn-danger">Keluar Sesi</button>
+      </div>
+
+      <!-- REKAP RINGKASAN DATA -->
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-lbl">Total Warga</div>
+          <div class="stat-val" id="totalWargaVal">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-lbl">Aduan Masuk</div>
+          <div class="stat-val" id="totalAduanVal">0</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FITUR 0: INPUT MASTER NIK WARGA (DARI ADMIN-RW) -->
+    <div class="card-admin">
+      <h3 style="font-size:13px;font-weight:800;color:#0f172a;margin-bottom:6px">🔑 Input / Master Data NIK Warga</h3>
+      <p style="font-size:11px;color:#64748b;margin-bottom:12px">Simpan data resmi ke master_rw05 (hash SHA-256)</p>
+      <input id="inputMasterNama" class="input-custom" placeholder="Nama Lengkap - BUDI SANTOSO">
+      <input id="inputMasterNik" class="input-custom" inputmode="numeric" maxlength="16" placeholder="NIK 16 digit">
+      <input id="inputMasterRt" class="input-custom" placeholder="RT - Contoh: RT 03">
+      <button id="btnSimpanMaster" class="btn-primary" style="background:#fbbf24;color:#0f172a">Simpan ke Master RW 05</button>
+      <div id="listMasterContainer" style="margin-top:14px">Memuat master warga...</div>
+    </div>
+
+    <!-- FITUR 1: UPDATE SALDO KAS -->
+    <div class="card-admin">
+      <h3 style="font-size:13px;font-weight:800;color:#0f172a;margin-bottom:10px">💰 Kelola Saldo Kas Utama</h3>
+      <div style="font-size:12px;color:#64748b;margin-bottom:8px">Saldo Live Saat Ini: <b id="currentSaldo" style="color:#0f172a">Rp 0</b></div>
+      <div style="display:flex;gap:8px">
+        <input type="number" id="inputNewSaldo" class="input-custom" placeholder="Masukkan Nominal Baru" style="margin-bottom:0">
+        <button id="btnUpdateSaldo" class="btn-action btn-success" style="white-space:nowrap;padding:0 16px">Update</button>
+      </div>
+    </div>
+
+    <!-- FITUR 2: VERIFIKASI IURAN WARGA -->
+    <div class="card-admin">
+      <h3 style="font-size:13px;font-weight:800;color:#0f172a;margin-bottom:12px">💳 Verifikasi Iuran Masuk</h3>
+      <div id="listIuranContainer" style="font-size:12px;color:#64748b">Memuat riwayat iuran...</div>
+    </div>
+
+    <!-- FITUR 3: LAPORAN ADUAN WARGA -->
+    <div class="card-admin">
+      <h3 style="font-size:13px;font-weight:800;color:#0f172a;margin-bottom:12px">📢 Laporan Aduan Warga</h3>
+      <div id="listAduanContainer" style="font-size:12px;color:#64748b">Memuat daftar aduan...</div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+// @ts-nocheck
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, onSnapshot, setDoc, collection, deleteDoc, updateDoc, serverTimestamp, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCZtvImbyZmqoEoY1hYZcuCbUpIl3R1fhE",
+  authDomain: "katarnolima-rw05.firebaseapp.com",
+  projectId: "katarnolima-rw05",
+  storageBucket: "katarnolima-rw05.firebasestorage.app",
+  messagingSenderId: "965647612835",
+  appId: "1:965647612835:web:b712367f0d8beb7c5bf816"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const loginView = document.getElementById('loginView');
+const dashboardView = document.getElementById('dashboardView');
+
+async function hashNIK(/** @type {any} */ textParam){
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(textParam));
+  return [...new Uint8Array(buf)].map((b)=>b.toString(16).padStart(2,'0')).join('');
+}
+
+// 1. AUTENTIKASI & KONTROL TAMPILAN
+onAuthStateChanged(auth, (/** @type {any} */ user) => {
+  if (user) {
+    if (loginView) loginView.style.display = 'none';
+    if (dashboardView) dashboardView.style.display = 'block';
+    initAdminFeatures();
+  } else {
+    if (loginView) loginView.style.display = 'block';
+    if (dashboardView) dashboardView.style.display = 'none';
+  }
+});
+
+// LOGIN
+const formLogin = document.getElementById('formLogin');
+if (formLogin) {
+  formLogin.addEventListener('submit', async (/** @type {any} */ e) => {
+    e.preventDefault();
+    const emailEl = /** @type {HTMLInputElement} */ (document.getElementById('emailAdmin'));
+    const passEl = /** @type {HTMLInputElement} */ (document.getElementById('passAdmin'));
+    try {
+      await signInWithEmailAndPassword(auth, emailEl.value, passEl.value);
+      alert("✅ Login Admin Berhasil!");
+    } catch (err) {
+      alert("❌ Akses Ditolak: Email atau Password salah.");
+    }
+  });
+}
+
+// LOGOUT
+const btnLogout = document.getElementById('btnLogout');
+if (btnLogout) {
+  btnLogout.addEventListener('click', () => { signOut(auth); });
+}
+
+// 2. LOGIKA FITUR KHUSUS ADMIN
+function initAdminFeatures() {
+  // A. HITUNG TOTAL WARGA TERDAFTAR (LIVE COUNT FROM FIRESTORE)
+  onSnapshot(collection(db, "data_warga"), (/** @type {any} */ snap) => {
+    const elWarga = document.getElementById('totalWargaVal');
+    if (elWarga) elWarga.textContent = snap.size;
+  });
+
+  // B. LOAD MASTER RW 05
+  async function loadMasterList() {
+    const snap = await getDocs(collection(db, "master_rw05"));
+    const container = document.getElementById('listMasterContainer');
+    if (!container) return;
+    if (snap.empty) {
+      container.innerHTML = '<p style="color:#64748b">Belum ada master NIK.</p>';
+      return;
+    }
+    let html = `<b>Total Master: ${snap.size} Warga</b>`;
+    snap.forEach((/** @type {any} */ docSnap)=>{
+      const data = docSnap.data();
+      const id = docSnap.id;
+      html += `
+        <div class="data-item">
+          <span>${data.nama} - ${data.rt}</span>
+          <div style="display:flex;align-items:center;gap:6px">
+            <span class="badge">• ${data.nikLast4}</span>
+            <button onclick="hapusMaster('${id}')" class="btn-action btn-danger" style="padding:4px 8px">Hapus</button>
+          </div>
+        </div>
+      `;
+    });
+    container.innerHTML = html;
+  }
+  loadMasterList();
+
+  const btnSimpanMaster = document.getElementById('btnSimpanMaster');
+  if (btnSimpanMaster) {
+    btnSimpanMaster.onclick = async () => {
+      const namaEl = /** @type {HTMLInputElement} */ (document.getElementById('inputMasterNama'));
+      const nikEl = /** @type {HTMLInputElement} */ (document.getElementById('inputMasterNik'));
+      const rtEl = /** @type {HTMLInputElement} */ (document.getElementById('inputMasterRt'));
+      const nama = namaEl.value.trim().toUpperCase();
+      const nik = nikEl.value.trim();
+      const rt = rtEl.value.trim().toUpperCase();
+      if(nama.length<3 || nik.length!==16){ alert('Isi nama & NIK 16 digit'); return; }
+      const nikHash = await hashNIK(nik);
+      await setDoc(doc(db, "master_rw05", nikHash), { nama, rt, nikLast4: nik.slice(-4), createdAt: serverTimestamp() });
+      alert('Berhasil simpan master: ' + nama);
+      namaEl.value=''; nikEl.value=''; rtEl.value='';
+      loadMasterList();
+    };
+  }
+
+  // C. LISTEN & UPDATE SALDO KAS
+  const saldoRef = doc(db, "kas_rw05", "saldo_utama");
+  onSnapshot(saldoRef, (/** @type {any} */ snap) => {
+    if (snap.exists()) {
+      const total = snap.data().total || 0;
+      const el = document.getElementById('currentSaldo');
+      if (el) el.textContent = "Rp " + total.toLocaleString('id-ID');
+    }
+  });
+
+  const btnUpdate = document.getElementById('btnUpdateSaldo');
+  if (btnUpdate) {
+    btnUpdate.onclick = async () => {
+      const inputEl = /** @type {HTMLInputElement} */ (document.getElementById('inputNewSaldo'));
+      const val = parseInt(inputEl.value);
+      if (!val && val !== 0) return alert("Masukkan nominal saldo!");
+      try {
+        await setDoc(saldoRef, { total: val, updatedAt: serverTimestamp() });
+        alert("✅ Saldo Kas Berhasil Diperbarui!");
+        inputEl.value = '';
+      } catch (e) {
+        alert("Gagal update saldo: " + (/** @type {any} */ (e)).message);
+      }
+    };
+  }
+
+  // D. LOAD DAFTAR IURAN WARGA
+  onSnapshot(collection(db, "riwayat_iuran"), (/** @type {any} */ snap) => {
+    const container = document.getElementById('listIuranContainer');
+    if (!container) return;
+    if (snap.empty) {
+      container.innerHTML = '<p>Belum ada riwayat iuran masuk.</p>';
+      return;
+    }
+    let html = '';
+    snap.docs.forEach((/** @type {any} */ docSnap) => {
+      const data = docSnap.data();
+      const id = docSnap.id;
+      html += `
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:12px;margin-bottom:10px">
+          <div class="data-header">
+            <b>${data.rt || 'RT -'} • NIK: ${data.nik || '-'}</b>
+            <span class="badge badge-done" style="background:#dcfce7;color:#15803d">Rp ${(data.nominal || 0).toLocaleString('id-ID')}</span>
+          </div>
+          <p style="font-size:11px;color:#64748b;margin-bottom:8px">Bulan: <b>${data.bulan || '-'}</b></p>
+          <button onclick="hapusIuran('${id}')" class="btn-action btn-danger">Hapus Transaksi</button>
+        </div>
+      `;
+    });
+    container.innerHTML = html;
+  });
+
+  // E. LOAD ADUAN WARGA & HITUNG TOTAL ADUAN
+  onSnapshot(collection(db, "aduan_warga"), (/** @type {any} */ snap) => {
+    const container = document.getElementById('listAduanContainer');
+    const elAduan = document.getElementById('totalAduanVal');
+    if (elAduan) elAduan.textContent = snap.size;
+
+    if (!container) return;
+    if (snap.empty) {
+      container.innerHTML = '<p>Belum ada laporan aduan dari warga.</p>';
+      return;
+    }
+    let html = '';
+    snap.docs.forEach((/** @type {any} */ docSnap) => {
+      const data = docSnap.data();
+      const id = docSnap.id;
+      const status = data.status || 'Baru';
+      html += `
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:12px;margin-bottom:10px">
+          <div class="data-header">
+            <b>${data.nama || 'Warga'} (${data.rt || 'RT -'})</b>
+            <span class="badge ${status === 'Selesai' ? 'badge-done' : 'badge-pending'}">${status}</span>
+          </div>
+          <p style="font-size:12px;color:#334155;margin:6px 0">${data.pesan || '-'}</p>
+          <div style="display:flex;gap:6px;margin-top:8px">
+            <button onclick="updateStatusAduan('${id}', 'Selesai')" class="btn-action btn-success">Tandai Selesai</button>
+            <button onclick="hapusAduan('${id}')" class="btn-action btn-danger">Hapus</button>
+          </div>
+        </div>
+      `;
+    });
+    container.innerHTML = html;
+  });
+}
+
+// KELOLA DATA HAPUS/UPDATE (GLOBAL FUNCTION)
+window['hapusMaster'] = async (/** @type {any} */ id) => {
+  if (confirm("Hapus master warga ini?")) {
+    await deleteDoc(doc(db, "master_rw05", id));
+  }
+};
+
+window['hapusIuran'] = async (/** @type {any} */ id) => {
+  if (confirm("Yakin ingin menghapus transaksi iuran ini?")) {
+    await deleteDoc(doc(db, "riwayat_iuran", id));
+  }
+};
+
+window['updateStatusAduan'] = async (/** @type {any} */ id, /** @type {any} */ status) => {
+  await updateDoc(doc(db, "aduan_warga", id), { status: status });
+  alert("Status aduan diperbarui!");
+};
+
+window['hapusAduan'] = async (/** @type {any} */ id) => {
+  if (confirm("Hapus laporan aduan ini?")) {
+    await deleteDoc(doc(db, "aduan_warga", id));
+  }
+};
+</script>
+
+</body>
+</html>

@@ -1,108 +1,211 @@
 <!DOCTYPE html>
 <html lang="id">
-<head><style>
-@font-face {
-  font-family: "Optimistic";
-  font-style: normal;
-  font-weight: 400 600;
-  font-display: swap;
-  src: url("/fonts/OptimisticAI_VF_Optimized.woff2") format("woff2");
-}
-@font-face {
-  font-family: "Optimistic Mono";
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("/fonts/OptimisticMono_W_TextRegular.woff2") format("woff2");
-}
-:where(html) {
-  font-family: "Optimistic", system-ui, sans-serif;
-}
-:where(code, pre, kbd, samp) {
-  font-family: "Optimistic Mono", ui-monospace, monospace;
-}
-</style>
+<head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Iuran Warga - RW 05 LIVE - Saldo 0</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Iuran Warga - RW 05 LIVE</title>
+<link rel="icon" href="img/logo-resmi-karang-taruna.jpg">
+<link rel="stylesheet" href="style.css?v=26">
 <style>
-*{box-sizing:border-box;font-family:system-ui,sans-serif}
-body{max-width:440px;margin:0 auto;padding:16px;background:#f8fafc}
-h1{font-size:18px;font-weight:900;margin:0}
-.sub{font-size:12px;color:#64748b;margin:4px 0 16px 0}
-.card{background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:16px;margin-bottom:16px}
-.saldo-label{font-size:11px;font-weight:700;color:#64748b}
-.saldo-value{font-size:28px;font-weight:900;margin:4px 0}
-input,select{width:100%;padding:14px;border:1.5px solid #cbd5e1;border-radius:12px;margin-bottom:10px;font-size:15px}
-button{width:100%;padding:16px;background:#111;color:#fbbf24;border:none;border-radius:12px;font-weight:800}
-.ok{color:#16a34a;font-size:13px;font-weight:700}.err{color:#dc2626;font-size:13px;font-weight:700}
-.item{font-size:13px;padding:10px;border-bottom:1px solid #f1f5f9}
+*{ -webkit-tap-highlight-color:transparent!important; margin:0; padding:0; box-sizing:border-box; }
+body { background: #f8fafc !important; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+.container { width: 100%; max-width: 440px; margin: 0 auto; background: #fff; min-height: 100vh; padding: 16px; padding-bottom: 120px; }
+.header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+.btn-back { width: 40px; height: 40px; border-radius: 12px; background: #f8fafc; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.card { background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
+.saldo-title { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; }
+.saldo-val { font-size: 28px; font-weight: 900; color: #0f172a; margin-top: 4px; }
+
+/* REKENING & QRIS BOX */
+.qris-box { background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 12px; padding: 14px; text-align: center; margin-bottom: 16px; }
+.qris-img { width: 180px; height: 180px; object-fit: contain; border-radius: 8px; margin: 8px 0; border: 1px solid #e2e8f0; }
+.rekeing-info { font-size: 12px; color: #334155; line-height: 1.5; font-weight: 600; }
+
+/* FORM INPUT */
+.form-group { margin-bottom: 12px; }
+.form-group label { display: block; font-size: 12px; font-weight: 700; color: #334155; margin-bottom: 6px; }
+.input-custom { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 13px; outline: none; }
+.input-custom:focus { border-color: #2563eb; }
+.btn-submit { width: 100%; padding: 14px; background: #111; color: #fbbf24; border: none; border-radius: 12px; font-weight: 800; font-size: 14px; cursor: pointer; margin-top: 8px; }
+.btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
 </style>
 </head>
 <body>
-<h1>💰 Iuran Warga - LIVE (Mulai 0)</h1>
-<p class="sub">Aplikasi baru - saldo mulai Rp 0. Cek NIK ke Master RW 05.</p>
-<div class="card"><div class="saldo-label">SALDO KAS RW 05 (LIVE)</div><div class="saldo-value" id="saldoText">Rp 0</div></div>
-<div class="card">
-<input id="nik" inputmode="numeric" maxlength="16" placeholder="Input NIK 16 digit warga">
-<div id="cekNIK" style="font-size:13px;margin-bottom:10px"></div>
-<select id="bulan"><option>Januari 2026</option><option>Februari 2026</option><option>Maret 2026</option><option>April 2026</option><option>Mei 2026</option><option selected>Juni 2026</option></select>
-<input id="jumlah" inputmode="numeric" placeholder="Jumlah - 50000">
-<input id="rt" placeholder="RT - auto">
-<button id="btnBayar" disabled>Bayar Iuran</button>
-<div id="status" style="margin-top:10px"></div>
+
+<div class="container">
+  <div class="header">
+    <div class="btn-back" onclick="history.back()">⬅️</div>
+    <h2 style="font-size:16px;font-weight:800;color:#0f172a">Iuran Warga RW 05</h2>
+  </div>
+
+  <!-- SALDO KAS -->
+  <div class="card">
+    <div class="saldo-title">SALDO KAS RW 05 (LIVE)</div>
+    <div class="saldo-val" id="saldoVal">Rp 0</div>
+  </div>
+
+  <!-- METODE PEMBAYARAN (QRIS / TRANSFER) -->
+  <div class="card">
+    <h3 style="font-size:13px;font-weight:800;color:#0f172a;margin-bottom:8px">💳 Metode Pembayaran</h3>
+    <div class="qris-box">
+      <p class="rekeing-info">Scan QRIS / Transfer Bank RW 05</p>
+      <img src="img/qris-rw05.jpg" alt="QRIS RW 05" class="qris-img" id="qrisImg">
+      <div class="rekeing-info">
+        <b>Bank DKI / BCA:</b> 1234-5678-90<br>
+        a.n. <b>Kas Karang Taruna RW 05</b>
+      </div>
+    </div>
+  </div>
+
+  <!-- FORM BAYAR -->
+  <div class="card">
+    <h3 style="font-size:13px;font-weight:800;color:#0f172a;margin-bottom:12px">📝 Form Pembayaran Iuran</h3>
+    <form id="formIuran">
+      <div class="form-group">
+        <label>NIK (16 Digit)</label>
+        <input type="number" id="nik" class="input-custom" placeholder="Masukkan 16 digit NIK" required>
+      </div>
+
+      <div class="form-group">
+        <label>Bulan Pembayaran</label>
+        <select id="bulan" class="input-custom" required>
+          <option value="September 2026">September 2026</option>
+          <option value="Oktober 2026">Oktober 2026</option>
+          <option value="November 2026">November 2026</option>
+          <option value="Desember 2026">Desember 2026</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Nominal Pembayaran (Rp)</label>
+        <input type="number" id="nominal" class="input-custom" placeholder="Contoh: 50000" required>
+      </div>
+
+      <div class="form-group">
+        <label>RT</label>
+        <select id="rt" class="input-custom" required>
+          <option value="RT 01">RT 01</option>
+          <option value="RT 02">RT 02</option>
+          <option value="RT 03">RT 03</option>
+          <option value="RT 04">RT 04</option>
+          <option value="RT 05">RT 05</option>
+          <option value="RT 06">RT 06</option>
+          <option value="RT 07">RT 07</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Upload Bukti Transfer / QRIS</label>
+        <input type="file" id="bukti" class="input-custom" accept="image/*" required>
+      </div>
+
+      <button type="submit" id="btnBayar" class="btn-submit">Bayar Sekarang</button>
+    </form>
+  </div>
 </div>
-<div class="card"><b>Riwayat Iuran</b><div id="riwayat"></div></div>
+
+<script src="script.js?v=26"></script>
+
 <script type="module">
-// @ts-nocheck
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, doc, getDoc, setDoc, addDoc, collection, getDocs, updateDoc, increment, serverTimestamp, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-const firebaseConfig = { apiKey: "AIzaSyCZtvImbyZmqoEoY1hYZcuCbUpIl3R1fhE", authDomain: "katarnolima-rw05.firebaseapp.com", projectId: "katarnolima-rw05", storageBucket: "katarnolima-rw05.firebasestorage.app", messagingSenderId: "965647612835", appId: "1:965647612835:web:b712367f0d8beb7c5bf816" };
-const app = initializeApp(firebaseConfig); const db = getFirestore(app);
-async function hashNIK(t){const b=await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');}
-async function loadSaldo(){
-  const ref = doc(db,"kas_rw05","saldo_utama");
-  const snap = await getDoc(ref);
-  if(!snap.exists()){
-    await setDoc(ref,{total:0, updatedAt: serverTimestamp()});
-    document.getElementById('saldoText').textContent = "Rp 0";
-  }else{
-    const total = snap.data().total || 0;
-    document.getElementById('saldoText').textContent = "Rp " + total.toLocaleString('id-ID');
-  }
-}
-loadSaldo();
-let wargaData=null; let wargaHash=null;
-document.getElementById('nik').addEventListener('input', async (e)=>{
-  const nikVal = e.target.value.trim();
-  const cekDiv = document.getElementById('cekNIK');
-  if(nikVal.length!==16){cekDiv.innerHTML="";wargaData=null;document.getElementById('btnBayar').disabled=true;return;}
-  cekDiv.textContent="Cek NIK...";
-  const h = await hashNIK(nikVal); wargaHash=h;
-  const snap = await getDoc(doc(db,"master_rw05",h));
-  if(!snap.exists()){cekDiv.innerHTML="<span class='err'>❌ NIK tidak terdaftar</span>";wargaData=null;document.getElementById('btnBayar').disabled=true;}
-  else{wargaData=snap.data();cekDiv.innerHTML=`<span class='ok'>✅ ${wargaData.nama} - ${wargaData.rt}</span>`;document.getElementById('rt').value=wargaData.rt;document.getElementById('btnBayar').disabled=false;}
-});
-async function loadRiwayat(){
-  const q = query(collection(db,"iuran_rw05"), orderBy("createdAt","desc"), limit(10));
-  const snap = await getDocs(q);
-  const div = document.getElementById('riwayat'); div.innerHTML="";
-  snap.forEach((dSnap)=>{const x=dSnap.data();div.innerHTML+=`<div class="item">${x.nama} - ${x.bulan} - Rp ${x.jumlah.toLocaleString('id-ID')}</div>`;});
-  if(snap.empty) div.innerHTML="<div style='color:#94a3b8'>Belum ada transaksi - aplikasi baru</div>";
-}
-loadRiwayat();
-document.getElementById('btnBayar').onclick = async ()=>{
-  const jumlahVal = parseInt(document.getElementById('jumlah').value);
-  const bulanVal = document.getElementById('bulan').value;
-  const rtVal = document.getElementById('rt').value;
-  if(!wargaData || !jumlahVal){alert('Lengkapi');return;}
-  document.getElementById('btnBayar').textContent="Memproses...";
-  await addDoc(collection(db,"iuran_rw05"),{nama:wargaData.nama,rt:rtVal,nikLast4:document.getElementById('nik').value.slice(-4),nikHash:wargaHash,bulan:bulanVal,jumlah:jumlahVal,createdAt:serverTimestamp()});
-  try{await updateDoc(doc(db,"kas_rw05","saldo_utama"),{total:increment(jumlahVal),updatedAt:serverTimestamp()});}
-  catch(err){await setDoc(doc(db,"kas_rw05","saldo_utama"),{total:jumlahVal,updatedAt:serverTimestamp()});}
-  document.getElementById('status').innerHTML="<span class='ok'>✅ Berhasil! Saldo bertambah.</span>";
-  document.getElementById('btnBayar').textContent="Bayar Iuran"; loadSaldo(); loadRiwayat();
+import { getFirestore, doc, onSnapshot, runTransaction, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCZtvImbyZmqoEoY1hYZcuCbUpIl3R1fhE",
+  authDomain: "katarnolima-rw05.firebaseapp.com",
+  projectId: "katarnolima-rw05",
+  storageBucket: "katarnolima-rw05.firebasestorage.app",
+  messagingSenderId: "965647612835",
+  appId: "1:965647612835:web:b712367f0d8beb7c5bf816"
 };
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// FALLBACK GAMBAR JIKA QRIS BELUM TERSEDIA
+const imgEl = document.getElementById('qrisImg');
+if (imgEl) {
+  imgEl.addEventListener('error', function() {
+    this.src = 'https://via.placeholder.com/180?text=QRIS+RW+05';
+  });
+}
+
+// 1. LISTEN SALDO LIVE FIRESTORE
+const saldoRef = doc(db, "kas_rw05", "saldo_utama");
+
+onSnapshot(saldoRef, 
+  /** @param {any} snap */
+  (snap) => {
+    if (snap.exists()) {
+      const data = snap.data();
+      const total = data ? data.total || 0 : 0;
+      const saldoEl = document.getElementById('saldoVal');
+      if (saldoEl) saldoEl.textContent = "Rp " + total.toLocaleString('id-ID');
+    }
+  }
+);
+
+// 2. LOGIKA TRANSAKSI PEMBAYARAN IURAN
+const form = document.getElementById('formIuran');
+if (form) {
+  form.addEventListener('submit', 
+    /** @param {any} e */
+    async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('btnBayar');
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = "Memproses Pembayaran...";
+      }
+
+      const nikEl = document.getElementById('nik');
+      const bulanEl = document.getElementById('bulan');
+      const nominalEl = document.getElementById('nominal');
+      const rtEl = document.getElementById('rt');
+
+      const nik = nikEl ? nikEl.value : '';
+      const bulan = bulanEl ? bulanEl.value : '';
+      const nominal = nominalEl ? parseInt(nominalEl.value) || 0 : 0;
+      const rt = rtEl ? rtEl.value : '';
+
+      try {
+        await runTransaction(db, 
+          /** @param {any} transaction */
+          async (transaction) => {
+            const sfDoc = await transaction.get(saldoRef);
+            if (!sfDoc.exists()) {
+              transaction.set(saldoRef, { total: nominal });
+            } else {
+              const oldData = sfDoc.data();
+              const newTotal = (oldData ? oldData.total || 0 : 0) + nominal;
+              transaction.update(saldoRef, { total: newTotal, updatedAt: serverTimestamp() });
+            }
+          }
+        );
+
+        await addDoc(collection(db, "riwayat_iuran"), {
+          nik: nik,
+          bulan: bulan,
+          nominal: nominal,
+          rt: rt,
+          createdAt: serverTimestamp()
+        });
+
+        alert("✅ Pembayaran iuran berhasil disimpan dan saldo kas live telah di-update!");
+        form.reset();
+
+      } catch (err) {
+        console.error("Gagal simpan:", err);
+        alert("❌ Terjadi kesalahan saat memproses pembayaran.");
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = "Bayar Sekarang";
+        }
+      }
+    }
+  );
+}
 </script>
-<script>(function(){var loc=location.href.replace(/#.*$/,"");var ATTR_NAMES=["data-product-id","data-productid","data-product_id","product-id","productid","product_id","data-source-entity-id","source-entity-id","source_entity_id","data-product","data-metadata","data-meta"];var DATASET_KEYS=["productId","productid","product_id","sourceEntityId","sourceentityid","source_entity_id","product","metadata","meta"];function readProductId(value){if(typeof value!=="string"||value.length===0)return null;if(/^[0-9]{6,}$/.test(value))return value;var match=value.match(/(?:product(?:_|-)?id|source(?:_|-)?entity(?:_|-)?id)["'=:\s]+([0-9]{6,})/i);return match?match[1]:null}function extractProductId(start){for(var node=start;node&&node!==document.body;node=node.parentElement){for(var i=0;i<ATTR_NAMES.length;i++){var attrValue=node.getAttribute&&node.getAttribute(ATTR_NAMES[i]);var attrProductId=readProductId(attrValue);if(attrProductId)return attrProductId}var dataset=node.dataset||null;if(dataset){for(var j=0;j<DATASET_KEYS.length;j++){var dataValue=dataset[DATASET_KEYS[j]];var dataProductId=readProductId(dataValue);if(dataProductId)return dataProductId}}}return null}function isInlineMediaSlotElement(node){return !!(node&&node.getAttribute&&node.getAttribute("data-clippy-inline-media-slot")!==null)}function findInlineMediaSlot(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(isInlineMediaSlotElement(node))return node}return null}function readInlineMediaUrl(node){if(!node)return null;return node.getAttribute&&((node.getAttribute("data-clippy-inline-media-url")||node.getAttribute("data-url")||node.getAttribute("data_url")))||node.href||null}function stripHash(url){return String(url).replace(/#.*$/,"")}function urlsMatch(a,b){if(!a||!b)return false;try{return stripHash(new URL(a,loc).href)===stripHash(new URL(b,loc).href)}catch(_){return stripHash(a)===stripHash(b)}}function isFirstPartyReelUrl(value){try{var url=new URL(value,loc);if(url.protocol!=="https:")return false;var host=url.hostname.toLowerCase();var supported=host==="instagram.com"||host.endsWith(".instagram.com")||host==="facebook.com"||host.endsWith(".facebook.com");return supported&&/\/reels?\//i.test(url.pathname)}catch(_){return false}}function isInlineMediaUrlClick(node,href){var slot=findInlineMediaSlot(node);if(!slot)return false;var slotUrl=readInlineMediaUrl(slot);if(slotUrl)return urlsMatch(href,slotUrl);return isFirstPartyReelUrl(href)}function findDataHref(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(node.getAttribute){var href=node.getAttribute("data-href")||node.getAttribute("data-url");if(href)return{href:href,node:node}}}return null}var nativeOpen=window.open;window.open=function(url){if(parent!==window&&typeof url==="string"&&/^https?:\/\//.test(url)){parent.postMessage({type:"ecto:usercontent-link-click",href:url},"*");return null}return nativeOpen?nativeOpen.apply(window,arguments):null};document.addEventListener("click",function(e){var target=e.target instanceof Element?e.target:null;if(!target)return;if(parent===window)return;var a=target.closest?target.closest("a[href]"):null;if(a&&a.href&&/^https?:\/\//.test(a.href)&&a.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(a,a.href))return;var productId=extractProductId(target)||extractProductId(a);if(productId){e.preventDefault();parent.postMessage({type:"ecto-artifact-link-click",productId:productId},"*");return}e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:a.href},"*");return}var dataHref=findDataHref(target);if(dataHref&&/^https?:\/\//.test(dataHref.href)&&dataHref.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(dataHref.node,dataHref.href))return;e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:dataHref.href},"*")}},true)})();</script><script>(function(){var FOCUS_TYPE="ecto:artifact-focus-request";var CLOSE_TYPE="ecto:artifact-close-request";function focusArtifactDocument(){var body=document.body;if(!body)return;try{window.focus();}catch(e){}if(!body.hasAttribute("tabindex"))body.setAttribute("tabindex","-1");try{body.focus({preventScroll:true});}catch(e){try{body.focus();}catch(e2){}}}window.addEventListener("message",function(event){if(event.source!==window.parent)return;var data=event.data;if(!data||typeof data!=="object"||data.type!==FOCUS_TYPE)return;if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",focusArtifactDocument,{once:true});return;}focusArtifactDocument();});window.addEventListener("keydown",function(event){if(event.key!=="Escape")return;window.setTimeout(function(){if(event.defaultPrevented)return;window.parent.postMessage({type:CLOSE_TYPE},"*");},0);});})();</script></body>
+</body>
 </html>

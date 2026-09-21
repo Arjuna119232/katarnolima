@@ -5,85 +5,217 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Semua Layanan - KATARNOLIMA RW 05</title>
 <link rel="icon" href="img/logo-resmi-karang-taruna.jpg">
-<link rel="stylesheet" href="style.css?v=27">
+<link rel="stylesheet" href="style.css?v=26">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
-html,body{background:#fff!important;width:100%;height:100%;display:block!important;margin:0!important;padding:0!important}
-.layanan-page{background:#fff;width:100%;min-height:100vh;max-width:440px;margin:0 auto;display:block}
-.layanan-header{display:flex;align-items:center;gap:10px;padding:12px;background:#fff;position:sticky;top:0;z-index:20;border-bottom:1px solid #f1f5f9;width:100%}
-.layanan-header .back{width:38px;height:38px;display:flex;align-items:center;justify-content:center;border-radius:50%;flex-shrink:0;background:#f1f5f9;cursor:pointer}
-.layanan-search{flex:1;background:#f1f5f9;border-radius:28px;display:flex;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;border:1px solid #f1f5f9}
-.layanan-search input{border:none;outline:none;width:100%;background:transparent;font-size:14px;color:#0f172a;pointer-events:none}
-.layanan-tabs{display:flex;border-bottom:1px solid #e2e8f0;background:#fff;position:sticky;top:60px;z-index:19;width:100%}
-.tab{flex:1;text-align:center;padding:14px 0 12px;font-size:14px;font-weight:600;color:#64748b;position:relative;cursor:pointer}
-.tab.active{color:#0f172a;font-weight:800}
-.tab.active:after{content:'';position:absolute;bottom:-1px;left:30%;right:30%;height:3px;background:#fbbf24;border-radius:999px}
-.section-title{font-size:14px;font-weight:800;color:#000;padding:22px 16px 8px;background:#fff;width:100%}
-.jaki-item{display:flex;gap:14px;padding:14px 16px;align-items:flex-start;cursor:pointer;width:100%;text-decoration:none}
-.jaki-item:active{background:#f8fafc}
-.jaki-icon{width:52px;height:52px;border-radius:50%;background:#e8f0fe;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
-.jaki-item h4{font-size:15px;font-weight:700;color:#000;line-height:1.2}
-.jaki-item p{font-size:13px;color:#475569;margin-top:4px;line-height:1.3}
-.kategori-card{display:flex;align-items:center;gap:14px;padding:16px;border:1px solid #e2e8f0;border-radius:16px;margin:10px 16px;background:#fff;cursor:pointer}
+*{ -webkit-tap-highlight-color:transparent!important; margin:0; padding:0; box-sizing:border-box; }
+body {
+  background: #f8fafc !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+.layanan-container {
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto;
+  background: #ffffff;
+  min-height: 100vh;
+  padding-bottom: 120px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.05);
+  position: relative;
+}
+
+/* HEADER MODERN */
+.light-header {
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  border-bottom: 1px solid #f1f5f9;
+}
+.btn-back-modern {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0f172a;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+}
+.btn-back-modern:active {
+  background: #e2e8f0;
+  transform: scale(0.95);
+}
+.btn-back-modern svg {
+  width: 20px;
+  height: 20px;
+  stroke: #0f172a;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+.light-header h1 {
+  flex: 1;
+  font-size: 16px;
+  font-weight: 800;
+  color: #0f172a;
+  text-align: center;
+  margin-right: 40px;
+}
+
+/* SECTION KATEGORI */
+.section-layanan {
+  padding: 20px 16px;
+  border-bottom: 1px solid #f1f5f9;
+}
+.section-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 14px;
+}
+.grid-layanan {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+.item-layanan {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+.icon-box {
+  width: 56px;
+  height: 56px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  margin-bottom: 6px;
+  transition: transform 0.2s;
+}
+.item-layanan:active .icon-box {
+  transform: scale(0.92);
+}
+.item-layanan p {
+  font-size: 11px;
+  font-weight: 600;
+  color: #334155;
+  line-height: 1.2;
+}
 </style>
 </head>
 <body>
-<div class="layanan-page">
-  <div class="layanan-header">
-    <a href="javascript:void(0)" class="back" id="backBtn"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="black" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg></a>
-    <div class="layanan-search" onclick="location.href='cari-warga.html'"><span>🔍</span><input type="text" placeholder="Cari Layanan di RW 05" readonly></div>
+<div class="layanan-container">
+  <!-- HEADER -->
+  <div class="light-header">
+    <button class="btn-back-modern" id="backBtn" onclick="history.back()" aria-label="Kembali">
+      <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </button>
+    <h1>Semua Layanan RW 05</h1>
   </div>
-  <div class="layanan-tabs">
-    <div class="tab active" id="tabUnggulan" onclick="showUnggulan()">Unggulan</div>
-    <div class="tab" id="tabKategori" onclick="showKategori()">Kategori</div>
+
+  <!-- UTAMAKAN KATEGORI KEBUTUHAN WARGA -->
+  <div class="section-layanan">
+    <div class="section-title">Layanan Publik & Laporan</div>
+    <div class="grid-layanan">
+      <a class="item-layanan" href="aduan-warga.html">
+        <div class="icon-box">📢</div>
+        <p>Aduan Warga</p>
+      </a>
+      <a class="item-layanan" href="info.html">
+        <div class="icon-box">🔔</div>
+        <p>Info RW</p>
+      </a>
+      <a class="item-layanan" href="iuran-warga.html">
+        <div class="icon-box">💰</div>
+        <p>Iuran Warga</p>
+      </a>
+      <div class="item-layanan" data-modal="petaBalai">
+        <div class="icon-box">📍</div>
+        <p>Peta Balai</p>
+      </div>
+    </div>
   </div>
-  <div id="viewUnggulan">
-    <div class="section-title">Laporan dan Kedaruratan</div>
-    <a class="jaki-item" href="aduan-warga.html"><div class="jaki-icon">📢</div><div><h4>Laporan Warga</h4><p>Lapor masalah di RW 05 jadi mudah</p></div></a>
-    <a class="jaki-item" href="tel:112"><div class="jaki-icon">📞</div><div><h4>Kontak Darurat</h4><p>Nomor penting di kala genting</p></div></a>
-    <a class="jaki-item" href="https://wa.me/6289673580756?text=Butuh%20Ambulans%20RW05%20DARURAT"><div class="jaki-icon">🚑</div><div><h4>Ambulans</h4><p>Panggil ambulans 24 jam, gratis!</p></div></a>
-    <div class="section-title">Kesehatan</div>
-    <a class="jaki-item" href="#"><div class="jaki-icon">👶</div><div><h4>Antrean Posyandu</h4><p>Buat janji berobat tanpa antre</p></div></a>
-    <div class="section-title">Sosial dan Ekonomi</div>
-    <a class="jaki-item" href="iuran-warga.html"><div class="jaki-icon">💰</div><div><h4>Iuran Warga</h4><p>Cek tagihan iuran bulanan</p></div></a>
-    <a class="jaki-item" href="#"><div class="jaki-icon">🛒</div><div><h4>Harga Sembako</h4><p>Cek harga pangan murah di warung RW</p></div></a>
-    <a class="jaki-item" href="#"><div class="jaki-icon">🏪</div><div><h4>Lapak UMKM Warga</h4><p>Warung, laundry, catering warga RW 05</p></div></a>
-    <div class="section-title">Transportasi</div>
-    <a class="jaki-item" href="#"><div class="jaki-icon">🚌</div><div><h4>Transportasi Warga</h4><p>Bantu kamu keliling RW 05</p></div></a>
-    <div class="section-title">Informasi Publik</div>
-    <a class="jaki-item" href="berita.html"><div class="jaki-icon">📰</div><div><h4>Berita</h4><p>Baca berita resmi yang bebas hoaks</p></div></a>
-    <a class="jaki-item" href="https://maps.app.goo.gl/3Xte1yjgYiVT49XK7" target="_blank"><div class="jaki-icon">📍</div><div><h4>Peta Balai</h4><p>Cek lokasi fasilitas RW 05</p></div></a>
-    <div class="section-title">Layanan Khusus RW 05</div>
-    <a class="jaki-item" href="#"><div class="jaki-icon">🏠</div><div><h4>Rumah Singgah Balai</h4><p>Fasilitasi warga untuk pakai balai RW 05</p></div></a>
-    <a class="jaki-item" href="#"><div class="jaki-icon">📚</div><div><h4>Belajar Bersama</h4><p>Bimbel gratis tiap Sabtu sore di Balai</p></div></a>
-    <div style="padding:30px 16px 120px;text-align:center;color:#64748b;font-size:13px;width:100%">Kamu sudah sampai di akhir halaman. Tidak menemukan yang kamu cari?<br><a href="https://wa.me/6289673580756?text=Saran%20Layanan%20RW05" style="color:#2563eb;font-weight:700;text-decoration:none">Yuk, kirim saranmu.</a></div>
+
+  <div class="section-layanan">
+    <div class="section-title">Informasi & Lingkungan</div>
+    <div class="grid-layanan">
+      <div class="item-layanan" data-modal="sembako">
+        <div class="icon-box">🛒</div>
+        <p>Harga Sembako</p>
+      </div>
+      <div class="item-layanan" data-modal="ronda">
+        <div class="icon-box">🛡️</div>
+        <p>Jadwal Ronda</p>
+      </div>
+      <div class="item-layanan" data-modal="bersih">
+        <div class="icon-box">🧹</div>
+        <p>Kerja Bakti</p>
+      </div>
+      <div class="item-layanan" data-modal="posyandu">
+        <div class="icon-box">👶</div>
+        <p>Posyandu</p>
+      </div>
+    </div>
   </div>
-  <div id="viewKategori" style="display:none;width:100%">
-    <div class="kategori-card" onclick="showUnggulan()"><div style="font-size:22px">🚨</div><div style="flex:1"><h4 style="font-size:14px;font-weight:700">Laporan dan Kedaruratan</h4><p style="font-size:11px;color:#64748b">3 layanan</p></div><span>›</span></div>
-    <div class="kategori-card" onclick="showUnggulan()"><div style="font-size:22px">❤️</div><div style="flex:1"><h4 style="font-size:14px;font-weight:700">Kesehatan</h4><p style="font-size:11px;color:#64748b">1 layanan</p></div><span>›</span></div>
-    <div class="kategori-card" onclick="showUnggulan()"><div style="font-size:22px">🤝</div><div style="flex:1"><h4 style="font-size:14px;font-weight:700">Sosial dan Ekonomi</h4><p style="font-size:11px;color:#64748b">3 layanan</p></div><span>›</span></div>
-    <div class="kategori-card" onclick="showUnggulan()"><div style="font-size:22px">🚌</div><div style="flex:1"><h4 style="font-size:14px;font-weight:700">Transportasi</h4><p style="font-size:11px;color:#64748b">1 layanan</p></div><span>›</span></div>
-    <div class="kategori-card" onclick="showUnggulan()"><div style="font-size:22px">📢</div><div style="flex:1"><h4 style="font-size:14px;font-weight:700">Informasi Publik</h4><p style="font-size:11px;color:#64748b">2 layanan</p></div><span>›</span></div>
-    <div class="kategori-card" onclick="showUnggulan()"><div style="font-size:22px">⭐</div><div style="flex:1"><h4 style="font-size:14px;font-weight:700">Layanan Khusus RW 05</h4><p style="font-size:11px;color:#64748b">2 layanan</p></div><span>›</span></div>
+
+  <div class="section-layanan">
+    <div class="section-title">Kemasyarakatan</div>
+    <div class="grid-layanan">
+      <div class="item-layanan" data-modal="datawarga">
+        <div class="icon-box">📋</div>
+        <p>Data Warga</p>
+      </div>
+      <div class="item-layanan" data-modal="belajar">
+        <div class="icon-box">📚</div>
+        <p>Belajar Bersama</p>
+      </div>
+      <a class="item-layanan" href="kegiatan.html">
+        <div class="icon-box">⚽</div>
+        <p>Kegiatan</p>
+      </a>
+      <a class="item-layanan" href="profil.html">
+        <div class="icon-box">👤</div>
+        <p>Akun Warga</p>
+      </a>
+    </div>
   </div>
+
+  <!-- MODAL SERBAGUNA -->
+  <div id="universal-modal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="modal-title">Info RW 05</h3>
+        <div id="modal-close" class="modal-close">✕</div>
+      </div>
+      <div id="modal-body" class="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAVBAR KONSISTEN PRESISI -->
+  <nav class="jaki-nav">
+    <a href="index.html">🏠<span>Beranda</span></a>
+    <a href="kegiatan.html">📋<span>Kegiatan</span></a>
+    <a class="center" href="aduan-warga.html"><div class="cam">📷</div><span>Lapor</span></a>
+    <a href="info.html">🔔<span>Info</span></a>
+    <a href="profil.html">👤<span>Profil</span></a>
+  </nav>
 </div>
-<script>
-function showUnggulan(){
-  document.getElementById('viewUnggulan').style.display='block';
-  document.getElementById('viewKategori').style.display='none';
-  document.getElementById('tabUnggulan').classList.add('active');
-  document.getElementById('tabKategori').classList.remove('active');
-}
-function showKategori(){
-  document.getElementById('viewUnggulan').style.display='none';
-  document.getElementById('viewKategori').style.display='block';
-  document.getElementById('tabKategori').classList.add('active');
-  document.getElementById('tabUnggulan').classList.remove('active');
-}
-document.getElementById('backBtn').addEventListener('click', function(e){
-  e.preventDefault();
-  if(window.history.length > 1){ window.history.back(); } else { window.location.href='index.html'; }
-});
-</script>
+
+<script src="script.js?v=26"></script>
 </body>
 </html>

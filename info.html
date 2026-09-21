@@ -4,71 +4,393 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Info RW 05 - KATARNOLIMA</title>
-<link rel="stylesheet" href="style.css?v=25">
+<link rel="icon" href="img/logo-resmi-karang-taruna.jpg">
+<link rel="stylesheet" href="style.css?v=26">
 <style>
-*{ -webkit-tap-highlight-color:transparent!important; }
-body{background:#0f0f0f!important}
-.info-dark{width:100%;max-width:440px;margin:0 auto;background:#121212;min-height:100vh;padding-bottom:90px;color:#fff}
-.dark-header{padding:14px 16px;display:flex;align-items:center;gap:12px;background:#121212;position:sticky;top:0;z-index:20}
-.dark-header .back{width:40px;height:40px;background:#1e1e1e;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;cursor:pointer;border:1px solid #2a2a2a}
-.dark-header h1{flex:1;font-size:16px;font-weight:700;color:#fff;text-align:center;margin-right:40px}
-.update-dark{margin:16px;background:linear-gradient(135deg,#1e293b 0%,#0f172a 100%);border-radius:20px;padding:16px;display:flex;gap:14px;align-items:center;position:relative;overflow:hidden;border:1px solid #1e293b;cursor:pointer}
-.update-thumb{width:56px;height:56px;background:#fbbf24;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0}
-.update-dark-text{flex:1;min-width:0}
-.update-dark-text h3{font-size:14px;font-weight:800;line-height:1.2;color:#fff}
-.update-dark-text p{font-size:11px;color:#94a3b8;margin-top:4px;line-height:1.3}
-.btn-update{padding:8px 16px;background:#2a2a2a;color:#fff;border-radius:999px;font-size:12px;font-weight:700;border:1px solid #3a3a3a;cursor:pointer;flex-shrink:0}
-.btn-update.new{background:#fbbf24;color:#000;border-color:#fbbf24}
-.filter-dark{display:flex;gap:8px;padding:12px 16px;overflow-x:auto;white-space:nowrap;scrollbar-width:none;background:#121212;border-bottom:1px solid #1e1e1e}
-.filter-dark .f-tab{padding:8px 16px;border-radius:999px;border:1px solid #2a2a2a;background:#1e1e1e;font-size:12px;font-weight:600;color:#94a3b8;flex-shrink:0;cursor:pointer}
-.filter-dark .f-tab.active{background:#fff;color:#000;border-color:#fff;font-weight:800}
-.berita-dark{display:flex;gap:14px;padding:16px;align-items:flex-start;border-bottom:1px solid #1e1e1e;cursor:pointer;background:#121212}
-.berita-dark-thumb{width:64px;height:64px;background:#1e1e1e;border-radius:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid #2a2a2a;font-size:22px}
-.berita-dark-content{flex:1;min-width:0}
-.berita-dark-cat{display:inline-block;padding:4px 10px;border-radius:999px;font-size:10px;font-weight:700;margin-bottom:6px}
-.cat-kegiatan{background:rgba(251,191,36,0.15);color:#fbbf24}
-.cat-pengumuman{background:rgba(96,165,250,0.15);color:#60a5fa}
-.cat-posyandu{background:rgba(74,222,128,0.15);color:#4ade80}
-.cat-update{background:#fbbf24;color:#000}
-.berita-dark-content h3{font-size:13px;font-weight:600;color:#e5e7eb;line-height:1.35}
-.berita-dark-meta{font-size:11px;color:#6b7280;margin-top:6px}
+*{ -webkit-tap-highlight-color:transparent!important; margin:0; padding:0; box-sizing:border-box; }
+body {
+  background: #f8fafc !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+.info-container {
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto;
+  background: #ffffff;
+  min-height: 100vh;
+  padding-bottom: 120px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.05);
+  position: relative;
+}
+
+/* HEADER PROFESSIONAL */
+.light-header {
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  border-bottom: 1px solid #f1f5f9;
+}
+.btn-back-modern {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0f172a;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+}
+.btn-back-modern:active {
+  background: #e2e8f0;
+  transform: scale(0.95);
+}
+.btn-back-modern svg {
+  width: 20px;
+  height: 20px;
+  stroke: #0f172a;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+.light-header h1 {
+  flex: 1;
+  font-size: 16px;
+  font-weight: 800;
+  color: #0f172a;
+  text-align: center;
+  margin-right: 40px;
+}
+
+/* TAB FILTER */
+.filter-light {
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: none;
+  background: #ffffff;
+  border-bottom: 1px solid #f1f5f9;
+}
+.filter-light::-webkit-scrollbar { display: none; }
+.filter-light .f-tab {
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.filter-light .f-tab.active {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+  font-weight: 700;
+}
+
+/* LIST BERITA & UPDATE CARD */
+.update-banner {
+  margin: 16px;
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  border-radius: 18px;
+  padding: 16px;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  box-shadow: 0 10px 20px -5px rgba(37, 99, 235, 0.35);
+  transition: transform 0.2s;
+}
+.update-banner:active {
+  transform: scale(0.98);
+}
+.update-icon {
+  width: 48px;
+  height: 48px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+.update-info {
+  flex: 1;
+  min-width: 0;
+}
+.update-badge {
+  display: inline-block;
+  background: #fbbf24;
+  color: #000;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 6px;
+  margin-bottom: 4px;
+}
+.update-info h3 {
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+.update-info p {
+  font-size: 11px;
+  color: #bfdbfe;
+  margin-top: 3px;
+}
+
+.berita-item {
+  display: flex;
+  gap: 14px;
+  padding: 16px;
+  align-items: flex-start;
+  border-bottom: 1px solid #f1f5f9;
+  cursor: pointer;
+  background: #ffffff;
+}
+.berita-item:active {
+  background: #f8fafc;
+}
+.berita-thumb {
+  width: 52px;
+  height: 52px;
+  background: #eff6ff;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 22px;
+}
+.berita-content {
+  flex: 1;
+  min-width: 0;
+}
+.berita-cat {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.cat-kegiatan { background: #fef3c7; color: #d97706; }
+.cat-pengumuman { background: #dbeafe; color: #2563eb; }
+.cat-iuran { background: #dcfce7; color: #15803d; }
+.berita-content h3 {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #1e293b;
+  line-height: 1.4;
+}
+.berita-meta {
+  font-size: 11px;
+  color: #94a3b8;
+  margin-top: 6px;
+}
+
+/* MODAL DETAIL UPDATE v1.5 */
+.modal-update-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(6px);
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal-update-overlay.show {
+  display: flex;
+}
+.modal-update-card {
+  background: #ffffff;
+  border-radius: 24px;
+  max-width: 380px;
+  width: 100%;
+  padding: 24px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  animation: popup 0.25s ease-out;
+}
+@keyframes popup {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+.modal-header-update {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.modal-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.modal-icon {
+  width: 42px;
+  height: 42px;
+  background: #dbeafe;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
+.modal-close-btn {
+  background: #f1f5f9;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-weight: bold;
+  color: #64748b;
+  cursor: pointer;
+}
+.update-features-list {
+  list-style: none;
+  margin: 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.update-features-list li {
+  font-size: 12.5px;
+  color: #334155;
+  line-height: 1.4;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.update-features-list li span {
+  color: #2563eb;
+  font-weight: bold;
+}
+.btn-paham {
+  width: 100%;
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  margin-top: 8px;
+}
 </style>
 </head>
 <body>
-<div class="info-dark">
-  <div class="dark-header">
-    <div class="back" id="backBtn">←</div>
-    <h1>Info RW 05 - KATARNOLIMA</h1>
+<div class="info-container">
+  <!-- HEADER TOMBOL KEMBALI PRO -->
+  <div class="light-header">
+    <button class="btn-back-modern" id="backBtn" onclick="history.back()" aria-label="Kembali">
+      <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </button>
+    <h1>Info & Berita RW 05</h1>
   </div>
 
-  <div class="filter-dark">
-    <div class="f-tab active" onclick="setFilter('semua',this)">Semua</div>
-    <div class="f-tab" onclick="setFilter('kegiatan',this)">Kegiatan</div>
-    <div class="f-tab" onclick="setFilter('pengumuman',this)">Pengumuman</div>
-    <div class="f-tab" onclick="setFilter('iuran',this)">Iuran</div>
+  <!-- TAB FILTER -->
+  <div class="filter-light">
+    <div class="f-tab active" onclick="setFilter('semua', this)">Semua</div>
+    <div class="f-tab" onclick="setFilter('kegiatan', this)">Kegiatan</div>
+    <div class="f-tab" onclick="setFilter('pengumuman', this)">Pengumuman</div>
+    <div class="f-tab" onclick="setFilter('iuran', this)">Iuran</div>
   </div>
 
+  <!-- BANNER NOTIFIKASI UPDATE APLIKASI v1.5 -->
+  <div class="update-banner" id="openUpdateModal">
+    <div class="update-icon">🚀</div>
+    <div class="update-info">
+      <span class="update-badge">UPDATE SISTEM</span>
+      <h3>Pembaruan Aplikasi v1.5</h3>
+      <p>Klik untuk melihat rincian fitur & perbaikan terbaru</p>
+    </div>
+    <div style="font-size:18px;font-weight:bold">›</div>
+  </div>
+
+  <!-- DAFTAR BERITA / INFO -->
   <div id="beritaList">
-    <div class="berita-dark" data-cat="kegiatan">
-      <div class="berita-dark-thumb">🌸</div>
-      <div class="berita-dark-content">
-        <span class="berita-dark-cat cat-kegiatan">Kegiatan</span>
+    <div class="berita-item" data-cat="kegiatan">
+      <div class="berita-thumb">🌸</div>
+      <div class="berita-content">
+        <span class="berita-cat cat-kegiatan">Kegiatan</span>
         <h3>Kerja Bakti Akbar RW 05 Minggu Ke-3 di Lapangan Poncol Jaya</h3>
-        <div class="berita-dark-meta">20 Sep 2026 • Balai Warga RW 05</div>
+        <div class="berita-meta">20 Sep 2026 • Balai Warga RW 05</div>
       </div>
     </div>
-    <div class="berita-dark" data-cat="pengumuman">
-      <div class="berita-dark-thumb">📢</div>
-      <div class="berita-dark-content">
-        <span class="berita-dark-cat cat-pengumuman">Pengumuman</span>
+
+    <div class="berita-item" data-cat="pengumuman">
+      <div class="berita-thumb">📢</div>
+      <div class="berita-content">
+        <span class="berita-cat cat-pengumuman">Pengumuman</span>
         <h3>Jadwal Ronda Malam Bulan Ini - RT 01 Sampai RT 07</h3>
-        <div class="berita-dark-meta">19 Sep 2026 • 22:00 - 04:00 WIB</div>
+        <div class="berita-meta">19 Sep 2026 • 22:00 - 04:00 WIB</div>
       </div>
     </div>
+
+    <div class="berita-item" data-cat="iuran">
+      <div class="berita-thumb">💰</div>
+      <div class="berita-content">
+        <span class="berita-cat cat-iuran">Iuran</span>
+        <h3>Laporan Transparansi Kas RW 05 Bulan Ini</h3>
+        <div class="berita-meta">18 Sep 2026 • Bendahara RW 05</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAVBAR KONSISTEN SAMAKAN STRUKTUR -->
+  <nav class="jaki-nav">
+    <a href="index.html">🏠<span>Beranda</span></a>
+    <a href="kegiatan.html">📋<span>Kegiatan</span></a>
+    <a class="center" href="aduan-warga.html"><div class="cam">📷</div><span>Lapor</span></a>
+    <a class="active" href="info.html">🔔<span>Info</span></a>
+    <a href="profil.html">👤<span>Profil</span></a>
+  </nav>
+</div>
+
+<!-- MODAL DETAIL RINCIAN UPDATE v1.5 -->
+<div class="modal-update-overlay" id="updateModal">
+  <div class="modal-update-card">
+    <div class="modal-header-update">
+      <div class="modal-title-wrap">
+        <div class="modal-icon">🚀</div>
+        <div>
+          <h3 style="font-size:15px;font-weight:800;color:#0f172a">Pembaruan v1.5</h3>
+          <p style="font-size:11px;color:#64748b">Rilis Sistem KATARNOLIMA</p>
+        </div>
+      </div>
+      <button class="modal-close-btn" id="closeUpdateModal">✕</button>
+    </div>
+
+    <ul class="update-features-list">
+      <li><span>✓</span> Layout Tampilan Info & Berita lebih segar dan bersih.</li>
+      <li><span>✓</span> Fitur Realtime Kas Saldo Utama terhubung langsung dengan Firestore.</li>
+      <li><span>✓</span> Navigasi bottom bar seragam dan lebih responsif di semua perangkat.</li>
+      <li><span>✓</span> Perbaikan bug pada pemanggilan sistem notifikasi darurat.</li>
+    </ul>
+
+    <button class="btn-paham" id="btnPaham">Saya Mengerti</button>
   </div>
 </div>
 
-<script src="script.js?v=25"></script>
+<script src="script.js?v=26"></script>
 <script>
 // @ts-nocheck
 
@@ -77,15 +399,39 @@ body{background:#0f0f0f!important}
  * @param {HTMLElement} el
  */
 function setFilter(cat, el) {
-  document.querySelectorAll('.filter-dark .f-tab').forEach(tab => tab.classList.remove('active'));
+  document.querySelectorAll('.filter-light .f-tab').forEach(tab => tab.classList.remove('active'));
   if (el) el.classList.add('active');
 
-  document.querySelectorAll('#beritaList .berita-dark').forEach(item => {
+  document.querySelectorAll('#beritaList .berita-item').forEach(item => {
     if (cat === 'semua' || item.getAttribute('data-cat') === cat) {
       /** @type {HTMLElement} */ (item).style.display = 'flex';
     } else {
       /** @type {HTMLElement} */ (item).style.display = 'none';
     }
+  });
+}
+
+// LOGIKA MODAL POPUP RINCIAN UPDATE v1.5
+var bannerUpdate = document.getElementById('openUpdateModal');
+var modalUpdate = document.getElementById('updateModal');
+var closeBtn = document.getElementById('closeUpdateModal');
+var btnPaham = document.getElementById('btnPaham');
+
+if (bannerUpdate && modalUpdate) {
+  bannerUpdate.addEventListener('click', function() {
+    modalUpdate.classList.add('show');
+  });
+}
+
+if (closeBtn && modalUpdate) {
+  closeBtn.addEventListener('click', function() {
+    modalUpdate.classList.remove('show');
+  });
+}
+
+if (btnPaham && modalUpdate) {
+  btnPaham.addEventListener('click', function() {
+    modalUpdate.classList.remove('show');
   });
 }
 </script>

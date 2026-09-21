@@ -1,42 +1,46 @@
+<!-- @ts-nocheck -->
 <!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Profil - KATARNOLIMA RW 05</title>
+<link rel="icon" href="img/logo-resmi-karang-taruna.jpg">
 <link rel="stylesheet" href="style.css?v=36">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
 html,body{background:#fff!important;width:100%;height:100%;margin:0!important}
-.profil-root{width:100%;max-width:440px;margin:0 auto;background:#fff;min-height:100vh;padding-bottom:90px}
+.profil-root{width:100%;max-width:440px;margin:0 auto;background:#fff;min-height:100vh;padding-bottom:110px}
 .login-view{padding:16px 20px 0}
-.katarnolima-logo{display:flex;align-items:center;gap:10px;margin:30px 0 0}
+.katarnolima-logo{display:flex;align-items:center;gap:10px;margin:20px 0 0}
 .logo-5{font-size:32px;font-weight:900;color:#000;background:#fbbf24;padding:6px 12px;border-radius:12px}
 .logo-text b{font-size:20px;font-weight:900;line-height:0.9;display:block;color:#000}
 .logo-text span{font-size:10px;font-weight:700;color:#000;opacity:0.7}
-.welcome h1{font-size:22px;font-weight:800;color:#000;margin-top:28px}
-.welcome p{font-size:13px;color:#334155;margin-top:8px;line-height:1.4}
-.info-box{background:#fef3c7;border:1px solid #fde68a;border-radius:12px;padding:12px 14px;margin-top:18px;display:flex;gap:10px}
+.welcome h1{font-size:22px;font-weight:800;color:#000;margin-top:20px}
+.welcome p{font-size:13px;color:#334155;margin-top:6px;line-height:1.4}
+.info-box{background:#fef3c7;border:1px solid #fde68a;border-radius:12px;padding:12px 14px;margin-top:16px;display:flex;gap:10px}
 .info-box b{font-size:12px;color:#92400e;display:block}
 .info-box span{font-size:11px;color:#78350f;line-height:1.3}
 .input-jaki{width:100%;border:1.5px solid #cbd5e1;border-radius:12px;padding:14px 14px;font-size:15px;outline:none;color:#000;margin-bottom:12px}
 .input-jaki:focus{border-color:#111}
 .input-jaki.error{border-color:#ef4444;background:#fef2f2}
 .label-kecil{font-size:11px;font-weight:700;color:#475569;margin:0 0 6px 4px;display:block}
-.btn-masuk{width:100%;background:#111;color:#fbbf24;border:none;border-radius:12px;padding:16px;font-size:15px;font-weight:800;margin-top:10px;cursor:pointer}
+.btn-masuk{width:100%;background:#111;color:#fbbf24;border:none;border-radius:12px;padding:16px;font-size:15px;font-weight:800;margin-top:6px;cursor:pointer}
 .btn-masuk:disabled{background:#9ca3af;color:#fff}
-.bottom-register{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:440px;border-top:1px solid #e2e8f0;background:#fff;padding:16px;text-align:center;font-size:14px;z-index:20}
-.bottom-register a{color:#111;font-weight:800;text-decoration:none}
-.logged-view{display:none;background:#f6f8ff;min-height:100vh;padding-bottom:90px}
+
+.register-area{margin-top:20px;text-align:center;font-size:13px;color:#475569}
+.register-area a{color:#111;font-weight:800;text-decoration:none}
+
+.logged-view{display:none;background:#f6f8ff;min-height:100vh;padding-bottom:110px}
 .top-area{padding:22px 16px 0;background:linear-gradient(180deg,#fff 0%,#fef3c7 100%);padding-bottom:86px}
 .greet h1{font-size:22px;font-weight:800;color:#000}
 .avatar-jaki{width:72px;height:72px;border-radius:50%;border:3px solid #fff;background:#111;display:flex;align-items:center;justify-content:center;color:#fbbf24;font-weight:900;font-size:28px}
 .cards-row{display:flex;gap:12px;padding:0 16px;margin-top:-62px}
 .card-jaki{flex:1;background:#fff;border-radius:18px;padding:14px;border:1px solid #fde68a}
-.jaki-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:440px;background:#fff;border-top:1px solid #e2e8f0;display:flex;justify-content:space-around;padding:8px 0 10px;z-index:100}
-.jaki-nav a{font-size:11px;color:#64748b;display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none}
-.jaki-nav a.active{color:#000;font-weight:800}
-.jaki-nav a.center.cam{width:62px;height:62px;background:#0fb398;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:28px;margin-top:-34px;border:4px solid #fff}
+
+/* TOMBOL AKSES ADMIN */
+.btn-admin-link { display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; font-size: 12px; font-weight: 700; color: #64748b; text-decoration: none; background: #f1f5f9; padding: 12px 16px; border-radius: 12px; border: 1px solid #e2e8f0; }
+.btn-admin-link:active { background: #e2e8f0; }
 </style>
 </head>
 <body>
@@ -46,9 +50,9 @@ html,body{background:#fff!important;width:100%;height:100%;margin:0!important}
     <div class="katarnolima-logo"><div class="logo-5">05</div><div class="logo-text"><b>KATAR<br>NOLIMA</b><span>RW 05 Poncol Jaya</span></div></div>
     <div class="welcome"><h1 id="judulForm">Masuk Warga RW 05 👋</h1><p id="descForm">Masuk dengan NIK & No. Kartu Keluarga yang terdaftar di RT.</p></div>
     
-    <div class="info-box"><div>🔒</div><div><b>Data Aman & Terenkripsi</b><span>NIK & KK kamu di-hash SHA-256 sebelum disimpan di HP. Admin RW tidak bisa lihat NIK full kamu.</span></div></div>
+    <div class="info-box"><div>🔒</div><div><b>Data Aman & Terenkripsi</b><span>NIK & KK kamu di-hash SHA-256 sebelum disimpan. Admin RW hanya melihat data terverifikasi.</span></div></div>
 
-    <div id="formLogin" style="margin-top:20px">
+    <div id="formLogin" style="margin-top:16px">
       <span class="label-kecil">NIK 16 DIGIT</span>
       <input id="inputNIK" class="input-jaki" inputmode="numeric" maxlength="16" placeholder="3171xxxxxxxxxxxx">
       <span class="label-kecil">NO. KARTU KELUARGA 16 DIGIT</span>
@@ -56,7 +60,7 @@ html,body{background:#fff!important;width:100%;height:100%;margin:0!important}
       <button id="btnMasuk" class="btn-masuk">Masuk</button>
     </div>
 
-    <div id="formDaftar" style="display:none;margin-top:20px">
+    <div id="formDaftar" style="display:none;margin-top:16px">
       <span class="label-kecil">NAMA LENGKAP SESUAI KTP</span>
       <input id="inputNamaDaftar" class="input-jaki" placeholder="Contoh: Budi Santoso">
       <span class="label-kecil">NIK 16 DIGIT</span>
@@ -68,7 +72,17 @@ html,body{background:#fff!important;width:100%;height:100%;margin:0!important}
       <button id="btnDaftar" class="btn-masuk">Daftar Akun Warga</button>
     </div>
 
-    <div class="bottom-register"><span id="textBawah">Belum punya akun?</span> <a href="#" id="linkDaftar">Daftar dengan NIK & KK</a></div>
+    <!-- AREA DAFTAR / MASUK -->
+    <div class="register-area">
+      <span id="textBawah">Belum punya akun?</span> <a href="#" id="linkDaftar">Daftar dengan NIK & KK</a>
+    </div>
+
+    <!-- TOMBOL AKSES ADMIN -->
+    <div style="margin-top: 16px; margin-bottom: 20px; text-align: center;">
+      <a href="admin.html" class="btn-admin-link">
+        🔒 Akses Pengurus / Admin
+      </a>
+    </div>
   </div>
 
   <!-- UDAH LOGIN -->
@@ -83,22 +97,49 @@ html,body{background:#fff!important;width:100%;height:100%;margin:0!important}
       <div class="card-jaki"><div style="font-size:12px;color:#64748b">Nama Terdaftar</div><div id="namaFull" style="font-weight:800;margin-top:4px">-</div><div id="rtFull" style="font-size:12px;color:#475569;margin-top:2px">-</div></div>
       <div class="card-jaki"><div style="font-size:12px;color:#64748b">Status</div><div style="font-weight:800;margin-top:4px;color:#0fb398">Terverifikasi RT</div><div style="font-size:11px;margin-top:6px;background:#f0fdf4;color:#15803d;padding:4px 8px;border-radius:999px;display:inline-block">Data Aman</div></div>
     </div>
-    <div style="padding:16px"><button id="btnKeluar" style="width:100%;background:#fff;border:1px solid #fecaca;color:#ef4444;padding:14px;border-radius:12px;font-weight:700">Keluar Akun</button></div>
+    <div style="padding:16px">
+      <button id="btnKeluar" style="width:100%;background:#fff;border:1px solid #fecaca;color:#ef4444;padding:14px;border-radius:12px;font-weight:700">Keluar Akun</button>
+      
+      <div style="margin-top:16px;text-align:center">
+        <a href="admin.html" class="btn-admin-link">
+          🔒 Akses Pengurus / Admin
+        </a>
+      </div>
+    </div>
   </div>
 
-  <nav class="jaki-nav"><a href="index.html">🏠<span>Beranda</span></a><a href="semua-layanan.html">📋<span>Aktivitas</span></a><a class="center" href="aduan-warga.html"><div class="cam">📷</div><span>Lapor</span></a><a href="berita.html">🔔<span>Notifikasi</span></a><a class="active" href="profil.html">👤<span>Profil</span></a></nav>
+  <!-- BOTTOM NAVBAR KONSISTEN PRESISI -->
+  <nav class="jaki-nav">
+    <a href="index.html">🏠<span>Beranda</span></a>
+    <a href="kegiatan.html">📋<span>Kegiatan</span></a>
+    <a class="center" href="aduan-warga.html"><div class="cam">📷</div><span>Lapor</span></a>
+    <a href="info.html">🔔<span>Info</span></a>
+    <a class="active" href="profil.html">👤<span>Profil</span></a>
+  </nav>
 </div>
-<script>
+
+<script type="module">
 // @ts-nocheck
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCZtvImbyZmqoEoY1hYZcuCbUpIl3R1fhE",
+  authDomain: "katarnolima-rw05.firebaseapp.com",
+  projectId: "katarnolima-rw05",
+  storageBucket: "katarnolima-rw05.firebasestorage.app",
+  messagingSenderId: "965647612835",
+  appId: "1:965647612835:web:b712367f0d8beb7c5bf816"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
 async function hashNIK(text){
   var enc = new TextEncoder().encode(text);
   var buf = await crypto.subtle.digest('SHA-256', enc);
-  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+  return Array.from(new Uint8Array(buf)).map(function(b){ return b.toString(16).padStart(2,'0'); }).join('');
 }
-function getUsers(){
-  try{ return JSON.parse(localStorage.getItem('rw05_users')||'[]'); }catch{ return []; }
-}
-function saveUsers(users){ localStorage.setItem('rw05_users', JSON.stringify(users)); }
 
 var loginView = document.getElementById('loginView');
 var loggedView = document.getElementById('loggedView');
@@ -110,73 +151,150 @@ var descForm = document.getElementById('descForm');
 function checkLogin(){
   var current = JSON.parse(localStorage.getItem('rw05_current_user')||'null');
   if(current){
-    loginView.style.display='none';
-    loggedView.style.display='block';
-    document.getElementById('displayNama').textContent = current.nama;
-    document.getElementById('namaFull').textContent = current.nama;
-    document.getElementById('rtFull').textContent = current.rt || 'RW 05';
-    document.getElementById('displayNIKMask').textContent = 'NIK •••• ' + current.nikLast4;
-    document.getElementById('avatarInit').textContent = current.nama.charAt(0).toUpperCase();
+    if(loginView) loginView.style.display='none';
+    if(loggedView) loggedView.style.display='block';
+    
+    var elNama = document.getElementById('displayNama');
+    var elNamaFull = document.getElementById('namaFull');
+    var elRtFull = document.getElementById('rtFull');
+    var elNikMask = document.getElementById('displayNIKMask');
+    var elAvatar = document.getElementById('avatarInit');
+
+    if(elNama) elNama.textContent = current.nama;
+    if(elNamaFull) elNamaFull.textContent = current.nama;
+    if(elRtFull) elRtFull.textContent = current.rt || 'RW 05';
+    if(elNikMask) elNikMask.textContent = 'NIK •••• ' + current.nikLast4;
+    if(elAvatar) elAvatar.textContent = current.nama.charAt(0).toUpperCase();
   } else {
-    loginView.style.display='block';
-    loggedView.style.display='none';
+    if(loginView) loginView.style.display='block';
+    if(loggedView) loggedView.style.display='none';
   }
 }
 
-document.getElementById('btnMasuk').addEventListener('click', async function(){
-  var nik = document.getElementById('inputNIK').value.trim();
-  var kk = document.getElementById('inputKK').value.trim();
-  if(nik.length!==16 || kk.length!==16){ alert('NIK & KK harus 16 digit'); return; }
-  var nikHash = await hashNIK(nik);
-  var kkHash = await hashNIK(kk);
-  var users = getUsers();
-  var found = users.find(u=>u.nikHash===nikHash && u.kkHash===kkHash);
-  if(!found){ alert('NIK & KK tidak terdaftar. Silakan Daftar dulu.'); return; }
-  localStorage.setItem('rw05_current_user', JSON.stringify({nama:found.nama, nikLast4:nik.slice(-4), rt:found.rt, email:found.nama.toLowerCase().replace(/\s/g,'')+'@rw05.id'}));
-  checkLogin();
-});
+// LOGIKA MASUK (VERIFIKASI FIRESTORE & LOCAL)
+var btnMasuk = document.getElementById('btnMasuk');
+if(btnMasuk){
+  btnMasuk.addEventListener('click', async function(){
+    var nikInput = document.getElementById('inputNIK');
+    var kkInput = document.getElementById('inputKK');
+    var nik = nikInput ? nikInput.value.trim() : '';
+    var kk = kkInput ? kkInput.value.trim() : '';
+    
+    if(nik.length!==16 || kk.length!==16){ alert('NIK & KK harus 16 digit'); return; }
+    
+    btnMasuk.textContent = "Memverifikasi...";
+    btnMasuk.disabled = true;
+    
+    try {
+      var nikHash = await hashNIK(nik);
+      var userDoc = await getDoc(doc(db, "data_warga", nikHash));
+      
+      if(userDoc.exists()){
+        var data = userDoc.data();
+        localStorage.setItem('rw05_current_user', JSON.stringify({nama: data.nama, nikLast4: nik.slice(-4), rt: data.rt}));
+        checkLogin();
+      } else {
+        alert('NIK & KK tidak terdaftar di database RW 05. Silakan Daftar dahulu.');
+      }
+    } catch(err) {
+      alert('Terjadi kesalahan koneksi. Coba lagi.');
+    } finally {
+      btnMasuk.textContent = "Masuk";
+      btnMasuk.disabled = false;
+    }
+  });
+}
 
-document.getElementById('btnDaftar').addEventListener('click', async function(){
-  var nama = document.getElementById('inputNamaDaftar').value.trim();
-  var nik = document.getElementById('inputNIKDaftar').value.trim();
-  var kk = document.getElementById('inputKKDaftar').value.trim();
-  var rt = document.getElementById('inputRT').value.trim() || 'RT 03 / RW 05';
-  if(nama.length<3){ alert('Nama minimal 3 huruf'); return; }
-  if(nik.length!==16 || kk.length!==16){ alert('NIK & KK harus 16 digit'); return; }
-  var nikHash = await hashNIK(nik);
-  var kkHash = await hashNIK(kk);
-  var users = getUsers();
-  if(users.find(u=>u.nikHash===nikHash)){ alert('NIK ini sudah terdaftar'); return; }
-  users.push({nama:nama, nikHash:nikHash, kkHash:kkHash, rt:rt, created:Date.now()});
-  saveUsers(users);
-  localStorage.setItem('rw05_current_user', JSON.stringify({nama:nama, nikLast4:nik.slice(-4), rt:rt}));
-  alert('Akun berhasil dibuat! Selamat datang, '+nama);
-  checkLogin();
-});
+// LOGIKA DAFTAR (OTOMATIS SIMPAN KE FIRESTORE CLOUD)
+var btnDaftar = document.getElementById('btnDaftar');
+if(btnDaftar){
+  btnDaftar.addEventListener('click', async function(){
+    var namaEl = document.getElementById('inputNamaDaftar');
+    var nikEl = document.getElementById('inputNIKDaftar');
+    var kkEl = document.getElementById('inputKKDaftar');
+    var rtEl = document.getElementById('inputRT');
 
-document.getElementById('btnKeluar').addEventListener('click', function(){
-  if(confirm('Keluar? Data akun tetap tersimpan aman di HP ini.')){
-    localStorage.removeItem('rw05_current_user');
-    checkLogin();
-  }
-});
+    var nama = namaEl ? namaEl.value.trim() : '';
+    var nik = nikEl ? nikEl.value.trim() : '';
+    var kk = kkEl ? kkEl.value.trim() : '';
+    var rt = (rtEl && rtEl.value.trim()) ? rtEl.value.trim() : 'RT 03 / RW 05';
+
+    if(nama.length<3){ alert('Nama minimal 3 huruf'); return; }
+    if(nik.length!==16 || kk.length!==16){ alert('NIK & KK harus 16 digit'); return; }
+    
+    btnDaftar.textContent = "Mendaftarkan...";
+    btnDaftar.disabled = true;
+
+    try {
+      var nikHash = await hashNIK(nik);
+      var kkHash = await hashNIK(kk);
+      
+      // Cek apakah NIK sudah pernah terdaftar di Firestore
+      var userCheck = await getDoc(doc(db, "data_warga", nikHash));
+      if(userCheck.exists()){
+        alert('NIK ini sudah terdaftar di database warga.');
+        return;
+      }
+
+      // SIMPAN DATA UTAMA KE CLOUD FIRESTORE
+      await setDoc(doc(db, "data_warga", nikHash), {
+        nama: nama,
+        nikHash: nikHash,
+        kkHash: kkHash,
+        rt: rt,
+        createdAt: serverTimestamp()
+      });
+
+      // SIMPAN SESI DI HP WARGA
+      localStorage.setItem('rw05_current_user', JSON.stringify({nama: nama, nikLast4: nik.slice(-4), rt: rt}));
+      alert('Akun berhasil terdaftar resmi di RW 05! Selamat datang, ' + nama);
+      checkLogin();
+
+    } catch(err) {
+      alert('Gagal mendaftar: ' + err.message);
+    } finally {
+      btnDaftar.textContent = "Daftar Akun Warga";
+      btnDaftar.disabled = false;
+    }
+  });
+}
+
+var btnKeluar = document.getElementById('btnKeluar');
+if(btnKeluar){
+  btnKeluar.addEventListener('click', function(){
+    if(confirm('Keluar dari sesi akun ini?')){
+      localStorage.removeItem('rw05_current_user');
+      checkLogin();
+    }
+  });
+}
 
 var linkDaftar = document.getElementById('linkDaftar');
 var textBawah = document.getElementById('textBawah');
-var isDaftar=false;
-linkDaftar.addEventListener('click', function(e){
-  e.preventDefault();
-  isDaftar=!isDaftar;
-  if(isDaftar){
-    formLogin.style.display='none'; formDaftar.style.display='block';
-    judulForm.textContent='Daftar Warga RW 05'; descForm.textContent='Daftarkan NIK & KK kamu untuk verifikasi RT.';
-    textBawah.textContent='Sudah punya akun?'; linkDaftar.textContent='Masuk di sini.';
-  } else {
-    formLogin.style.display='block'; formDaftar.style.display='none';
-    judulForm.textContent='Masuk Warga RW 05'; descForm.textContent='Masuk dengan NIK & No. Kartu Keluarga yang terdaftar di RT.';
-    textBawah.textContent='Belum punya akun?'; linkDaftar.textContent='Daftar dengan NIK & KK';
-  }
-});
+var isDaftar = false;
+
+if(linkDaftar){
+  linkDaftar.addEventListener('click', function(e){
+    e.preventDefault();
+    isDaftar = !isDaftar;
+    if(isDaftar){
+      if(formLogin) formLogin.style.display='none'; 
+      if(formDaftar) formDaftar.style.display='block';
+      if(judulForm) judulForm.textContent='Daftar Warga RW 05'; 
+      if(descForm) descForm.textContent='Daftarkan NIK & KK kamu untuk verifikasi RT.';
+      if(textBawah) textBawah.textContent='Sudah punya akun?'; 
+      linkDaftar.textContent='Masuk di sini.';
+    } else {
+      if(formLogin) formLogin.style.display='block'; 
+      if(formDaftar) formDaftar.style.display='none';
+      if(judulForm) judulForm.textContent='Masuk Warga RW 05'; 
+      if(descForm) descForm.textContent='Masuk dengan NIK & No. Kartu Keluarga yang terdaftar di RT.';
+      if(textBawah) textBawah.textContent='Belum punya akun?'; 
+      linkDaftar.textContent='Daftar dengan NIK & KK';
+    }
+  });
+}
+
 checkLogin();
 </script>
 </body>
