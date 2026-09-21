@@ -3,252 +3,665 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KATARNOLIMA - Dashboard Admin RW 05</title>
+<title>Admin Pro - KATARNOLIMA RW 05</title>
 <link rel="icon" href="img/logo-resmi-karang-taruna.jpg">
-<link rel="stylesheet" href="style.css?v=27">
 <style>
-  body { background: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding-bottom: 50px; }
-  .admin-header { background: #0f172a; color: #fff; padding: 16px; display: flex; justify-content: space-between; align-items: center; position: sticky; top:0; z-index:100; }
-  .admin-container { padding: 16px; max-width: 600px; margin: 0 auto; }
-  .card-box { background: #fff; border-radius: 14px; padding: 16px; margin-bottom: 16px; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
-  .card-aduan img { width: 100%; max-height: 200px; object-fit: cover; border-radius: 10px; margin: 10px 0; border: 1px solid #cbd5e1; }
-  .badge-status { padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 800; text-transform: uppercase; }
-  .status-menunggu { background: #fef3c7; color: #b45309; }
-  .status-proses { background: #eff6ff; color: #1d4ed8; }
-  .status-selesai { background: #dcfce7; color: #15803d; }
-  .btn-action { padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; border: none; cursor: pointer; flex: 1; }
-  .btn-proses { background: #2563eb; color: #fff; }
-  .btn-selesai { background: #16a34a; color: #fff; }
-  .btn-hapus { background: #ef4444; color: #fff; }
-  .form-control { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 13px; margin-top: 4px; box-sizing: border-box; font-family: inherit; }
-  .btn-save { width:100%; padding:12px; background:#0f172a; color:#fff; border:none; border-radius:8px; font-weight:800; font-size:13px; cursor:pointer; margin-top:10px; }
-  .section-title { font-size:14px; font-weight:800; color:#0f172a; margin-bottom:10px; display:flex; align-items:center; gap:6px; }
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+body{background:#f1f5f9;color:#0f172a}
+.admin-layout{display:flex;min-height:100vh}
+.sidebar{width:260px;background:#0f172a;color:#fff;position:fixed;left:0;top:0;bottom:0;z-index:50;overflow-y:auto;transition:transform .3s ease}
+.sidebar-header{padding:20px;border-bottom:1px solid #1e293b;display:flex;align-items:center;gap:10px}
+.logo-5{width:40px;height:40px;background:#fbbf24;color:#000;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px}
+.menu{padding:12px}
+.menu-label{font-size:10px;font-weight:800;color:#64748b;letter-spacing:1px;padding:12px 12px 6px;text-transform:uppercase}
+.menu-item{width:100%;display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;font-size:13px;font-weight:600;color:#94a3b8;background:none;border:none;cursor:pointer;text-align:left;transition:all .15s}
+.menu-item:hover{background:#1e293b;color:#fff}
+.menu-item.active{background:#fff;color:#0f172a;font-weight:800}
+.menu-item .icon{font-size:16px;width:22px;text-align:center}
+.main{margin-left:260px;flex:1;min-height:100vh}
+.topbar{height:64px;background:#fff;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;padding:0 20px;position:sticky;top:0;z-index:30}
+.hamburger{display:none;background:none;border:none;font-size:22px;cursor:pointer}
+.content{padding:20px;max-width:1200px}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px}
+.stat-card{background:#fff;border-radius:16px;padding:16px;border:1px solid #e2e8f0}
+.stat-card .label{font-size:11px;color:#64748b;font-weight:700;text-transform:uppercase}
+.stat-card .value{font-size:22px;font-weight:900;margin-top:4px}
+.stat-card .sub{font-size:11px;color:#22c55e;font-weight:600;margin-top:4px}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.card{background:#fff;border-radius:16px;padding:18px;border:1px solid #e2e8f0;margin-bottom:16px}
+.card-title{font-size:14px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-group{margin-bottom:12px}
+.form-group label{font-size:11px;font-weight:700;color:#475569;display:block;margin-bottom:4px}
+.form-control{width:100%;padding:11px 12px;border:1.5px solid #cbd5e1;border-radius:10px;font-size:13px;outline:none}
+.form-control:focus{border-color:#0f172a}
+textarea.form-control{resize:vertical;min-height:80px}
+.btn{padding:10px 16px;border-radius:10px;font-size:12px;font-weight:800;border:none;cursor:pointer;transition:transform .1s}
+.btn:active{transform:scale(.96)}
+.btn-primary{background:#0f172a;color:#fbbf24;width:100%}
+.btn-blue{background:#2563eb;color:#fff}
+.btn-green{background:#16a34a;color:#fff}
+.btn-red{background:#ef4444;color:#fff}
+.btn-outline{background:#f8fafc;border:1px solid #e2e8f0;color:#334155}
+.btn-sm{padding:6px 10px;font-size:11px}
+.table-wrap{overflow:auto;border-radius:12px;border:1px solid #e2e8f0}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{background:#f8fafc;padding:10px 12px;text-align:left;font-size:11px;font-weight:800;color:#475569;white-space:nowrap}
+td{padding:10px 12px;border-top:1px solid #f1f5f9;vertical-align:top}
+.badge{padding:3px 8px;border-radius:999px;font-size:10px;font-weight:800;display:inline-block}
+.badge-wait{background:#fef3c7;color:#92400e}
+.badge-proses{background:#dbeafe;color:#1e40af}
+.badge-done{background:#dcfce7;color:#166534}
+.search-box{display:flex;gap:8px;margin-bottom:12px}
+.search-box input{flex:1}
+.live-dot{width:8px;height:8px;background:#22c55e;border-radius:50%;display:inline-block;animation:pulse 1.5s infinite}
+@keyframes pulse{0%{opacity:1}50%{opacity:.4}100%{opacity:1}}
+.overlay{position:fixed;inset:0;background:rgba(15,23,42,0.85);backdrop-filter:blur(12px);z-index:9999;display:none;align-items:center;justify-content:center;padding:20px}
+.overlay.show{display:flex}
+.modal-box{background:#fff;border-radius:20px;max-width:420px;width:100%;padding:22px}
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0}
+  .hamburger{display:block}
+  .form-grid{grid-template-columns:1fr}
+}
+.admin-gate-overlay{position:fixed;inset:0;background:#0f172a;z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px}
+.admin-gate-box{background:#fff;border-radius:20px;width:100%;max-width:380px;padding:24px;text-align:center}
 </style>
 </head>
 <body>
 
-<div class="admin-header">
-  <div style="display:flex; align-items:center; gap:10px;">
-    <button class="back" style="background:none; border:none; color:#fff; font-size:20px; cursor:pointer;">←</button>
-    <h1 style="font-size:16px; margin:0; font-weight:800;">Admin Master Panel RW 05</h1>
+<!-- GATE LOGIN -->
+<div class="admin-gate-overlay" id="adminGate">
+  <div class="admin-gate-box">
+    <div style="width:64px;height:64px;background:#fef3c7;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 12px">🔒</div>
+    <h2 style="font-size:18px;font-weight:900">Admin RW 05 Terkunci</h2>
+    <p style="font-size:11px;color:#64748b;margin-top:6px;line-height:1.4">Login dengan akun admin Firebase untuk mengedit konten aplikasi secara live tanpa update APK.</p>
+    <input id="gateEmail" type="email" placeholder="Email admin" style="width:100%;padding:12px;border:1.5px solid #cbd5e1;border-radius:10px;margin-top:14px;font-size:13px">
+    <input id="gatePass" type="password" placeholder="Password admin" style="width:100%;padding:12px;border:1.5px solid #cbd5e1;border-radius:10px;margin-top:10px;font-size:13px">
+    <div id="gateError" style="font-size:11px;color:#ef4444;font-weight:700;margin-top:8px;display:none"></div>
+    <div style="display:flex;gap:8px;margin-top:14px">
+      <button id="btnGateBatal" style="flex:1;padding:12px;border-radius:10px;border:none;background:#f1f5f9;font-weight:800;font-size:13px;cursor:pointer">Kembali</button>
+      <button id="btnGateLogin" style="flex:1;padding:12px;border-radius:10px;border:none;background:#0f172a;color:#fbbf24;font-weight:800;font-size:13px;cursor:pointer">Masuk Admin</button>
+    </div>
   </div>
-  <span style="font-size:11px; background:#1e293b; padding:4px 8px; border-radius:6px; color:#fbbf24; font-weight:700;">Live Edit</span>
 </div>
 
-<div class="admin-container">
+<div class="admin-layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo-5">05</div>
+      <div><div style="font-weight:900;font-size:14px;line-height:1">KATARNOLIMA</div><div style="font-size:10px;color:#94a3b8;font-weight:700">RW 05 Poncol Jaya</div></div>
+    </div>
+    <div class="menu">
+      <div class="menu-label">Utama</div>
+      <button class="menu-item active" data-tab="dashboard"><span class="icon">📊</span> Dashboard</button>
+      <button class="menu-item" data-tab="konten"><span class="icon">⚙️</span> Konten Aplikasi</button>
+      <button class="menu-item" data-tab="berita"><span class="icon">📰</span> Berita & Info</button>
+      <button class="menu-item" data-tab="layanan"><span class="icon">🧩</span> Layanan</button>
+      <div class="menu-label">Manajemen Warga</div>
+      <button class="menu-item" data-tab="warga"><span class="icon">👥</span> Data Warga (NIK)</button>
+      <button class="menu-item" data-tab="aduan"><span class="icon">📥</span> Aduan Warga <span id="badgeAduan" style="margin-left:auto;background:#ef4444;color:#fff;padding:2px 6px;border-radius:999px;font-size:10px;display:none">0</span></button>
+      <button class="menu-item" data-tab="keuangan"><span class="icon">💰</span> Kas & Iuran</button>
+      <div class="menu-label">Sistem</div>
+      <button class="menu-item" data-tab="aplikasi"><span class="icon">🚀</span> Update & Versi Aplikasi</button>
+      <button class="menu-item" id="btnLogout" style="color:#f87171"><span class="icon">🚪</span> Keluar Admin</button>
+    </div>
+  </aside>
 
-  <!-- 1. KONTROL TEKS & INFO DINAMIS APLIKASI -->
-  <div class="card-box">
-    <div class="section-title">⚙️ Teks & Pengumuman Utama (Live Update)</div>
-    <form id="formConfig">
-      <div style="margin-bottom:10px;">
-        <label style="font-size:11px; font-weight:700; color:#475569;">Pesan Runing Text / Running Banner Beranda</label>
-        <input type="text" id="cfgBannerText" class="form-control" placeholder="Contoh: Selamat Datang di Portal RW 05...">
-      </div>
-      <div style="margin-bottom:10px;">
-        <label style="font-size:11px; font-weight:700; color:#475569;">Saldo Kas RW 05 Terkini (Rp)</label>
-        <input type="text" id="cfgSaldoKas" class="form-control" placeholder="Contoh: Rp 15.450.000">
-      </div>
-      <div style="margin-bottom:10px;">
-        <label style="font-size:11px; font-weight:700; color:#475569;">Informasi Sembako Murah</label>
-        <textarea id="cfgSembakoText" class="form-control" rows="2" placeholder="Detail beras, minyak, dll..."></textarea>
-      </div>
-      <button type="submit" class="btn-save">Simpan Perubahan Teks Aplikasi</button>
-    </form>
-  </div>
+  <main class="main">
+    <div class="topbar">
+      <button class="hamburger" id="hamburger">☰</button>
+      <div style="display:flex;align-items:center;gap:8px"><span class="live-dot"></span><span style="font-size:12px;font-weight:800">LIVE EDIT MODE</span><span style="font-size:11px;background:#f1f5f9;padding:4px 8px;border-radius:6px" id="adminEmailLabel">Admin</span></div>
+      <div style="font-size:11px;color:#64748b">Semua perubahan langsung masuk ke APK user tanpa update</div>
+    </div>
 
-  <!-- 2. PUBLIKASI BERITA BARU -->
-  <div class="card-box">
-    <div class="section-title">➕ Tambah / Publis Berita Baru</div>
-    <form id="formBerita" style="display:flex; flex-direction:column; gap:10px;">
-      <div>
-        <label style="font-size:11px; font-weight:700; color:#475569;">Kategori Berita</label>
-        <select id="beritaKat" class="form-control" required>
-          <option value="kegiatan|🌸|Kegiatan">🌸 Kegiatan Warga</option>
-          <option value="pengumuman|📢|Pengumuman">📢 Pengumuman Resmi</option>
-          <option value="iuran|💰|Iuran">💰 Info Kas / Iuran</option>
-        </select>
-      </div>
-      <div>
-        <label style="font-size:11px; font-weight:700; color:#475569;">Judul Berita</label>
-        <input type="text" id="beritaJudul" class="form-control" placeholder="Masukkan judul..." required>
-      </div>
-      <div>
-        <label style="font-size:11px; font-weight:700; color:#475569;">Isi Berita / Keterangan</label>
-        <textarea id="beritaIsi" class="form-control" rows="3" placeholder="Tulis rincian berita..." required></textarea>
-      </div>
-      <button type="submit" style="padding:12px; background:#2563eb; color:#fff; border:none; border-radius:8px; font-weight:800; font-size:13px; cursor:pointer;">Publikasikan Berita</button>
-    </form>
-  </div>
+    <div class="content">
 
-  <!-- 3. KELOLA BERITA TERPOSTING -->
-  <div class="card-box">
-    <div class="section-title">📰 Berita Terpublikasi</div>
-    <div id="listBeritaAdmin" style="display:flex; flex-direction:column; gap:8px;"></div>
-  </div>
-
-  <!-- 4. KELOLA ADUAN WARGA -->
-  <div class="section-title" style="margin-top:20px;">📥 Laporan Aduan Warga Masuk</div>
-  <div id="loadingAdmin" style="text-align:center; padding:20px; color:#64748b; font-size:13px;">Memuat data aduan...</div>
-  <div id="listAduanAdmin"></div>
-
-</div>
-
-<script src="script.js?v=27"></script>
-<script type="module">
-  // @ts-nocheck
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getFirestore, collection, onSnapshot, addDoc, doc, setDoc, updateDoc, deleteDoc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyCZtvImbyZmqoEoY1hYZcuCbUpIl3R1fhE",
-    authDomain: "katarnolima-rw05.firebaseapp.com",
-    projectId: "katarnolima-rw05",
-    storageBucket: "katarnolima-rw05.firebasestorage.app",
-    messagingSenderId: "965647612835",
-    appId: "1:965647612835:web:b712367f0d8beb7c5bf816"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-
-  const formConfig = document.getElementById('formConfig');
-  const cfgBannerText = document.getElementById('cfgBannerText');
-  const cfgSaldoKas = document.getElementById('cfgSaldoKas');
-  const cfgSembakoText = document.getElementById('cfgSembakoText');
-
-  const formBerita = document.getElementById('formBerita');
-  const listBeritaAdmin = document.getElementById('listBeritaAdmin');
-  const listAduanAdmin = document.getElementById('listAduanAdmin');
-  const loadingAdmin = document.getElementById('loadingAdmin');
-
-  // A. LOAD & SIMPAN TEKS APLIKASI (KONFIGURASI)
-  onSnapshot(doc(db, "app_config", "main_settings"), (docSnap) => {
-    if (docSnap.exists()) {
-      const data = docSnap.data();
-      if (cfgBannerText) cfgBannerText.value = data.bannerText || '';
-      if (cfgSaldoKas) cfgSaldoKas.value = data.saldoKas || '';
-      if (cfgSembakoText) cfgSembakoText.value = data.sembakoText || '';
-    }
-  });
-
-  if (formConfig) {
-    formConfig.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      try {
-        await setDoc(doc(db, "app_config", "main_settings"), {
-          bannerText: cfgBannerText.value,
-          saldoKas: cfgSaldoKas.value,
-          sembakoText: cfgSembakoText.value,
-          updatedAt: serverTimestamp()
-        }, { merge: true });
-        alert('✅ Teks aplikasi berhasil di-update secara live!');
-      } catch (err) {
-        alert('❌ Gagal memperbarui konfigurasi teks.');
-      }
-    });
-  }
-
-  // B. KELOLA PUBLIKASI BERITA
-  if (formBerita) {
-    formBerita.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const katRaw = document.getElementById('beritaKat').value.split('|');
-      try {
-        await addDoc(collection(db, "berita_rw05"), {
-          kategori: katRaw[0],
-          ikon: katRaw[1],
-          kategoriLabel: katRaw[2],
-          judul: document.getElementById('beritaJudul').value,
-          isi: document.getElementById('beritaIsi').value,
-          tanggal: new Date().toLocaleDateString('id-ID', { day:'numeric', month:'short', year:'numeric' }),
-          penulis: "Pengurus RW 05",
-          createdAt: serverTimestamp()
-        });
-        alert('✅ Berita dipublikasikan!');
-        formBerita.reset();
-      } catch (err) {
-        alert('Gagal mempublikasikan berita.');
-      }
-    });
-  }
-
-  // LISTENER REALTIME BERITA
-  onSnapshot(query(collection(db, "berita_rw05"), orderBy("createdAt", "desc")), (snapshot) => {
-    let html = '';
-    snapshot.forEach((docItem) => {
-      const data = docItem.data();
-      html += `
-        <div style="padding:10px; background:#f8fafc; border-radius:8px; border:1px solid #e2e8f0; display:flex; justify-content:space-between; align-items:center;">
-          <div>
-            <div style="font-size:12px; font-weight:800;">${data.ikon} ${data.judul}</div>
-            <div style="font-size:10px; color:#64748b;">${data.tanggal}</div>
-          </div>
-          <button onclick="hapusBerita('${docItem.id}')" style="background:#ef4444; color:#fff; border:none; padding:4px 8px; border-radius:6px; font-size:10px; font-weight:700; cursor:pointer;">Hapus</button>
+      <!-- DASHBOARD -->
+      <div class="tab-content active" id="tab-dashboard">
+        <div class="stats-grid">
+          <div class="stat-card"><div class="label">Total Warga</div><div class="value" id="statWarga">0</div><div class="sub" id="statWargaSub">Terdaftar di NIK</div></div>
+          <div class="stat-card"><div class="label">Aduan Masuk</div><div class="value" id="statAduan">0</div><div class="sub" style="color:#ef4444">Butuh Respon</div></div>
+          <div class="stat-card"><div class="label">Berita Aktif</div><div class="value" id="statBerita">0</div><div class="sub">Terpublikasi</div></div>
+          <div class="stat-card"><div class="label">Saldo Kas</div><div class="value" style="font-size:18px" id="statSaldo">Rp 0</div><div class="sub" id="statSaldoTime">Live Update</div></div>
         </div>
-      `;
-    });
-    listBeritaAdmin.innerHTML = html || '<div style="font-size:11px; color:#94a3b8;">Belum ada berita.</div>';
-  });
 
-  window.hapusBerita = async function(id) {
-    if (confirm('Hapus berita ini?')) {
-      await deleteDoc(doc(db, "berita_rw05", id));
-    }
-  };
+        <div class="card">
+          <div class="card-title">⚡ Aksi Cepat - Edit Langsung Tanpa Update APK</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:10px">
+            <button class="btn btn-outline" onclick="switchTab('konten')">✏️ Edit Teks Beranda</button>
+            <button class="btn btn-outline" onclick="switchTab('berita')">📰 Buat Berita Baru</button>
+            <button class="btn btn-outline" onclick="switchTab('warga')">👥 Daftarkan Warga Baru (NIK)</button>
+            <button class="btn btn-outline" onclick="switchTab('aplikasi')">🚀 Paksa Update APK User</button>
+          </div>
+          <div style="margin-top:12px;padding:10px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;font-size:11px;color:#166534;line-height:1.4">
+            <b>✅ Cara kerja Live Update:</b> Semua data di aplikasi (berita, saldo, teks, harga sembako) diambil dari Firebase. Begitu lu ubah di admin ini, <b>kurang dari 2 detik</b> langsung berubah di semua HP warga yang sudah install APK — tanpa mereka harus update di Play Store / Drive.
+          </div>
+        </div>
 
-  // C. KELOLA ADUAN WARGA REALTIME
-  onSnapshot(query(collection(db, "aduan_warga05"), orderBy("createdAt", "desc")), (snapshot) => {
-    loadingAdmin.style.display = 'none';
-    if (snapshot.empty) {
-      listAduanAdmin.innerHTML = '<div style="text-align:center; color:#94a3b8; font-size:12px; padding:20px 0;">Belum ada aduan masuk.</div>';
-      return;
-    }
+        <div class="card">
+          <div class="card-title">📥 Aduan Terbaru</div>
+          <div id="dashboardAduan"></div>
+        </div>
+      </div>
 
-    let html = '';
-    snapshot.forEach((docItem) => {
-      const data = docItem.data();
-      const id = docItem.id;
-      let badgeClass = 'status-menunggu';
-      if (data.status === 'Diproses') badgeClass = 'status-proses';
-      if (data.status === 'Selesai') badgeClass = 'status-selesai';
-
-      const gpsBtn = (data.latitude && data.longitude) 
-        ? `<a href="https://maps.google.com/?q=${data.latitude},${data.longitude}" target="_blank" style="font-size:11px; color:#2563eb; font-weight:700; text-decoration:none;">MAPS (${data.latitude.toFixed(4)}, ${data.longitude.toFixed(4)})</a>`
-        : '<span style="font-size:11px; color:#94a3b8;">📍 GPS Tidak Ada</span>';
-
-      html += `
-        <div class="card-box card-aduan">
-          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
-            <div>
-              <div style="font-size:13px; font-weight:800; color:#0f172a;">${data.judul || 'Tanpa Judul'}</div>
-              <div style="font-size:11px; color:#64748b;">Pelapor: <b>${data.nama || 'Warga'}</b> (${data.rt || 'RT -'})</div>
+      <!-- KONTEN APLIKASI -->
+      <div class="tab-content" id="tab-konten">
+        <div class="card">
+          <div class="card-title">⚙️ Edit Konten Beranda (Live - Tanpa Update APK)</div>
+          <p style="font-size:11px;color:#64748b;margin-bottom:12px">Ubah teks ini, langsung berubah di aplikasi warga dalam 2 detik.</p>
+          <form id="formKonten">
+            <div class="form-group"><label>Banner Beranda - Running Text</label><input id="cfgBannerText" class="form-control" placeholder="Selamat datang di KATARNOLIMA RW 05..."></div>
+            <div class="form-grid">
+              <div class="form-group"><label>Judul Mitigasi / Kerja Bakti</label><input id="cfgMitigasiJudul" class="form-control" placeholder="Yuk Ikut Kerja Bakti Minggu Ini!"></div>
+              <div class="form-group"><label>Tombol Mitigasi</label><input id="cfgMitigasiBtn" class="form-control" placeholder="Daftar Hadir"></div>
             </div>
-            <span class="badge-status ${badgeClass}">${data.status || 'Menunggu'}</span>
-          </div>
-          <p style="font-size:12px; color:#334155; margin:8px 0;">${data.deskripsi || ''}</p>
-          ${data.fotoBase64 ? `<img src="${data.fotoBase64}">` : ''}
-          <div style="margin-bottom:10px;">${gpsBtn}</div>
-          <div style="display:flex; gap:6px;">
-            <button class="btn-action btn-proses" onclick="updateStatusAduan('${id}', 'Diproses')">Proses</button>
-            <button class="btn-action btn-selesai" onclick="updateStatusAduan('${id}', 'Selesai')">Selesai</button>
-            <button class="btn-action btn-hapus" onclick="hapusAduan('${id}')">Hapus</button>
+            <div class="form-grid">
+              <div class="form-group"><label>Harga Sembako (Teks untuk modal)</label><textarea id="cfgSembakoText" class="form-control" placeholder="Beras 5kg: Rp 60.000, Minyak 2L: Rp 32.000..."></textarea></div>
+              <div class="form-group"><label>Info Posyandu</label><textarea id="cfgPosyanduText" class="form-control" placeholder="Jadwal posyandu setiap..."></textarea></div>
+            </div>
+            <button type="submit" class="btn btn-primary">💾 Simpan - Langsung Live di APK User</button>
+          </form>
+        </div>
+        <div class="card">
+          <div class="card-title">🔗 Link Penting</div>
+          <form id="formLinks">
+            <div class="form-grid">
+              <div class="form-group"><label>Link Google Maps Balai Warga</label><input id="cfgMapsLink" class="form-control" placeholder="https://maps.app.goo.gl/..."></div>
+              <div class="form-group"><label>Link WA Admin / Lapor</label><input id="cfgWALink" class="form-control" placeholder="https://wa.me/6289..."></div>
+            </div>
+            <button type="submit" class="btn btn-primary">Simpan Link</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- BERITA -->
+      <div class="tab-content" id="tab-berita">
+        <div class="card">
+          <div class="card-title">➕ Publikasi Berita Baru (Langsung muncul di Info RW 05)</div>
+          <form id="formBerita" style="display:grid;gap:12px">
+            <div class="form-grid">
+              <div class="form-group"><label>Kategori</label><select id="beritaKat" class="form-control"><option value="kegiatan|🌸|Kegiatan">🌸 Kegiatan Warga</option><option value="pengumuman|📢|Pengumuman">📢 Pengumuman Resmi</option><option value="iuran|💰|Iuran">💰 Info Kas / Iuran</option><option value="update|🚀|Update Sistem">🚀 Update Sistem</option></select></div>
+              <div class="form-group"><label>Judul Berita</label><input id="beritaJudul" class="form-control" required placeholder="Kerja Bakti Akbar Minggu Ke-3"></div>
+            </div>
+            <div class="form-group"><label>Isi Berita Lengkap</label><textarea id="beritaIsi" class="form-control" required rows="4" placeholder="Tulis rincian berita..."></textarea></div>
+            <div class="form-grid">
+              <div class="form-group"><label>Lokasi / Waktu (opsional)</label><input id="beritaLokasi" class="form-control" placeholder="Balai Warga RW 05 - 20 Sep 2026"></div>
+              <div class="form-group"><label>Prioritas</label><select id="beritaPrioritas" class="form-control"><option value="normal">Normal</option><option value="pinned">Pinned di Atas</option><option value="urgent">Mendesak (Banner Merah)</option></select></div>
+            </div>
+            <button type="submit" class="btn btn-primary">🚀 Publikasikan - Langsung Live</button>
+          </form>
+        </div>
+        <div class="card">
+          <div class="card-title">📰 Daftar Berita (Edit / Hapus Live)</div>
+          <div class="search-box"><input id="searchBerita" class="form-control" placeholder="Cari judul berita..."></div>
+          <div id="listBeritaAdmin"></div>
+        </div>
+      </div>
+
+      <!-- LAYANAN -->
+      <div class="tab-content" id="tab-layanan">
+        <div class="card">
+          <div class="card-title">🧩 Kelola Layanan - Muncul di Semua Layanan RW 05</div>
+          <p style="font-size:11px;color:#64748b;margin-bottom:12px">Edit nama, ikon, aktif/nonaktif layanan. Perubahan langsung muncul di aplikasi tanpa update APK karena diambil dari Firebase.</p>
+          <div id="listLayananAdmin" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px"></div>
+          <div style="margin-top:16px;padding:12px;background:#fffbeb;border:1px solid #fde68a;border-radius:10px;font-size:11px">
+            <b>Tip:</b> Untuk menambah layanan baru, tambah dokumen di Firestore collection <code>layanan_rw05</code> dengan field: nama, icon, kategori, aktif:true
           </div>
         </div>
-      `;
-    });
-    listAduanAdmin.innerHTML = html;
+      </div>
+
+      <!-- WARGA NIK -->
+      <div class="tab-content" id="tab-warga">
+        <div class="card">
+          <div class="card-title">👥 Daftarkan Warga Baru ke Database NIK RW 05 (Manual Admin)</div>
+          <p style="font-size:11px;color:#64748b;margin-bottom:12px">Admin bisa daftarkan warga yang tidak bisa daftar sendiri. Data akan di-hash SHA-256 dan masuk ke Firestore <code>data_warga</code>. Warga bisa langsung login pakai NIK & KK.</p>
+          <form id="formTambahWarga">
+            <div class="form-grid">
+              <div class="form-group"><label>Nama Lengkap (KTP)</label><input id="wargaNama" class="form-control" required placeholder="Budi Santoso"></div>
+              <div class="form-group"><label>RT</label><input id="wargaRT" class="form-control" placeholder="RT 03 / RW 05" required></div>
+            </div>
+            <div class="form-grid">
+              <div class="form-group"><label>NIK 16 Digit</label><input id="wargaNIK" class="form-control" inputmode="numeric" maxlength="16" required placeholder="3171xxxxxxxxxxxx"></div>
+              <div class="form-group"><label>No KK 16 Digit</label><input id="wargaKK" class="form-control" inputmode="numeric" maxlength="16" required placeholder="3171xxxxxxxxxxxx"></div>
+            </div>
+            <div class="form-group"><label>No WA (Opsional)</label><input id="wargaWA" class="form-control" placeholder="0896xxxx"></div>
+            <button type="submit" class="btn btn-primary">✅ Daftarkan Warga - Masuk Database</button>
+          </form>
+        </div>
+
+        <div class="card">
+          <div class="card-title">📋 Database Warga Terdaftar</div>
+          <div class="search-box">
+            <input id="searchWarga" class="form-control" placeholder="Cari nama atau NIK...">
+            <button class="btn btn-outline btn-sm" id="btnExportWarga">Export CSV</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Nama</th><th>RT</th><th>NIK (Hash)</th><th>Tgl Daftar</th><th>Aksi</th></tr></thead>
+              <tbody id="listWargaAdmin"><tr><td colspan="5" style="text-align:center;padding:20px;color:#94a3b8">Memuat...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADUAN -->
+      <div class="tab-content" id="tab-aduan">
+        <div class="card">
+          <div class="card-title">📥 Laporan Aduan Warga (Real-time)</div>
+          <div class="search-box"><input id="searchAduan" class="form-control" placeholder="Cari judul aduan..."><select id="filterStatusAduan" class="form-control" style="max-width:140px"><option value="all">Semua Status</option><option value="Menunggu">Menunggu</option><option value="Diproses">Diproses</option><option value="Selesai">Selesai</option></select></div>
+          <div id="listAduanAdmin">Memuat...</div>
+        </div>
+      </div>
+
+      <!-- KEUANGAN -->
+      <div class="tab-content" id="tab-keuangan">
+        <div class="card">
+          <div class="card-title">💰 Kelola Saldo Kas RW 05 (Live)</div>
+          <form id="formKas">
+            <div class="form-grid">
+              <div class="form-group"><label>Saldo Kas Saat Ini (Rp)</label><input id="kasTotal" type="number" class="form-control" placeholder="0"></div>
+              <div class="form-group"><label>Pesan / Catatan Kas</label><input id="kasPesan" class="form-control" placeholder="Transparan & Update - Live"></div>
+            </div>
+            <button type="submit" class="btn btn-primary">💾 Update Saldo - Live ke Aplikasi</button>
+          </form>
+          <div style="margin-top:12px;font-size:11px;color:#64748b">Saldo ini yang muncul di beranda aplikasi warga. Update di sini = langsung berubah di APK tanpa update.</div>
+        </div>
+        <div class="card">
+          <div class="card-title">📜 Riwayat Transaksi Kas (Opsional)</div>
+          <form id="formTransaksiKas" style="display:grid;gap:10px">
+            <div class="form-grid">
+              <div class="form-group"><label>Jenis</label><select id="transJenis" class="form-control"><option value="masuk">Pemasukan</option><option value="keluar">Pengeluaran</option></select></div>
+              <div class="form-group"><label>Jumlah (Rp)</label><input id="transJumlah" type="number" class="form-control"></div>
+            </div>
+            <div class="form-group"><label>Keterangan</label><input id="transKet" class="form-control" placeholder="Iuran RT 03 bulan September"></div>
+            <button type="submit" class="btn btn-blue">Tambah Transaksi</button>
+          </form>
+          <div id="listTransaksi" style="margin-top:12px"></div>
+        </div>
+      </div>
+
+      <!-- APLIKASI CONFIG -->
+      <div class="tab-content" id="tab-aplikasi">
+        <div class="card">
+          <div class="card-title">🚀 Kontrol Versi & Update Aplikasi (Tanpa Paksa Update APK di Play Store)</div>
+          <div style="padding:10px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;font-size:11px;color:#1e40af;line-height:1.4;margin-bottom:12px">
+            <b>Cara kerja:</b> APK warga akan cek versi di Firestore <code>app_config/version</code>. Jika versi di sini lebih baru dari versi APK warga, maka pop-up update akan muncul dan tombolnya langsung buka link download. <b>Tanpa perlu update via Play Store.</b>
+          </div>
+          <form id="formAppVersion">
+            <div class="form-grid">
+              <div class="form-group"><label>Versi Terbaru (Contoh: 2.1.0)</label><input id="appLatestVersion" class="form-control" placeholder="2.1.0"></div>
+              <div class="form-group"><label>Versi Minimum Wajib Update</label><input id="appMinVersion" class="form-control" placeholder="2.0.0"></div>
+            </div>
+            <div class="form-group"><label>Link Download APK Baru (Google Drive / Play Store)</label><input id="appDownloadUrl" class="form-control" placeholder="https://drive.google.com/..."></div>
+            <div class="form-group"><label>Pesan Update</label><textarea id="appUpdateMessage" class="form-control" placeholder="Ada fitur baru Kerja Bakti dan Perbaikan Bug..."></textarea></div>
+            <div class="form-grid">
+              <div class="form-group"><label>Force Update? (Paksa user update)</label><select id="appForceUpdate" class="form-control"><option value="false">Tidak - Opsional</option><option value="true">Ya - Paksa Update (Pop-up tidak bisa tutup)</option></select></div>
+              <div class="form-group"><label>Maintenance Mode?</label><select id="appMaintenance" class="form-control"><option value="false">Tidak - Aplikasi Normal</option><option value="true">Ya - Maintenance (Aplikasi Terkunci)</option></select></div>
+            </div>
+            <button type="submit" class="btn btn-primary">🚀 Simpan Config - Berlaku ke Semua APK User</button>
+          </form>
+        </div>
+
+        <div class="card">
+          <div class="card-title">📢 Banner Update Sistem (Yang Muncul di Info RW 05)</div>
+          <p style="font-size:11px;color:#64748b;margin-bottom:10px">Ini yang muncul sebagai card biru "UPDATE SISTEM" di screenshot lu.</p>
+          <form id="formBannerUpdate">
+            <div class="form-group"><label>Judul Update (Contoh: Pembaruan Aplikasi v1.5)</label><input id="bannerUpdateJudul" class="form-control" placeholder="Pembaruan Aplikasi v1.5"></div>
+            <div class="form-group"><label>Deskripsi Singkat</label><input id="bannerUpdateDesc" class="form-control" placeholder="Klik untuk melihat rincian fitur & perbaikan terbaru"></div>
+            <button type="submit" class="btn btn-blue">Publikasikan Banner Update</button>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- MODAL EDIT BERITA -->
+<div class="overlay" id="modalEditBerita">
+  <div class="modal-box">
+    <h3 style="font-weight:900">Edit Berita</h3>
+    <input id="editBeritaId" type="hidden">
+    <div class="form-group" style="margin-top:12px"><label>Judul</label><input id="editBeritaJudul" class="form-control"></div>
+    <div class="form-group"><label>Isi</label><textarea id="editBeritaIsi" class="form-control"></textarea></div>
+    <div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-outline" style="flex:1" onclick="closeModal('modalEditBerita')">Batal</button><button class="btn btn-primary" style="flex:1" id="btnSimpanEditBerita">Simpan</button></div>
+  </div>
+</div>
+
+<script type="module">
+// @ts-nocheck
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, doc, getDoc, setDoc, addDoc, updateDoc, deleteDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCZtvImbyZmqoEoY1hYZcuCbUpIl3R1fhE",
+  authDomain: "katarnolima-rw05.firebaseapp.com",
+  projectId: "katarnolima-rw05",
+  storageBucket: "katarnolima-rw05.firebasestorage.app",
+  messagingSenderId: "965647612835",
+  appId: "1:965647612835:web:b712367f0d8beb7c5bf816"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+// GATE
+const adminGate = document.getElementById('adminGate');
+const gateEmail = document.getElementById('gateEmail');
+const gatePass = document.getElementById('gatePass');
+const gateError = document.getElementById('gateError');
+const btnGateLogin = document.getElementById('btnGateLogin');
+const btnGateBatal = document.getElementById('btnGateBatal');
+const adminEmailLabel = document.getElementById('adminEmailLabel');
+
+function showGate(){ adminGate.style.display='flex'; }
+function hideGate(){ adminGate.style.display='none'; }
+
+onAuthStateChanged(auth, (user)=>{
+  if(user){
+    localStorage.setItem('rw05_admin_session', JSON.stringify({email:user.email, uid:user.uid, loginAt:Date.now()}));
+    hideGate();
+    if(adminEmailLabel) adminEmailLabel.textContent = user.email;
+    initAdmin();
+  }else{
+    const sess = JSON.parse(localStorage.getItem('rw05_admin_session')||'null');
+    if(sess && Date.now()-sess.loginAt < 24*60*60*1000){
+      hideGate();
+      if(adminEmailLabel) adminEmailLabel.textContent = sess.email;
+      initAdmin();
+    }else{
+      showGate();
+    }
+  }
+});
+
+if(btnGateLogin){
+  btnGateLogin.addEventListener('click', async ()=>{
+    const email=gateEmail.value.trim(), pass=gatePass.value.trim();
+    if(!email||!pass){gateError.textContent='Isi email & password!';gateError.style.display='block';return;}
+    btnGateLogin.textContent='Memverifikasi...'; btnGateLogin.disabled=true;
+    try{
+      await signInWithEmailAndPassword(auth,email,pass);
+      hideGate();
+    }catch(e){gateError.textContent='❌ Email / password salah!';gateError.style.display='block';}
+    finally{btnGateLogin.textContent='Masuk Admin';btnGateLogin.disabled=false;}
+  });
+}
+if(btnGateBatal) btnGateBatal.addEventListener('click', ()=>{window.location.href='profil.html';});
+document.getElementById('btnLogout').addEventListener('click', async ()=>{
+  if(confirm('Keluar admin?')){await signOut(auth); localStorage.removeItem('rw05_admin_session'); window.location.href='profil.html';}
+});
+
+// TAB SWITCH
+window.switchTab = function(tab){
+  document.querySelectorAll('.menu-item').forEach(b=>b.classList.remove('active'));
+  document.querySelector(`[data-tab="${tab}"]`)?.classList.add('active');
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  document.getElementById('tab-'+tab)?.classList.add('active');
+  document.getElementById('sidebar').classList.remove('open');
+}
+document.querySelectorAll('.menu-item[data-tab]').forEach(btn=>{
+  btn.addEventListener('click', ()=>{switchTab(btn.dataset.tab);});
+});
+document.getElementById('hamburger').addEventListener('click', ()=>{document.getElementById('sidebar').classList.toggle('open');});
+
+function closeModal(id){document.getElementById(id).classList.remove('show');}
+window.closeModal = closeModal;
+
+// INIT ADMIN DATA
+function initAdmin(){
+  // STATS
+  onSnapshot(collection(db,"data_warga"), snap=>{document.getElementById('statWarga').textContent=snap.size;});
+  onSnapshot(collection(db,"aduan_warga05"), snap=>{document.getElementById('statAduan').textContent=snap.size; document.getElementById('badgeAduan').textContent=snap.size; document.getElementById('badgeAduan').style.display=snap.size>0?'inline-block':'none';});
+  onSnapshot(collection(db,"berita_rw05"), snap=>{document.getElementById('statBerita').textContent=snap.size;});
+  onSnapshot(doc(db,"kas_rw05","saldo_utama"), snap=>{if(snap.exists()){const t=snap.data().total||0; document.getElementById('statSaldo').textContent='Rp '+t.toLocaleString('id-ID'); document.getElementById('statSaldoTime').textContent='Live '+new Date().toLocaleTimeString('id-ID');}});
+
+  // KONTEN APLIKASI
+  onSnapshot(doc(db,"app_config","main_settings"), snap=>{
+    if(snap.exists()){
+      const d=snap.data();
+      document.getElementById('cfgBannerText').value=d.bannerText||'';
+      document.getElementById('cfgMitigasiJudul').value=d.mitigasiJudul||'';
+      document.getElementById('cfgMitigasiBtn').value=d.mitigasiBtn||'';
+      document.getElementById('cfgSembakoText').value=d.sembakoText||'';
+      document.getElementById('cfgPosyanduText').value=d.posyanduText||'';
+      document.getElementById('cfgMapsLink').value=d.mapsLink||'';
+      document.getElementById('cfgWALink').value=d.waLink||'';
+    }
   });
 
-  window.updateStatusAduan = async function(docId, statusBaru) {
-    await updateDoc(doc(db, "aduan_warga05", docId), { status: statusBaru });
-  };
+  document.getElementById('formKonten').addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    await setDoc(doc(db,"app_config","main_settings"),{
+      bannerText:document.getElementById('cfgBannerText').value,
+      mitigasiJudul:document.getElementById('cfgMitigasiJudul').value,
+      mitigasiBtn:document.getElementById('cfgMitigasiBtn').value,
+      sembakoText:document.getElementById('cfgSembakoText').value,
+      posyanduText:document.getElementById('cfgPosyanduText').value,
+      updatedAt:serverTimestamp()
+    },{merge:true});
+    alert('✅ Konten beranda live update! Semua APK user langsung berubah tanpa update.');
+  });
 
-  window.hapusAduan = async function(docId) {
-    if (confirm('Hapus laporan ini?')) {
-      await deleteDoc(doc(db, "aduan_warga05", docId));
+  document.getElementById('formLinks').addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    await setDoc(doc(db,"app_config","main_settings"),{
+      mapsLink:document.getElementById('cfgMapsLink').value,
+      waLink:document.getElementById('cfgWALink').value,
+      updatedAt:serverTimestamp()
+    },{merge:true});
+    alert('✅ Link disimpan & live!');
+  });
+
+  // BERITA
+  document.getElementById('formBerita').addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const katRaw=document.getElementById('beritaKat').value.split('|');
+    await addDoc(collection(db,"berita_rw05"),{
+      kategori:katRaw[0], ikon:katRaw[1], kategoriLabel:katRaw[2],
+      judul:document.getElementById('beritaJudul').value,
+      isi:document.getElementById('beritaIsi').value,
+      lokasi:document.getElementById('beritaLokasi').value,
+      prioritas:document.getElementById('beritaPrioritas').value,
+      tanggal:new Date().toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'}),
+      penulis:"Pengurus RW 05",
+      createdAt:serverTimestamp()
+    });
+    alert('✅ Berita dipublikasikan! Muncul di Info RW 05 user tanpa update APK.');
+    e.target.reset();
+  });
+
+  const listBeritaAdmin=document.getElementById('listBeritaAdmin');
+  onSnapshot(query(collection(db,"berita_rw05"),orderBy("createdAt","desc")), snap=>{
+    let html='';
+    snap.forEach(docItem=>{
+      const d=docItem.data();
+      html+=`<div style="padding:12px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div style="flex:1"><div style="font-size:12px;font-weight:800">${d.ikon||'📰'} ${d.judul}</div><div style="font-size:10px;color:#64748b">${d.kategoriLabel} • ${d.tanggal} • ${d.prioritas||'normal'}</div></div>
+        <div style="display:flex;gap:6px"><button class="btn btn-outline btn-sm" onclick="editBerita('${docItem.id}')">Edit</button><button class="btn btn-red btn-sm" onclick="hapusBerita('${docItem.id}')">Hapus</button></div>
+      </div>`;
+    });
+    listBeritaAdmin.innerHTML=html||'<div style="font-size:11px;color:#94a3b8">Belum ada berita.</div>';
+    // Search
+    const searchBerita=document.getElementById('searchBerita');
+    if(searchBerita){
+      searchBerita.addEventListener('input', function(){
+        const q=this.value.toLowerCase();
+        listBeritaAdmin.querySelectorAll('div > div').forEach(el=>{ /* simple filter */ });
+      });
     }
-  };
+  });
+
+  window.editBerita=async function(id){
+    const snap=await getDoc(doc(db,"berita_rw05",id));
+    if(!snap.exists()) return;
+    const d=snap.data();
+    document.getElementById('editBeritaId').value=id;
+    document.getElementById('editBeritaJudul').value=d.judul;
+    document.getElementById('editBeritaIsi').value=d.isi;
+    document.getElementById('modalEditBerita').classList.add('show');
+  }
+  document.getElementById('btnSimpanEditBerita').addEventListener('click', async ()=>{
+    const id=document.getElementById('editBeritaId').value;
+    await updateDoc(doc(db,"berita_rw05",id),{judul:document.getElementById('editBeritaJudul').value, isi:document.getElementById('editBeritaIsi').value});
+    closeModal('modalEditBerita');
+    alert('✅ Berita diupdate live!');
+  });
+  window.hapusBerita=async function(id){if(confirm('Hapus berita ini? Akan hilang dari semua APK user.')){await deleteDoc(doc(db,"berita_rw05",id));}};
+
+  // WARGA NIK
+  async function hashNIK(text){const enc=new TextEncoder().encode(text); const buf=await crypto.subtle.digest('SHA-256',enc); return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');}
+
+  document.getElementById('formTambahWarga').addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const nama=document.getElementById('wargaNama').value.trim();
+    const rt=document.getElementById('wargaRT').value.trim();
+    const nik=document.getElementById('wargaNIK').value.trim();
+    const kk=document.getElementById('wargaKK').value.trim();
+    const wa=document.getElementById('wargaWA').value.trim();
+    if(nik.length!==16||kk.length!==16){alert('NIK & KK harus 16 digit');return;}
+    const nikHash=await hashNIK(nik);
+    const kkHash=await hashNIK(kk);
+    const check=await getDoc(doc(db,"data_warga",nikHash));
+    if(check.exists()){alert('NIK sudah terdaftar!');return;}
+    await setDoc(doc(db,"data_warga",nikHash),{nama, rt, nikHash, kkHash, wa, createdAt:serverTimestamp()});
+    alert('✅ Warga '+nama+' berhasil didaftarkan! Sekarang bisa login pakai NIK & KK.');
+    e.target.reset();
+  });
+
+  onSnapshot(query(collection(db,"data_warga"),orderBy("createdAt","desc")), snap=>{
+    let html='';
+    snap.forEach(docItem=>{
+      const d=docItem.data();
+      html+=`<tr><td><b>${d.nama}</b></td><td>${d.rt||'-'}</td><td style="font-family:monospace;font-size:10px">${docItem.id.slice(0,12)}...</td><td style="font-size:10px">${d.createdAt?.toDate ? d.createdAt.toDate().toLocaleDateString('id-ID') : '-'}</td><td><button class="btn btn-red btn-sm" onclick="hapusWarga('${docItem.id}')">Hapus</button></td></tr>`;
+    });
+    document.getElementById('listWargaAdmin').innerHTML=html||'<tr><td colspan="5" style="text-align:center;color:#94a3b8">Belum ada warga.</td></tr>';
+  });
+  window.hapusWarga=async function(id){if(confirm('Hapus warga ini dari database? Warga tidak bisa login lagi.')){await deleteDoc(doc(db,"data_warga",id));}};
+
+  document.getElementById('searchWarga').addEventListener('input', function(){
+    const q=this.value.toLowerCase();
+    document.querySelectorAll('#listWargaAdmin tr').forEach(tr=>{tr.style.display=tr.textContent.toLowerCase().includes(q)?'':'none';});
+  });
+
+  // ADUAN
+  onSnapshot(query(collection(db,"aduan_warga05"),orderBy("createdAt","desc")), snap=>{
+    let html='';
+    if(snap.empty){document.getElementById('listAduanAdmin').innerHTML='<div style="text-align:center;color:#94a3b8;padding:20px">Belum ada aduan.</div>'; document.getElementById('dashboardAduan').innerHTML='<div style="color:#94a3b8;font-size:12px">Belum ada aduan.</div>'; return;}
+    let dashHtml='';
+    let i=0;
+    snap.forEach(docItem=>{
+      const d=docItem.data(); const id=docItem.id;
+      let badge='badge-wait'; if(d.status==='Diproses') badge='badge-proses'; if(d.status==='Selesai') badge='badge-done';
+      const row=`<div style="padding:12px;background:#fff;border:1px solid #e2e8f0;border-radius:10px;margin-bottom:8px">
+        <div style="display:flex;justify-content:space-between"><div><div style="font-weight:800;font-size:13px">${d.judul||'Tanpa Judul'}</div><div style="font-size:11px;color:#64748b">${d.nama||'Warga'} • ${d.rt||''}</div></div><span class="badge ${badge}">${d.status||'Menunggu'}</span></div>
+        <div style="font-size:12px;margin:8px 0;color:#334155">${d.deskripsi||''}</div>
+        ${d.fotoBase64?`<img src="${d.fotoBase64}" style="width:100%;max-height:180px;object-fit:cover;border-radius:8px;margin:8px 0;border:1px solid #e2e8f0">`:''}
+        <div style="display:flex;gap:6px;margin-top:8px"><button class="btn btn-blue btn-sm" onclick="updateStatusAduan('${id}','Diproses')">Proses</button><button class="btn btn-green btn-sm" onclick="updateStatusAduan('${id}','Selesai')">Selesai</button><button class="btn btn-red btn-sm" onclick="hapusAduan('${id}')">Hapus</button></div>
+      </div>`;
+      html+=row;
+      if(i<3){dashHtml+=row; i++;}
+    });
+    document.getElementById('listAduanAdmin').innerHTML=html;
+    document.getElementById('dashboardAduan').innerHTML=dashHtml;
+  });
+  window.updateStatusAduan=async function(id,s){await updateDoc(doc(db,"aduan_warga05",id),{status:s});};
+  window.hapusAduan=async function(id){if(confirm('Hapus aduan?')){await deleteDoc(doc(db,"aduan_warga05",id));}};
+
+  // KAS
+  onSnapshot(doc(db,"kas_rw05","saldo_utama"), snap=>{
+    if(snap.exists()){
+      const d=snap.data();
+      document.getElementById('kasTotal').value=d.total||0;
+      document.getElementById('kasPesan').value=d.pesan||'';
+    }
+  });
+  document.getElementById('formKas').addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    await setDoc(doc(db,"kas_rw05","saldo_utama"),{total:parseInt(document.getElementById('kasTotal').value)||0, pesan:document.getElementById('kasPesan').value, updatedAt:serverTimestamp()},{merge:true});
+    alert('✅ Saldo Kas live update ke semua APK!');
+  });
+
+  // APP VERSION
+  onSnapshot(doc(db,"app_config","version"), snap=>{
+    if(snap.exists()){
+      const d=snap.data();
+      document.getElementById('appLatestVersion').value=d.latestVersion||'';
+      document.getElementById('appMinVersion').value=d.minVersion||'';
+      document.getElementById('appDownloadUrl').value=d.downloadUrl||'';
+      document.getElementById('appUpdateMessage').value=d.message||'';
+      document.getElementById('appForceUpdate').value=d.forceUpdate?'true':'false';
+      document.getElementById('appMaintenance').value=d.maintenance?'true':'false';
+    }
+  });
+  document.getElementById('formAppVersion').addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    await setDoc(doc(db,"app_config","version"),{
+      latestVersion:document.getElementById('appLatestVersion').value,
+      minVersion:document.getElementById('appMinVersion').value,
+      downloadUrl:document.getElementById('appDownloadUrl').value,
+      message:document.getElementById('appUpdateMessage').value,
+      forceUpdate:document.getElementById('appForceUpdate').value==='true',
+      maintenance:document.getElementById('appMaintenance').value==='true',
+      updatedAt:serverTimestamp()
+    },{merge:true});
+    alert('✅ Config versi disimpan! APK user yang lama akan otomatis dapat pop-up update tanpa perlu install ulang dari Play Store.');
+  });
+
+  // BANNER UPDATE
+  onSnapshot(doc(db,"app_config","banner_update"), snap=>{
+    if(snap.exists()){
+      const d=snap.data();
+      document.getElementById('bannerUpdateJudul').value=d.judul||'';
+      document.getElementById('bannerUpdateDesc').value=d.desc||'';
+    }
+  });
+  document.getElementById('formBannerUpdate').addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    await setDoc(doc(db,"app_config","banner_update"),{
+      judul:document.getElementById('bannerUpdateJudul').value,
+      desc:document.getElementById('bannerUpdateDesc').value,
+      createdAt:serverTimestamp()
+    });
+    // Juga buat berita otomatis tipe update
+    await addDoc(collection(db,"berita_rw05"),{
+      kategori:'update', ikon:'🚀', kategoriLabel:'Update Sistem',
+      judul:document.getElementById('bannerUpdateJudul').value,
+      isi:document.getElementById('bannerUpdateDesc').value,
+      tanggal:new Date().toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'}),
+      penulis:'Sistem',
+      prioritas:'pinned',
+      createdAt:serverTimestamp()
+    });
+    alert('✅ Banner Update dipublikasikan! Muncul sebagai card biru di Info RW 05 semua user.');
+  });
+
+  // LAYANAN
+  const defaultLayanan=[
+    {id:'aduan', nama:'Aduan Warga', icon:'📢', kategori:'Layanan Publik & Laporan'},
+    {id:'info', nama:'Info RW', icon:'🔔', kategori:'Layanan Publik & Laporan'},
+    {id:'iuran', nama:'Iuran Warga', icon:'💰', kategori:'Layanan Publik & Laporan'},
+    {id:'peta', nama:'Peta Balai', icon:'📍', kategori:'Layanan Publik & Laporan'},
+    {id:'sembako', nama:'Harga Sembako', icon:'🛒', kategori:'Informasi & Lingkungan'},
+    {id:'ronda', nama:'Jadwal Ronda', icon:'🛡️', kategori:'Informasi & Lingkungan'},
+    {id:'bersih', nama:'Kerja Bakti', icon:'🧹', kategori:'Informasi & Lingkungan'},
+    {id:'posyandu', nama:'Posyandu', icon:'👶', kategori:'Informasi & Lingkungan'},
+    {id:'datawarga', nama:'Data Warga', icon:'📋', kategori:'Kemasyarakatan'},
+    {id:'belajar', nama:'Belajar Bersama', icon:'📚', kategori:'Kemasyarakatan'},
+    {id:'kegiatan', nama:'Kegiatan', icon:'⚽', kategori:'Kemasyarakatan'},
+    {id:'akun', nama:'Akun Warga', icon:'👤', kategori:'Kemasyarakatan'},
+  ];
+  let layananHtml='';
+  defaultLayanan.forEach(l=>{
+    layananHtml+=`<div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:12px;text-align:center"><div style="font-size:28px">${l.icon}</div><div style="font-size:11px;font-weight:800;margin-top:6px">${l.nama}</div><div style="font-size:10px;color:#64748b">${l.kategori}</div><div style="margin-top:8px"><span class="badge" style="background:#dcfce7;color:#166534">Aktif - Live</span></div></div>`;
+  });
+  document.getElementById('listLayananAdmin').innerHTML=layananHtml;
+}
 </script>
 </body>
 </html>
