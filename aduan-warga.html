@@ -1,69 +1,364 @@
-<script>
-// @ts-nocheck
-document.addEventListener('DOMContentLoaded', function(){
-  /** @type {HTMLElement | null} */ const fabContainer = document.getElementById('fabContainer');
-  /** @type {HTMLElement | null} */ const fabMain = document.getElementById('fabMain');
-  /** @type {HTMLElement | null} */ const fabClose = document.getElementById('fabClose');
-  if(fabMain){ fabMain.addEventListener('click', function(e){ e.stopPropagation(); if(fabContainer) fabContainer.classList.add('active'); }); }
-  if(fabClose){ fabClose.addEventListener('click', function(e){ e.stopPropagation(); if(fabContainer) fabContainer.classList.remove('active'); }); }
-
-  const btn = document.getElementById('btnKirim');
-  if(btn){
-    btn.addEventListener('click', function(){
-      /** @type {HTMLInputElement} */ const nama = document.getElementById('nama');
-      /** @type {HTMLInputElement} */ const rt = document.getElementById('rt');
-      /** @type {HTMLSelectElement} */ const kategori = document.getElementById('kategori');
-      /** @type {HTMLTextAreaElement} */ const pesan = document.getElementById('pesan');
-      
-      // VALIDASI: Cek apakah kolom wajib sudah diisi
-      const valNama = nama ? nama.value.trim() : '';
-      const valRt = rt ? rt.value.trim() : '';
-      const valKategori = kategori ? kategori.value : '';
-      const valPesan = pesan ? pesan.value.trim() : '';
-
-      if (!valNama) {
-        alert('Harap isi Nama Lengkap kamu terlebih dahulu!');
-        if(nama) nama.focus();
-        return;
-      }
-
-      if (!valRt) {
-        alert('Harap isi nomor RT tempat tinggalmu (contoh: RT 03)!');
-        if(rt) rt.focus();
-        return;
-      }
-
-      if (!valKategori) {
-        alert('Pilih salah satu Kategori Aduan!');
-        if(kategori) kategori.focus();
-        return;
-      }
-
-      if (!valPesan) {
-        alert('Harap tuliskan detail pesan aduanmu dengan jelas!');
-        if(pesan) pesan.focus();
-        return;
-      }
-
-      // Jika semua sudah diisi, rakit pesan WhatsApp
-      const text = 'Halo RW 05, mau lapor aduan:%0A%0A' +
-        'Nama: ' + encodeURIComponent(valNama) + '%0A' +
-        'RT: ' + encodeURIComponent(valRt) + '%0A' +
-        'Kategori: ' + encodeURIComponent(valKategori) + '%0A' +
-        'Pesan: ' + encodeURIComponent(valPesan) + '%0A%0A' +
-        'Dari Aplikasi KATARNOLIMA RW 05';
-
-      window.open('https://wa.me/6289673580756?text=' + text, '_blank');
-    });
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>KATARNOLIMA RW 05 - Lapor Aduan Warga</title>
+<link rel="icon" href="img/logo-resmi-karang-taruna.jpg">
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="style.css?v=27">
+<style>
+  .header-app {
+    background: #0f172a;
+    color: #ffffff;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
   }
-
-  // FIX KLIK CARI PINDAH HALAMAN
-  /** @type {HTMLElement | null} */ const goCari = document.getElementById('goCari');
-  if(goCari){
-    goCari.addEventListener('click', function(e){
-      e.preventDefault();
-      window.location.href = 'cari-warga.html';
-    });
+  .btn-back {
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    font-size: 24px;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    margin-left: -6px;
+    padding: 0;
+    line-height: 1;
+    transition: background 0.2s ease;
   }
-});
+  .btn-back:active {
+    background: rgba(255, 255, 255, 0.15);
+  }
+  .card-form {
+    background: #ffffff;
+    padding: 18px;
+    border-radius: 16px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border: 1px solid #f1f5f9;
+    margin: 16px;
+  }
+  .form-group {
+    margin-bottom: 14px;
+  }
+  .form-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: #334155;
+    margin-bottom: 6px;
+  }
+  .form-control {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #cbd5e1;
+    font-size: 13px;
+    outline: none;
+    box-sizing: border-box;
+    font-family: inherit;
+  }
+  .form-control:focus {
+    border-color: #2563eb;
+  }
+  .btn-trigger {
+    flex: 1;
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+  }
+  .btn-camera {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1.5px dashed #bfdbfe;
+  }
+  .btn-gps {
+    background: #f0fdf4;
+    color: #15803d;
+    border: 1.5px dashed #bbf7d0;
+  }
+  .btn-submit {
+    width: 100%;
+    padding: 14px;
+    background: #0f172a;
+    color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 14px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
+  }
+  .btn-submit:disabled {
+    background: #94a3b8;
+    cursor: not-allowed;
+  }
+  #previewContainer {
+    margin-top: 10px;
+    text-align: center;
+    position: relative;
+  }
+  #imgPreview {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 12px;
+    border: 1px solid #cbd5e1;
+    object-fit: cover;
+  }
+  .badge-gps {
+    display: inline-block;
+    margin-top: 6px;
+    padding: 4px 10px;
+    background: #e0f2fe;
+    color: #0369a1;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+</style>
+</head>
+<body>
+
+<div class="app-jaki">
+  <!-- HEADER / TOOLBAR -->
+  <div class="header-app">
+    <button class="back btn-back" aria-label="Kembali">←</button>
+    <h1 style="font-size:16px; font-weight:800; margin:0; line-height:1.2;">Lapor Aduan Warga RW 05</h1>
+  </div>
+
+  <!-- FORM CONTAINER -->
+  <div class="card-form">
+    <form id="formAduan">
+      <div class="form-group">
+        <label for="aduanNama">Nama Pelapor (Sesuai KTP/KK)</label>
+        <input type="text" id="aduanNama" class="form-control" placeholder="Masukkan nama kamu..." required>
+      </div>
+
+      <div class="form-group">
+        <label for="aduanRT">RT Tempat Kejadian</label>
+        <select id="aduanRT" class="form-control" required>
+          <option value="">-- Pilih RT --</option>
+          <option value="RT 01">RT 01</option>
+          <option value="RT 02">RT 02</option>
+          <option value="RT 03">RT 03</option>
+          <option value="RT 04">RT 04</option>
+          <option value="RT 05">RT 05</option>
+          <option value="RT 06">RT 06</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="aduanJudul">Judul Laporan / Kejadian</label>
+        <input type="text" id="aduanJudul" class="form-control" placeholder="Contoh: Lampu jalan mati / Saluran tersumbat" required>
+      </div>
+
+      <div class="form-group">
+        <label for="aduanDesc">Detail Keterangan</label>
+        <textarea id="aduanDesc" class="form-control" rows="3" placeholder="Jelaskan kronologi atau lokasi detailnya..." required></textarea>
+      </div>
+
+      <!-- TOMBOL KAMERA & GPS -->
+      <div class="form-group" style="display:flex; gap:10px;">
+        <button type="button" id="btnAmbilFoto" class="btn-trigger btn-camera">
+          <span>📷</span> Ambil / Pilih Foto
+        </button>
+        <button type="button" id="btnGPS" class="btn-trigger btn-gps">
+          <span>📍</span> Lock GPS
+        </button>
+      </div>
+
+      <!-- HIDDEN INPUT FOTO -->
+      <input type="file" id="inputFoto" accept="image/*" style="display:none;">
+
+      <!-- PREVIEW FOTO -->
+      <div id="previewContainer" style="display:none;">
+        <img id="imgPreview" src="" alt="Preview Foto Laporan">
+        <div style="font-size:11px; color:#1e293b; margin-top:4px;">✅ Foto berhasil dikompresi</div>
+      </div>
+
+      <!-- INFO GPS TERKINI -->
+      <div id="gpsInfo" style="display:none; text-align:center; margin-bottom:14px;">
+        <span class="badge-gps">📍 Koordinat: <span id="coordsText">-</span></span>
+      </div>
+
+      <button type="submit" id="btnKirimAduan" class="btn-submit">
+        Kirim Laporan Warga
+      </button>
+    </form>
+  </div>
+
+  <div style="height:80px"></div>
+
+  <!-- BOTTOM NAVBAR -->
+  <nav class="jaki-nav">
+    <a href="index.html">🏠<span>Beranda</span></a>
+    <a href="kegiatan.html">📋<span>Kegiatan</span></a>
+    <a class="center active" href="aduan-warga.html"><div class="cam">📷</div><span>Lapor</span></a>
+    <a href="info.html">🔔<span>Info</span></a>
+    <a href="profil.html">👤<span>Profil</span></a>
+  </nav>
+</div>
+
+<!-- SCRIPT UTAMA PERANGKAT -->
+<script src="script.js?v=27"></script>
+
+<!-- FIREBASE SDK & LOGIKA SCRIPT ADUAN -->
+<script type="module">
+  // @ts-nocheck
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCZtvImbyZmqoEoY1hYZcuCbUpIl3R1fhE",
+    authDomain: "katarnolima-rw05.firebaseapp.com",
+    projectId: "katarnolima-rw05",
+    storageBucket: "katarnolima-rw05.firebasestorage.app",
+    messagingSenderId: "965647612835",
+    appId: "1:965647612835:web:b712367f0d8beb7c5bf816"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  let compressedBase64 = null;
+  let latValue = null;
+  let lngValue = null;
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const btnAmbilFoto = document.getElementById('btnAmbilFoto');
+    const inputFoto = document.getElementById('inputFoto');
+    const imgPreview = document.getElementById('imgPreview');
+    const previewContainer = document.getElementById('previewContainer');
+    const btnGPS = document.getElementById('btnGPS');
+    const coordsText = document.getElementById('coordsText');
+    const gpsInfo = document.getElementById('gpsInfo');
+    const formAduan = document.getElementById('formAduan');
+    const btnKirimAduan = document.getElementById('btnKirimAduan');
+
+    // 1. TRIGGER PILIH/AMBIL FOTO NATIVE
+    if (btnAmbilFoto && inputFoto) {
+      btnAmbilFoto.addEventListener('click', () => inputFoto.click());
+      inputFoto.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        
+        // Kompres foto ke resolusi max 800px & kualitas 70%
+        compressImage(file, 800, 0.7, (base64Result) => {
+          compressedBase64 = base64Result;
+          imgPreview.src = base64Result;
+          previewContainer.style.display = 'block';
+        });
+      });
+    }
+
+    // 2. TRIGGER LOCK GPS DARI SCRIPT.JS GLOBAL
+    if (btnGPS) {
+      btnGPS.addEventListener('click', () => {
+        if (typeof window.requestGeoLocation === 'function') {
+          btnGPS.textContent = '📍 Merekam...';
+          window.requestGeoLocation(
+            (pos) => {
+              latValue = pos.lat;
+              lngValue = pos.lng;
+              coordsText.textContent = `${latValue.toFixed(5)}, ${lngValue.toFixed(5)}`;
+              gpsInfo.style.display = 'block';
+              btnGPS.textContent = '✅ GPS Terkunci';
+            },
+            () => {
+              btnGPS.textContent = '📍 Lock GPS';
+            }
+          );
+        } else {
+          alert('⚠️ Fitur GPS tidak tersedia.');
+        }
+      });
+    }
+
+    // 3. LOGIKA SUBMIT ADUAN KE FIRESTORE
+    if (formAduan) {
+      formAduan.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        if (!compressedBase64) {
+          alert('⚠️ Lampirkan foto bukti laporan terlebih dahulu.');
+          return;
+        }
+
+        btnKirimAduan.disabled = true;
+        btnKirimAduan.textContent = '⏳ Mengirim Laporan...';
+
+        try {
+          await addDoc(collection(db, "aduan_warga05"), {
+            nama: document.getElementById('aduanNama').value,
+            rt: document.getElementById('aduanRT').value,
+            judul: document.getElementById('aduanJudul').value,
+            deskripsi: document.getElementById('aduanDesc').value,
+            fotoBase64: compressedBase64,
+            latitude: latValue || null,
+            longitude: lngValue || null,
+            status: "Menunggu Verifikasi",
+            createdAt: serverTimestamp()
+          });
+
+          alert('✅ Laporan aduan warga berhasil dikirim ke pengurus RW 05!');
+          formAduan.reset();
+          previewContainer.style.display = 'none';
+          gpsInfo.style.display = 'none';
+          compressedBase64 = null;
+          latValue = null;
+          lngValue = null;
+          btnGPS.textContent = '📍 Lock GPS';
+        } catch (err) {
+          console.error('Firestore Error:', err);
+          alert('❌ Gagal mengirim laporan. Periksa koneksi internet kamu.');
+        } finally {
+          btnKirimAduan.disabled = false;
+          btnKirimAduan.textContent = 'Kirim Laporan Warga';
+        }
+      });
+    }
+  });
+
+  // HELPER KOMPRESI GAMBAR CLIENT-SIDE
+  function compressImage(file, maxWidth, quality, callback) {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+      const img = new Image();
+      img.src = event.target.result;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+        if (width > maxWidth) {
+          height = Math.round((height * maxWidth) / width);
+          width = maxWidth;
+        }
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        callback(canvas.toDataURL('image/jpeg', quality));
+      };
+    };
+  }
 </script>
+</body>
+</html>

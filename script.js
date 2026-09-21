@@ -1,13 +1,18 @@
 // @ts-nocheck
 document.addEventListener('DOMContentLoaded', function(){
   // ==========================================
-  // 1. HILANGKAN SPLASH SCREEN OTOMATIS
+  // 1. SPLASH SCREEN HANYA TAMPIL SEKALI PER SESI
   // ==========================================
   var splash = document.getElementById('splash-screen');
   if (splash) {
-    setTimeout(function() {
-      splash.classList.add('fade-out');
-    }, 1500);
+    if (sessionStorage.getItem('splashShown')) {
+      splash.style.display = 'none';
+    } else {
+      setTimeout(function() {
+        splash.classList.add('fade-out');
+        sessionStorage.setItem('splashShown', 'true');
+      }, 1500);
+    }
   }
 
   // ==========================================
@@ -27,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function(){
   mintaIzinNotifikasiWeb();
 
   // ==========================================
-  // 3. STANDAR WEB API: KAMERA & LOKASI
+  // 3. STANDAR WEB API: KAMERA & LOKASI (GLOBAL)
   // ==========================================
   window.requestCameraStream = async function() {
     try {
@@ -44,6 +49,7 @@ document.addEventListener('DOMContentLoaded', function(){
   window.requestGeoLocation = function(callbackSuccess, callbackError) {
     if (!navigator.geolocation) {
       alert('⚠️ Geolocation tidak didukung oleh browser/perangkat ini.');
+      if (typeof callbackError === 'function') callbackError(new Error('GeoNotSupported'));
       return;
     }
     navigator.geolocation.getCurrentPosition(
@@ -57,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function(){
       },
       (error) => {
         console.warn('Gagal ambil lokasi:', error.message);
-        alert('⚠️ Gagal mendapatkan lokasi GPS. Pastikan GPS aktif.');
+        alert('⚠️ Gagal mendapatkan lokasi GPS. Pastikan GPS HP kamu aktif.');
         if (typeof callbackError === 'function') callbackError(error);
       },
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
@@ -145,7 +151,7 @@ document.addEventListener('DOMContentLoaded', function(){
   });
 
   // ==========================================
-  // 6. LOGIKA MODAL SERBAGUNA (TAMPILAN MODERN + IKON)
+  // 6. LOGIKA MODAL SERBAGUNA
   // ==========================================
   var modal = document.getElementById('universal-modal');
   var modalTitle = document.getElementById('modal-title');
@@ -263,8 +269,6 @@ document.addEventListener('DOMContentLoaded', function(){
       title:'📋 Kegiatan RW 05',
       body:'Daftar kegiatan Karang Taruna akan segera hadir.'
     },
-    
-    // DETAIL PETA BALAI SERBAGUNA RW 05
     petaBalai:{
       title:'📍 Balai Serbaguna RW 05',
       body:`
@@ -302,10 +306,22 @@ document.addEventListener('DOMContentLoaded', function(){
   if(modal) modal.addEventListener('click', function(e){ if(e.target===modal) closeModal(); });
 
   // ==========================================
-  // 7. LOGIKA NAVIGASI BACK & HARDWARE BUTTON HP
+  // 7. LOGIKA NAVIGASI BACK & HARDWARE BUTTON HP (DIPERBAIKI)
   // ==========================================
-  function goBackSafe(){ if(window.history.length > 1){ window.history.back(); } else { window.location.href = 'index.html'; } }
-  document.querySelectorAll('.back, #backBtn').forEach(function(el){ el.addEventListener('click', function(e){ e.preventDefault(); goBackSafe(); }); });
+  function goBackSafe(){ 
+    if (document.referrer && document.referrer.includes(window.location.host)) {
+      window.history.back();
+    } else {
+      window.location.href = 'index.html';
+    }
+  }
+
+  document.querySelectorAll('.back, #backBtn').forEach(function(el){ 
+    el.addEventListener('click', function(e){ 
+      e.preventDefault(); 
+      goBackSafe(); 
+    }); 
+  });
 
   var currentPath = window.location.pathname;
   var isHomePage = currentPath.endsWith('index.html') || currentPath.endsWith('/') || currentPath === '' || window.location.href.endsWith('/public/');
@@ -313,27 +329,56 @@ document.addEventListener('DOMContentLoaded', function(){
 
   function handleExitApp() {
     if (backPressedOnce) {
-      if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) { window.Capacitor.Plugins.App.exitApp(); }
-      else { window.history.back(); }
+      if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) { 
+        window.Capacitor.Plugins.App.exitApp(); 
+      } else { 
+        window.history.back(); 
+      }
     } else {
       backPressedOnce = true;
       var toast = document.createElement('div');
       toast.textContent = 'Tekan sekali lagi untuk keluar dari KATARNOLIMA';
       toast.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:10px 18px;border-radius:999px;font-size:13px;z-index:10000';
       document.body.appendChild(toast);
-      setTimeout(function(){ toast.remove(); backPressedOnce = false; }, 2000);
+      setTimeout(function(){ 
+        toast.remove(); 
+        backPressedOnce = false; 
+      }, 2000);
     }
   }
 
   var onHardwareBackButton = function(){
-    if(fabContainer && fabContainer.classList.contains('active')){ fabContainer.classList.remove('active'); if(fabOptions) fabOptions.style.display='none'; if(fabClose) fabClose.style.display='none'; if(fabMain) fabMain.style.display='flex'; return; }
-    if (modal && modal.classList.contains('active')) { closeModal(); return; }
-    if (isHomePage) { handleExitApp(); } else { goBackSafe(); }
+    if(fabContainer && fabContainer.classList.contains('active')){ 
+      fabContainer.classList.remove('active'); 
+      if(fabOptions) fabOptions.style.display='none'; 
+      if(fabClose) fabClose.style.display='none'; 
+      if(fabMain) fabMain.style.display='flex'; 
+      return; 
+    }
+    if (modal && modal.classList.contains('active')) { 
+      closeModal(); 
+      return; 
+    }
+    if (isHomePage) { 
+      handleExitApp(); 
+    } else { 
+      goBackSafe(); 
+    }
   };
 
-  if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) { window.Capacitor.Plugins.App.addListener('backButton', onHardwareBackButton); }
-  else { document.addEventListener('backbutton', onHardwareBackButton, false); }
-  if (isHomePage) { history.pushState(null, '', location.href); window.addEventListener('popstate', function(){ handleExitApp(); history.pushState(null, '', location.href); }); }
+  if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) { 
+    window.Capacitor.Plugins.App.addListener('backButton', onHardwareBackButton); 
+  } else { 
+    document.addEventListener('backbutton', onHardwareBackButton, false); 
+  }
+
+  if (isHomePage) { 
+    history.pushState(null, '', location.href); 
+    window.addEventListener('popstate', function(){ 
+      handleExitApp(); 
+      history.pushState(null, '', location.href); 
+    }); 
+  }
 
   // ==========================================
   // 8. PUSH NOTIFICATIONS FIREBASE / CAPACITOR
