@@ -10,7 +10,7 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
 html,body{background:#fff!important;width:100%;height:100%;margin:0!important}
 .profil-root{width:100%;max-width:440px;margin:0 auto;background:#fff;min-height:100vh;padding-bottom:120px}
-.login-view{padding:16px 20px 0}
+.login-view{padding:16px 20px 0;display:none} /* Default sembunyikan untuk cegah kedip */
 .katarnolima-logo{display:flex;align-items:center;gap:10px;margin:20px 0 0}
 .logo-5{font-size:32px;font-weight:900;color:#000;background:#fbbf24;padding:6px 12px;border-radius:12px}
 .logo-text b{font-size:20px;font-weight:900;line-height:0.9;display:block;color:#000}
@@ -31,7 +31,7 @@ html,body{background:#fff!important;width:100%;height:100%;margin:0!important}
 .error-msg{font-size:11px;color:#ef4444;font-weight:700;margin:-8px 0 10px 4px;display:none}
 
 /* LOGGED VIEW ALA JAKI */
-.logged-view{display:none;background:#f6f8ff;min-height:100vh;padding-bottom:120px}
+.logged-view{display:none;background:#f6f8ff;min-height:100vh;padding-bottom:120px} /* Default sembunyikan untuk cegah kedip */
 .top-area{padding:28px 16px 82px;background:linear-gradient(180deg,#eef4ff 0%,#f6f8ff 100%)}
 .greet-row{display:flex;justify-content:space-between;align-items:flex-start}
 .greet h1{font-size:24px;font-weight:800;color:#0f172a}
@@ -226,13 +226,27 @@ function renderLoggedUI(userObj){
   var elAvatar = document.getElementById('avatarInit');
   if(elNama) elNama.textContent = userObj.nama || 'Warga';
   if(elRtFull) elRtFull.textContent = userObj.rt || 'RT 03 / RW 05';
-  if(elAvatar) elAvatar.textContent = (userObj.nama || 'W').charAt(0).toUpperCase();
+  if(elAvatar) {
+    if(userObj.photo) {
+      elAvatar.innerHTML = `<img src="${userObj.photo}" alt="Avatar" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+    } else {
+      elAvatar.innerHTML = (userObj.nama || 'W').charAt(0).toUpperCase();
+    }
+  }
 }
 
 function renderLoginUI(){
   if(loginView) loginView.style.display='block';
   if(loggedView) loggedView.style.display='none';
   if(jakiNav) jakiNav.classList.add('show');
+}
+
+// Cek sinkronisasi instan dari localStorage SEGERA tanpa kedip
+var initialUser = JSON.parse(localStorage.getItem('rw05_current_user')||'null');
+if(initialUser){
+  renderLoggedUI(initialUser);
+} else {
+  renderLoginUI();
 }
 
 onAuthStateChanged(auth, async (user) => {
@@ -249,17 +263,16 @@ onAuthStateChanged(auth, async (user) => {
         nama: profileData.nama,
         email: user.email,
         rt: profileData.rt,
+        phone: profileData.phone || initialUser?.phone || '',
+        phoneVerified: profileData.phoneVerified || initialUser?.phoneVerified || false,
+        photo: profileData.photo || initialUser?.photo || null,
         uid: user.uid
       };
       localStorage.setItem('rw05_current_user', JSON.stringify(currentPayload));
       renderLoggedUI(currentPayload);
     } catch(err) {
       console.error("Gagal load profil:", err);
-      renderLoginUI();
     }
-  } else {
-    localStorage.removeItem('rw05_current_user');
-    renderLoginUI();
   }
 });
 
@@ -296,14 +309,12 @@ if(btnDaftar){
     btnDaftar.textContent = "Mendaftarkan...";
     btnDaftar.disabled = true;
     try {
-      // Validasi duplikasi Nama di users_profile
       const cekNama = await getDocs(query(collection(db, "users_profile"), where("nama", "==", nama)));
       if(!cekNama.empty){
         alert('❌ Nama lengkap ini sudah terdaftar atas akun lain!');
         return;
       }
 
-      // Validasi duplikasi Email di users_profile
       const cekEmail = await getDocs(query(collection(db, "users_profile"), where("email", "==", email)));
       if(!cekEmail.empty){
         alert('❌ Email ini sudah terdaftar di sistem!');
@@ -313,12 +324,17 @@ if(btnDaftar){
       var userCred = await createUserWithEmailAndPassword(auth, email, pass);
       var user = userCred.user;
       
-      await setDoc(doc(db, "users_profile", user.uid), {
+      const newPayload = {
         nama: nama,
         rt: rt,
         email: email,
+        uid: user.uid,
         createdAt: serverTimestamp()
-      });
+      };
+
+      await setDoc(doc(db, "users_profile", user.uid), newPayload);
+      localStorage.setItem('rw05_current_user', JSON.stringify(newPayload));
+      renderLoggedUI(newPayload);
 
       alert('✅ Akun berhasil didaftarkan! Selamat datang, ' + nama);
     } catch(err) {

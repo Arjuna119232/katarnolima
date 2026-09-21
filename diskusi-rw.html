@@ -11,29 +11,43 @@
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{font-family:'Plus Jakarta Sans',sans-serif;background:#f8fafc;color:#0f172a}
 .feed-root{width:100%;max-width:440px;margin:0 auto;background:#f8fafc;min-height:100vh;display:flex;flex-direction:column;position:relative;box-shadow:0 0 24px rgba(0,0,0,.05)}
-.header{padding:12px 16px;display:flex;align-items:center;gap:12px;background:#fff;border-bottom:1px solid #e2e8f0;position:sticky;top:0;z-index:20}
-.btn-back{width:40px;height:40px;border-radius:12px;background:#fff;border:1px solid #e2e8f0;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;text-decoration:none}
-.btn-back svg{width:20px;height:20px;stroke:#0f172a;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;fill:none}
-.header-info{flex:1;min-width:0}
-.header-info h1{font-size:15px;font-weight:800;color:#0f172a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.header-info p{font-size:11px;color:#64748b;font-weight:600}
+.header{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:8px;background:#fff;border-bottom:1px solid #e2e8f0;position:sticky;top:0;z-index:20}
+.btn-back{width:36px;height:36px;border-radius:12px;background:#fff;border:1px solid #e2e8f0;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;text-decoration:none}
+.btn-back svg{width:18px;height:18px;stroke:#0f172a;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;fill:none}
+.header-info{flex:1;min-width:0;text-align:center;}
+.header-info h1{font-size:14px;font-weight:800;color:#0f172a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.header-info p{font-size:10px;color:#0fb398;font-weight:700;}
+
+/* TOGGLE POJOK KANAN ATAS */
+.header-admin-toggle{display:none;align-items:center;gap:6px;background:#eff6ff;border:1px solid #bfdbfe;padding:4px 8px;border-radius:999px;font-size:10px;font-weight:700;color:#1e40af;cursor:pointer;flex-shrink:0}
+.header-admin-toggle.show{display:flex}
+.header-admin-toggle .status-dot{width:7px;height:7px;border-radius:50%;background:#3b82f6}
+.header-admin-toggle.as-warga .status-dot{background:#94a3b8}
+.header-admin-toggle.as-warga{background:#f1f5f9;border-color:#cbd5e1;color:#475569}
 
 .feed-body{flex:1;padding:16px;display:flex;flex-direction:column;gap:12px;padding-bottom:100px}
 .empty-state{text-align:center;padding:48px 20px;color:#94a3b8;font-size:13px;display:flex;flex-direction:column;align-items:center;gap:8px}
 .empty-state span{font-size:36px}
 
-.comment-card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:12px 14px;display:flex;gap:10px}
+.comment-card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:12px 14px;display:flex;gap:10px;width:100%}
+.comment-card.admin-bubble{flex-direction:row-reverse;background:#eff6ff;border-color:#bfdbfe;margin-left:auto;max-width:92%}
+
 .comment-avatar{width:38px;height:38px;border-radius:50%;background:#e0f2fe;color:#0369a1;display:grid;place-items:center;font-weight:800;font-size:14px;flex-shrink:0;overflow:hidden}
 .comment-avatar img{width:100%;height:100%;object-fit:cover}
 .comment-main{flex:1;min-width:0}
 .comment-header-row{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:4px}
+.comment-card.admin-bubble .comment-header-row{flex-direction:row-reverse;text-align:right}
 .comment-user-info{display:flex;flex-direction:column;gap:2px}
+.comment-card.admin-bubble .comment-user-info{align-items:flex-end}
 .comment-name-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.comment-card.admin-bubble .comment-name-row{flex-direction:row-reverse}
 .comment-name{font-size:13px;font-weight:700;color:#0f172a}
 .badge-verif{background:#dbeafe;color:#1d4ed8;font-size:9px;font-weight:700;padding:1px 6px;border-radius:999px}
+.badge-admin{background:#1d4ed8;color:#fff;font-size:9px;font-weight:700;padding:1px 6px;border-radius:999px}
 .comment-rt{font-size:11px;color:#64748b;font-weight:600}
 .comment-time{font-size:11px;color:#94a3b8;flex-shrink:0}
 .comment-text{font-size:13px;color:#334155;line-height:1.45;word-break:break-word}
+.comment-card.admin-bubble .comment-text{text-align:right}
 
 .comment-input-area{position:fixed;bottom:72px;left:50%;transform:translateX(-50%);width:100%;max-width:440px;padding:10px 16px;background:#fff;border-top:1px solid #e2e8f0;display:flex;align-items:center;gap:8px;z-index:25}
 .input-box{flex:1;height:42px;border-radius:999px;border:1.5px solid #e2e8f0;padding:0 16px;font-size:13px;font-family:inherit;outline:none;background:#f8fafc;color:#0f172a}
@@ -60,8 +74,13 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f8fafc;color:#0f172a
     </a>
     <div class="header-info">
       <h1>Diskusi Warga</h1>
-      <p>Komentar terbuka akun terverifikasi RW 05</p>
+      <p id="onlineIndicator">🟢 1 online</p>
     </div>
+    <!-- TOGGLE POJOK KANAN ATAS -->
+    <button class="header-admin-toggle" id="headerAdminToggle" title="Klik untuk ganti mode">
+      <span class="status-dot"></span>
+      <span id="headerToggleLabel">👑 Admin</span>
+    </button>
   </div>
 
   <div class="feed-body" id="feedBody">
@@ -72,7 +91,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f8fafc;color:#0f172a
   </div>
 
   <div class="comment-input-area">
-    <input type="text" class="input-box" id="msgInput" placeholder="Tulis komentar warga..." autocomplete="off">
+    <input type="text" class="input-box" id="msgInput" placeholder="Tulis komentar..." autocomplete="off">
     <button class="btn-send" id="sendBtn" aria-label="Kirim">
       <svg viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
     </button>
@@ -92,7 +111,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f8fafc;color:#0f172a
   // @ts-nocheck
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-  import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyCZtvImbyZmqoEoY1hYZcuCbUpIl3R1fhE",
@@ -107,13 +126,37 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f8fafc;color:#0f172a
   const db = getFirestore(app);
   const auth = getAuth(app);
 
-  /**
-   * Helper Cek Verifikasi/Login Warga yang ketat
-   */
+  // --- INDIKATOR ONLINE REALTIME LOKAL/SESI ---
+  const onlineIndicator = document.getElementById('onlineIndicator');
+  const onlineChannel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('rw05_online_presence') : null;
+  let activeSessions = 1;
+
+  function refreshOnlineUI() {
+    if (onlineIndicator) {
+      onlineIndicator.textContent = `🟢 ${activeSessions} online`;
+    }
+  }
+
+  if (onlineChannel) {
+    onlineChannel.postMessage({ type: 'JOIN' });
+    onlineChannel.onmessage = (event) => {
+      if (event.data?.type === 'JOIN') {
+        activeSessions = Math.min(activeSessions + 1, 5); // estimasi aktif tab/device
+        refreshOnlineUI();
+      }
+    };
+  }
+  refreshOnlineUI();
+
+  function checkIsAdminUser(email, name) {
+    const adminEmails = ["admin@rw05.id", "pengurus@rw05.id", "arjunamahendra2003@gmail.com"];
+    return adminEmails.includes((email || '').toLowerCase()) || (name || '').toLowerCase().includes('admin');
+  }
+
   function checkAuthOrRedirect() {
     const userSession = JSON.parse(localStorage.getItem('rw05_current_user') || 'null');
     const userLoginLegacy = localStorage.getItem('rw05_user_login');
-    const firebaseUser = typeof auth !== 'undefined' ? auth.currentUser : null;
+    const firebaseUser = auth.currentUser;
 
     if (!userSession?.nama && !userLoginLegacy && !firebaseUser) {
       alert('⚠️ Silakan login atau verifikasi akun terlebih dahulu.');
@@ -122,6 +165,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f8fafc;color:#0f172a
     }
     return userSession || { 
       nama: firebaseUser?.email ? firebaseUser.email.split('@')[0] : 'Warga Terverifikasi', 
+      email: firebaseUser?.email || '',
       rt: 'RT 03 / RW 05', 
       photo: null 
     };
@@ -131,13 +175,52 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f8fafc;color:#0f172a
   const emptyState = document.getElementById('emptyState');
   const msgInput = document.getElementById('msgInput');
   const sendBtn = document.getElementById('sendBtn');
+  const headerAdminToggle = document.getElementById('headerAdminToggle');
+  const headerToggleLabel = document.getElementById('headerToggleLabel');
 
-  /** @param {string} name */
+  let isSendingAsAdmin = localStorage.getItem('rw05_admin_send_mode') !== 'false';
+
+  function evaluateAdminStatus(email, name, firebaseUser) {
+    const isAdminAccount = checkIsAdminUser(email, name) || checkIsAdminUser(firebaseUser?.email, name) || localStorage.getItem('rw05_admin_logged') === 'true';
+    if (isAdminAccount) {
+      headerAdminToggle.classList.add('show');
+      refreshToggleUI();
+    } else {
+      headerAdminToggle.classList.remove('show');
+      isSendingAsAdmin = false;
+    }
+  }
+
+  function refreshToggleUI() {
+    if (isSendingAsAdmin) {
+      headerAdminToggle.classList.remove('as-warga');
+      headerToggleLabel.textContent = '👑 Admin';
+    } else {
+      headerAdminToggle.classList.add('as-warga');
+      headerToggleLabel.textContent = '👤 Warga';
+    }
+  }
+
+  if (headerAdminToggle) {
+    headerAdminToggle.addEventListener('click', () => {
+      isSendingAsAdmin = !isSendingAsAdmin;
+      localStorage.setItem('rw05_admin_send_mode', isSendingAsAdmin);
+      refreshToggleUI();
+    });
+  }
+
+  const freshUser = JSON.parse(localStorage.getItem('rw05_current_user') || '{}');
+  evaluateAdminStatus(freshUser.email, freshUser.nama, auth.currentUser);
+
+  onAuthStateChanged(auth, (user) => {
+    const currentStorageUser = JSON.parse(localStorage.getItem('rw05_current_user') || '{}');
+    evaluateAdminStatus(currentStorageUser.email || user?.email, currentStorageUser.nama, user);
+  });
+
   function getInitials(name) {
     return (name || 'W').trim().charAt(0).toUpperCase();
   }
 
-  /** @param {any} item */
   function renderCommentCard(item) {
     if (emptyState && emptyState.parentElement) {
       emptyState.remove();
@@ -146,16 +229,21 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f8fafc;color:#0f172a
     const timeDate = item.createdAt?.toDate ? item.createdAt.toDate() : new Date();
     const timeStr = timeDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }).replace(':', '.');
     
+    const isAdmin = item.isAdmin === true;
     const card = document.createElement('div');
-    card.className = 'comment-card';
+    card.className = `comment-card ${isAdmin ? 'admin-bubble' : ''}`;
     
     const userName = item.userName || 'Warga Terverifikasi';
-    const userRt = item.userRt || 'RT 03 / RW 05';
+    const userRt = item.userRt || (isAdmin ? 'Pengurus / Admin RW 05' : 'RT 03 / RW 05');
     const userPhoto = item.userPhoto || null;
     const avatarContent = userPhoto 
       ? `<img src="${userPhoto}" alt="Avatar">` 
       : getInitials(userName);
-    const avatarBgStyle = userPhoto ? 'background:transparent;' : '';
+    const avatarBgStyle = userPhoto ? 'background:transparent;' : (isAdmin ? 'background:#dbeafe;color:#1d4ed8;' : '');
+
+    const badgeHtml = isAdmin 
+      ? `<span class="badge-admin">👑 Admin RW 05</span>` 
+      : `<span class="badge-verif">✔ Terverifikasi</span>`;
 
     card.innerHTML = `
       <div class="comment-avatar" style="${avatarBgStyle}">${avatarContent}</div>
@@ -164,7 +252,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f8fafc;color:#0f172a
           <div class="comment-user-info">
             <div class="comment-name-row">
               <span class="comment-name">${userName}</span>
-              <span class="badge-verif">✔ Terverifikasi</span>
+              ${badgeHtml}
             </div>
             <span class="comment-rt">${userRt}</span>
           </div>
@@ -176,7 +264,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f8fafc;color:#0f172a
     feedBody.appendChild(card);
   }
 
-  // Realtime listener koleksi diskusi_rw05
   onSnapshot(query(collection(db, "diskusi_rw05"), orderBy("createdAt", "asc")), 
     (snap) => {
       feedBody.innerHTML = '';
@@ -209,17 +296,24 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f8fafc;color:#0f172a
     const val = msgInput.value.trim();
     if (!val) return;
     
-    const currentName = verifiedUser.nama || 'Warga Terverifikasi';
-    const currentRt = verifiedUser.rt || 'RT 03 / RW 05';
-    const currentPhoto = verifiedUser.photo || null;
+    const latestUser = JSON.parse(localStorage.getItem('rw05_current_user') || '{}');
+    const currentName = latestUser.nama || verifiedUser.nama || 'Warga Terverifikasi';
+    const currentEmail = latestUser.email || verifiedUser.email || auth.currentUser?.email || '';
+    const currentRt = latestUser.rt || verifiedUser.rt || 'RT 03 / RW 05';
+    const currentPhoto = latestUser.photo || verifiedUser.photo || null;
+    
+    const isAccountAdmin = checkIsAdminUser(currentEmail, currentName) || localStorage.getItem('rw05_admin_logged') === 'true';
+    const finalIsAdmin = isAccountAdmin ? isSendingAsAdmin : false;
 
     if (sendBtn) sendBtn.disabled = true;
 
     try {
       await addDoc(collection(db, "diskusi_rw05"), {
         userName: currentName,
-        userRt: currentRt,
+        userEmail: currentEmail,
+        userRt: finalIsAdmin ? 'Pengurus / Admin RW 05' : currentRt,
         userPhoto: currentPhoto,
+        isAdmin: finalIsAdmin,
         text: val,
         createdAt: serverTimestamp()
       });
@@ -237,7 +331,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f8fafc;color:#0f172a
     msgInput.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') handleSend();
     });
-    // Blokir interaksi/ketik / fokus jika belum login
     msgInput.addEventListener('focus', () => {
       checkAuthOrRedirect();
     });

@@ -36,7 +36,8 @@ html,body{background:#fff!important;width:100%;min-height:100vh;margin:0!importa
 
 .phone-sub{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
 .phone-label{font-size:12px;font-weight:600;color:#64748b}
-.status-unverified{font-size:11px;font-weight:700;color:#ef4444}
+.status-unverified{font-size:11px;font-weight:700;color:#ef4444;display:none}
+.status-verified{font-size:11px;font-weight:700;color:#0fb398;display:block}
 </style>
 </head>
 <body>
@@ -87,8 +88,8 @@ html,body{background:#fff!important;width:100%;min-height:100vh;margin:0!importa
         <span class="status-unverified" id="phoneStatusText">Belum Terverifikasi</span>
       </div>
       <div class="input-wrap" style="gap: 8px;">
-        <input type="tel" class="form-input" id="inputPhone" value="089609916719" style="flex:1;">
-        <button type="button" id="btnVerifyPhone" style="background:#0fb398; color:#fff; border:none; border-radius:8px; padding:6px 12px; font-size:11px; font-weight:700; cursor:pointer; white-space:nowrap;">Verifikasi</button>
+        <input type="tel" class="form-input" id="inputPhone" value="" placeholder="Masukkan nomor handphone (opsional)">
+        <button type="button" id="btnVerifyPhone" style="display:none; background:#0fb398; color:#fff; border:none; border-radius:8px; padding:6px 12px; font-size:11px; font-weight:700; cursor:pointer; white-space:nowrap;">Verifikasi</button>
       </div>
     </div>
   </div>
@@ -96,7 +97,7 @@ html,body{background:#fff!important;width:100%;min-height:100vh;margin:0!importa
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const firebaseConfig = {
@@ -111,39 +112,96 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-// Load data existing dari localStorage atau Firebase Auth session
-var currentUser = JSON.parse(localStorage.getItem('rw05_current_user')||'null');
 var inputNamaUbah = document.getElementById('inputNamaUbah');
 var inputEmail = document.getElementById('inputEmail');
 var inputUsername = document.getElementById('inputUsername');
 var avatarBig = document.getElementById('editAvatarInit');
 var inputPhone = document.getElementById('inputPhone');
+var phoneStatusText = document.getElementById('phoneStatusText');
+var btnVerifyPhone = document.getElementById('btnVerifyPhone');
 
-function populateFields(userPayload, authEmail) {
-  const activeEmail = userPayload?.email || authEmail || '';
-  const activeName = userPayload?.nama || (activeEmail ? activeEmail.split('@')[0] : 'Warga');
-  
-  if(inputNamaUbah) inputNamaUbah.value = activeName;
-  if(inputEmail) inputEmail.value = activeEmail;
-  if(inputUsername) inputUsername.value = activeName.replace(/\s+/g, '_') + '_RW05';
-  if(inputPhone && userPayload?.phone) inputPhone.value = userPayload.phone;
-  if(avatarBig) {
-    if(userPayload?.photo) {
-      avatarBig.innerHTML = '<img src="' + userPayload.photo + '" alt="Foto">';
-    } else {
-      avatarBig.textContent = (activeName || 'W').charAt(0).toUpperCase();
+function updatePhoneUIState(val, verified) {
+  const cleanVal = (val || '').trim();
+  if (verified) {
+    phoneStatusText.textContent = 'Terverifikasi';
+    phoneStatusText.className = 'status-verified';
+    if(btnVerifyPhone) {
+      btnVerifyPhone.style.display = 'block';
+      btnVerifyPhone.textContent = 'Sudah Verifikasi';
+      btnVerifyPhone.style.background = '#e2e8f0';
+      btnVerifyPhone.style.color = '#64748b';
+      btnVerifyPhone.disabled = true;
+    }
+  } else if (cleanVal.length > 0) {
+    // Ada isi tapi belum verifikasi (atau belum diklik simpan/verifikasi setelah isi)
+    phoneStatusText.style.display = 'block';
+    phoneStatusText.textContent = 'Belum Terverifikasi';
+    phoneStatusText.className = 'status-unverified';
+    if(btnVerifyPhone) {
+      btnVerifyPhone.style.display = 'block';
+      btnVerifyPhone.textContent = 'Verifikasi';
+      btnVerifyPhone.style.background = '#0fb398';
+      btnVerifyPhone.style.color = '#fff';
+      btnVerifyPhone.disabled = false;
+    }
+  } else {
+    // Kosong: sembunyikan status "Belum Terverifikasi"
+    phoneStatusText.style.display = 'none';
+    if(btnVerifyPhone) {
+      btnVerifyPhone.style.display = 'none';
     }
   }
 }
 
-populateFields(currentUser, auth.currentUser?.email);
+function applyUserData(data) {
+  if (!data) return;
+  if(inputNamaUbah) inputNamaUbah.value = data.nama || '';
+  if(inputEmail) inputEmail.value = data.email || '';
+  if(inputUsername) inputUsername.value = (data.nama ? data.nama.replace(/\s+/g, '_') : 'Warga') + '_RW05';
+  if(inputPhone) inputPhone.value = data.phone || '';
+  
+  updatePhoneUIState(data.phone, data.phoneVerified);
 
-onAuthStateChanged(auth, (user) => {
+  if(avatarBig) {
+    if(data.photo) {
+      avatarBig.innerHTML = '<img src="' + data.photo + '" alt="Foto">';
+    } else {
+      avatarBig.textContent = (data.nama || 'W').charAt(0).toUpperCase();
+    }
+  }
+}
+
+// Event handler input phone untuk dinamis menyembunyikan/menampilkan tombol verifikasi
+if(inputPhone) {
+  inputPhone.addEventListener('input', function() {
+    updatePhoneUIState(this.value, false);
+  });
+}
+
+// Muat instan dari localStorage
+var localUser = JSON.parse(localStorage.getItem('rw05_current_user')||'null');
+if(localUser) applyUserData(localUser);
+else updatePhoneUIState('', false);
+
+// Sinkronisasi real dari Firebase Auth / Firestore profile
+onAuthStateChanged(auth, async (user) => {
   if(user) {
-    if(inputEmail) inputEmail.value = user.email || '';
-    if(currentUser) {
-      currentUser.email = user.email;
-      localStorage.setItem('rw05_current_user', JSON.stringify(currentUser));
+    try {
+      const snap = await getDoc(doc(db, "users_profile", user.uid));
+      let merged = localUser || {};
+      merged.email = user.email;
+      if(snap.exists()) {
+        const d = snap.data();
+        merged.nama = d.nama || merged.nama;
+        merged.rt = d.rt || merged.rt;
+        merged.phone = d.phone || merged.phone;
+        merged.phoneVerified = d.phoneVerified || merged.phoneVerified;
+        merged.photo = d.photo || merged.photo;
+      }
+      localStorage.setItem('rw05_current_user', JSON.stringify(merged));
+      applyUserData(merged);
+    } catch(e) {
+      console.error('Gagal sync profile:', e);
     }
   }
 });
@@ -151,7 +209,7 @@ onAuthStateChanged(auth, (user) => {
 // Simulasi ubah foto
 var btnUbahFoto = document.getElementById('btnUbahFoto');
 var inputPhotoFile = document.getElementById('inputPhotoFile');
-let tempPhotoBase64 = currentUser?.photo || null;
+let tempPhotoBase64 = localUser?.photo || null;
 
 if(btnUbahFoto && inputPhotoFile){
   btnUbahFoto.addEventListener('click', function(){ inputPhotoFile.click(); });
@@ -167,42 +225,27 @@ if(btnUbahFoto && inputPhotoFile){
   });
 }
 
-// Handler tombol verifikasi nomor handphone
-var btnVerifyPhone = document.getElementById('btnVerifyPhone');
-var phoneStatusText = document.getElementById('phoneStatusText');
-
+// Simulasi verifikasi OTP handphone
 if(btnVerifyPhone && inputPhone){
-  if(currentUser && currentUser.phoneVerified){
-    phoneStatusText.textContent = 'Terverifikasi';
-    phoneStatusText.style.color = '#0fb398';
-    btnVerifyPhone.textContent = 'Sudah Verifikasi';
-    btnVerifyPhone.style.background = '#e2e8f0';
-    btnVerifyPhone.style.color = '#64748b';
-    btnVerifyPhone.disabled = true;
-  }
-
   btnVerifyPhone.addEventListener('click', function(){
     var currentPhoneVal = inputPhone.value.trim();
     if(!currentPhoneVal || currentPhoneVal.length < 9){
       alert('⚠️ Masukkan nomor handphone yang valid terlebih dahulu!');
       return;
     }
+    const simulatedOtp = '54321';
+    alert(`📲 Simulasi OTP terkirim ke WhatsApp/SMS ${currentPhoneVal}.\n(Kode uji coba Anda: ${simulatedOtp})`);
+    var inputOtp = prompt('Masukkan 5 digit kode OTP yang dikirim:');
+    if(inputOtp === simulatedOtp){
+      updatePhoneUIState(currentPhoneVal, true);
 
-    if(confirm('Kirim kode verifikasi ke nomor ' + currentPhoneVal + '?' +)){
-      setTimeout(function(){
-        phoneStatusText.textContent = 'Terverifikasi';
-        phoneStatusText.style.color = '#0fb398';
-        btnVerifyPhone.textContent = 'Sudah Verifikasi';
-        btnVerifyPhone.style.background = '#e2e8f0';
-        btnVerifyPhone.style.color = '#64748b';
-        btnVerifyPhone.disabled = true;
-
-        if(!currentUser) currentUser = {};
-        currentUser.phoneVerified = true;
-        currentUser.phone = currentPhoneVal;
-        localStorage.setItem('rw05_current_user', JSON.stringify(currentUser));
-        alert('✅ Nomor handphone berhasil diverifikasi!');
-      }, 600);
+      var currentData = JSON.parse(localStorage.getItem('rw05_current_user')||'{}');
+      currentData.phoneVerified = true;
+      currentData.phone = currentPhoneVal;
+      localStorage.setItem('rw05_current_user', JSON.stringify(currentData));
+      alert('✅ Nomor handphone berhasil diverifikasi!');
+    } else if(inputOtp !== null) {
+      alert('❌ Kode OTP salah!');
     }
   });
 }
@@ -224,22 +267,28 @@ if(btnSimpan){
     btnSimpan.disabled = true;
 
     try {
+      var currentData = JSON.parse(localStorage.getItem('rw05_current_user')||'{}');
+      const isVerified = newPhone ? (currentData?.phone === newPhone && currentData?.phoneVerified) : false;
+      
       const updatedUser = {
-        ...(currentUser || {}),
+        ...currentData,
         nama: newNama,
         email: newEmail,
         phone: newPhone,
-        rt: currentUser?.rt || 'RT 03 / RW 05',
-        photo: tempPhotoBase64 || currentUser?.photo || null
+        rt: currentData?.rt || 'RT 03 / RW 05',
+        photo: tempPhotoBase64 || currentData?.photo || null,
+        phoneVerified: isVerified
       };
 
       localStorage.setItem('rw05_current_user', JSON.stringify(updatedUser));
+      updatePhoneUIState(newPhone, isVerified);
 
       if(auth.currentUser) {
         try {
           await updateDoc(doc(db, "users_profile", auth.currentUser.uid), {
             nama: newNama,
             phone: newPhone,
+            phoneVerified: isVerified,
             photo: tempPhotoBase64 || null
           });
         } catch(e) {
