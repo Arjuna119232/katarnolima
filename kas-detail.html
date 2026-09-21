@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Rincian Kas RW 05 - KATARNOLIMA</title>
+<link rel="icon" href="img/logo-resmi-karang-taruna.jpg">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+body{background:#f1f5f9;color:#0f172a;padding-bottom:80px}
+.header{background:#fff;padding:16px 20px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:20}
+.btn-back{font-size:18px;text-decoration:none;color:#0f172a;font-weight:800}
+.container{padding:16px;max-width:600px;margin:0 auto}
+.saldo-banner{background:linear-gradient(135deg,#0f172a,#1e293b);color:#fff;border-radius:16px;padding:22px;margin-bottom:16px}
+.saldo-banner .lbl{font-size:11px;color:#94a3b8;font-weight:700;text-transform:uppercase}
+.saldo-banner .val{font-size:28px;font-weight:900;color:#fbbf24;margin-top:6px}
+.card-list{background:#fff;border-radius:16px;border:1px solid #e2e8f0;overflow:hidden}
+.trans-item{padding:14px 16px;border-bottom:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center}
+.trans-item:last-child{border-bottom:none}
+.trans-left b{font-size:13px;display:block}
+.trans-left span{font-size:11px;color:#64748b}
+.trans-right{font-weight:800;font-size:14px}
+.masuk{color:#16a34a}
+.keluar{color:#dc2626}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <a href="index.html" class="btn-back">←</a>
+  <h2 style="font-size:16px;font-weight:900">Rincian Kas RW 05</h2>
+</div>
+
+<div class="container">
+  <div class="saldo-banner">
+    <div class="lbl">Total Saldo Keseluruhan Kas RW 05</div>
+    <div class="val" id="detailTotalSaldo">Rp 0</div>
+  </div>
+
+  <div class="card-list">
+    <div style="padding:14px 16px;font-weight:800;font-size:13px;border-bottom:1px solid #e2e8f0;background:#f8fafc">Riwayat Masuk & Keluar Kas</div>
+    <div id="listDetailTransaksi">
+      <div style="padding:20px;text-align:center;color:#94a3b8;font-size:12px">Memuat rincian transaksi...</div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, doc, collection, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCZtvImbyZmqoEoY1hYZcuCbUpIl3R1fhE",
+  authDomain: "katarnolima-rw05.firebaseapp.com",
+  projectId: "katarnolima-rw05",
+  storageBucket: "katarnolima-rw05.firebasestorage.app",
+  messagingSenderId: "965647612835",
+  appId: "1:965647612835:web:b712367f0d8beb7c5bf816"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// Ambil total saldo
+onSnapshot(doc(db, "kas_rw05", "saldo_utama"), (snap) => {
+  if(snap.exists()) {
+    const total = snap.data().total || 0;
+    const el = document.getElementById('detailTotalSaldo');
+    if(el) el.textContent = 'Rp ' + Number(total).toLocaleString('id-ID');
+  }
+});
+
+// Ambil list transaksi masuk/keluar
+const listContainer = document.getElementById('listDetailTransaksi');
+onSnapshot(query(collection(db, "transaksi_kas"), orderBy("createdAt", "desc")), (snap) => {
+  if(!listContainer) return;
+  let html = '';
+  snap.forEach(docItem => {
+    const d = docItem.data();
+    const isMasuk = d.jenis === 'masuk';
+    const sign = isMasuk ? '+' : '-';
+    const cls = isMasuk ? 'masuk' : 'keluar';
+    html += `<div class="trans-item">
+      <div class="trans-left">
+        <b>${d.keterangan || 'Transaksi Kas'}</b>
+        <span>${d.tanggalFormatted || '-'} • <strong style="color:${isMasuk?'#16a34a':'#dc2626'}">${isMasuk?'Pemasukan':'Pengeluaran'}</strong></span>
+      </div>
+      <div class="trans-right ${cls}">${sign}Rp ${Number(d.jumlah||0).toLocaleString('id-ID')}</div>
+    </div>`;
+  });
+  listContainer.innerHTML = html || '<div style="padding:20px;text-align:center;color:#94a3b8;font-size:12px">Belum ada rincian transaksi kas.</div>';
+});
+</script>
+</body>
+</html>

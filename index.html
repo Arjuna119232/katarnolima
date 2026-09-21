@@ -8,10 +8,6 @@
 <link rel="manifest" href="manifest.json">
 <link rel="stylesheet" href="style.css?v=27">
 <style>
-.saldo-live{color:#fbbf24;font-weight:900}
-.live-badge{font-size:10px;background:#22c55e;color:#fff;padding:2px 6px;border-radius:20px;margin-left:6px;animation:pulse 1.5s infinite}
-@keyframes pulse{0%{opacity:1}50%{opacity:.4}100%{opacity:1}}
-
 /* SPLASH SCREEN ANIMATION */
 #splash-screen {
   position: fixed;
@@ -59,6 +55,52 @@
   opacity: 0;
   visibility: hidden;
 }
+
+/* Modal Animation Box & Blur Overlay ala JAKI */
+#satpam-modal {
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+#satpam-modal.show-overlay {
+  opacity: 1;
+}
+
+.satpam-box {
+  transform: scale(0.85);
+  opacity: 0;
+  transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.satpam-box.show {
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* TOAST EXIT NOTIFICATION */
+#exit-toast {
+  position: fixed;
+  bottom: 90px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: rgba(15, 23, 42, 0.9);
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  z-index: 9999999;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+#exit-toast.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
 </style>
 </head>
 <body>
@@ -68,6 +110,9 @@
   <img src="img/logo-resmi-karang-taruna.jpg" alt="KATARNOLIMA Logo" class="splash-logo">
   <div class="splash-text">KATARNOLIMA RW 05</div>
 </div>
+
+<!-- TOAST KETUK DUA KALI -->
+<div id="exit-toast">Ketuk sekali lagi untuk keluar aplikasi</div>
 
 <div class="app-jaki">
   <div class="jaki-banner-abad">
@@ -88,30 +133,31 @@
 
   <div class="grid-8">
     <a class="g8-item" href="aduan-warga.html"><div class="g8-icon">📢</div><p>Aduan<br>Warga</p></a>
-    <a class="g8-item" href="info.html"><div class="g8-icon">🔔</div><p>Info<br>RW</p></a>
+    <a class="g8-item" href="berita-rw.html"><div class="g8-icon">📰</div><p>Berita<br>RW</p></a>
     <a class="g8-item" href="iuran-warga.html"><div class="g8-icon">💰</div><p>Iuran<br>Warga</p></a>
     <a class="g8-item" data-modal="sembako"><div class="g8-icon">🛒</div><p>Harga<br>Sembako</p></a>
-    <a class="g8-item" data-modal="ronda"><div class="g8-icon">🛡️</div><p>Jadwal<br>Ronda</p></a>
+    <a class="g8-item" onclick="openSatpamModal()" style="cursor:pointer;"><div class="g8-icon">🛡️</div><p>Keamanan<br>Satpam</p></a>
     <a class="g8-item" data-modal="bersih"><div class="g8-icon">🧹</div><p>Lingkungan<br>Bersih</p></a>
     <a class="g8-item" data-modal="petaBalai"><div class="g8-icon blue">📍</div><p>Peta<br>Balai</p></a>
     <a class="g8-item" href="semua-layanan.html"><div class="g8-icon">⊞</div><p>Semua<br>Layanan</p></a>
   </div>
 
-  <div class="kas-card">
+  <!-- KAS KARANG TARUNA (TOTAL KESELURUHAN & LINK KE RINCIAN) -->
+  <div class="kas-card" onclick="window.location.href='kas-detail.html'" style="cursor:pointer;">
     <div class="kas-top">
-      <span>Kas Karang Taruna RW 05 <span class="live-badge">LIVE</span></span>
-      <span class="saldo saldo-live" id="saldoLive">Rp 0</span>
+      <span>Kas Karang Taruna RW 05</span>
+      <span class="saldo" id="manualSaldoKas" style="color:#fbbf24;font-weight:900;">Rp 0</span>
     </div>
     <div class="kas-bot">
-      <span id="kasUpdate">Transparan & Update • Live</span>
-      <button onclick="location.href='iuran-warga.html'">Lihat Rincian</button>
+      <span id="manualInfoKas">Di Update Oleh Admin katarnolima</span>
+      <span style="font-size:11px;color:#2563eb;font-weight:700;">Lihat Rincian ›</span>
     </div>
   </div>
 
   <div class="mitigasi-card">
     <div>
       <h3>Yuk Ikut Kerja Bakti<br>Minggu Ini!</h3>
-      <button onclick="location.href='info.html'">Daftar Hadir</button>
+      <button onclick="location.href='berita-rw.html'">Daftar Hadir</button>
     </div>
     <div class="mit-icon">🚜</div>
   </div>
@@ -121,7 +167,7 @@
     <div class="kategori-grid">
       <div class="kat-card" data-modal="posyandu"><span>👶</span><p>Posyandu</p></div>
       <div class="kat-card" data-modal="datawarga"><span>📋</span><p>Data Warga</p></div>
-      <div class="kat-card" data-modal="ronda"><span>🌙</span><p>Ronda Malam</p></div>
+      <div class="kat-card" onclick="openSatpamModal()" style="cursor:pointer;"><span>🛡️</span><p>Keamanan Satpam</p></div>
       <div class="kat-card" data-modal="belajar"><span>📚</span><p>Belajar Bersama</p></div>
     </div>
   </div>
@@ -131,7 +177,7 @@
       <h2 class="h2-jaki">Rekomendasi Buat Kamu</h2>
       <a href="semua-layanan.html" style="color:#2563eb;font-size:13px;font-weight:600;text-decoration:none">Lihat Semua</a>
     </div>
-    <div class="rekom-card" onclick="location.href='info.html'">
+    <div class="rekom-card" onclick="location.href='berita-rw.html'">
       <div class="rekom-img" style="background:#a7e3f7"><div style="font-size:60px">🏝️</div></div>
       <div class="rekom-text">
         <span class="rekom-label">Fitur Khusus RW 05</span>
@@ -175,7 +221,7 @@
   <!-- BOTTOM NAVBAR -->
   <nav class="jaki-nav">
     <a class="active" href="index.html">🏠<span>Beranda</span></a>
-    <a href="kegiatan.html">📋<span>Kegiatan</span></a>
+    <a href="diskusi-rw.html">💬<span>Diskusi</span></a>
     <a class="center" href="aduan-warga.html"><div class="cam">📷</div><span>Lapor</span></a>
     <a href="info.html">🔔<span>Info</span></a>
     <a href="profil.html">👤<span>Profil</span></a>
@@ -213,12 +259,45 @@
   </div>
 </div>
 
-<script src="script.js?v=27"></script>
+<!-- MODAL INFO KEAMANAN SATPAM -->
+<div id="satpam-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; z-index:1000000; align-items:center; justify-content:center; padding:16px;">
+    <div class="satpam-box" style="background:#fff; width:100%; max-width:400px; border-radius:20px; border:2px solid #10131a; box-shadow:4px 4px 0 #10131a; overflow:hidden;">
+        
+        <!-- Header -->
+        <div style="padding:16px 20px; border-bottom:2px solid #10131a; display:flex; justify-content:space-between; align-items:center; background:#fcfbf7;">
+            <div style="display:flex; align-items:center; gap:8px;">
+                <span style="font-size:20px;">🛡️</span>
+                <h3 style="font-size:18px; font-weight:800; color:#10131a; margin:0;">Info Keamanan Satpam</h3>
+            </div>
+            <button onclick="closeSatpamModal()" style="background:none; border:2px solid #10131a; border-radius:8px; width:32px; height:32px; font-weight:800; cursor:pointer;">✕</button>
+        </div>
+
+        <!-- Body Info -->
+        <div style="padding:20px;">
+            <div style="background:#fcfbf7; border:1.5px solid #10131a; border-radius:12px; padding:14px; margin-bottom:14px;">
+                <div style="font-size:11px; font-weight:800; color:#173d1f; text-transform:uppercase; margin-bottom:4px;">Jam Operasional Jaga</div>
+                <div id="info-jam-jaga" style="font-size:14px; font-weight:800; color:#10131a;">22:00 – 04:00 WIB</div>
+            </div>
+
+            <div style="background:#fcfbf7; border:1.5px solid #10131a; border-radius:12px; padding:14px; margin-bottom:14px;">
+                <div style="font-size:11px; font-weight:800; color:#173d1f; text-transform:uppercase; margin-bottom:4px;">Petugas yang Berjaga</div>
+                <div id="info-nama-petugas" style="font-size:15px; font-weight:800; color:#2563eb;">Danru Budi & Rekor (Menunggu Update Admin)</div>
+            </div>
+
+            <div style="background:#fff1f2; border:1.5px solid #e11d48; border-radius:12px; padding:14px;">
+                <div style="font-size:12px; font-weight:800; color:#be123c; margin-bottom:6px;">🚨 Himbauan Akses Portal (00:00 – 04:00 WIB)</div>
+                <p style="font-size:12px; color:#881337; margin:0; line-height:1.5;">
+                    Pukul 12 malam hingga 4 pagi, portal setiap jalan RW 05 ditutup. Akses keluar masuk warga wajib melalui portal pos satpam utama.
+                </p>
+            </div>
+        </div>
+
+    </div>
+</div>
 
 <script type="module">
-// @ts-nocheck
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, doc, onSnapshot, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCZtvImbyZmqoEoY1hYZcuCbUpIl3R1fhE",
@@ -228,43 +307,103 @@ const firebaseConfig = {
   messagingSenderId: "965647612835",
   appId: "1:965647612835:web:b712367f0d8beb7c5bf816"
 };
-
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-function listenSaldoLive() {
-  const ref = doc(db, "kas_rw05", "saldo_utama");
-  
-  onSnapshot(ref, 
-    /** @param {any} snap */
-    async (snap) => {
-      if (!snap.exists()) {
-        await setDoc(ref, { total: 0, updatedAt: serverTimestamp() });
-        const saldoEl = document.getElementById('saldoLive');
-        const updateEl = document.getElementById('kasUpdate');
-        if (saldoEl) saldoEl.textContent = "Rp 0";
-        if (updateEl) updateEl.textContent = "Transparan & Update • Live";
-      } else {
-        const total = snap.data().total || 0;
-        const saldoEl = document.getElementById('saldoLive');
-        const updateEl = document.getElementById('kasUpdate');
-        if (saldoEl) saldoEl.textContent = "Rp " + total.toLocaleString('id-ID');
-        const now = new Date();
-        if (updateEl) updateEl.textContent = "Transparan & Update • Live " + now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
-      }
-    }, 
-    /** @param {any} error */
-    (error) => {
-      console.log("Firebase error:", error);
-      const saldoEl = document.getElementById('saldoLive');
-      if (saldoEl) saldoEl.textContent = "Rp 0";
-    }
-  );
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  listenSaldoLive();
+// Sync real-time saldo utama ke index
+onSnapshot(doc(db, "kas_rw05", "saldo_utama"), (snap) => {
+  if(snap.exists()) {
+    const data = snap.data();
+    const total = data.total || 0;
+    const elSaldo = document.getElementById('manualSaldoKas');
+    const elInfo = document.getElementById('manualInfoKas');
+    if(elSaldo) elSaldo.textContent = 'Rp ' + Number(total).toLocaleString('id-ID');
+    if(elInfo && data.pesan) elInfo.textContent = data.pesan;
+  }
 });
+</script>
+
+<script src="script.js?v=27"></script>
+
+<script>
+    window.addEventListener('load', () => {
+        const splash = document.getElementById('splash-screen');
+        if(splash) {
+            setTimeout(() => {
+                splash.classList.add('fade-out');
+            }, 1000);
+        }
+        
+        // Push state awal untuk simulasi double-tap back to exit
+        window.history.pushState(null, '', window.location.href);
+
+        // Load data kas manual dari localStorage (jika sudah di-set admin)
+        const savedKasSaldo = localStorage.getItem('rw05_manual_kas_saldo');
+        const savedKasInfo = localStorage.getItem('rw05_manual_kas_info');
+        if (savedKasSaldo) document.getElementById('manualSaldoKas').textContent = savedKasSaldo;
+        if (savedKasInfo) document.getElementById('manualInfoKas').textContent = savedKasInfo;
+    });
+
+    let lastBackPress = 0;
+    const exitToast = document.getElementById('exit-toast');
+
+    window.addEventListener('popstate', () => {
+        const currentTime = new Date().getTime();
+        window.history.pushState(null, '', window.location.href);
+
+        if (currentTime - lastBackPress < 2000) {
+            if (exitToast) exitToast.classList.remove('show');
+            if (typeof window.close === 'function') {
+                window.close();
+            } else {
+                alert('Aplikasi ditutup. Silakan tutup tab browser.');
+            }
+        } else {
+            lastBackPress = currentTime;
+            if (exitToast) {
+                exitToast.classList.add('show');
+                setTimeout(() => {
+                    exitToast.classList.remove('show');
+                }, 2000);
+            }
+        }
+    });
+
+    function openSatpamModal() {
+        const modal = document.getElementById('satpam-modal');
+        const box = modal.querySelector('.satpam-box');
+
+        const savedGuard = localStorage.getItem('rw05_satpam_jaga');
+        if(savedGuard) {
+            try {
+                const data = JSON.parse(savedGuard);
+                document.getElementById('info-jam-jaga').textContent = data.jam || '22:00 – 04:00 WIB';
+                document.getElementById('info-nama-petugas').textContent = data.petugas || 'Belum diatur admin';
+            } catch(e) {
+                console.error("Gagal parse data satpam", e);
+            }
+        }
+
+        if(modal && box) {
+            modal.style.display = 'flex';
+            setTimeout(() => {
+                modal.classList.add('show-overlay');
+                box.classList.add('show');
+            }, 10);
+        }
+    }
+
+    function closeSatpamModal() {
+        const modal = document.getElementById('satpam-modal');
+        const box = modal.querySelector('.satpam-box');
+        if(modal && box) {
+            box.classList.remove('show');
+            modal.classList.remove('show-overlay');
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 250);
+        }
+    }
 </script>
 </body>
 </html>

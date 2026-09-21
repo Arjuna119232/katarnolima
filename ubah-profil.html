@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Ubah Profil - KATARNOLIMA RW 05</title>
+<link rel="icon" href="img/logo-resmi-karang-taruna.jpg">
+<link rel="stylesheet" href="style.css?v=36">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+html,body{background:#fff!important;width:100%;min-height:100vh;margin:0!important;color:#0f172a}
+.page-root{width:100%;max-width:440px;margin:0 auto;background:#fff;min-height:100vh;padding-bottom:40px}
+
+/* HEADER */
+.app-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid #e2e8f0;position:sticky;top:0;background:#fff;z-index:50}
+.header-left{display:flex;align-items:center;gap:12px;font-size:18px;font-weight:800;color:#0f172a;text-decoration:none}
+.btn-back{width:36px;height:36px;border-radius:50%;background:#f1f5f9;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;color:#0f172a}
+.btn-simpan{background:transparent;border:none;color:#2563eb;font-weight:700;font-size:15px;cursor:pointer}
+.btn-simpan:disabled{color:#94a3b8;cursor:not-allowed}
+
+/* AVATAR SECTION */
+.photo-section{text-align:center;padding:24px 16px;background:linear-gradient(180deg,#f8fafc 0%,#fff 100%)}
+.avatar-big{width:88px;height:88px;border-radius:50%;border:3px solid #e2e8f0;margin:0 auto;overflow:hidden;background:#111;display:flex;align-items:center;justify-content:center;color:#fbbf24;font-weight:900;font-size:36px;position:relative}
+.avatar-big img{width:100%;height:100%;object-fit:cover}
+.ubah-foto-link{display:inline-flex;align-items:center;gap:6px;margin-top:10px;color:#2563eb;font-weight:700;font-size:13px;cursor:pointer;background:none;border:none}
+
+/* FORM SECTION */
+.form-section{padding:16px}
+.form-group{margin-bottom:20px}
+.form-label{font-size:12px;font-weight:600;color:#64748b;margin-bottom:8px;display:block}
+.input-wrap{position:relative;display:flex;align-items:center}
+.form-input{width:100%;border:none;border-bottom:1.5px solid #cbd5e1;padding:8px 0;font-size:15px;font-weight:600;color:#0f172a;outline:none;background:transparent}
+.form-input:focus{border-color:#2563eb}
+.form-input.locked{color:#475569;background:transparent}
+.input-icon-right{position:absolute;right:0;color:#94a3b8;font-size:16px}
+
+.phone-sub{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.phone-label{font-size:12px;font-weight:600;color:#64748b}
+.status-unverified{font-size:11px;font-weight:700;color:#ef4444}
+</style>
+</head>
+<body>
+
+<div class="page-root">
+  <!-- HEADER -->
+  <div class="app-header">
+    <a href="profil.html" class="header-left">
+      <div class="btn-back">←</div>
+      <span>Ubah Profil</span>
+    </a>
+    <button class="btn-simpan" id="btnSimpanProfil">Simpan</button>
+  </div>
+
+  <!-- FOTO PROFIL -->
+  <div class="photo-section">
+    <div class="avatar-big" id="editAvatarInit">W</div>
+    <input type="file" id="inputPhotoFile" accept="image/*" style="display:none">
+    <button class="ubah-foto-link" id="btnUbahFoto">✏️ Ubah Foto</button>
+  </div>
+
+  <!-- INFORMASI DIRI -->
+  <div class="form-section">
+    <div class="form-group">
+      <label class="form-label">Nama Lengkap</label>
+      <input type="text" class="form-input" id="inputNamaUbah" placeholder="Masukkan nama lengkap">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Username</label>
+      <div class="input-wrap">
+        <input type="text" class="form-input locked" id="inputUsername" value="Warga_RW05" readonly>
+        <span class="input-icon-right">🔒</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">E-mail</label>
+      <div class="input-wrap">
+        <input type="text" class="form-input locked" id="inputEmail" value="warga@rw05.id" readonly>
+        <span class="input-icon-right">🔒</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="phone-sub">
+        <span class="phone-label">No. Handphone</span>
+        <span class="status-unverified">Belum Terverifikasi</span>
+      </div>
+      <div class="input-wrap">
+        <input type="tel" class="form-input" id="inputPhone" value="089609916719">
+        <span class="input-icon-right">✏️</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Load data existing dari localStorage
+var currentUser = JSON.parse(localStorage.getItem('rw05_current_user')||'null');
+var inputNamaUbah = document.getElementById('inputNamaUbah');
+var avatarBig = document.getElementById('editAvatarInit');
+var inputPhone = document.getElementById('inputPhone');
+
+if(currentUser){
+  if(inputNamaUbah) inputNamaUbah.value = currentUser.nama || '';
+  if(inputPhone && currentUser.phone) inputPhone.value = currentUser.phone;
+  if(avatarBig) avatarBig.textContent = (currentUser.nama || 'W').charAt(0).toUpperCase();
+}
+
+// Simulasi ubah foto
+var btnUbahFoto = document.getElementById('btnUbahFoto');
+var inputPhotoFile = document.getElementById('inputPhotoFile');
+if(btnUbahFoto && inputPhotoFile){
+  btnUbahFoto.addEventListener('click', function(){ inputPhotoFile.click(); });
+  inputPhotoFile.addEventListener('change', function(e){
+    if(e.target.files && e.target.files[0]){
+      var reader = new FileReader();
+      reader.onload = function(evt){
+        avatarBig.innerHTML = '<img src="' + evt.target.result + '" alt="Foto">';
+      };
+      reader.readAsDataURL(e.target.files[0]);
+    }
+  });
+}
+
+// Simpan perubahan
+var btnSimpan = document.getElementById('btnSimpanProfil');
+if(btnSimpan){
+  btnSimpan.addEventListener('click', function(){
+    var newNama = inputNamaUbah ? inputNamaUbah.value.trim() : 'Warga';
+    var newPhone = inputPhone ? inputPhone.value.trim() : '';
+    if(newNama.length < 3){
+      alert('Nama lengkap minimal 3 karakter.');
+      return;
+    }
+    if(currentUser){
+      currentUser.nama = newNama;
+      currentUser.phone = newPhone;
+      localStorage.setItem('rw05_current_user', JSON.stringify(currentUser));
+    } else {
+      localStorage.setItem('rw05_current_user', JSON.stringify({nama: newNama, phone: newPhone, nikLast4: '1234', rt: 'RT 03 / RW 05'}));
+    }
+    // Tandai agar linter menggunakan variabel phone/inputPhone
+    void newPhone;
+    alert('✅ Profil berhasil disimpan!');
+    window.location.href = 'profil.html';
+  });
+}
+</script>
+
+</body>
+</html>
