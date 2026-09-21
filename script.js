@@ -1,16 +1,36 @@
 // @ts-nocheck
+
+/**
+ * KATARNOLIMA RW 05 - Core Script (Pure Online Mode)
+ */
+
+// ==========================================
+// 0. NONAKTIFKAN / HAPUS SERVICE WORKER (100% ONLINE)
+// ==========================================
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(function(registrations) {
+    for (let registration of registrations) {
+      registration.unregister(); // Menghapus cache offline PWA
+    }
+  });
+}
+
 document.addEventListener('DOMContentLoaded', function(){
   // ==========================================
   // 1. SPLASH SCREEN HANYA TAMPIL SEKALI PER SESI
   // ==========================================
-  var splash = document.getElementById('splash-screen');
+  var splash = document.getElementById('splash-screen') || document.getElementById('splashScreen');
   if (splash) {
     if (sessionStorage.getItem('splashShown')) {
       splash.style.display = 'none';
     } else {
       setTimeout(function() {
-        splash.classList.add('fade-out');
+        splash.style.opacity = '0';
+        splash.style.transition = 'opacity 0.4s ease';
         sessionStorage.setItem('splashShown', 'true');
+        setTimeout(function() {
+          splash.style.display = 'none';
+        }, 400);
       }, 1500);
     }
   }
@@ -93,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function(){
       display: none;
       box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
     `;
-    netBanner.innerHTML = '⚠️ Koneksi terputus. Memuat data offline...';
+    netBanner.innerHTML = '⚠️ Koneksi terputus. Pastikan data/internet aktif...';
     document.body.appendChild(netBanner);
 
     function updateOnlineStatus() {
@@ -306,17 +326,17 @@ document.addEventListener('DOMContentLoaded', function(){
   if(modal) modal.addEventListener('click', function(e){ if(e.target===modal) closeModal(); });
 
   // ==========================================
-  // 7. LOGIKA NAVIGASI BACK & HARDWARE BUTTON HP (DIPERBAIKI)
+  // 7. LOGIKA NAVIGASI BACK & HARDWARE BUTTON HP
   // ==========================================
   function goBackSafe(){ 
-    if (document.referrer && document.referrer.includes(window.location.host)) {
+    if (document.referrer && document.referrer.indexOf(window.location.host) !== -1) {
       window.history.back();
     } else {
       window.location.href = 'index.html';
     }
   }
 
-  document.querySelectorAll('.back, #backBtn').forEach(function(el){ 
+  document.querySelectorAll('.back, #backBtn, .btn-back-modern').forEach(function(el){ 
     el.addEventListener('click', function(e){ 
       e.preventDefault(); 
       goBackSafe(); 
