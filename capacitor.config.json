@@ -1,1 +1,5 @@
-{"appId":"com.katarnolima.app","appName":"KATARNOLIMA","webDir":"www"}
+{
+  "appId": "com.katarnolima.app",
+  "appName": "KATARNOLIMA",
+  "webDir": "."
+}
