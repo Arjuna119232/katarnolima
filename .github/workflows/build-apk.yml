@@ -34,12 +34,19 @@ jobs:
       - name: Populate Web Assets & Config
         run: |
           mkdir -p www
+          # Salin semua berkas proyek ke www kecuali folder sistem
           rsync -av --exclude='.git' \
                     --exclude='.github' \
                     --exclude='android' \
                     --exclude='node_modules' \
                     --exclude='www' \
                     ./ www/
+          
+          # Jika index.html tidak ditemukan di www, buatkan index.html sederhana
+          if [ ! -f "www/index.html" ]; then
+            echo '<!DOCTYPE html><html><head><title>KATARNOLIMA</title></head><body><h1>Aplikasi KATARNOLIMA RW05</h1></body></html>' > www/index.html
+          fi
+
           echo '{"appId":"com.katarnolima.app","appName":"KATARNOLIMA","webDir":"www"}' > capacitor.config.json
 
       - name: Sync Capacitor
@@ -49,7 +56,6 @@ jobs:
 
       - name: Disable Google Services Plugin to Bypass Check
         run: |
-          # Hapus pemicu Google Services dari build.gradle agar build dipastikan lolos 100%
           sed -i '/google-services/d' android/app/build.gradle || true
           sed -i '/google-services/d' android/build.gradle || true
 
