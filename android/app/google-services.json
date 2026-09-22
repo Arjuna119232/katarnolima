@@ -7,12 +7,17 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:965647612835:android:a584acebf21edf005bf816",
+        "mobilesdk_app_id": "1:965647612835:android:62af8b2fb01074c15bf816",
         "android_client_info": {
-          "package_name": "com.katarnolima.rw05"
+          "package_name": "com.katarnolima.app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "965647612835-vgurb45cvpjopebt9rsr5v1nte7maplt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyC2FGzxkbwhgNgbzwrpUWbYBdrMkTOuKT4"
@@ -20,7 +25,41 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "965647612835-vgurb45cvpjopebt9rsr5v1nte7maplt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:965647612835:android:a584acebf21edf005bf816",
+        "android_client_info": {
+          "package_name": "com.katarnolima.rw05"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "965647612835-vgurb45cvpjopebt9rsr5v1nte7maplt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2FGzxkbwhgNgbzwrpUWbYBdrMkTOuKT4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "965647612835-vgurb45cvpjopebt9rsr5v1nte7maplt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
