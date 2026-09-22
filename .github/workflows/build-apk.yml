@@ -15,49 +15,41 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
+      - name: Set up Node.js 20
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
       - name: Set up JDK 21
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '21'
 
-      - name: Install Dependencies
+      - name: Install Capacitor & Dependencies
         run: |
-          npm install
+          npm init -y || true
+          npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/app @capacitor/push-notifications
           pip install pillow -q
 
-      - name: Populate Web Assets & Config
+      - name: Populate Web Assets
         run: |
           mkdir -p www
-          # Salin semua berkas proyek ke www kecuali folder sistem
           rsync -av --exclude='.git' \
                     --exclude='.github' \
                     --exclude='android' \
                     --exclude='node_modules' \
                     --exclude='www' \
                     ./ www/
-          
-          # Jika index.html tidak ditemukan di www, buatkan index.html sederhana
-          if [ ! -f "www/index.html" ]; then
-            echo '<!DOCTYPE html><html><head><title>KATARNOLIMA</title></head><body><h1>Aplikasi KATARNOLIMA RW05</h1></body></html>' > www/index.html
-          fi
+          echo '{"appId":"com.katarnolima.rw05","appName":"KATARNOLIMA","webDir":"www"}' > capacitor.config.json
 
-          echo '{"appId":"com.katarnolima.app","appName":"KATARNOLIMA","webDir":"www"}' > capacitor.config.json
-
-      - name: Sync Capacitor
+      - name: Init/Sync Android & Copy Firebase Config
         run: |
           npx cap add android || true
           npx cap sync android
-
-      - name: Disable Google Services Plugin to Bypass Check
-        run: |
-          sed -i '/google-services/d' android/app/build.gradle || true
-          sed -i '/google-services/d' android/build.gradle || true
+          if [ -f "google-services.json" ]; then
+            cp google-services.json android/app/google-services.json
+          fi
 
       - name: Apply HD Safe-Zone Icon
         run: |
@@ -71,57 +63,110 @@ jobs:
           if not os.path.exists(src_path):
               src_path = 'img/logo-resmi-karang-taruna.jpg'
 
-          if os.path.exists(src_path):
-              im = Image.open(src_path).convert('RGBA')
+          im = Image.open(src_path).convert('RGBA')
 
-              res_dir = 'android/app/src/main/res'
-              for xml_file in glob.glob(f'{res_dir}/mipmap-*/ic_launcher*.xml') + glob.glob(f'{res_dir}/drawable*/ic_launcher*.xml'):
-                  try:
-                      os.remove(xml_file)
-                  except Exception:
-                      pass
+          res_dir = 'android/app/src/main/res'
+          for xml_file in glob.glob(f'{res_dir}/mipmap-*/ic_launcher*.xml') + glob.glob(f'{res_dir}/drawable*/ic_launcher*.xml'):
+              try:
+                  os.remove(xml_file)
+              except Exception:
+                  pass
 
-              canvas_size = 2048
-              canvas = Image.new('RGBA', (canvas_size, canvas_size), (255, 255, 255, 0))
+          canvas_size = 2048
+          canvas = Image.new('RGBA', (canvas_size, canvas_size), (255, 255, 255, 0))
 
-              target_logo_size = int(canvas_size * 0.65)
-              im.thumbnail((target_logo_size, target_logo_size), Image.Resampling.LANCZOS)
+          target_logo_size = int(canvas_size * 0.65)
+          im.thumbnail((target_logo_size, target_logo_size), Image.Resampling.LANCZOS)
 
-              pos_x = (canvas_size - im.width) // 2
-              pos_y = (canvas_size - im.height) // 2
-              canvas.paste(im, (pos_x, pos_y), im)
+          pos_x = (canvas_size - im.width) // 2
+          pos_y = (canvas_size - im.height) // 2
+          canvas.paste(im, (pos_x, pos_y), im)
 
-              maps = {
-                  'mipmap-mdpi': 48,
-                  'mipmap-hdpi': 72,
-                  'mipmap-xhdpi': 96,
-                  'mipmap-xxhdpi': 144,
-                  'mipmap-xxxhdpi': 192
-              }
+          maps = {
+              'mipmap-mdpi': 48,
+              'mipmap-hdpi': 72,
+              'mipmap-xhdpi': 96,
+              'mipmap-xxhdpi': 144,
+              'mipmap-xxxhdpi': 192
+          }
 
-              for folder, px in maps.items():
-                  target_dir = os.path.join(res_dir, folder)
-                  os.makedirs(target_dir, exist_ok=True)
-                  
-                  resized_icon = canvas.resize((px, px), Image.Resampling.LANCZOS)
-                  
-                  resized_icon.save(os.path.join(target_dir, 'ic_launcher.png'))
-                  resized_icon.save(os.path.join(target_dir, 'ic_launcher_round.png'))
-                  resized_icon.save(os.path.join(target_dir, 'ic_launcher_foreground.png'))
+          for folder, px in maps.items():
+              target_dir = os.path.join(res_dir, folder)
+              os.makedirs(target_dir, exist_ok=True)
+              
+              resized_icon = canvas.resize((px, px), Image.Resampling.LANCZOS)
+              
+              resized_icon.save(os.path.join(target_dir, 'ic_launcher.png'))
+              resized_icon.save(os.path.join(target_dir, 'ic_launcher_round.png'))
+              resized_icon.save(os.path.join(target_dir, 'ic_launcher_foreground.png'))
 
-              print('Ikon Berhasil Diterapkan!')
-          else:
-              print('File gambar ikon tidak ditemukan, melanjutkan...')
+          print('Ikon Berhasil Diterapkan!')
           "
 
-      - name: Build APK via Gradle
+      - name: Bump Version to v2.0 in build.gradle
+        run: |
+          BUILD_GRADLE="android/app/build.gradle"
+          if grep -q "versionCode" "$BUILD_GRADLE"; then
+            sed -i 's/versionCode [0-9]*/versionCode 2/g' "$BUILD_GRADLE"
+            sed -i 's/versionName "[^"]*"/versionName "2.0"/g' "$BUILD_GRADLE"
+          else
+            echo "Menambahkan konfigurasi versi ke defaultConfig..."
+            sed -i '/defaultConfig {/a \        versionCode 2\n        versionName "2.0"' "$BUILD_GRADLE"
+          fi
+
+      - name: Decode Keystore from GitHub Secrets
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/release.p12
+
+      - name: Build Signed Release APK
         working-directory: android
         run: |
+          cat << 'EOF' >> app/build.gradle
+
+          configurations.all {
+              resolutionStrategy {
+                  force 'org.jetbrains.kotlin:kotlin-stdlib:1.8.22'
+                  force 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22'
+                  force 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22'
+              }
+          }
+
+          android {
+              signingConfigs {
+                  release {
+                      storeFile file('release.p12')
+                      storeType 'PKCS12'
+                      storePassword System.getenv("KEYSTORE_PASSWORD")
+                      keyAlias System.getenv("KEY_ALIAS")
+                      keyPassword System.getenv("KEY_PASSWORD")
+                  }
+              }
+              buildTypes {
+                  release {
+                      signingConfig signingConfigs.release
+                      minifyEnabled false
+                  }
+              }
+          }
+          EOF
           chmod +x gradlew
-          ./gradlew assembleDebug
+          ./gradlew assembleRelease
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: app-debug-apk
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          name: app-release-v2.0
+          path: android/app/build/outputs/apk/release/app-release.apk
+
+      - name: Create GitHub Release v2.0
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v2.0.${{ github.run_number }}
+          name: KATARNOLIMA RW05 v2.0 (Build ${{ github.run_number }})
+          files: android/app/build/outputs/apk/release/app-release.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
