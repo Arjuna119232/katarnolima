@@ -142,7 +142,7 @@
     <a class="g8-item" href="semua-layanan.html"><div class="g8-icon">⊞</div><p>Semua<br>Layanan</p></a>
   </div>
 
-  <!-- KAS KARANG TARUNA (TOTAL KESELURUHAN & LINK KE RINCIAN) -->
+  <!-- KAS KARANG TARUNA -->
   <div class="kas-card" onclick="window.location.href='kas-detail.html'" style="cursor:pointer;">
     <div class="kas-top">
       <span>Kas Karang Taruna RW 05</span>
@@ -307,20 +307,27 @@ const firebaseConfig = {
   messagingSenderId: "965647612835",
   appId: "1:965647612835:web:b712367f0d8beb7c5bf816"
 };
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
 
-// Sync real-time saldo utama ke index
-onSnapshot(doc(db, "kas_rw05", "saldo_utama"), (snap) => {
-  if(snap.exists()) {
-    const data = snap.data();
-    const total = data.total || 0;
-    const elSaldo = document.getElementById('manualSaldoKas');
-    const elInfo = document.getElementById('manualInfoKas');
-    if(elSaldo) elSaldo.textContent = 'Rp ' + Number(total).toLocaleString('id-ID');
-    if(elInfo && data.pesan) elInfo.textContent = data.pesan;
-  }
-});
+try {
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // Sync real-time saldo utama ke index
+  onSnapshot(doc(db, "kas_rw05", "saldo_utama"), (snap) => {
+    if(snap.exists()) {
+      const data = snap.data();
+      const total = data.total || 0;
+      const elSaldo = document.getElementById('manualSaldoKas');
+      const elInfo = document.getElementById('manualInfoKas');
+      if(elSaldo) elSaldo.textContent = 'Rp ' + Number(total).toLocaleString('id-ID');
+      if(elInfo && data.pesan) elInfo.textContent = data.pesan;
+    }
+  }, (error) => {
+    console.warn("Firestore error:", error);
+  });
+} catch (err) {
+  console.error("Gagal inisialisasi Firebase:", err);
+}
 </script>
 
 <script src="script.js?v=27"></script>
@@ -353,10 +360,8 @@ onSnapshot(doc(db, "kas_rw05", "saldo_utama"), (snap) => {
 
         if (currentTime - lastBackPress < 2000) {
             if (exitToast) exitToast.classList.remove('show');
-            if (typeof window.close === 'function') {
-                window.close();
-            } else {
-                alert('Aplikasi ditutup. Silakan tutup tab browser.');
+            if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
+                window.Capacitor.Plugins.App.exitApp();
             }
         } else {
             lastBackPress = currentTime;
