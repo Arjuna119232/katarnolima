@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Notifikasi RW 05 - KATARNOLIMA</title>
+<link rel="icon" href="img/logo-resmi-karang-taruna.jpg">
+<link rel="stylesheet" href="style.css?v=33">
+<style>
+*{ -webkit-tap-highlight-color:transparent!important; margin:0; padding:0; box-sizing:border-box; }
+body {
+  background: #f8fafc !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: #0f172a;
+}
+.info-container {
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto;
+  background: #ffffff;
+  min-height: 100vh;
+  padding-bottom: 120px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.05);
+  position: relative;
+}
+
+/* HEADER NOTIFIKASI */
+.light-header {
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  border-bottom: 1px solid #f1f5f9;
+}
+.light-header h1 {
+  font-size: 18px;
+  font-weight: 800;
+  color: #0f172a;
+}
+.header-actions {
+  position: relative;
+}
+.btn-menu-dot {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #64748b;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+.popover-menu {
+  position: absolute;
+  top: 36px;
+  right: 0;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+  border: 1px solid #e2e8f0;
+  padding: 6px;
+  display: none;
+  min-width: 160px;
+  z-index: 40;
+}
+.popover-menu.show {
+  display: block;
+}
+.popover-item {
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 10px 14px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #0f172a;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.popover-item:hover {
+  background: #f1f5f9;
+}
+
+/* LIST NOTIFIKASI ALA JAKI (NON-CLICKABLE CARD) */
+.notif-list {
+  display: flex;
+  flex-direction: column;
+}
+.notif-item {
+  display: flex;
+  gap: 12px;
+  padding: 16px;
+  border-bottom: 1px solid #f1f5f9;
+  background: #fefce8; /* Belum dibaca: kuning lembut */
+  pointer-events: none;
+  user-select: text;
+  transition: background-color 0.2s ease;
+}
+.notif-item.read {
+  background: #ffffff; /* Telah dibaca: putih */
+}
+.notif-avatar {
+  width: 42px;
+  height: 42px;
+  background: #0f172a;
+  color: #fbbf24;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 900;
+  flex-shrink: 0;
+  position: relative;
+}
+.notif-dot {
+  width: 9px;
+  height: 9px;
+  background: #059669;
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  border: 2px solid #fff;
+}
+.notif-item.read .notif-dot {
+  display: none;
+}
+.notif-main {
+  flex: 1;
+  min-width: 0;
+}
+.notif-sender-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+.notif-sender {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #0f172a;
+}
+.notif-time {
+  font-size: 11px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+.notif-text {
+  font-size: 13px;
+  color: #334155;
+  line-height: 1.45;
+  word-break: break-word;
+}
+.notif-title-bold {
+  font-weight: 700;
+  color: #0f172a;
+  display: block;
+  margin-bottom: 2px;
+}
+
+/* BOTTOM NAVBAR SELARAS INDEX */
+.jaki-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:440px;height:72px;background:rgba(255,255,255,.96);backdrop-filter:blur(18px);border-top:1px solid #e2e8f0;display:flex;justify-content:space-around;align-items:center;z-index:30;padding-bottom:6px}
+.jaki-nav a{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;color:#94a3b8;font-size:10px;font-weight:600;text-decoration:none}
+.jaki-nav a.active{color:#0f172a;font-weight:800}
+.jaki-nav a.center{position:relative;top:-14px;flex:unset;display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none}
+.jaki-nav .cam{width:56px;height:56px;background:#0fb398;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:26px;box-shadow:0 8px 22px rgba(15,179,152,.5);border:3px solid #fff;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="info-container">
+  <!-- HEADER NOTIFIKASI -->
+  <div class="light-header">
+    <h1>Notifikasi</h1>
+    <div class="header-actions">
+      <button class="btn-menu-dot" id="btnMenuDot" aria-label="Menu Opsi">⋮</button>
+      <div class="popover-menu" id="popoverMenu">
+        <button class="popover-item" id="btnMarkAllRead">Tandai telah dibaca</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTAINER LIST NOTIFIKASI DARI FIRESTORE ADMIN -->
+  <div id="loadingNotif" style="text-align:center; padding:32px; color:#64748b; font-size:12px;">Memuat pemberitahuan admin...</div>
+  <div class="notif-list" id="notifList"></div>
+
+  <!-- BOTTOM NAVBAR KONSISTEN DENGAN INDEX -->
+  <nav class="jaki-nav">
+    <a href="index.html">🏠<span>Beranda</span></a>
+    <a href="diskusi-rw.html">💬<span>Diskusi</span></a>
+    <a class="center" href="aduan-warga.html"><div class="cam">📷</div><span>Lapor</span></a>
+    <a class="active" href="info.html">🔔<span>Notifikasi</span></a>
+    <a href="profil.html">👤<span>Profil</span></a>
+  </nav>
+</div>
+
+<script type="module">
+  // @ts-nocheck
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getFirestore, collection, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCZtvImbyZmqoEoY1hYZcuCbUpIl3R1fhE",
+    authDomain: "katarnolima-rw05.firebaseapp.com",
+    projectId: "katarnolima-rw05",
+    storageBucket: "katarnolima-rw05.firebasestorage.app",
+    messagingSenderId: "965647612835",
+    appId: "1:965647612835:web:b712367f0d8beb7c5bf816"
+  };
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const notifList = document.getElementById('notifList');
+  const loadingNotif = document.getElementById('loadingNotif');
+  const btnMenuDot = document.getElementById('btnMenuDot');
+  const popoverMenu = document.getElementById('popoverMenu');
+  const btnMarkAllRead = document.getElementById('btnMarkAllRead');
+
+  // Load status baca dari localStorage agar bertahan saat halaman direfresh/dibuka ulang
+  function getReadIds() {
+    try {
+      return JSON.parse(localStorage.getItem('rw05_read_notifs') || '[]');
+    } catch {
+      return [];
+    }
+  }
+  function saveReadId(id) {
+    const list = getReadIds();
+    if (!list.includes(id)) {
+      list.push(id);
+      localStorage.setItem('rw05_read_notifs', JSON.stringify(list));
+    }
+  }
+  function markAllReadIds(ids) {
+    const list = getReadIds();
+    ids.forEach(id => { if (!list.includes(id)) list.push(id); });
+    localStorage.setItem('rw05_read_notifs', JSON.stringify(list));
+  }
+
+  // Toggle popover titik tiga
+  if (btnMenuDot && popoverMenu) {
+    btnMenuDot.addEventListener('click', (e) => {
+      e.stopPropagation();
+      popoverMenu.classList.toggle('show');
+    });
+    document.addEventListener('click', () => {
+      popoverMenu.classList.remove('show');
+    });
+  }
+
+  // Tandai semua telah dibaca (manual lewat menu)
+  if (btnMarkAllRead) {
+    btnMarkAllRead.addEventListener('click', () => {
+      const allIds = Array.from(document.querySelectorAll('.notif-item')).map(el => el.dataset.id).filter(Boolean);
+      markAllReadIds(allIds);
+      document.querySelectorAll('.notif-item').forEach(el => el.classList.add('read'));
+      if (popoverMenu) popoverMenu.classList.remove('show');
+    });
+  }
+
+  // DIUBAH KE "info_singkat" SUPAYA SINKRON DENGAN PANEL ADMIN
+  onSnapshot(query(collection(db, "info_singkat"), orderBy("createdAt", "desc")), (/** @type {any} */ snap) => {
+    if (loadingNotif) loadingNotif.style.display = 'none';
+    if (snap.empty) {
+      notifList.innerHTML = `
+        <div style="text-align:center; padding:48px 20px; color:#94a3b8; font-size:13px;">
+          <div style="font-size:36px; margin-bottom:8px;">🔔</div>
+          <p>Belum ada pemberitahuan dari Admin RW 05.</p>
+        </div>
+      `;
+      return;
+    }
+
+    const readList = getReadIds();
+    let html = '';
+    const allDocIds = [];
+
+    snap.forEach((/** @type {any} */ docItem) => {
+      const id = docItem.id;
+      allDocIds.push(id);
+      const isRead = readList.includes(id);
+      const d = docItem.data() || {};
+      const timeStr = d.tanggal || 'Baru saja';
+      const title = d.judul || '';
+      const content = d.isi || '';
+      const iconBadge = d.ikon || '05';
+      
+      html += `
+        <div class="notif-item ${isRead ? 'read' : ''}" data-id="${id}">
+          <div class="notif-avatar">
+            ${iconBadge.length <= 2 ? iconBadge : '05'}
+            <div class="notif-dot"></div>
+          </div>
+          <div class="notif-main">
+            <div class="notif-sender-row">
+              <span class="notif-sender">KATARNOLIMA / Admin RW 05</span>
+              <span class="notif-time">${timeStr}</span>
+            </div>
+            <div class="notif-text">
+              <span class="notif-title-bold">${title}</span>
+              ${content}
+            </div>
+          </div>
+        </div>
+      `;
+    });
+    notifList.innerHTML = html;
+  }, (/** @type {any} */ err) => {
+    console.error("Gagal load notifikasi:", err);
+    if (loadingNotif) {
+      loadingNotif.textContent = 'Gagal memuat pemberitahuan.';
+    }
+  });
+</script>
+</body>
+</html>

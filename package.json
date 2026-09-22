@@ -1,0 +1,16 @@
+{
+  "name": "katarnolima",
+  "version": "1.0.0",
+  "description": "Katarnolima App",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@capacitor/android": "^6.0.0",
+    "@capacitor/app": "^6.0.0",
+    "@capacitor/cli": "^6.0.0",
+    "@capacitor/core": "^6.0.0",
+    "@capacitor/push-notifications": "^6.0.0"
+  }
+}

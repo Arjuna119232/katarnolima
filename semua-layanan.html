@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Semua Layanan - KATARNOLIMA RW 05</title>
+<link rel="icon" href="img/logo-resmi-karang-taruna.jpg">
+<link rel="stylesheet" href="style.css?v=26">
+<style>
+*{ -webkit-tap-highlight-color:transparent!important; margin:0; padding:0; box-sizing:border-box; }
+body {
+  background: #f8fafc !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+.layanan-container {
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto;
+  background: #ffffff;
+  min-height: 100vh;
+  padding-bottom: 30px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.05);
+  position: relative;
+}
+
+/* HEADER MODERN */
+.light-header {
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  border-bottom: 1px solid #f1f5f9;
+}
+.btn-back-modern {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0f172a;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+}
+.btn-back-modern:active {
+  background: #e2e8f0;
+  transform: scale(0.95);
+}
+.btn-back-modern svg {
+  width: 20px;
+  height: 20px;
+  stroke: #0f172a;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+.light-header h1 {
+  flex: 1;
+  font-size: 16px;
+  font-weight: 800;
+  color: #0f172a;
+  text-align: center;
+  margin-right: 40px;
+}
+
+/* SECTION KATEGORI */
+.section-layanan {
+  padding: 20px 16px;
+  border-bottom: 1px solid #f1f5f9;
+}
+.section-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 14px;
+}
+.grid-layanan {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+.item-layanan {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+.icon-box {
+  width: 56px;
+  height: 56px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  margin-bottom: 6px;
+  transition: transform 0.2s;
+}
+.item-layanan:active .icon-box {
+  transform: scale(0.92);
+}
+.item-layanan p {
+  font-size: 11px;
+  font-weight: 600;
+  color: #334155;
+  line-height: 1.2;
+}
+</style>
+</head>
+<body>
+<div class="layanan-container">
+  <!-- HEADER -->
+  <div class="light-header">
+    <button class="btn-back-modern" id="backBtn" onclick="history.back()" aria-label="Kembali">
+      <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </button>
+    <h1>Semua Layanan RW 05</h1>
+  </div>
+
+  <!-- UTAMAKAN KATEGORI KEBUTUHAN WARGA -->
+  <div class="section-layanan">
+    <div class="section-title">Layanan Publik & Laporan</div>
+    <div class="grid-layanan">
+      <a class="item-layanan" href="aduan-warga.html">
+        <div class="icon-box">📢</div>
+        <p>Aduan Warga</p>
+      </a>
+      <a class="item-layanan" href="berita-rw.html">
+        <div class="icon-box">📰</div>
+        <p>Berita RW</p>
+      </a>
+      <a class="item-layanan" href="iuran-warga.html">
+        <div class="icon-box">💰</div>
+        <p>Iuran Warga</p>
+      </a>
+      <div class="item-layanan" data-modal="petaBalai">
+        <div class="icon-box">📍</div>
+        <p>Peta Balai</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-layanan">
+    <div class="section-title">Informasi & Lingkungan</div>
+    <div class="grid-layanan">
+      <div class="item-layanan" data-modal="sembako">
+        <div class="icon-box">🛒</div>
+        <p>Harga Sembako</p>
+      </div>
+      <div class="item-layanan" data-modal="ronda">
+        <div class="icon-box">🛡️</div>
+        <p>Jadwal Ronda</p>
+      </div>
+      <div class="item-layanan" data-modal="bersih">
+        <div class="icon-box">🧹</div>
+        <p>Kerja Bakti</p>
+      </div>
+      <div class="item-layanan" data-modal="posyandu">
+        <div class="icon-box">👶</div>
+        <p>Posyandu</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-layanan">
+    <div class="section-title">Kemasyarakatan</div>
+    <div class="grid-layanan">
+      <div class="item-layanan" data-modal="datawarga">
+        <div class="icon-box">📋</div>
+        <p>Data Warga</p>
+      </div>
+      <div class="item-layanan" data-modal="belajar">
+        <div class="icon-box">📚</div>
+        <p>Belajar Bersama</p>
+      </div>
+      <a class="item-layanan" href="kegiatan.html">
+        <div class="icon-box">⚽</div>
+        <p>Kegiatan</p>
+      </a>
+      <a class="item-layanan" href="profil.html">
+        <div class="icon-box">👤</div>
+        <p>Akun Warga</p>
+      </a>
+    </div>
+  </div>
+
+  <!-- MODAL SERBAGUNA -->
+  <div id="universal-modal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="modal-title">Info RW 05</h3>
+        <div id="modal-close" class="modal-close">✕</div>
+      </div>
+      <div id="modal-body" class="modal-body"></div>
+    </div>
+  </div>
+</div>
+
+<script src="script.js?v=26"></script>
+</body>
+</html>

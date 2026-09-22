@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Profil - KATARNOLIMA RW 05</title>
+<link rel="icon" href="img/logo-resmi-karang-taruna.jpg">
+<link rel="stylesheet" href="style.css?v=39">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+html,body{background:#fff!important;width:100%;height:100%;margin:0!important}
+.profil-root{width:100%;max-width:440px;margin:0 auto;background:#fff;min-height:100vh;padding-bottom:120px}
+.login-view{padding:16px 20px 0;display:none} /* Default sembunyikan untuk cegah kedip */
+.katarnolima-logo{display:flex;align-items:center;gap:10px;margin:20px 0 0}
+.logo-5{font-size:32px;font-weight:900;color:#000;background:#fbbf24;padding:6px 12px;border-radius:12px}
+.logo-text b{font-size:20px;font-weight:900;line-height:0.9;display:block;color:#000}
+.logo-text span{font-size:10px;font-weight:700;color:#000;opacity:0.7}
+.welcome h1{font-size:22px;font-weight:800;color:#000;margin-top:20px}
+.welcome p{font-size:13px;color:#334155;margin-top:6px;line-height:1.4}
+.info-box{background:#fef3c7;border:1px solid #fde68a;border-radius:12px;padding:12px 14px;margin-top:16px;display:flex;gap:10px}
+.info-box div:first-child{font-size:18px}
+.info-box b{font-size:12px;color:#92400e;display:block}
+.info-box span{font-size:11px;color:#78350f;line-height:1.3}
+.input-jaki{width:100%;border:1.5px solid #cbd5e1;border-radius:12px;padding:14px 14px;font-size:15px;outline:none;color:#000;margin-bottom:12px}
+.input-jaki:focus{border-color:#111}
+.label-kecil{font-size:11px;font-weight:700;color:#475569;margin:0 0 6px 4px;display:block}
+.btn-masuk{width:100%;background:#111;color:#fbbf24;border:none;border-radius:12px;padding:16px;font-size:15px;font-weight:800;margin-top:6px;cursor:pointer}
+.btn-masuk:disabled{background:#9ca3af;color:#fff}
+.register-area{margin-top:20px;text-align:center;font-size:13px;color:#475569}
+.register-area a{color:#111;font-weight:800;text-decoration:none}
+.error-msg{font-size:11px;color:#ef4444;font-weight:700;margin:-8px 0 10px 4px;display:none}
+
+/* LOGGED VIEW ALA JAKI */
+.logged-view{display:none;background:#f6f8ff;min-height:100vh;padding-bottom:120px} /* Default sembunyikan untuk cegah kedip */
+.top-area{padding:28px 16px 82px;background:linear-gradient(180deg,#eef4ff 0%,#f6f8ff 100%)}
+.greet-row{display:flex;justify-content:space-between;align-items:flex-start}
+.greet h1{font-size:24px;font-weight:800;color:#0f172a}
+.greet .verify{margin-top:6px;display:flex;align-items:center;gap:6px;color:#0fb398;font-size:13px;font-weight:600}
+.avatar-wrap{position:relative}
+.avatar-jaki{width:68px;height:68px;border-radius:50%;border:3px solid #fff;box-shadow:0 4px 16px rgba(15,23,42,0.12);overflow:hidden;background:#111;display:flex;align-items:center;justify-content:center;color:#fbbf24;font-weight:900;font-size:26px}
+.edit-pen{position:absolute;bottom:0;right:0;width:24px;height:24px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.15);border:1px solid #e2e8f0;font-size:12px;cursor:pointer}
+
+.cards-row{display:flex;gap:12px;padding:0 16px;margin-top:-56px;position:relative;z-index:5}
+.card-jaki{flex:1;background:#fff;border-radius:16px;padding:14px;box-shadow:0 8px 24px rgba(15,23,42,0.06);border:1px solid #e2e8f0;cursor:pointer;display:flex;flex-direction:column;justify-content:space-between}
+.card-jaki-head{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:#0f172a}
+.card-jaki-sub{font-size:12px;color:#64748b;margin-top:6px}
+
+/* MENU LIST ALA JAKI */
+.menu-jaki{background:#fff;margin-top:16px;border-top:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0}
+.menu-item{display:flex;align-items:center;justify-content:space-between;padding:16px;border-bottom:1px solid #f1f5f9;cursor:pointer;text-decoration:none;color:inherit}
+.menu-item:last-child{border-bottom:none}
+.menu-item-left{display:flex;align-items:center;gap:14px}
+.menu-icon{font-size:20px;width:28px;text-align:center}
+.menu-item span{font-size:15px;font-weight:500;color:#0f172a}
+.menu-arrow{color:#94a3b8;font-size:18px}
+.menu-item.keluar span{color:#ef4444;font-weight:600}
+
+.btn-admin-link{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;font-size:12px;font-weight:700;color:#64748b;text-decoration:none;background:#f8fafc;padding:12px 16px;border-radius:12px;border:1px solid #e2e8f0;cursor:pointer}
+.btn-admin-link:active{background:#e2e8f0}
+
+/* NAVIGASI BAWAH SELARAS INDEX & INFO */
+.jaki-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:440px;height:72px;background:rgba(255,255,255,.96);backdrop-filter:blur(18px);border-top:1px solid #e2e8f0;display:flex;justify-content:space-around;align-items:center;z-index:100;padding-bottom:6px}
+.jaki-nav.show{display:flex}
+.jaki-nav a{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;color:#94a3b8;font-size:10px;font-weight:600;text-decoration:none}
+.jaki-nav a.active{color:#0f172a;font-weight:800}
+.jaki-nav a.center{position:relative;top:-14px;flex:unset;display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none}
+.jaki-nav .cam{width:56px;height:56px;background:#0fb398;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:26px;box-shadow:0 8px 22px rgba(15,179,152,.5);border:3px solid #fff;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="profil-root">
+  <div id="loginView" class="login-view">
+    <div class="katarnolima-logo"><div class="logo-5">05</div><div class="logo-text"><b>KATAR<br>NOLIMA</b><span>RW 05 Poncol Jaya</span></div></div>
+    <div class="welcome"><h1 id="judulForm">Masuk Warga RW 05 👋</h1><p id="descForm">Masuk menggunakan email dan password terdaftar.</p></div>
+    <div class="info-box"><div>🔒</div><div><b>Akses Warga RW 05</b><span>Sistem menjaga validitas akun dan mengunci akses jika kredensial tidak cocok.</span></div></div>
+    
+    <!-- FORM MASUK -->
+    <div id="formLogin" style="margin-top:16px">
+      <span class="label-kecil">EMAIL</span>
+      <input id="inputEmailLogin" type="email" class="input-jaki" placeholder="nama@email.com">
+      <span class="label-kecil">PASSWORD</span>
+      <input id="inputPassLogin" type="password" class="input-jaki" placeholder="••••••••">
+      <button id="btnMasuk" class="btn-masuk">Masuk</button>
+    </div>
+
+    <!-- FORM DAFTAR -->
+    <div id="formDaftar" style="display:none;margin-top:16px">
+      <span class="label-kecil">NAMA LENGKAP</span>
+      <input id="inputNamaDaftar" class="input-jaki" placeholder="Contoh: Budi Santoso">
+      <span class="label-kecil">RT / WILAYAH</span>
+      <input id="inputRT" class="input-jaki" placeholder="Contoh: RT 03 / RW 05">
+      <span class="label-kecil">EMAIL</span>
+      <input id="inputEmailDaftar" type="email" class="input-jaki" placeholder="nama@email.com">
+      <span class="label-kecil">PASSWORD (MIN. 6 KARAKTER)</span>
+      <input id="inputPassDaftar" type="password" class="input-jaki" placeholder="••••••••">
+      <button id="btnDaftar" class="btn-masuk">Daftar Akun</button>
+    </div>
+
+    <div class="register-area">
+      <span id="textBawah">Belum punya akun?</span> <a href="#" id="linkDaftar">Daftar di sini</a>
+    </div>
+    <div style="margin-top: 16px; margin-bottom: 20px; text-align: center;">
+      <a href="admin.html" id="btnAksesAdmin" class="btn-admin-link">🔒 Akses Pengurus / Admin</a>
+    </div>
+  </div>
+
+  <div id="loggedView" class="logged-view">
+    <div class="top-area">
+      <div class="greet-row">
+        <div class="greet">
+          <h1 id="displayHai">Hai, <span id="displayNama">Warga</span></h1>
+          <div class="verify">
+            <span>Akun Terverifikasi</span>
+            <div style="width:16px;height:16px;background:#0fb398;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px">✓</div>
+          </div>
+        </div>
+        <div class="avatar-wrap">
+          <div class="avatar-jaki" id="avatarInit">W</div>
+          <div class="edit-pen" onclick="window.location.href='ubah-profil.html'" title="Ubah Profil">✏️</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARDS ALA JAKI -->
+    <div class="cards-row">
+      <div class="card-jaki" onclick="alert('Info RT/RW: ' + document.getElementById('rtFull').textContent)">
+        <div class="card-jaki-head">
+          <span style="color:#2563eb">★</span> Akun Warga
+        </div>
+        <div class="card-jaki-sub" id="rtFull">RT 03 / RW 05</div>
+      </div>
+      <div class="card-jaki" onclick="window.location.href='aktivitas.html'">
+        <div class="card-jaki-head">
+          <span style="color:#2563eb">📈</span> Laporan Saya
+        </div>
+        <div class="card-jaki-sub">Lihat ringkasan</div>
+      </div>
+    </div>
+
+    <!-- MENU LIST -->
+    <div class="menu-jaki">
+      <div class="menu-item" onclick="window.location.href='ubah-profil.html'">
+        <div class="menu-item-left">
+          <div class="menu-icon">⚙️</div>
+          <span>Pengaturan</span>
+        </div>
+        <div class="menu-arrow">›</div>
+      </div>
+      <div class="menu-item" onclick="window.location.href='tentang.html'">
+        <div class="menu-item-left">
+          <div class="menu-icon">ℹ️</div>
+          <span>Tentang Aplikasi KATARNOLIMA</span>
+        </div>
+        <div class="menu-arrow">›</div>
+      </div>
+      <div class="menu-item" onclick="alert('Syarat dan Ketentuan layanan warga RW 05')">
+        <div class="menu-item-left">
+          <div class="menu-icon">📄</div>
+          <span>Syarat dan Ketentuan</span>
+        </div>
+        <div class="menu-arrow">›</div>
+      </div>
+      <div class="menu-item" onclick="alert('Kebijakan Privasi data pengguna RW 05')">
+        <div class="menu-item-left">
+          <div class="menu-icon">🛡️</div>
+          <span>Kebijakan Privasi</span>
+        </div>
+        <div class="menu-arrow">›</div>
+      </div>
+      <div class="menu-item keluar" id="btnKeluar">
+        <div class="menu-item-left">
+          <div class="menu-icon" style="color:#ef4444">🚪</div>
+          <span>Keluar</span>
+        </div>
+        <div class="menu-arrow" style="color:#ef4444">›</div>
+      </div>
+    </div>
+
+    <div style="padding:16px; margin-top: 8px;">
+      <a href="admin.html" id="btnAksesAdmin2" class="btn-admin-link">🔒 Akses Pengurus / Admin</a>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV SELARAS INDEX & INFO -->
+<nav class="jaki-nav show" id="jakiNav">
+  <a href="index.html">🏠<span>Beranda</span></a>
+  <a href="diskusi-rw.html">💬<span>Diskusi</span></a>
+  <a class="center" href="aduan-warga.html"><div class="cam">📷</div><span>Lapor</span></a>
+  <a href="info.html">🔔<span>Notifikasi</span></a>
+  <a class="active" href="profil.html">👤<span>Profil</span></a>
+</nav>
+
+<script type="module">
+// @ts-nocheck
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc, getDocs, query, collection, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCZtvImbyZmqoEoY1hYZcuCbUpIl3R1fhE",
+  authDomain: "katarnolima-rw05.firebaseapp.com",
+  projectId: "katarnolima-rw05",
+  storageBucket: "katarnolima-rw05.firebasestorage.app",
+  messagingSenderId: "965647612835",
+  appId: "1:965647612835:web:b712367f0d8beb7c5bf816"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+var loginView = document.getElementById('loginView');
+var loggedView = document.getElementById('loggedView');
+var jakiNav = document.getElementById('jakiNav');
+var formLogin = document.getElementById('formLogin');
+var formDaftar = document.getElementById('formDaftar');
+var judulForm = document.getElementById('judulForm');
+var descForm = document.getElementById('descForm');
+
+function renderLoggedUI(userObj){
+  if(loginView) loginView.style.display='none';
+  if(loggedView) loggedView.style.display='block';
+  if(jakiNav) jakiNav.classList.add('show');
+  var elNama = document.getElementById('displayNama');
+  var elRtFull = document.getElementById('rtFull');
+  var elAvatar = document.getElementById('avatarInit');
+  if(elNama) elNama.textContent = userObj.nama || 'Warga';
+  if(elRtFull) elRtFull.textContent = userObj.rt || 'RT 03 / RW 05';
+  if(elAvatar) {
+    if(userObj.photo) {
+      elAvatar.innerHTML = `<img src="${userObj.photo}" alt="Avatar" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+    } else {
+      elAvatar.innerHTML = (userObj.nama || 'W').charAt(0).toUpperCase();
+    }
+  }
+}
+
+function renderLoginUI(){
+  if(loginView) loginView.style.display='block';
+  if(loggedView) loggedView.style.display='none';
+  if(jakiNav) jakiNav.classList.add('show');
+}
+
+// Cek sinkronisasi instan dari localStorage SEGERA tanpa kedip
+var initialUser = JSON.parse(localStorage.getItem('rw05_current_user')||'null');
+if(initialUser){
+  renderLoggedUI(initialUser);
+} else {
+  renderLoginUI();
+}
+
+onAuthStateChanged(auth, async (user) => {
+  if(user){
+    try {
+      const userDoc = await getDoc(doc(db, "users_profile", user.uid));
+      let profileData = {};
+      if(userDoc.exists()){
+        profileData = userDoc.data();
+      } else {
+        profileData = { nama: user.email ? user.email.split('@')[0] : 'Warga', rt: 'RT 03 / RW 05', email: user.email };
+      }
+      const currentPayload = {
+        nama: profileData.nama,
+        email: user.email,
+        rt: profileData.rt,
+        phone: profileData.phone || initialUser?.phone || '',
+        phoneVerified: profileData.phoneVerified || initialUser?.phoneVerified || false,
+        photo: profileData.photo || initialUser?.photo || null,
+        uid: user.uid
+      };
+      localStorage.setItem('rw05_current_user', JSON.stringify(currentPayload));
+      renderLoggedUI(currentPayload);
+    } catch(err) {
+      console.error("Gagal load profil:", err);
+    }
+  }
+});
+
+var btnMasuk = document.getElementById('btnMasuk');
+if(btnMasuk){
+  btnMasuk.addEventListener('click', async function(){
+    var email = document.getElementById('inputEmailLogin')?.value.trim() || '';
+    var pass = document.getElementById('inputPassLogin')?.value.trim() || '';
+    if(!email || !pass){ alert('⚠️ Masukkan email dan password!'); return; }
+    btnMasuk.textContent = "Memverifikasi...";
+    btnMasuk.disabled = true;
+    try {
+      await signInWithEmailAndPassword(auth, email, pass);
+    } catch(err) {
+      alert('❌ Gagal masuk: Kredensial (email/sandi) salah atau akun tidak ditemukan.');
+    } finally {
+      btnMasuk.textContent = "Masuk";
+      btnMasuk.disabled = false;
+    }
+  });
+}
+
+var btnDaftar = document.getElementById('btnDaftar');
+if(btnDaftar){
+  btnDaftar.addEventListener('click', async function(){
+    var nama = document.getElementById('inputNamaDaftar')?.value.trim() || '';
+    var rt = document.getElementById('inputRT')?.value.trim() || 'RT 03 / RW 05';
+    var email = document.getElementById('inputEmailDaftar')?.value.trim() || '';
+    var pass = document.getElementById('inputPassDaftar')?.value.trim() || '';
+    
+    if(nama.length < 3){ alert('⚠️ Nama lengkap minimal 3 karakter!'); return; }
+    if(!email || pass.length < 6){ alert('⚠️ Email wajib diisi dan password minimal 6 karakter!'); return; }
+    
+    btnDaftar.textContent = "Mendaftarkan...";
+    btnDaftar.disabled = true;
+    try {
+      const cekNama = await getDocs(query(collection(db, "users_profile"), where("nama", "==", nama)));
+      if(!cekNama.empty){
+        alert('❌ Nama lengkap ini sudah terdaftar atas akun lain!');
+        return;
+      }
+
+      const cekEmail = await getDocs(query(collection(db, "users_profile"), where("email", "==", email)));
+      if(!cekEmail.empty){
+        alert('❌ Email ini sudah terdaftar di sistem!');
+        return;
+      }
+
+      var userCred = await createUserWithEmailAndPassword(auth, email, pass);
+      var user = userCred.user;
+      
+      const newPayload = {
+        nama: nama,
+        rt: rt,
+        email: email,
+        uid: user.uid,
+        createdAt: serverTimestamp()
+      };
+
+      await setDoc(doc(db, "users_profile", user.uid), newPayload);
+      localStorage.setItem('rw05_current_user', JSON.stringify(newPayload));
+      renderLoggedUI(newPayload);
+
+      alert('✅ Akun berhasil didaftarkan! Selamat datang, ' + nama);
+    } catch(err) {
+      alert('❌ Gagal mendaftar: ' + err.message);
+    } finally {
+      btnDaftar.textContent = "Daftar Akun";
+      btnDaftar.disabled = false;
+    }
+  });
+}
+
+var btnKeluar = document.getElementById('btnKeluar');
+if(btnKeluar){
+  btnKeluar.addEventListener('click', async function(){
+    if(confirm('Keluar dari sesi akun ini?')){
+      await signOut(auth);
+      localStorage.removeItem('rw05_current_user');
+      renderLoginUI();
+    }
+  });
+}
+
+var linkDaftar = document.getElementById('linkDaftar');
+var textBawah = document.getElementById('textBawah');
+var isDaftar = false;
+if(linkDaftar){
+  linkDaftar.addEventListener('click', function(e){
+    e.preventDefault();
+    isDaftar = !isDaftar;
+    if(isDaftar){
+      if(formLogin) formLogin.style.display='none'; 
+      if(formDaftar) formDaftar.style.display='block';
+      if(judulForm) judulForm.textContent='Daftar Akun Warga'; 
+      if(descForm) descForm.textContent='Daftarkan akun email dan password untuk akses RW 05.';
+      if(textBawah) textBawah.textContent='Sudah punya akun?'; 
+      linkDaftar.textContent='Masuk di sini';
+    } else {
+      if(formLogin) formLogin.style.display='block'; 
+      if(formDaftar) formDaftar.style.display='none';
+      if(judulForm) judulForm.textContent='Masuk Warga RW 05'; 
+      if(descForm) descForm.textContent='Masuk menggunakan email dan password terdaftar.';
+      if(textBawah) textBawah.textContent='Belum punya akun?'; 
+      linkDaftar.textContent='Daftar di sini';
+    }
+  });
+}
+</script>
+</body>
+</html>
