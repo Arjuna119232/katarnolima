@@ -1,4 +1,4 @@
-name: Build Signed Android APK v2.0
+Name: Build Signed Android APK v2.0
 
 on:
   push:
@@ -29,7 +29,7 @@ jobs:
       - name: Install Capacitor & Dependencies
         run: |
           npm init -y || true
-          npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/app @capacitor/push-notifications
+          npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/app @capacitor/push-notifications @capacitor/camera @capacitor/geolocation
           pip install pillow -q
 
       - name: Populate Web Assets
@@ -50,6 +50,22 @@ jobs:
           if [ -f "google-services.json" ]; then
             cp google-services.json android/app/google-services.json
           fi
+
+      - name: Inject Camera & Location Permissions
+        run: |
+          MANIFEST_FILE="android/app/src/main/AndroidManifest.xml"
+          if [ -f "$MANIFEST_FILE" ]; then
+            echo "Injecting permissions into AndroidManifest.xml..."
+            sed -i '/<application/i \    <uses-permission android:name="android.permission.CAMERA" />\n    <uses-feature android:name="android.hardware.camera" android:required="false" />\n    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />\n    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />\n    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />\n    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />' "$MANIFEST_FILE"
+            echo "Permissions successfully injected!"
+          else
+            echo "AndroidManifest.xml tidak ditemukan!"
+          fi
+
+      - name: Configure Web Chrome Client for WebView Hardware Permissions
+        run: |
+          BRIDGE_ACTIVITY=$(find android/ -name "MainActivity.java" -o -name "BridgeActivity.java")
+          echo "Main Activity ditemukan di: $BRIDGE_ACTIVITY"
 
       - name: Apply HD Safe-Zone Icon
         run: |
@@ -170,3 +186,4 @@ jobs:
           files: android/app/build/outputs/apk/release/app-release.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
