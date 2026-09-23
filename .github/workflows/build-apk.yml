@@ -26,7 +26,7 @@ jobs:
           distribution: temurin
           java-version: '21'
 
-      - name: Install Capacitor & Dependencies
+      - name: Install Dependencies & Capacitor CLI
         run: |
           npm init -y || true
           npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/app @capacitor/push-notifications @capacitor/camera @capacitor/geolocation
@@ -43,30 +43,19 @@ jobs:
                     ./ www/
           echo '{"appId":"com.katarnolima.rw05","appName":"KATARNOLIMA","webDir":"www"}' > capacitor.config.json
 
-      - name: Init/Sync Android & Copy Firebase Config
+      - name: Init & Sync Android
         run: |
           npx cap add android || true
           npx cap sync android
-          if [ -f "google-services.json" ]; then
-            cp google-services.json android/app/google-services.json
-          fi
 
       - name: Inject Camera & Location Permissions
         run: |
-          MANIFEST_FILE="android/app/src/main/AndroidManifest.xml"
-          if [ ! -f "$MANIFEST_FILE" ]; then
-            MANIFEST_FILE=$(find android/ -name "AndroidManifest.xml" | head -n 1)
-          fi
+          MANIFEST_FILE=$(find android/ -name "AndroidManifest.xml" | head -n 1)
           if [ -f "$MANIFEST_FILE" ]; then
             echo "Injecting permissions into $MANIFEST_FILE..."
             if ! grep -q "android.permission.CAMERA" "$MANIFEST_FILE"; then
               sed -i '/<application/i \    <uses-permission android:name="android.permission.CAMERA" />\n    <uses-feature android:name="android.hardware.camera" android:required="false" />\n    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />\n    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />\n    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />\n    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />' "$MANIFEST_FILE"
-              echo "Permissions successfully injected!"
-            else
-              echo "Permissions already exist, skipping injection."
             fi
-          else
-            echo "AndroidManifest.xml tidak ditemukan!"
           fi
 
       - name: Apply HD Safe-Zone Icon
@@ -75,113 +64,49 @@ jobs:
           import os, glob
           from PIL import Image
 
-          possible_paths = [
-              'katar-app-icon.png',
-              'assets/katar-app-icon.png',
-              'img/katar-app-icon.png',
-              'assets/img/katar-app-icon.png'
-          ]
-          
-          src_path = None
-          for p in possible_paths:
-              if os.path.exists(p):
-                  src_path = p
-                  break
-
+          possible_paths = ['katar-app-icon.png', 'assets/katar-app-icon.png', 'img/katar-app-icon.png']
+          src_path = next((p for p in possible_paths if os.path.exists(p)), None)
           if not src_path:
-              print('Peringatan: File ikon tidak ditemukan di path umum, melewati.')
               exit(0)
 
-          print(f'Menggunakan sumber ikon: {src_path}')
           im = Image.open(src_path).convert('RGBA')
-
-          res_dir = 'android/app/src/main/res'
-          if not os.path.exists(res_dir):
-              found_res = glob.glob('android/**/main/res', recursive=True)
-              if found_res:
-                  res_dir = found_res[0]
-
-          for xml_file in glob.glob(f'{res_dir}/mipmap-*/ic_launcher*.xml') + glob.glob(f'{res_dir}/drawable*/ic_launcher*.xml'):
-              try:
-                  os.remove(xml_file)
-              except Exception:
-                  pass
-
+          res_dir = next(iter(glob.glob('android/**/main/res', recursive=True)), 'android/app/src/main/res')
+          
           canvas_size = 2048
           canvas = Image.new('RGBA', (canvas_size, canvas_size), (255, 255, 255, 0))
-
           target_logo_size = int(canvas_size * 0.65)
           im.thumbnail((target_logo_size, target_logo_size), Image.Resampling.LANCZOS)
+          canvas.paste(im, ((canvas_size - im.width) // 2, (canvas_size - im.height) // 2), im)
 
-          pos_x = (canvas_size - im.width) // 2
-          pos_y = (canvas_size - im.height) // 2
-          canvas.paste(im, (pos_x, pos_y), im)
-
-          maps = {
-              'mipmap-mdpi': 48,
-              'mipmap-hdpi': 72,
-              'mipmap-xhdpi': 96,
-              'mipmap-xxhdpi': 144,
-              'mipmap-xxxhdpi': 192
-          }
-
-          for folder, px in maps.items():
+          for folder, px in {'mipmap-mdpi': 48, 'mipmap-hdpi': 72, 'mipmap-xhdpi': 96, 'mipmap-xxhdpi': 144, 'mipmap-xxxhdpi': 192}.items():
               target_dir = os.path.join(res_dir, folder)
               os.makedirs(target_dir, exist_ok=True)
-              
               resized_icon = canvas.resize((px, px), Image.Resampling.LANCZOS)
-              
               resized_icon.save(os.path.join(target_dir, 'ic_launcher.png'))
               resized_icon.save(os.path.join(target_dir, 'ic_launcher_round.png'))
               resized_icon.save(os.path.join(target_dir, 'ic_launcher_foreground.png'))
-
-          print('Ikon Berhasil Diterapkan!')
           "
 
       - name: Bump Version to v2.1 in build.gradle
         run: |
-          BUILD_GRADLE="android/app/build.gradle"
-          if [ ! -f "$BUILD_GRADLE" ]; then
-            BUILD_GRADLE=$(find android/ -name "build.gradle" | grep "/app/" | head -n 1)
-          fi
+          BUILD_GRADLE=$(find android/ -name "build.gradle" | grep "/app/" | head -n 1)
           if [ -f "$BUILD_GRADLE" ]; then
-            if grep -q "versionCode" "$BUILD_GRADLE"; then
-              sed -i 's/versionCode [0-9]*/versionCode 3/g' "$BUILD_GRADLE"
-              sed -i 's/versionName "[^"]*"/versionName "2.1"/g' "$BUILD_GRADLE"
-            else
-              echo "Menambahkan konfigurasi versi ke defaultConfig..."
-              sed -i '/defaultConfig {/a \        versionCode 3\n        versionName "2.1"' "$BUILD_GRADLE"
-            fi
-          else
-            echo "build.gradle tidak ditemukan, melewati modifikasi versi."
+            sed -i 's/versionCode [0-9]*/versionCode 3/g' "$BUILD_GRADLE"
+            sed -i 's/versionName "[^"]*"/versionName "2.1"/g' "$BUILD_GRADLE"
           fi
 
       - name: Decode Keystore from GitHub Secrets
         run: |
-          mkdir -p android/app
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/release.p12 || true
+          KEYSTORE_DIR="android/app"
+          mkdir -p "$KEYSTORE_DIR"
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > "$KEYSTORE_DIR/release.p12" || true
 
       - name: Configure Signing in build.gradle
         run: |
-          BUILD_GRADLE="android/app/build.gradle"
-          if [ ! -f "$BUILD_GRADLE" ]; then
-            BUILD_GRADLE=$(find android/ -name "build.gradle" | grep "/app/" | head -n 1)
-          fi
+          BUILD_GRADLE=$(find android/ -name "build.gradle" | grep "/app/" | head -n 1)
           if [ -f "$BUILD_GRADLE" ]; then
-            if ! grep -q "configurations.all" "$BUILD_GRADLE"; then
+            if ! grep -q "signingConfigs" "$BUILD_GRADLE"; then
               cat << 'EOF' >> "$BUILD_GRADLE"
-
-          configurations.all {
-              resolutionStrategy {
-                  force 'org.jetbrains.kotlin:kotlin-stdlib:1.8.22'
-                  force 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22'
-                  force 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22'
-              }
-          }
-          EOF
-            fi
-
-            cat << 'EOF' >> "$BUILD_GRADLE"
 
           android {
               signingConfigs {
@@ -201,27 +126,33 @@ jobs:
               }
           }
           EOF
+            fi
           fi
 
-      - name: Build Signed Release APK (Inside Android Folder)
-        working-directory: android
+      - name: Build Signed Release APK
         run: |
-          chmod +x gradlew
-          ./gradlew assembleRelease
+          GRADLE_DIR=$(find android/ -name "gradlew" | head -n 1)
+          if [ -n "$GRADLE_DIR" ]; then
+            WORK_DIR=$(dirname "$GRADLE_DIR")
+            cd "$WORK_DIR"
+            chmod +x gradlew
+            ./gradlew assembleRelease
+          fi
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
-      - name: Rename APK to Custom Name
+      - name: Rename and Upload APK Artifact
         run: |
           mkdir -p android/app/build/outputs/apk/release/
           APK_SRC=$(find android/ -name "app-release.apk" | head -n 1)
+          TARGET_APK="android/app/build/outputs/apk/release/katarnolima-rw05-v2.1.apk"
           if [ -n "$APK_SRC" ]; then
-            mv "$APK_SRC" android/app/build/outputs/apk/release/katarnolima-rw05-v2.1.apk || true
+            mv "$APK_SRC" "$TARGET_APK"
           fi
 
-      - name: Upload APK Artifact
+      - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: katarnolima-rw05-v2.1
