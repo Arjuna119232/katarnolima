@@ -1,5 +1,5 @@
 /* RESET NO KOTAK HITAM - FIX TAP HIGHLIGHT ANDROID */
-*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-tap-highlight-color:rgba(0,0,0,0)!important;-webkit-tap-highlight-color:transparent!important;-webkit-touch-callout:none!important}
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-tap-highlight-color:rgba(0,0,0,0,0)!important;-webkit-tap-highlight-color:transparent!important;-webkit-touch-callout:none!important}
 *:focus,*:active{outline:none!important;box-shadow:none!important}
 html{-webkit-tap-highlight-color:transparent!important}
 a,button,div,span{-webkit-tap-highlight-color:transparent!important;user-select:none;-webkit-user-select:none}
@@ -147,3 +147,34 @@ a{text-decoration:none;color:inherit}
 @keyframes livePulse{0%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(0.95)}100%{opacity:1;transform:scale(1)}}
 .ripple{position:absolute;border-radius:50%;background:rgba(251,191,36,0.22);transform:scale(0);animation:rippleAnim 0.35s ease-out;pointer-events:none;z-index:10}
 @keyframes rippleAnim{to{transform:scale(3.5);opacity:0}}
+
+/* DYNAMIC ISLAND STYLE */
+#dynamic-island-greeting {
+  position: fixed;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50px);
+  background: rgba(15, 23, 42, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #fff;
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+  border: 1px solid rgba(255,255,255,0.1);
+  z-index: 9999999;
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  pointer-events: none;
+  max-width: 90%;
+  text-align: center;
+}
+#dynamic-island-greeting.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
