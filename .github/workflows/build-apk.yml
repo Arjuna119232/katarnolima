@@ -143,26 +143,33 @@ jobs:
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
-      - name: Rename and Upload APK Artifact
+      - name: Locate and Rename APK
         run: |
-          mkdir -p android/app/build/outputs/apk/release/
-          APK_SRC=$(find android/ -name "app-release.apk" | head -n 1)
-          TARGET_APK="android/app/build/outputs/apk/release/katarnolima-rw05-v2.1.apk"
-          if [ -n "$APK_SRC" ]; then
-            mv "$APK_SRC" "$TARGET_APK"
+          mkdir -p dist
+          APK_PATH=$(find android/ -name "*.apk" | grep -i "release" | head -n 1)
+          if [ -z "$APK_PATH" ]; then
+            APK_PATH=$(find android/ -name "*.apk" | head -n 1)
+          fi
+          echo "Found APK path: $APK_PATH"
+          if [ -f "$APK_PATH" ]; then
+            cp "$APK_PATH" dist/katarnolima-rw05-v2.1.apk
+          else
+            echo "Error: APK file not found!"
+            find android/ -name "*.apk" || true
+            exit 1
           fi
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: katarnolima-rw05-v2.1
-          path: android/app/build/outputs/apk/release/katarnolima-rw05-v2.1.apk
+          path: dist/katarnolima-rw05-v2.1.apk
 
       - name: Create GitHub Release v2.1
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v2.1.${{ github.run_number }}
           name: KATARNOLIMA RW05 v2.1 (Build ${{ github.run_number }})
-          files: android/app/build/outputs/apk/release/katarnolima-rw05-v2.1.apk
+          files: dist/katarnolima-rw05-v2.1.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
