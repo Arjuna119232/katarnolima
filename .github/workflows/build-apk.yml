@@ -15,29 +15,72 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '21'
 
-      - name: Set up Node.js 20
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Setup Valid Capacitor Project
+      - name: Fresh Generate Native Capacitor Android
         run: |
+          rm -rf android
           npm init -y || true
           npm install @capacitor/core @capacitor/cli @capacitor/android || true
-          echo '{"appId":"com.katarnolima.rw05","appName":"KATARNOLIMA","webDir":""}' > capacitor.config.json
-          npx cap add android || true
-          ls -la android/
+          npx cap add android
+
+      - name: Inject Camera & Location Permissions to Manifest
+        run: |
+          MANIFEST_FILE="android/app/src/main/AndroidManifest.xml"
+          if [ -f "$MANIFEST_FILE" ]; then
+            echo "Injecting permissions into fresh AndroidManifest.xml..."
+            if ! grep -q "android.permission.CAMERA" "$MANIFEST_FILE"; then
+              sed -i '/<application/i \    <uses-permission android:name="android.permission.CAMERA" />\n    <uses-feature android:name="android.hardware.camera" android:required="false" />\n    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />\n    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />' "$MANIFEST_FILE"
+              echo "Permissions injected successfully!"
+            fi
+          else
+            echo "Error: Manifest file not found at $MANIFEST_FILE"
+            exit 1
+          fi
 
       - name: Decode Keystore from Secrets
         run: |
           mkdir -p android/app
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/release.p12 || true
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/release.p12
+
+      - name: Configure Signing in build.gradle
+        run: |
+          BUILD_GRADLE="android/app/build.gradle"
+          if [ -f "$BUILD_GRADLE" ]; then
+            cat << 'EOF' >> "$BUILD_GRADLE"
+
+          android {
+              signingConfigs {
+                  release {
+                      storeFile file('release.p12')
+                      storeType 'PKCS12'
+                      storePassword System.getenv("KEYSTORE_PASSWORD")
+                      keyAlias System.getenv("KEY_ALIAS")
+                      keyPassword System.getenv("KEY_PASSWORD")
+                  }
+              }
+              buildTypes {
+                  release {
+                      signingConfig signingConfigs.release
+                      minifyEnabled false
+                  }
+              }
+          }
+          EOF
+          fi
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
       - name: Build Signed Release APK
         working-directory: android
@@ -49,15 +92,15 @@ jobs:
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
-      - name: Locate and Upload APK
+      - name: Locate and Rename APK
         run: |
           mkdir -p dist
-          APK_FILE=$(find android/ -name "*.apk" | head -n 1)
-          if [ -n "$APK_FILE" ]; then
-            cp "$APK_FILE" dist/katarnolima-rw05-v2.1.apk
+          APK_SRC="android/app/build/outputs/apk/release/app-release.apk"
+          if [ -f "$APK_SRC" ]; then
+            cp "$APK_SRC" dist/katarnolima-rw05-v2.1.apk
           else
-            echo "APK masih tidak ditemukan!"
-            exit 1
+            echo "Mencari file APK alternatif..."
+            find android/ -name "*.apk" -exec cp {} dist/katarnolima-rw05-v2.1.apk \;
           fi
 
       - name: Upload Artifact
