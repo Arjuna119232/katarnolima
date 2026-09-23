@@ -19,7 +19,7 @@ const defaultBerita = [
   {
     kategori: 'kegiatan',
     kategoriLabel: 'Kegiatan',
-    ikon: '🌸',
+    ikon: '📌',
     judul: 'Kerja Bakti Akbar RW 05 Minggu Ke-3 di Lapangan Poncol Jaya',
     isi: 'Diharapkan seluruh warga RW 05 hadir membawa peralatan kebersihan masing-masing.',
     tanggal: '20 Sep 2026',
@@ -30,7 +30,7 @@ const defaultBerita = [
     kategoriLabel: 'Pengumuman',
     ikon: '📢',
     judul: 'Jadwal Ronda Malam Bulan Ini - RT 01 Sampai RT 07',
-    isi: 'Petugas rondal harap hadir tepat waktu mulai pukul 22:00 WIB.',
+    isi: 'Petugas ronda harap hadir tepat waktu mulai pukul 22:00 WIB.',
     tanggal: '19 Sep 2026',
     penulis: '22:00 - 04:00 WIB'
   },
@@ -65,11 +65,11 @@ document.addEventListener('DOMContentLoaded', () => {
       if (data.kategori === 'iuran') catClass = 'cat-iuran';
 
       html += `<div class="berita-item" data-cat="${data.kategori || 'kegiatan'}">
-        <div class="berita-thumb">${data.ikon || '📢'}</div>
+        <div class="berita-thumb">${data.ikon || '📌'}</div>
         <div class="berita-content">
           <span class="berita-cat ${catClass}">${data.kategoriLabel || 'Info'}</span>
           <h3>${data.judul || ''}</h3>
-          <div style="font-size:12px; color:#475569; margin-top:4px; line-height:1.4;">${data.isi || ''}</div>
+          <div style="font-size:12px; color:#475569; margin-top:4px; line-height:1.4; white-space: pre-line;">${data.isi || ''}</div>
           <div class="berita-meta">${data.tanggal || ''} • ${data.penulis || 'Pengurus RW 05'}</div>
         </div>
       </div>`;
@@ -87,7 +87,6 @@ document.addEventListener('DOMContentLoaded', () => {
         snapshot.forEach((doc) => listData.push(doc.data()));
         renderList(listData);
       } else {
-        // Jika koleksi di Firestore masih kosong, tampilkan data default
         renderList(defaultBerita);
       }
     }, (err) => {
