@@ -21,40 +21,42 @@ jobs:
           distribution: temurin
           java-version: '21'
 
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup Valid Capacitor Project
+        run: |
+          npm init -y || true
+          npm install @capacitor/core @capacitor/cli @capacitor/android || true
+          echo '{"appId":"com.katarnolima.rw05","appName":"KATARNOLIMA","webDir":""}' > capacitor.config.json
+          npx cap add android || true
+          ls -la android/
+
       - name: Decode Keystore from Secrets
         run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/release.p12
+          mkdir -p android/app
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/release.p12 || true
 
       - name: Build Signed Release APK
         working-directory: android
         run: |
-          if [ -f "./gradlew" ]; then
-            chmod +x gradlew
-            ./gradlew assembleRelease
-          else
-            echo "gradlew tidak ditemukan di folder android, mencoba menjalankan gradle..."
-            gradle wrapper || true
-            if [ -f "./gradlew" ]; then
-              chmod +x gradlew
-              ./gradlew assembleRelease
-            else
-              gradle assembleRelease
-            fi
-          fi
+          chmod +x gradlew
+          ./gradlew assembleRelease
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
-      - name: Locate APK Output
+      - name: Locate and Upload APK
         run: |
           mkdir -p dist
           APK_FILE=$(find android/ -name "*.apk" | head -n 1)
           if [ -n "$APK_FILE" ]; then
             cp "$APK_FILE" dist/katarnolima-rw05-v2.1.apk
           else
-            echo "APK tidak ditemukan setelah build!"
-            find android/ -maxdepth 4 -ls || true
+            echo "APK masih tidak ditemukan!"
             exit 1
           fi
 
