@@ -21,21 +21,11 @@ jobs:
           distribution: temurin
           java-version: '21'
 
-      - name: Set up Node.js 20
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Sync Web Assets to Android
-        run: |
-          npm install || true
-          npx cap sync android
-
-      - name: Decode Keystore
+      - name: Decode Keystore from Secrets
         run: |
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/release.p12
 
-      - name: Build Signed APK
+      - name: Build Signed Release APK
         working-directory: android
         run: |
           chmod +x gradlew
@@ -45,17 +35,22 @@ jobs:
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
+      - name: Rename APK Output
+        run: |
+          mkdir -p dist
+          cp android/app/build/outputs/apk/release/app-release.apk dist/katarnolima-rw05-v2.1.apk
+
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: katarnolima-rw05-v2.1
-          path: android/app/build/outputs/apk/release/app-release.apk
+          path: dist/katarnolima-rw05-v2.1.apk
 
       - name: Create GitHub Release v2.1
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v2.1.${{ github.run_number }}
           name: KATARNOLIMA RW05 v2.1 (Build ${{ github.run_number }})
-          files: android/app/build/outputs/apk/release/app-release.apk
+          files: dist/katarnolima-rw05-v2.1.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
