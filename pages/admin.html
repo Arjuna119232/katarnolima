@@ -23,7 +23,7 @@ body{background:#f1f5f9;color:#0f172a}
 .hamburger{display:none;background:none;border:none;font-size:22px;cursor:pointer}
 .content{padding:20px;max-width:1200px}
 .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px}
-.stat-card{background:#fff;border-radius:16px;padding:16px;border:1px solid #e2e8f0}
+.stat-card{background:#fff;border-radius:16px;padding:16px;border:1px solid #e2e8f0;position:relative;}
 .stat-card .label{font-size:11px;color:#64748b;font-weight:700;text-transform:uppercase}
 .stat-card .value{font-size:22px;font-weight:900;margin-top:4px}
 .stat-card .sub{font-size:11px;color:#22c55e;font-weight:600;margin-top:4px}
@@ -51,9 +51,9 @@ th{background:#f8fafc;padding:10px 12px;text-align:left;font-size:11px;font-weig
 td{padding:10px 12px;border-top:1px solid #f1f5f9;vertical-align:top}
 .live-dot{width:8px;height:8px;background:#22c55e;border-radius:50%;display:inline-block;animation:pulse 1.5s infinite}
 @keyframes pulse{0%{opacity:1}50%{opacity:.4}100%{opacity:1}}
-.overlay{position:fixed;inset:0;background:rgba(15,23,42,0.85);backdrop-filter:blur(12px);z-index:9999;display:none;align-items:center;justify-content:center;padding:20px}
+.overlay{position:fixed;inset:0;background:rgba(15,23,42,0.75);backdrop-filter:blur(8px);z-index:9999;display:none;align-items:center;justify-content:center;padding:20px}
 .overlay.show{display:flex}
-.modal-box{background:#fff;border-radius:20px;max-width:420px;width:100%;padding:22px}
+.modal-box{background:#fff;border-radius:20px;max-width:380px;width:100%;padding:22px;position:relative}
 @media(max-width:900px){
   .sidebar{transform:translateX(-100%)}
   .sidebar.open{transform:translateX(0)}
@@ -63,6 +63,31 @@ td{padding:10px 12px;border-top:1px solid #f1f5f9;vertical-align:top}
 }
 .admin-gate-overlay{position:fixed;inset:0;background:#0f172a;z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px}
 .admin-gate-box{background:#fff;border-radius:20px;width:100%;max-width:380px;padding:24px;text-align:center}
+.bukti-thumb{width:50px;height:50px;object-fit:cover;border-radius:8px;border:1px solid #cbd5e1;cursor:pointer;transition:transform 0.2s;}
+.bukti-thumb:hover{transform:scale(1.1);}
+
+.btn-reset-saldo {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
+  color: #e11d48;
+  border-radius: 8px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.btn-reset-saldo:hover {
+  background: #e11d48;
+  color: #fff;
+  border-color: #be123c;
+}
 </style>
 </head>
 <body>
@@ -95,6 +120,13 @@ td{padding:10px 12px;border-top:1px solid #f1f5f9;vertical-align:top}
       <button class="menu-item" data-tab="info-singkat"><span class="icon">📢</span> Buat Info Warga</button>
       <button class="menu-item" data-tab="berita"><span class="icon">📰</span> Berita & Artikel</button>
       
+      <div class="menu-label">Layanan Informasi RW</div>
+      <button class="menu-item" data-tab="sembako"><span class="icon">🛒</span> Harga Sembako & Pasar</button>
+      <button class="menu-item" data-tab="keamanan"><span class="icon">🛡️</span> Keamanan & Satpam</button>
+      <button class="menu-item" data-tab="lingkungan"><span class="icon">🧹</span> Lingkungan & Kerja Bakti</button>
+      <button class="menu-item" data-tab="posyandu"><span class="icon">👶</span> Layanan Posyandu</button>
+      <button class="menu-item" data-tab="kegiatan"><span class="icon">🎓</span> Belajar & Kegiatan Warga</button>
+
       <div class="menu-label">Interaksi Warga</div>
       <button class="menu-item" data-tab="aduan"><span class="icon">📥</span> Aduan Warga <span id="badgeAduan" style="margin-left:auto;background:#ef4444;color:#fff;padding:2px 6px;border-radius:999px;font-size:10px;display:none">0</span></button>
       <button class="menu-item" data-tab="diskusi"><span class="icon">💬</span> Moderasi Diskusi</button>
@@ -123,7 +155,122 @@ td{padding:10px 12px;border-top:1px solid #f1f5f9;vertical-align:top}
           <div class="stat-card"><div class="label">Total Akun Warga</div><div class="value" id="statWarga">0</div><div class="sub">Terdaftar Mandiri</div></div>
           <div class="stat-card"><div class="label">Aduan Masuk</div><div class="value" id="statAduan">0</div><div class="sub" style="color:#ef4444">Masuk / Realtime</div></div>
           <div class="stat-card"><div class="label">Berita Aktif</div><div class="value" id="statBerita">0</div><div class="sub">Terpublikasi</div></div>
-          <div class="stat-card"><div class="label">Saldo Kas</div><div class="value" style="font-size:18px" id="statSaldo">Rp 0</div><div class="sub">Live Akumulasi</div></div>
+          
+          <div class="stat-card">
+            <button class="btn-reset-saldo" onclick="window.resetSaldoKas()" title="Reset Total Saldo Kas ke Rp 0">🗑️</button>
+            <div class="label">Saldo Kas</div>
+            <div class="value" style="font-size:18px" id="statSaldo">Rp 0</div>
+            <div class="sub">Live Akumulasi</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- HARGA SEMBAKO & PASAR -->
+      <div class="tab-content" id="tab-sembako">
+        <div class="card">
+          <div class="card-title">🛒 Update Harga Sembako & Informasi Pasar</div>
+          <form id="formSembako" style="display:grid;gap:12px">
+            <div class="form-grid">
+              <div class="form-group"><label>Nama Bahan Pokok / Sembako</label><input id="sembakoNama" class="form-control" required placeholder="Contoh: Beras Premium / Telur Ayam"></div>
+              <div class="form-group"><label>Harga (Rp / Satuan)</label><input id="sembakoHarga" type="number" class="form-control" required placeholder="Contoh: 15000"></div>
+            </div>
+            <div class="form-grid">
+              <div class="form-group"><label>Lokasi Pasar / Toko</label><input id="sembakoPasar" class="form-control" required placeholder="Contoh: Pasar Poncol / Toko Sembako Pak RT"></div>
+              <div class="form-group"><label>Satuan</label><input id="sembakoSatuan" class="form-control" placeholder="Contoh: Kg, Liter, Ikat" value="Kg"></div>
+            </div>
+            <button type="submit" class="btn btn-primary">💾 Update Harga Sembako</button>
+          </form>
+        </div>
+        <div class="card">
+          <div class="card-title">📋 Daftar Harga Sembako Terupdate</div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Komoditas</th><th>Harga</th><th>Pasar / Toko</th><th>Pembaruan</th><th>Aksi</th></tr></thead>
+              <tbody id="listSembakoAdmin"><tr><td colspan="5" style="text-align:center;color:#94a3b8">Memuat data...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- KEAMANAN & SATPAM -->
+      <div class="tab-content" id="tab-keamanan">
+        <div class="card">
+          <div class="card-title">🛡️ Input Jadwal & Kontak Petugas Satpam / Ronda</div>
+          <form id="formKeamanan" style="display:grid;gap:12px">
+            <div class="form-grid">
+              <div class="form-group"><label>Nama Petugas / Anggota Ronda</label><input id="satpamNama" class="form-control" required placeholder="Contoh: Pak Paksi / Tim Pos A"></div>
+              <div class="form-group"><label>Shift / Jam Operasional Jaga</label><input id="satpamJadwal" class="form-control" required placeholder="Contoh: 22:00 – 04:00 WIB"></div>
+            </div>
+            <div class="form-grid">
+              <div class="form-group"><label>No. HP / WhatsApp Darurat</label><input id="satpamPhone" type="tel" class="form-control" placeholder="08xxxxxxxxxx"></div>
+              <div class="form-group"><label>Himbauan Keamanan</label><input id="satpamHimbauan" class="form-control" placeholder="Contoh: Akses keluar masuk warga wajib melalui portal pos satpam utama saat jam operasional malam."></div>
+            </div>
+            <button type="submit" class="btn btn-primary">💾 Simpan Informasi Keamanan</button>
+          </form>
+        </div>
+        <div class="card">
+          <div class="card-title">📋 Petugas & Jadwal Keamanan Aktif</div>
+          <div id="listKeamananAdmin"></div>
+        </div>
+      </div>
+
+      <!-- LINGKUNGAN BERSIH -->
+      <div class="tab-content" id="tab-lingkungan">
+        <div class="card">
+          <div class="card-title">🧹 Kelola Kegiatan Lingkungan & Kebersihan (Kerja Bakti)</div>
+          <form id="formLingkungan" style="display:grid;gap:12px">
+            <div class="form-group"><label>Nama Kegiatan Kebersihan</label><input id="lingkunganJudul" class="form-control" required placeholder="Contoh: Kerja Bakti Massal Pembersihan Saluran Air"></div>
+            <div class="form-grid">
+              <div class="form-group"><label>Tanggal & Waktu Pelaksanaan</label><input id="lingkunganTanggal" class="form-control" required placeholder="Contoh: Minggu, 27 Sep 2026 (07:00 WIB)"></div>
+              <div class="form-group"><label>Lokasi / Wilayah</label><input id="lingkunganLokasi" class="form-control" required placeholder="Contoh: Lapangan Serbaguna & Selokan RT 01-04"></div>
+            </div>
+            <div class="form-group"><label>Instruksi / Peralatan yang Dibawa Warga</label><textarea id="lingkunganIsi" class="form-control" rows="2" placeholder="Contoh: Bawa cangkul, sapu lidi, dan kantong sampah."></textarea></div>
+            <button type="submit" class="btn btn-primary">🚀 Jadwalkan Kegiatan Kebersihan</button>
+          </form>
+        </div>
+        <div class="card">
+          <div class="card-title">📋 Agenda Lingkungan & Kerja Bakti</div>
+          <div id="listLingkunganAdmin"></div>
+        </div>
+      </div>
+
+      <!-- POSYANDU -->
+      <div class="tab-content" id="tab-posyandu">
+        <div class="card">
+          <div class="card-title">👶 Jadwal & Informasi Layanan Posyandu</div>
+          <form id="formPosyandu" style="display:grid;gap:12px">
+            <div class="form-group"><label>Nama Layanan Posyandu</label><input id="posyanduJudul" class="form-control" required placeholder="Contoh: Posyandu Balita & Lansia Cempaka 05"></div>
+            <div class="form-grid">
+              <div class="form-group"><label>Tanggal & Jam Layanan</label><input id="posyanduJadwal" class="form-control" required placeholder="Contoh: Selasa, 29 Sep 2026 (08:30 WIB)"></div>
+              <div class="form-group"><label>Lokasi Posyandu</label><input id="posyanduLokasi" class="form-control" required placeholder="Contoh: Sekretariat RW 05"></div>
+            </div>
+            <div class="form-group"><label>Jenis Layanan & Imunisasi</label><textarea id="posyanduKeterangan" class="form-control" rows="2" placeholder="Contoh: Penimbangan balita, pendaftaran vitamin A, cek tensi lansia."></textarea></div>
+            <button type="submit" class="btn btn-primary">🚀 Publikasikan Jadwal Posyandu</button>
+          </form>
+        </div>
+        <div class="card">
+          <div class="card-title">📋 Jadwal Posyandu Terjadwal</div>
+          <div id="listPosyanduAdmin"></div>
+        </div>
+      </div>
+
+      <!-- BELAJAR BERSAMA & KEGIATAN -->
+      <div class="tab-content" id="tab-kegiatan">
+        <div class="card">
+          <div class="card-title">🎓 Program Belajar Bersama & Kegiatan Pemuda / Karang Taruna</div>
+          <form id="formKegiatan" style="display:grid;gap:12px">
+            <div class="form-group"><label>Nama Program / Pelatihan / Belajar</label><input id="kegiatanJudul" class="form-control" required placeholder="Contoh: Bimbingan Belajar Anak & Kursus Bahasa Inggris"></div>
+            <div class="form-grid">
+              <div class="form-group"><label>Jadwal Rutin / Pelaksanaan</label><input id="kegiatanJadwal" class="form-control" required placeholder="Contoh: Setiap Sabtu Sore (15:30 WIB)"></div>
+              <div class="form-group"><label>Pengajar / Penanggung Jawab</label><input id="kegiatanPJ" class="form-control" required placeholder="Contoh: Tim Karang Taruna RW 05"></div>
+            </div>
+            <div class="form-group"><label>Detail Deskripsi & Persyaratan</label><textarea id="kegiatanIsi" class="form-control" rows="3" placeholder="Tuliskan rincian kegiatan..."></textarea></div>
+            <button type="submit" class="btn btn-primary">💾 Simpan Kegiatan Belajar</button>
+          </form>
+        </div>
+        <div class="card">
+          <div class="card-title">📋 Daftar Program Belajar & Kegiatan Aktif</div>
+          <div id="listKegiatanAdmin"></div>
         </div>
       </div>
 
@@ -140,6 +287,59 @@ td{padding:10px 12px;border-top:1px solid #f1f5f9;vertical-align:top}
         <div class="card">
           <div class="card-title">📋 Kelola / Hapus Info Singkat Warga</div>
           <div id="listInfoSingkatAdmin"></div>
+        </div>
+
+        <!-- FORM PUSH UPDATE APLIKASI -->
+        <div class="card" style="margin-top:16px;">
+          <div class="card-title">🚀 Push Update Aplikasi (Notifikasi Warga)</div>
+          <form id="formPushUpdate" style="display:grid;gap:12px">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Versi Terbaru (misal: v2.0.0)</label>
+                <input id="appVersi" class="form-control" required placeholder="Contoh: v2.0.0">
+              </div>
+              <div class="form-group">
+                <label>Link Download APK / Update</label>
+                <input id="appLinkDownload" type="url" class="form-control" required placeholder="https://...">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Catatan Perubahan (Poin Update)</label>
+              <textarea id="appCatatan" class="form-control" rows="3" required placeholder="Contoh:&#10;- Perbaikan bug pembayaran iuran&#10;- Penambahan fitur notifikasi real-time"></textarea>
+            </div>
+            <div style="display:flex;gap:10px;align-items:center">
+              <label style="font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px">
+                <input type="checkbox" id="appStatusAktif" checked style="width:16px;height:16px">
+                Aktifkan Pop-up Notifikasi di Halaman Index
+              </label>
+            </div>
+            <div style="display:flex;gap:10px;margin-top:6px;">
+              <button type="submit" class="btn btn-primary" style="flex:2;">🚀 Publikasikan Update Aplikasi</button>
+              <button type="button" class="btn btn-red" style="flex:1;" onclick="window.hapusPushUpdate()">🗑️ Hapus / Matikan Notif</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- DAFTAR RIWAYAT PUSH UPDATE -->
+        <div class="card" style="margin-top:16px;">
+          <div class="card-title">📋 Riwayat Push Update Aplikasi</div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Versi</th>
+                  <th>Catatan Pembaruan</th>
+                  <th>Link Download</th>
+                  <th>Tanggal Push</th>
+                  <th>Status</th>
+                  <th style="min-width:140px;">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="listRiwayatUpdateAdmin">
+                <tr><td colspan="6" style="text-align:center;color:#94a3b8">Memuat riwayat...</td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
@@ -161,7 +361,7 @@ td{padding:10px 12px;border-top:1px solid #f1f5f9;vertical-align:top}
         </div>
       </div>
 
-      <!-- DATABASE AKUN WARGA (HANYA VIEW & HAPUS AKUN) -->
+      <!-- DATABASE AKUN WARGA -->
       <div class="tab-content" id="tab-warga">
         <div class="card">
           <div class="card-title">👥 Database Akun Warga Terdaftar (Pendaftaran Mandiri oleh Warga)</div>
@@ -191,7 +391,7 @@ td{padding:10px 12px;border-top:1px solid #f1f5f9;vertical-align:top}
         </div>
       </div>
 
-      <!-- KEUANGAN OTOMATIS AKUMULASI (MASUK / KELUAR) -->
+      <!-- KEUANGAN OTOMATIS AKUMULASI & BUKTI IURAN WARGA -->
       <div class="tab-content" id="tab-keuangan">
         <div class="card">
           <div class="card-title">💰 Catat Transaksi Kas RW 05 (Otomatis Live Index)</div>
@@ -226,10 +426,42 @@ td{padding:10px 12px;border-top:1px solid #f1f5f9;vertical-align:top}
             </table>
           </div>
         </div>
+
+        <!-- TABEL BUKTI PEMBAYARAN IURAN WARGA -->
+        <div class="card">
+          <div class="card-title">📥 Bukti Pembayaran Iuran Warga (Masuk Real-time)</div>
+          <p style="font-size:12px;color:#64748b;margin-bottom:12px;">Hapus data bukti pembayaran iuran yang sudah tidak diperlukan agar kuota penyimpanan Firebase tidak penuh.</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>NIK (16 Digit)</th><th>Bulan</th><th>Nominal</th><th>RT</th><th>Bukti Transfer</th><th>Tanggal Kirim</th><th>Aksi Kontrol</th></tr></thead>
+              <tbody id="listIuranWargaAdmin"><tr><td colspan="7" style="text-align:center;color:#94a3b8">Memuat bukti iuran...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
       </div>
 
     </div>
   </main>
+</div>
+
+<!-- CUSTOM MODAL POPUP UNIVERSAL -->
+<div class="overlay" id="appCustomModal">
+  <div class="modal-box">
+    <button id="modalCloseX" style="position:absolute; top:14px; right:16px; background:none; border:none; font-size:18px; font-weight:800; color:#94a3b8; cursor:pointer; padding:4px;">✕</button>
+    <div id="modalIcon" style="font-size:32px; margin-bottom:8px;">📢</div>
+    <h3 id="modalTitle" style="font-size:16px; font-weight:900; color:#0f172a; margin-bottom:6px;">Notifikasi</h3>
+    <p id="modalDesc" style="font-size:12px; color:#475569; line-height:1.5; margin-bottom:18px;"></p>
+    <div id="modalButtons" style="display:flex; gap:8px;"></div>
+  </div>
+</div>
+
+<!-- MODAL PREVIEW FOTO BUKTI TRANSFER -->
+<div class="overlay" id="modalPreviewBukti">
+  <div class="modal-box" style="max-width:500px;text-align:center;">
+    <button onclick="window.closeModal('modalPreviewBukti')" style="position:absolute; top:14px; right:16px; background:none; border:none; font-size:18px; font-weight:800; color:#94a3b8; cursor:pointer; padding:4px;">✕</button>
+    <h3 style="font-weight:900;margin-bottom:12px;">Bukti Transfer / QRIS</h3>
+    <img id="imgFullBukti" src="" style="width:100%;max-height:400px;object-fit:contain;border-radius:12px;border:1px solid #cbd5e1;" alt="Bukti Transfer">
+  </div>
 </div>
 
 <!-- MODAL EDIT BERITA -->
@@ -243,10 +475,12 @@ td{padding:10px 12px;border-top:1px solid #f1f5f9;vertical-align:top}
   </div>
 </div>
 
+<script src="script.js?v=28"></script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, doc, getDoc, setDoc, addDoc, updateDoc, deleteDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, doc, getDoc, setDoc, addDoc, updateDoc, deleteDoc, onSnapshot, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getStorage, ref, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCZtvImbyZmqoEoY1hYZcuCbUpIl3R1fhE",
@@ -259,6 +493,43 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
+const storage = getStorage(app);
+
+window.showModal = function({ title = 'Info', desc = '', icon = '📢', type = 'alert', onYes = null }) {
+  const modal = document.getElementById('appCustomModal');
+  const elTitle = document.getElementById('modalTitle');
+  const elDesc = document.getElementById('modalDesc');
+  const elIcon = document.getElementById('modalIcon');
+  const elBtns = document.getElementById('modalButtons');
+  const btnCloseX = document.getElementById('modalCloseX');
+
+  if(!modal) return;
+  if(elTitle) elTitle.textContent = title;
+  if(elDesc) elDesc.textContent = desc;
+  if(elIcon) elIcon.textContent = icon;
+  
+  modal.classList.add('show');
+
+  const closeIt = () => { modal.classList.remove('show'); };
+
+  if(btnCloseX) btnCloseX.onclick = closeIt;
+  modal.onclick = (e) => { if(e.target === modal) closeIt(); };
+
+  if (type === 'confirm') {
+    elBtns.innerHTML = `
+      <button class="btn btn-outline" style="flex:1;" id="modalBtnNo">Tidak</button>
+      <button class="btn btn-primary" style="flex:1;" id="modalBtnYes">Iya</button>
+    `;
+    const btnNo = document.getElementById('modalBtnNo');
+    const btnYes = document.getElementById('modalBtnYes');
+    if(btnNo) btnNo.onclick = closeIt;
+    if(btnYes) btnYes.onclick = () => { closeIt(); if(onYes) onYes(); };
+  } else {
+    elBtns.innerHTML = `<button class="btn btn-primary" style="width:100%;" id="modalBtnOk">OK</button>`;
+    const btnOk = document.getElementById('modalBtnOk');
+    if(btnOk) btnOk.onclick = closeIt;
+  }
+};
 
 function formatDateTimeDetailed(timestamp) {
   if (!timestamp) return '-';
@@ -340,8 +611,18 @@ if(btnGateLogin){
 }
 
 const btnLogout = document.getElementById('btnLogout');
-if(btnLogout) btnLogout.addEventListener('click', async ()=>{
-  if(confirm('Keluar admin?')){await signOut(auth); localStorage.removeItem('rw05_admin_session'); window.location.href='profil.html';}
+if(btnLogout) btnLogout.addEventListener('click', ()=>{
+  window.showModal({
+    title: 'Keluar Admin',
+    desc: 'Apakah Anda yakin ingin keluar dari sesi panel admin ini?',
+    icon: '🚪',
+    type: 'confirm',
+    onYes: async () => {
+      await signOut(auth); 
+      localStorage.removeItem('rw05_admin_session'); 
+      window.location.href='profil.html';
+    }
+  });
 });
 
 window.switchTab = function(tab){
@@ -373,7 +654,464 @@ window.closeModal = function(id){
 };
 
 function initAdmin(){
-  // Akumulasi Transaksi Kas Handler
+  // --- FUNGSI RESET SALDO KAS MENJADI RP 0 ---
+  window.resetSaldoKas = function() {
+    window.showModal({
+      title: 'Reset Saldo Kas',
+      desc: 'Apakah Anda yakin ingin mereset total saldo kas RW 05 kembali menjadi Rp 0?',
+      icon: '🗑️',
+      type: 'confirm',
+      onYes: async () => {
+        try {
+          const saldoDocRef = doc(db, "kas_rw05", "saldo_utama");
+          await setDoc(saldoDocRef, { 
+            total: 0, 
+            pesan: 'Di Reset Oleh Admin katarnolima', 
+            updatedAt: serverTimestamp() 
+          }, { merge: true });
+
+          localStorage.setItem('rw05_manual_kas_saldo', 'Rp 0');
+          
+          window.showModal({ 
+            title: 'Berhasil', 
+            desc: 'Saldo kas telah berhasil di-reset menjadi Rp 0!', 
+            icon: '✅' 
+          });
+        } catch (err) {
+          window.showModal({ 
+            title: 'Gagal', 
+            desc: 'Gagal mereset saldo: ' + err.message, 
+            icon: '❌' 
+          });
+        }
+      }
+    });
+  };
+
+  // --- LOGIKA PUSH UPDATE APLIKASI (SIMPAN DAN CATAT RIWAYAT) ---
+  const formPushUpdate = document.getElementById('formPushUpdate');
+  if (formPushUpdate) {
+    formPushUpdate.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const versi = document.getElementById('appVersi').value.trim();
+      const link = document.getElementById('appLinkDownload').value.trim();
+      const catatan = document.getElementById('appCatatan').value.trim();
+      const isAktif = document.getElementById('appStatusAktif').checked;
+
+      try {
+        // 1. Update status aktif di sistem_app agar muncul di warga
+        await setDoc(doc(db, "sistem_app", "update_info"), {
+          versi: versi,
+          linkDownload: link,
+          catatan: catatan,
+          isAktif: isAktif,
+          updatedAt: serverTimestamp()
+        });
+
+        // 2. Simpan entri baru ke koleksi riwayat_update_app
+        await addDoc(collection(db, "riwayat_update_app"), {
+          versi: versi,
+          linkDownload: link,
+          catatan: catatan,
+          isAktif: isAktif,
+          createdAt: serverTimestamp()
+        });
+
+        window.showModal({ title: 'Berhasil', desc: 'Notifikasi update dipublikasikan & tersimpan di riwayat!', icon: '🚀' });
+      } catch (err) {
+        window.showModal({ title: 'Gagal', desc: err.message, icon: '❌' });
+      }
+    });
+  }
+
+  // --- FUNGSI HAPUS / MATIKAN PUSH UPDATE ---
+  window.hapusPushUpdate = function() {
+    window.showModal({
+      title: 'Matikan Notifikasi Update',
+      desc: 'Apakah Anda yakin ingin menghapus/mematikan notifikasi update aplikasi ini dari halaman warga?',
+      icon: '🗑️',
+      type: 'confirm',
+      onYes: async () => {
+        try {
+          await setDoc(doc(db, "sistem_app", "update_info"), {
+            isAktif: false,
+            versi: "",
+            linkDownload: "",
+            catatan: "",
+            updatedAt: serverTimestamp()
+          });
+
+          const form = document.getElementById('formPushUpdate');
+          if (form) form.reset();
+
+          window.showModal({ 
+            title: 'Berhasil', 
+            desc: 'Notifikasi update aplikasi berhasil dimatikan!', 
+            icon: '✅' 
+          });
+        } catch (err) {
+          window.showModal({ 
+            title: 'Gagal', 
+            desc: err.message, 
+            icon: '❌' 
+          });
+        }
+      }
+    });
+  };
+
+  // --- BACA TABEL RIWAYAT PUSH UPDATE REALTIME ---
+  const listRiwayatUpdateAdmin = document.getElementById('listRiwayatUpdateAdmin');
+  if (listRiwayatUpdateAdmin) {
+    onSnapshot(query(collection(db, "riwayat_update_app"), orderBy("createdAt", "desc"), limit(20)), (snap) => {
+      let html = '';
+      snap.forEach((docItem) => {
+        const d = docItem.data();
+        const timeStr = formatDateTimeDetailed(d.createdAt);
+        const statusBadge = d.isAktif 
+          ? '<span style="color:#16a34a;font-weight:800;font-size:10px;background:#dcfce7;padding:2px 6px;border-radius:4px;">AKTIF</span>' 
+          : '<span style="color:#64748b;font-weight:700;font-size:10px;background:#f1f5f9;padding:2px 6px;border-radius:4px;">NONAKTIF</span>';
+
+        // Encode string data ke format JSON aman agar terhindar dari error kutip atau enter
+        const safeData = JSON.stringify({
+          versi: d.versi || '',
+          linkDownload: d.linkDownload || '',
+          catatan: d.catatan || ''
+        }).replace(/"/g, '&quot;');
+
+        html += `<tr>
+          <td style="font-weight:800;color:#0f172a;">${d.versi || '-'}</td>
+          <td style="white-space:pre-line;font-size:11px;max-width:200px;">${d.catatan || '-'}</td>
+          <td><a href="${d.linkDownload || '#'}" target="_blank" style="color:#2563eb;font-size:11px;">Buka Link</a></td>
+          <td style="font-size:11px;color:#64748b;">${timeStr}</td>
+          <td>${statusBadge}</td>
+          <td>
+            <div style="display:flex;gap:4px;flex-wrap:nowrap;">
+              <button class="btn btn-blue btn-sm" onclick="window.pushUlangUpdate(${safeData})" title="Push ulang notifikasi ini">🚀 Push</button>
+              <button class="btn btn-red btn-sm" onclick="window.hapusRiwayatUpdate('${docItem.id}')" title="Hapus riwayat">🗑️ Hapus</button>
+            </div>
+          </td>
+        </tr>`;
+      });
+      listRiwayatUpdateAdmin.innerHTML = html || '<tr><td colspan="6" style="text-align:center;color:#94a3b8">Belum ada riwayat update.</td></tr>';
+    });
+  }
+
+  // --- FUNGSI PUSH ULANG DARI RIWAYAT ---
+  window.pushUlangUpdate = function(data) {
+    window.showModal({
+      title: 'Push Ulang Notifikasi',
+      desc: `Tampilkan kembali notifikasi update versi ${data.versi} ke halaman warga?`,
+      icon: '🚀',
+      type: 'confirm',
+      onYes: async () => {
+        try {
+          await setDoc(doc(db, "sistem_app", "update_info"), {
+            versi: data.versi,
+            linkDownload: data.linkDownload,
+            catatan: data.catatan,
+            isAktif: true,
+            updatedAt: serverTimestamp()
+          });
+
+          if (document.getElementById('appVersi')) document.getElementById('appVersi').value = data.versi;
+          if (document.getElementById('appLinkDownload')) document.getElementById('appLinkDownload').value = data.linkDownload;
+          if (document.getElementById('appCatatan')) document.getElementById('appCatatan').value = data.catatan;
+          if (document.getElementById('appStatusAktif')) document.getElementById('appStatusAktif').checked = true;
+
+          window.showModal({ 
+            title: 'Berhasil Push Ulang', 
+            desc: `Notifikasi update ${data.versi} berhasil dipublikasikan kembali ke warga!`, 
+            icon: '✅' 
+          });
+        } catch (err) {
+          window.showModal({ title: 'Gagal', desc: err.message, icon: '❌' });
+        }
+      }
+    });
+  };
+
+  // --- FUNGSI HAPUS ITEM RIWAYAT ---
+  window.hapusRiwayatUpdate = function(id) {
+    window.showModal({
+      title: 'Hapus Riwayat',
+      desc: 'Hapus riwayat catatan update ini dari database?',
+      icon: '🗑️',
+      type: 'confirm',
+      onYes: async () => {
+        try {
+          await deleteDoc(doc(db, "riwayat_update_app", id));
+          window.showModal({ title: 'Terhapus', desc: 'Riwayat berhasil dihapus.', icon: '✅' });
+        } catch (err) {
+          window.showModal({ title: 'Gagal', desc: err.message, icon: '❌' });
+        }
+      }
+    });
+  };
+
+  // --- 1. HARGA SEMBAKO & PASAR ---
+  const formSembako = document.getElementById('formSembako');
+  if(formSembako){
+    formSembako.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const nama = document.getElementById('sembakoNama').value.trim();
+      const harga = Number(document.getElementById('sembakoHarga').value || 0);
+      const pasar = document.getElementById('sembakoPasar').value.trim();
+      const satuan = document.getElementById('sembakoSatuan').value.trim() || 'Kg';
+
+      try {
+        await addDoc(collection(db, "sembako_rw05"), {
+          nama, harga, pasar, satuan,
+          tanggalFormatted: new Date().toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'}),
+          createdAt: serverTimestamp()
+        });
+        window.showModal({ title: 'Berhasil', desc: 'Harga sembako berhasil diperbarui!', icon: '🛒' });
+        formSembako.reset();
+      } catch(err) {
+        window.showModal({ title: 'Gagal', desc: err.message, icon: '❌' });
+      }
+    });
+  }
+
+  const listSembakoAdmin = document.getElementById('listSembakoAdmin');
+  if(listSembakoAdmin){
+    onSnapshot(query(collection(db, "sembako_rw05"), orderBy("createdAt", "desc"), limit(25)), (snap)=>{
+      let html = '';
+      snap.forEach(docItem => {
+        const d = docItem.data();
+        html += `<tr>
+          <td><b>${d.nama||'-'}</b></td>
+          <td style="color:#2563eb;font-weight:800">Rp ${Number(d.harga||0).toLocaleString('id-ID')} / ${d.satuan||'Kg'}</td>
+          <td>${d.pasar||'-'}</td>
+          <td><span style="font-size:10px;color:#64748b">${d.tanggalFormatted||'-'}</span></td>
+          <td><button class="btn btn-red btn-sm" onclick="window.hapusSembako('${docItem.id}')">Hapus</button></td>
+        </tr>`;
+      });
+      listSembakoAdmin.innerHTML = html || '<tr><td colspan="5" style="text-align:center;color:#94a3b8">Belum ada data sembako.</td></tr>';
+    });
+  }
+
+  window.hapusSembako = function(id) {
+    window.showModal({
+      title: 'Hapus Sembako',
+      desc: 'Hapus data komoditas sembako ini?',
+      icon: '🗑️',
+      type: 'confirm',
+      onYes: async () => { await deleteDoc(doc(db, "sembako_rw05", id)); }
+    });
+  };
+
+  // --- 2. KEAMANAN & SATPAM ---
+  const formKeamanan = document.getElementById('formKeamanan');
+  if(formKeamanan){
+    formKeamanan.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const nama = document.getElementById('satpamNama').value.trim();
+      const jadwal = document.getElementById('satpamJadwal').value.trim();
+      const phone = document.getElementById('satpamPhone').value.trim();
+      const himbauan = document.getElementById('satpamHimbauan').value.trim();
+
+      try {
+        await addDoc(collection(db, "keamanan_rw05"), {
+          nama, jadwal, phone, himbauan, createdAt: serverTimestamp()
+        });
+        window.showModal({ title: 'Berhasil', desc: 'Jadwal & himbauan keamanan tersimpan!', icon: '🛡️' });
+        formKeamanan.reset();
+      } catch(err) {
+        window.showModal({ title: 'Gagal', desc: err.message, icon: '❌' });
+      }
+    });
+  }
+
+  const listKeamananAdmin = document.getElementById('listKeamananAdmin');
+  if(listKeamananAdmin){
+    onSnapshot(query(collection(db, "keamanan_rw05"), orderBy("createdAt", "desc"), limit(20)), (snap)=>{
+      let html = '';
+      snap.forEach(docItem => {
+        const d = docItem.data();
+        html += `<div style="padding:10px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <div>
+            <div style="font-size:12px;font-weight:800;color:#0f172a">${d.nama||'-'}</div>
+            <div style="font-size:11px;color:#64748b">Shift/Jam Jaga: ${d.jadwal||'-'} • HP: ${d.phone||'-'}</div>
+            <div style="font-size:11px;color:#be123c;margin-top:2px"><b>Himbauan:</b> ${d.himbauan||'-'}</div>
+          </div>
+          <button class="btn btn-red btn-sm" onclick="window.hapusKeamanan('${docItem.id}')">Hapus</button>
+        </div>`;
+      });
+      listKeamananAdmin.innerHTML = html || '<div style="font-size:11px;color:#94a3b8">Belum ada data keamanan.</div>';
+    });
+  }
+
+  window.hapusKeamanan = function(id) {
+    window.showModal({
+      title: 'Hapus Petugas',
+      desc: 'Hapus data jadwal satpam/pos keamanan ini?',
+      icon: '🗑️',
+      type: 'confirm',
+      onYes: async () => { await deleteDoc(doc(db, "keamanan_rw05", id)); }
+    });
+  };
+
+  // --- 3. LINGKUNGAN BERSIH ---
+  const formLingkungan = document.getElementById('formLingkungan');
+  if(formLingkungan){
+    formLingkungan.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const judul = document.getElementById('lingkunganJudul').value.trim();
+      const tanggal = document.getElementById('lingkunganTanggal').value.trim();
+      const lokasi = document.getElementById('lingkunganLokasi').value.trim();
+      const isi = document.getElementById('lingkunganIsi').value.trim();
+
+      try {
+        await addDoc(collection(db, "lingkungan_rw05"), {
+          judul, tanggal, lokasi, isi, createdAt: serverTimestamp()
+        });
+        window.showModal({ title: 'Berhasil', desc: 'Jadwal kerja bakti dipublikasikan!', icon: '🧹' });
+        formLingkungan.reset();
+      } catch(err) {
+        window.showModal({ title: 'Gagal', desc: err.message, icon: '❌' });
+      }
+    });
+  }
+
+  const listLingkunganAdmin = document.getElementById('listLingkunganAdmin');
+  if(listLingkunganAdmin){
+    onSnapshot(query(collection(db, "lingkungan_rw05"), orderBy("createdAt", "desc"), limit(20)), (snap)=>{
+      let html = '';
+      snap.forEach(docItem => {
+        const d = docItem.data();
+        html += `<div style="padding:12px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;margin-bottom:8px">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <div>
+              <div style="font-size:13px;font-weight:800;color:#0f172a">${d.judul||'-'}</div>
+              <div style="font-size:11px;color:#2563eb;font-weight:700;margin-top:2px">📅 ${d.tanggal||'-'} • 📍 ${d.lokasi||'-'}</div>
+            </div>
+            <button class="btn btn-red btn-sm" onclick="window.hapusLingkungan('${docItem.id}')">Hapus</button>
+          </div>
+          <div style="font-size:12px;color:#475569;margin-top:6px">${d.isi||'-'}</div>
+        </div>`;
+      });
+      listLingkunganAdmin.innerHTML = html || '<div style="font-size:11px;color:#94a3b8">Belum ada agenda kebersihan.</div>';
+    });
+  }
+
+  window.hapusLingkungan = function(id) {
+    window.showModal({
+      title: 'Hapus Agenda',
+      desc: 'Hapus agenda kebersihan lingkungan ini?',
+      icon: '🗑️',
+      type: 'confirm',
+      onYes: async () => { await deleteDoc(doc(db, "lingkungan_rw05", id)); }
+    });
+  };
+
+  // --- 4. POSYANDU ---
+  const formPosyandu = document.getElementById('formPosyandu');
+  if(formPosyandu){
+    formPosyandu.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const judul = document.getElementById('posyanduJudul').value.trim();
+      const jadwal = document.getElementById('posyanduJadwal').value.trim();
+      const lokasi = document.getElementById('posyanduLokasi').value.trim();
+      const keterangan = document.getElementById('posyanduKeterangan').value.trim();
+
+      try {
+        await addDoc(collection(db, "posyandu_rw05"), {
+          judul, jadwal, lokasi, keterangan, createdAt: serverTimestamp()
+        });
+        window.showModal({ title: 'Berhasil', desc: 'Jadwal Posyandu dipublikasikan!', icon: '👶' });
+        formPosyandu.reset();
+      } catch(err) {
+        window.showModal({ title: 'Gagal', desc: err.message, icon: '❌' });
+      }
+    });
+  }
+
+  const listPosyanduAdmin = document.getElementById('listPosyanduAdmin');
+  if(listPosyanduAdmin){
+    onSnapshot(query(collection(db, "posyandu_rw05"), orderBy("createdAt", "desc"), limit(20)), (snap)=>{
+      let html = '';
+      snap.forEach(docItem => {
+        const d = docItem.data();
+        html += `<div style="padding:12px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;margin-bottom:8px">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <div>
+              <div style="font-size:13px;font-weight:800;color:#0f172a">${d.judul||'-'}</div>
+              <div style="font-size:11px;color:#16a34a;font-weight:700;margin-top:2px">📅 ${d.jadwal||'-'} • 📍 ${d.lokasi||'-'}</div>
+            </div>
+            <button class="btn btn-red btn-sm" onclick="window.hapusPosyandu('${docItem.id}')">Hapus</button>
+          </div>
+          <div style="font-size:12px;color:#475569;margin-top:6px">${d.keterangan||'-'}</div>
+        </div>`;
+      });
+      listPosyanduAdmin.innerHTML = html || '<div style="font-size:11px;color:#94a3b8">Belum ada jadwal Posyandu.</div>';
+    });
+  }
+
+  window.hapusPosyandu = function(id) {
+    window.showModal({
+      title: 'Hapus Posyandu',
+      desc: 'Hapus jadwal layanan posyandu ini?',
+      icon: '🗑️',
+      type: 'confirm',
+      onYes: async () => { await deleteDoc(doc(db, "posyandu_rw05", id)); }
+    });
+  };
+
+  // --- 5. BELAJAR BERSAMA & KEGIATAN ---
+  const formKegiatan = document.getElementById('formKegiatan');
+  if(formKegiatan){
+    formKegiatan.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const judul = document.getElementById('kegiatanJudul').value.trim();
+      const jadwal = document.getElementById('kegiatanJadwal').value.trim();
+      const pj = document.getElementById('kegiatanPJ').value.trim();
+      const isi = document.getElementById('kegiatanIsi').value.trim();
+
+      try {
+        await addDoc(collection(db, "kegiatan_rw05"), {
+          judul, jadwal, pj, isi, createdAt: serverTimestamp()
+        });
+        window.showModal({ title: 'Berhasil', desc: 'Program kegiatan belajar tersimpan!', icon: '🎓' });
+        formKegiatan.reset();
+      } catch(err) {
+        window.showModal({ title: 'Gagal', desc: err.message, icon: '❌' });
+      }
+    });
+  }
+
+  const listKegiatanAdmin = document.getElementById('listKegiatanAdmin');
+  if(listKegiatanAdmin){
+    onSnapshot(query(collection(db, "kegiatan_rw05"), orderBy("createdAt", "desc"), limit(20)), (snap)=>{
+      let html = '';
+      snap.forEach(docItem => {
+        const d = docItem.data();
+        html += `<div style="padding:12px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;margin-bottom:8px">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <div>
+              <div style="font-size:13px;font-weight:800;color:#0f172a">${d.judul||'-'}</div>
+              <div style="font-size:11px;color:#2563eb;font-weight:700;margin-top:2px">⏰ ${d.jadwal||'-'} • 👤 PJ: ${d.pj||'-'}</div>
+            </div>
+            <button class="btn btn-red btn-sm" onclick="window.hapusKegiatan('${docItem.id}')">Hapus</button>
+          </div>
+          <div style="font-size:12px;color:#475569;margin-top:6px">${d.isi||'-'}</div>
+        </div>`;
+      });
+      listKegiatanAdmin.innerHTML = html || '<div style="font-size:11px;color:#94a3b8">Belum ada program belajar/kegiatan.</div>';
+    });
+  }
+
+  window.hapusKegiatan = function(id) {
+    window.showModal({
+      title: 'Hapus Kegiatan',
+      desc: 'Hapus program belajar / kegiatan warga ini?',
+      icon: '🗑️',
+      type: 'confirm',
+      onYes: async () => { await deleteDoc(doc(db, "kegiatan_rw05", id)); }
+    });
+  };
+
+  // --- KAS & TRANSAKSI ---
   const formKasTransaksi = document.getElementById('formKasTransaksi');
   if(formKasTransaksi) {
     formKasTransaksi.addEventListener('submit', async (e) => {
@@ -384,7 +1122,7 @@ function initAdmin(){
       const btn = e.target.querySelector('button[type="submit"]');
 
       if(jumlah <= 0 || !keterangan) {
-        alert('⚠️ Isi nominal valid dan keterangan!');
+        window.showModal({ title: 'Input Tidak Valid', desc: 'Isi nominal yang benar dan keterangan transaksi!', icon: '⚠️' });
         return;
       }
 
@@ -396,39 +1134,27 @@ function initAdmin(){
         }).replace('.', ':') + ' WIB';
 
         await addDoc(collection(db, "transaksi_kas"), {
-          jenis: jenis,
-          jumlah: jumlah,
-          keterangan: keterangan,
-          tanggalFormatted: fullTimeStr,
-          createdAt: serverTimestamp()
+          jenis: jenis, jumlah: jumlah, keterangan: keterangan,
+          tanggalFormatted: fullTimeStr, createdAt: serverTimestamp()
         });
 
         const saldoDocRef = doc(db, "kas_rw05", "saldo_utama");
         const snap = await getDoc(saldoDocRef);
         let currentTotal = snap.exists() ? (snap.data().total || 0) : 0;
         
-        if(jenis === 'masuk') {
-          currentTotal += jumlah;
-        } else {
-          currentTotal -= jumlah;
-        }
+        if(jenis === 'masuk') currentTotal += jumlah;
+        else currentTotal -= jumlah;
 
         const infoNote = 'Di Update Oleh Admin katarnolima';
 
-        await setDoc(saldoDocRef, {
-          total: currentTotal,
-          pesan: infoNote,
-          updatedAt: serverTimestamp()
-        }, { merge: true });
-
+        await setDoc(saldoDocRef, { total: currentTotal, pesan: infoNote, updatedAt: serverTimestamp() }, { merge: true });
         localStorage.setItem('rw05_manual_kas_saldo', 'Rp ' + currentTotal.toLocaleString('id-ID'));
         localStorage.setItem('rw05_manual_kas_info', infoNote);
 
-        alert('✅ Transaksi tersimpan! Saldo di Index otomatis terupdate.');
+        window.showModal({ title: 'Berhasil', desc: 'Transaksi tersimpan! Saldo di Index otomatis terupdate.', icon: '✅' });
         formKasTransaksi.reset();
       } catch(err) {
-        console.error("Gagal simpan transaksi kas:", err);
-        alert('❌ Gagal: ' + err.message);
+        window.showModal({ title: 'Gagal', desc: err.message, icon: '❌' });
       } finally {
         if(btn) { btn.textContent = '💾 Simpan Transaksi & Update Saldo Live'; btn.removeAttribute('disabled'); }
       }
@@ -437,7 +1163,7 @@ function initAdmin(){
 
   const listTransaksiKas = document.getElementById('listTransaksiKas');
   if(listTransaksiKas) {
-    onSnapshot(query(collection(db, "transaksi_kas"), orderBy("createdAt", "desc")), (snap) => {
+    onSnapshot(query(collection(db, "transaksi_kas"), orderBy("createdAt", "desc"), limit(30)), (snap) => {
       let html = '';
       snap.forEach((docItem) => {
         const d = docItem.data();
@@ -456,29 +1182,86 @@ function initAdmin(){
     });
   }
 
-  window.hapusTransaksiKas = async function(id, jenis, jumlah) {
-    if(!confirm('Hapus transaksi ini dan sesuaikan kembali saldo?')) return;
-    try {
-      await deleteDoc(doc(db, "transaksi_kas", id));
-      const saldoDocRef = doc(db, "kas_rw05", "saldo_utama");
-      const snap = await getDoc(saldoDocRef);
-      if(snap.exists()) {
-        let currentTotal = snap.data().total || 0;
-        if(jenis === 'masuk') currentTotal -= Number(jumlah);
-        else currentTotal += Number(jumlah);
-        await updateDoc(saldoDocRef, { total: currentTotal, updatedAt: serverTimestamp() });
-        localStorage.setItem('rw05_manual_kas_saldo', 'Rp ' + currentTotal.toLocaleString('id-ID'));
+  window.hapusTransaksiKas = function(id, jenis, jumlah) {
+    window.showModal({
+      title: 'Hapus Transaksi',
+      desc: 'Apakah Anda yakin ingin menghapus transaksi ini? Saldo kas akan disesuaikan kembali.',
+      icon: '🗑️',
+      type: 'confirm',
+      onYes: async () => {
+        try {
+          await deleteDoc(doc(db, "transaksi_kas", id));
+          const saldoDocRef = doc(db, "kas_rw05", "saldo_utama");
+          const snap = await getDoc(saldoDocRef);
+          if(snap.exists()) {
+            let currentTotal = snap.data().total || 0;
+            if(jenis === 'masuk') currentTotal -= Number(jumlah);
+            else currentTotal += Number(jumlah);
+            await updateDoc(saldoDocRef, { total: currentTotal, updatedAt: serverTimestamp() });
+            localStorage.setItem('rw05_manual_kas_saldo', 'Rp ' + currentTotal.toLocaleString('id-ID'));
+          }
+          window.showModal({ title: 'Terhapus', desc: 'Transaksi berhasil dihapus & saldo disesuaikan.', icon: '✅' });
+        } catch(err) {
+          window.showModal({ title: 'Gagal', desc: err.message, icon: '❌' });
+        }
       }
-      alert('✅ Transaksi dihapus & saldo disesuaikan.');
-    } catch(err) {
-      alert('❌ Gagal hapus: ' + err.message);
+    });
+  };
+
+  // --- LIST BUKTI PEMBAYARAN IURAN WARGA REALTIME ---
+  const listIuranWargaAdmin = document.getElementById('listIuranWargaAdmin');
+  if(listIuranWargaAdmin) {
+    onSnapshot(query(collection(db, "iuran_warga_rw05"), orderBy("createdAt", "desc"), limit(40)), (snap) => {
+      let html = '';
+      snap.forEach((docItem) => {
+        const d = docItem.data();
+        const detailTime = formatDateTimeDetailed(d.createdAt);
+        const imgThumb = d.buktiUrl ? `<img src="${d.buktiUrl}" class="bukti-thumb" onclick="window.previewBuktiIuran('${d.buktiUrl}')" title="Klik untuk memperbesar" />` : '<span style="font-size:10px;color:#94a3b8">Tanpa Bukti</span>';
+        
+        html += `<tr>
+          <td style="font-family:monospace;font-weight:700;">${d.nik || '-'}</td>
+          <td style="font-weight:700;color:#0f172a;">${d.bulan || '-'}</td>
+          <td style="color:#16a34a;font-weight:800;">Rp ${Number(d.nominal||0).toLocaleString('id-ID')}</td>
+          <td><span style="background:#e2e8f0;padding:2px 6px;border-radius:4px;font-weight:700;font-size:10px;">${d.rt || '-'}</span></td>
+          <td style="text-align:center;">${imgThumb}</td>
+          <td style="font-size:11px;color:#64748b;">${detailTime}</td>
+          <td><button class="btn btn-red btn-sm" onclick="window.hapusIuranWarga('${docItem.id}')">Hapus Data & Bukti</button></td>
+        </tr>`;
+      });
+      listIuranWargaAdmin.innerHTML = html || '<tr><td colspan="7" style="text-align:center;color:#94a3b8">Belum ada bukti iuran masuk.</td></tr>';
+    });
+  }
+
+  window.previewBuktiIuran = function(url) {
+    const imgEl = document.getElementById('imgFullBukti');
+    const modalPreview = document.getElementById('modalPreviewBukti');
+    if (imgEl && modalPreview) {
+      imgEl.src = url;
+      modalPreview.classList.add('show');
     }
+  };
+
+  window.hapusIuranWarga = function(id) {
+    window.showModal({
+      title: 'Hapus Bukti Iuran',
+      desc: 'Hapus data & file bukti transfer iuran ini dari database Firestore agar tidak membebani penyimpanan?',
+      icon: '🗑️',
+      type: 'confirm',
+      onYes: async () => {
+        try {
+          await deleteDoc(doc(db, "iuran_warga_rw05", id));
+          window.showModal({ title: 'Terhapus', desc: 'Data & bukti pembayaran berhasil dihapus dari database.', icon: '✅' });
+        } catch(err) {
+          window.showModal({ title: 'Gagal', desc: err.message, icon: '❌' });
+        }
+      }
+    });
   };
 
   // MODERASI DISKUSI RW
   const listDiskusiAdmin = document.getElementById('listDiskusiAdmin');
   if(listDiskusiAdmin) {
-    onSnapshot(query(collection(db, "diskusi_rw05"), orderBy("createdAt", "desc")), (snap) => {
+    onSnapshot(query(collection(db, "diskusi_rw05"), orderBy("createdAt", "desc"), limit(40)), (snap) => {
       let html = '';
       snap.forEach((docItem) => {
         const d = docItem.data();
@@ -498,14 +1281,21 @@ function initAdmin(){
     });
   }
 
-  window.hapusDiskusiAdmin = async function(id) {
-    if(!confirm('Hapus komentar diskusi warga ini?')) return;
-    try {
-      await deleteDoc(doc(db, "diskusi_rw05", id));
-      alert('✅ Komentar berhasil dihapus.');
-    } catch(err) {
-      alert('❌ Gagal hapus: ' + err.message);
-    }
+  window.hapusDiskusiAdmin = function(id) {
+    window.showModal({
+      title: 'Hapus Komentar',
+      desc: 'Hapus komentar diskusi warga ini dari forum?',
+      icon: '🗑️',
+      type: 'confirm',
+      onYes: async () => {
+        try {
+          await deleteDoc(doc(db, "diskusi_rw05", id));
+          window.showModal({ title: 'Terhapus', desc: 'Komentar berhasil dihapus.', icon: '✅' });
+        } catch(err) {
+          window.showModal({ title: 'Gagal', desc: err.message, icon: '❌' });
+        }
+      }
+    });
   };
 
   const formInfoSingkat = document.getElementById('formInfoSingkat');
@@ -517,7 +1307,10 @@ function initAdmin(){
       const btnSubmit = e.target.querySelector('button[type="submit"]');
       const judul = judulEl ? judulEl.value.trim() : '';
       const isi = isiEl ? isiEl.value.trim() : '';
-      if(!judul || !isi){ alert('⚠️ Mohon isi judul dan pesan singkat!'); return; }
+      if(!judul || !isi){ 
+        window.showModal({ title: 'Peringatan', desc: 'Mohon isi judul dan pesan singkat terlebih dahulu!', icon: '⚠️' });
+        return; 
+      }
       if(btnSubmit){ btnSubmit.textContent = 'Menyimpan...'; btnSubmit.setAttribute('disabled', 'true'); }
       try {
         await addDoc(collection(db,"info_singkat"),{
@@ -525,12 +1318,11 @@ function initAdmin(){
           tanggal: new Date().toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'}),
           ikon: '🔔', createdAt: serverTimestamp()
         });
-        alert('✅ Info singkat berhasil terkirim!');
+        window.showModal({ title: 'Berhasil', desc: 'Info singkat berhasil terkirim ke warga!', icon: '✅' });
         if(judulEl) judulEl.value = '';
         if(isiEl) isiEl.value = '';
       } catch(err){
-        console.error("Gagal:", err);
-        alert('❌ Gagal mengirim info.');
+        window.showModal({ title: 'Gagal', desc: 'Gagal mengirim info singkat.', icon: '❌' });
       } finally {
         if(btnSubmit){ btnSubmit.textContent = '🚀 Kirim Info ke Warga'; btnSubmit.removeAttribute('disabled'); }
       }
@@ -539,7 +1331,7 @@ function initAdmin(){
 
   const listInfoSingkatAdmin = document.getElementById('listInfoSingkatAdmin');
   if(listInfoSingkatAdmin){
-    onSnapshot(query(collection(db,"info_singkat"),orderBy("createdAt","desc")), (snap)=>{
+    onSnapshot(query(collection(db,"info_singkat"),orderBy("createdAt","desc"), limit(20)), (snap)=>{
       let html='';
       snap.forEach((docItem)=>{
         const d=docItem.data()||{};
@@ -551,8 +1343,18 @@ function initAdmin(){
       listInfoSingkatAdmin.innerHTML=html||'<div style="font-size:11px;color:#94a3b8">Belum ada info singkat.</div>';
     });
   }
-  window.hapusInfoSingkat = async function(id){
-    if(confirm('Hapus info singkat ini?')){ await deleteDoc(doc(db,"info_singkat",id)); }
+
+  window.hapusInfoSingkat = function(id){
+    window.showModal({
+      title: 'Hapus Info',
+      desc: 'Hapus info singkat ini dari aplikasi warga?',
+      icon: '🗑️',
+      type: 'confirm',
+      onYes: async () => {
+        await deleteDoc(doc(db,"info_singkat",id));
+        window.showModal({ title: 'Terhapus', desc: 'Info singkat berhasil dihapus.', icon: '✅' });
+      }
+    });
   };
 
   const formBerita = document.getElementById('formBerita');
@@ -564,20 +1366,20 @@ function initAdmin(){
     const fotoBase64 = await compressImageToBase64(file, 800, 0.7);
 
     await addDoc(collection(db,"berita_rw05"),{
-      kategori: katParts[0], ikon: katParts, kategoriLabel: katParts,
+      kategori: katParts[0], ikon: katParts[1], kategoriLabel: katParts[2],
       judul: document.getElementById('beritaJudul') ? document.getElementById('beritaJudul').value : '',
       isi: document.getElementById('beritaIsi') ? document.getElementById('beritaIsi').value : '',
       fotoBase64: fotoBase64 || '',
       tanggal: new Date().toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'}),
       penulis: "Pengurus RW 05", createdAt: serverTimestamp()
     });
-    alert('✅ Berita panjang dipublikasikan!');
+    window.showModal({ title: 'Berhasil', desc: 'Berita panjang berhasil dipublikasikan!', icon: '📰' });
     e.target.reset();
   });
 
   const listBeritaAdmin = document.getElementById('listBeritaAdmin');
   if(listBeritaAdmin){
-    onSnapshot(query(collection(db,"berita_rw05"),orderBy("createdAt","desc")), (snap)=>{
+    onSnapshot(query(collection(db,"berita_rw05"),orderBy("createdAt","desc"), limit(20)), (snap)=>{
       let html='';
       snap.forEach((docItem)=>{
         const d=docItem.data()||{};
@@ -608,12 +1410,21 @@ function initAdmin(){
     if(id){
       await updateDoc(doc(db,"berita_rw05",id),{judul, isi});
       window.closeModal('modalEditBerita');
-      alert('✅ Berita diupdate live!');
+      window.showModal({ title: 'Berhasil', desc: 'Berita berhasil diupdate!', icon: '✅' });
     }
   });
 
-  window.hapusBerita = async function(id){
-    if(confirm('Hapus berita ini?')){ await deleteDoc(doc(db,"berita_rw05",id)); }
+  window.hapusBerita = function(id){
+    window.showModal({
+      title: 'Hapus Berita',
+      desc: 'Yakin ingin menghapus berita ini?',
+      icon: '🗑️',
+      type: 'confirm',
+      onYes: async () => {
+        await deleteDoc(doc(db,"berita_rw05",id));
+        window.showModal({ title: 'Terhapus', desc: 'Berita berhasil dihapus.', icon: '✅' });
+      }
+    });
   };
 
   const statWarga = document.getElementById('statWarga');
@@ -622,7 +1433,8 @@ function initAdmin(){
   const statAduan = document.getElementById('statAduan');
   const badgeAduan = document.getElementById('badgeAduan');
   const listAduanAdmin = document.getElementById('listAduanAdmin');
-  onSnapshot(query(collection(db,"aduan_warga05")), (snap)=>{
+
+  onSnapshot(query(collection(db,"aduan_warga05"), orderBy("createdAt", "desc"), limit(30)), (snap)=>{
     if(statAduan) statAduan.textContent=snap.size;
     if(badgeAduan){ badgeAduan.textContent=snap.size; badgeAduan.style.display=snap.size>0?'inline-block':'none'; }
     if(listAduanAdmin){
@@ -630,6 +1442,18 @@ function initAdmin(){
       snap.forEach(docItem=>{
         const d=docItem.data()||{};
         const currentStatus = d.status || 'Menunggu Verifikasi';
+        const isVideo = d.isVideo === true;
+        const mediaUrl = d.fotoBase64 || '';
+        
+        let mediaPreview = '';
+        if (mediaUrl) {
+          if (isVideo) {
+            mediaPreview = `<video src="${mediaUrl}" controls style="width:120px;height:80px;border-radius:8px;object-fit:cover;margin-bottom:8px;border:1px solid #cbd5e1;"></video>`;
+          } else {
+            mediaPreview = `<img src="${mediaUrl}" style="width:70px;height:70px;border-radius:8px;object-fit:cover;margin-bottom:8px;border:1px solid #cbd5e1;" />`;
+          }
+        }
+
         html+=`<div style="padding:12px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;margin-bottom:10px">
           <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
             <div>
@@ -639,11 +1463,11 @@ function initAdmin(){
             <span style="font-size:10px;font-weight:800;padding:3px 8px;border-radius:6px;background:#e2e8f0;color:#334155;">${currentStatus}</span>
           </div>
           <div style="font-size:12px;margin:8px 0;color:#334155;line-height:1.4;">${d.deskripsi||'-'}</div>
-          ${d.fotoBase64 ? `<img src="${d.fotoBase64}" style="width:70px;height:70px;border-radius:8px;object-fit:cover;margin-bottom:8px;border:1px solid #cbd5e1;" />` : ''}
+          ${mediaPreview}
           <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;">
             <button class="btn btn-blue btn-sm" onclick="window.updateStatusAduan('${docItem.id}', 'Diproses')">Proses</button>
             <button class="btn btn-green btn-sm" onclick="window.updateStatusAduan('${docItem.id}', 'Selesai')">Selesai</button>
-            <button class="btn btn-red btn-sm" onclick="window.hapusAduanAdmin('${docItem.id}')">Hapus</button>
+            <button class="btn btn-red btn-sm" onclick="window.hapusAduanAdmin('${docItem.id}', '${mediaUrl}', ${isVideo})">Hapus</button>
           </div>
         </div>`;
       });
@@ -654,20 +1478,36 @@ function initAdmin(){
   window.updateStatusAduan = async function(id, statusNew) {
     try {
       await updateDoc(doc(db, "aduan_warga05", id), { status: statusNew });
-      alert(`✅ Status aduan diubah menjadi "${statusNew}".`);
+      window.showModal({ title: 'Status Diperbarui', desc: `Status aduan diubah menjadi "${statusNew}".`, icon: '✅' });
     } catch(err) {
-      alert('❌ Gagal update status: ' + err.message);
+      window.showModal({ title: 'Gagal', desc: err.message, icon: '❌' });
     }
   };
 
-  window.hapusAduanAdmin = async function(id) {
-    if(!confirm('Hapus laporan aduan warga ini?')) return;
-    try {
-      await deleteDoc(doc(db, "aduan_warga05", id));
-      alert('✅ Aduan berhasil dihapus.');
-    } catch(err) {
-      alert('❌ Gagal hapus aduan: ' + err.message);
-    }
+  window.hapusAduanAdmin = function(id, mediaUrl, isVideo) {
+    window.showModal({
+      title: 'Hapus Aduan',
+      desc: 'Hapus laporan aduan warga ini dari database?',
+      icon: '🗑️',
+      type: 'confirm',
+      onYes: async () => {
+        try {
+          if(isVideo && mediaUrl && mediaUrl.includes('firebasestorage.googleapis.com')) {
+            try {
+              const fileRef = ref(storage, mediaUrl);
+              await deleteObject(fileRef);
+            } catch(storageErr) {
+              console.warn("File storage tidak ditemukan:", storageErr);
+            }
+          }
+
+          await deleteDoc(doc(db, "aduan_warga05", id));
+          window.showModal({ title: 'Terhapus', desc: 'Laporan aduan berhasil dihapus.', icon: '✅' });
+        } catch(err) {
+          window.showModal({ title: 'Gagal', desc: err.message, icon: '❌' });
+        }
+      }
+    });
   };
 
   const statBerita = document.getElementById('statBerita');
@@ -680,7 +1520,7 @@ function initAdmin(){
 
   const listWargaAdmin = document.getElementById('listWargaAdmin');
   if(listWargaAdmin){
-    onSnapshot(query(collection(db,"users_profile"),orderBy("createdAt","desc")), (snap)=>{
+    onSnapshot(query(collection(db,"users_profile"),orderBy("createdAt","desc"), limit(50)), (snap)=>{
       let html='';
       snap.forEach((docItem)=>{
         const d=docItem.data()||{};
@@ -694,7 +1534,19 @@ function initAdmin(){
       listWargaAdmin.innerHTML=html||'<tr><td colspan="4" style="text-align:center;color:#94a3b8">Belum ada akun warga mendaftar.</td></tr>';
     });
   }
-  window.hapusWarga = async function(id){ if(confirm('Hapus akun warga ini dari database?')) await deleteDoc(doc(db,"users_profile",id)); };
+
+  window.hapusWarga = function(id){ 
+    window.showModal({
+      title: 'Hapus Akun Warga',
+      desc: 'Apakah Anda yakin ingin menghapus akun warga ini dari database?',
+      icon: '⚠️',
+      type: 'confirm',
+      onYes: async () => {
+        await deleteDoc(doc(db,"users_profile",id));
+        window.showModal({ title: 'Terhapus', desc: 'Akun warga berhasil dihapus.', icon: '✅' });
+      }
+    });
+  };
 }
 </script>
 </body>

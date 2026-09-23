@@ -23,12 +23,13 @@ html,body{background:#fff!important;width:100%;min-height:100vh;margin:0!importa
 .brand-text b{font-size:24px;font-weight:900;display:block;color:#000;line-height:0.9;text-align:left}
 .brand-text span{font-size:11px;font-weight:700;color:#64748b;display:block;margin-top:4px;text-align:left}
 
-.version-badge{font-size:13px;font-weight:700;color:#475569;margin-bottom:20px;background:#f1f5f9;padding:6px 14px;border-radius:999px}
-.desc-text{font-size:14px;color:#334155;line-height:1.6;max-width:340px;margin-bottom:28px}
+.version-badge{font-size:13px;font-weight:800;color:#2563eb;margin-bottom:20px;background:#eff6ff;padding:6px 16px;border-radius:999px;border:1px solid #bfdbfe}
+.desc-text{font-size:14px;color:#334155;line-height:1.6;max-width:340px;margin-bottom:24px}
 
-.dev-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:14px 20px;width:100%;max-width:320px;text-align:center}
-.dev-card span{font-size:11px;color:#64748b;font-weight:600;display:block;text-transform:uppercase;letter-spacing:0.5px}
-.dev-card b{font-size:13px;color:#0f172a;display:block;margin-top:4px}
+.dev-card-stack{display:flex;flex-direction:column;gap:12px;width:100%;max-width:320px}
+.dev-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:14px 18px;text-align:center}
+.dev-card span{font-size:11px;color:#64748b;font-weight:700;display:block;text-transform:uppercase;letter-spacing:0.5px}
+.dev-card b{font-size:13px;color:#0f172a;display:block;margin-top:4px;font-weight:800}
 </style>
 </head>
 <body>
@@ -49,14 +50,20 @@ html,body{background:#fff!important;width:100%;min-height:100vh;margin:0!importa
         <span>RW 05 Poncol Jaya</span>
       </div>
     </div>
-    <div class="version-badge">Versi 1.0.0 (Build 2026)</div>
+    <div class="version-badge">Versi 2.1.0 (Build 2026)</div>
     <p class="desc-text">
-      KATARNOLIMA merupakan Platform Aplikasi layanan dan informasi warga berbasis komunitas yang dikelola oleh Karang Taruna RW 05 Poncol Jaya untuk pelayanan pengaduan dan aktivitas lingkungan.
+      KATARNOLIMA merupakan platform aplikasi layanan dan informasi warga berbasis komunitas yang dikelola oleh Karang Taruna RW 05 Poncol Jaya untuk pelayanan pengaduan dan aktivitas lingkungan.
     </p>
 
-    <div class="dev-card">
-      <span>Dikembangkan oleh</span>
-      <b>Divisi Humas Katar Nolima (Arjuna Mahendra)</b>
+    <div class="dev-card-stack">
+      <div class="dev-card">
+        <span>Pengembang / Pembuat Aplikasi</span>
+        <b>Arjuna Mahendra</b>
+      </div>
+      <div class="dev-card">
+        <span>Beta Tester Aplikasi</span>
+        <b>Maulana Alfarizi & Raka Jovanka</b>
+      </div>
     </div>
   </div>
 </div>

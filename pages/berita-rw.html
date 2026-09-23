@@ -55,7 +55,7 @@
   <!-- HEADER BLUE -->
   <div class="berita-header-blue">
     <div class="header-nav-top">
-      <a href="../index.html" class="btn-back-berita">←</a>
+      <a href="index.html" class="btn-back-berita">←</a>
       <h1>Berita</h1>
     </div>
     <div class="berita-greeting">Hai, Warga RW 05!</div>
@@ -79,7 +79,7 @@
 <script type="module">
   // @ts-nocheck
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getFirestore, collection, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getFirestore, collection, onSnapshot, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyCZtvImbyZmqoEoY1hYZcuCbUpIl3R1fhE",
@@ -134,7 +134,10 @@
   }
 
   document.addEventListener('DOMContentLoaded', () => {
-    onSnapshot(query(collection(db, "berita_rw05"), orderBy("createdAt", "desc")), 
+    // KUOTA OPTIMIZATION: DIBATASI HANYA MEMUAT 10 BERITA TERBARU
+    const qBerita = query(collection(db, "berita_rw05"), orderBy("createdAt", "desc"), limit(10));
+
+    onSnapshot(qBerita, 
       (snap) => {
         let allBeritaData = [];
         snap.forEach(docSnap => {

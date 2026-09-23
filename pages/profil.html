@@ -10,7 +10,7 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
 html,body{background:#fff!important;width:100%;height:100%;margin:0!important}
 .profil-root{width:100%;max-width:440px;margin:0 auto;background:#fff;min-height:100vh;padding-bottom:120px}
-.login-view{padding:16px 20px 0;display:none} /* Default sembunyikan untuk cegah kedip */
+.login-view{padding:16px 20px 0;display:none}
 .katarnolima-logo{display:flex;align-items:center;gap:10px;margin:20px 0 0}
 .logo-5{font-size:32px;font-weight:900;color:#000;background:#fbbf24;padding:6px 12px;border-radius:12px}
 .logo-text b{font-size:20px;font-weight:900;line-height:0.9;display:block;color:#000}
@@ -28,10 +28,8 @@ html,body{background:#fff!important;width:100%;height:100%;margin:0!important}
 .btn-masuk:disabled{background:#9ca3af;color:#fff}
 .register-area{margin-top:20px;text-align:center;font-size:13px;color:#475569}
 .register-area a{color:#111;font-weight:800;text-decoration:none}
-.error-msg{font-size:11px;color:#ef4444;font-weight:700;margin:-8px 0 10px 4px;display:none}
 
-/* LOGGED VIEW ALA JAKI */
-.logged-view{display:none;background:#f6f8ff;min-height:100vh;padding-bottom:120px} /* Default sembunyikan untuk cegah kedip */
+.logged-view{display:none;background:#f6f8ff;min-height:100vh;padding-bottom:120px}
 .top-area{padding:28px 16px 82px;background:linear-gradient(180deg,#eef4ff 0%,#f6f8ff 100%)}
 .greet-row{display:flex;justify-content:space-between;align-items:flex-start}
 .greet h1{font-size:24px;font-weight:800;color:#0f172a}
@@ -45,7 +43,6 @@ html,body{background:#fff!important;width:100%;height:100%;margin:0!important}
 .card-jaki-head{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:#0f172a}
 .card-jaki-sub{font-size:12px;color:#64748b;margin-top:6px}
 
-/* MENU LIST ALA JAKI */
 .menu-jaki{background:#fff;margin-top:16px;border-top:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0}
 .menu-item{display:flex;align-items:center;justify-content:space-between;padding:16px;border-bottom:1px solid #f1f5f9;cursor:pointer;text-decoration:none;color:inherit}
 .menu-item:last-child{border-bottom:none}
@@ -58,13 +55,21 @@ html,body{background:#fff!important;width:100%;height:100%;margin:0!important}
 .btn-admin-link{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;font-size:12px;font-weight:700;color:#64748b;text-decoration:none;background:#f8fafc;padding:12px 16px;border-radius:12px;border:1px solid #e2e8f0;cursor:pointer}
 .btn-admin-link:active{background:#e2e8f0}
 
-/* NAVIGASI BAWAH SELARAS INDEX & INFO */
 .jaki-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:440px;height:72px;background:rgba(255,255,255,.96);backdrop-filter:blur(18px);border-top:1px solid #e2e8f0;display:flex;justify-content:space-around;align-items:center;z-index:100;padding-bottom:6px}
 .jaki-nav.show{display:flex}
 .jaki-nav a{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;color:#94a3b8;font-size:10px;font-weight:600;text-decoration:none}
 .jaki-nav a.active{color:#0f172a;font-weight:800}
 .jaki-nav a.center{position:relative;top:-14px;flex:unset;display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none}
 .jaki-nav .cam{width:56px;height:56px;background:#0fb398;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:26px;box-shadow:0 8px 22px rgba(15,179,152,.5);border:3px solid #fff;text-decoration:none}
+
+/* STYLING MODAL POPUP KUSTOM ALA ADMIN */
+.overlay{position:fixed;inset:0;background:rgba(15,23,42,0.75);backdrop-filter:blur(8px);z-index:9999;display:none;align-items:center;justify-content:center;padding:20px}
+.overlay.show{display:flex}
+.modal-box{background:#fff;border-radius:20px;max-width:380px;width:100%;padding:22px;position:relative}
+.btn{padding:10px 16px;border-radius:10px;font-size:12px;font-weight:800;border:none;cursor:pointer;transition:transform .1s}
+.btn:active{transform:scale(.96)}
+.btn-primary{background:#0f172a;color:#fbbf24;width:100%}
+.btn-outline{background:#f8fafc;border:1px solid #e2e8f0;color:#334155}
 </style>
 </head>
 <body>
@@ -115,7 +120,7 @@ html,body{background:#fff!important;width:100%;height:100%;margin:0!important}
           </div>
         </div>
         <div class="avatar-wrap">
-          <div class="avatar-jaki" id="avatarInit">W</div>
+          <div class="avatar-jaki" id="avatarInit">WG</div>
           <div class="edit-pen" onclick="window.location.href='ubah-profil.html'" title="Ubah Profil">✏️</div>
         </div>
       </div>
@@ -129,7 +134,8 @@ html,body{background:#fff!important;width:100%;height:100%;margin:0!important}
         </div>
         <div class="card-jaki-sub" id="rtFull">RT 03 / RW 05</div>
       </div>
-      <div class="card-jaki" onclick="window.location.href='aktivitas.html'">
+      <!-- Diubah langsung dialihkan ke aduan-warga.html -->
+      <div class="card-jaki" onclick="window.location.href='aduan-warga.html'">
         <div class="card-jaki-head">
           <span style="color:#2563eb">📈</span> Laporan Saya
         </div>
@@ -182,9 +188,20 @@ html,body{background:#fff!important;width:100%;height:100%;margin:0!important}
   </div>
 </div>
 
-<!-- BOTTOM NAV SELARAS INDEX & INFO -->
+<!-- CUSTOM MODAL POPUP UNIVERSAL ALA ADMIN -->
+<div class="overlay" id="appCustomModal">
+  <div class="modal-box">
+    <button id="modalCloseX" style="position:absolute; top:14px; right:16px; background:none; border:none; font-size:18px; font-weight:800; color:#94a3b8; cursor:pointer; padding:4px;">✕</button>
+    <div id="modalIcon" style="font-size:32px; margin-bottom:8px;">🚪</div>
+    <h3 id="modalTitle" style="font-size:16px; font-weight:900; color:#0f172a; margin-bottom:6px;">Keluar Akun</h3>
+    <p id="modalDesc" style="font-size:12px; color:#475569; line-height:1.5; margin-bottom:18px;"></p>
+    <div id="modalButtons" style="display:flex; gap:8px;"></div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
 <nav class="jaki-nav show" id="jakiNav">
-  <a href="../index.html">🏠<span>Beranda</span></a>
+  <a href="index.html">🏠<span>Beranda</span></a>
   <a href="diskusi-rw.html">💬<span>Diskusi</span></a>
   <a class="center" href="aduan-warga.html"><div class="cam">📷</div><span>Lapor</span></a>
   <a href="info.html">🔔<span>Notifikasi</span></a>
@@ -209,6 +226,42 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
+window.showModal = function({ title = 'Info', desc = '', icon = '📢', type = 'alert', onYes = null }) {
+  const modal = document.getElementById('appCustomModal');
+  const elTitle = document.getElementById('modalTitle');
+  const elDesc = document.getElementById('modalDesc');
+  const elIcon = document.getElementById('modalIcon');
+  const elBtns = document.getElementById('modalButtons');
+  const btnCloseX = document.getElementById('modalCloseX');
+
+  if(!modal) return;
+  if(elTitle) elTitle.textContent = title;
+  if(elDesc) elDesc.textContent = desc;
+  if(elIcon) elIcon.textContent = icon;
+  
+  modal.classList.add('show');
+
+  const closeIt = () => { modal.classList.remove('show'); };
+
+  if(btnCloseX) btnCloseX.onclick = closeIt;
+  modal.onclick = (e) => { if(e.target === modal) closeIt(); };
+
+  if (type === 'confirm') {
+    elBtns.innerHTML = `
+      <button class="btn btn-outline" style="flex:1;" id="modalBtnNo">Tidak</button>
+      <button class="btn btn-primary" style="flex:1;" id="modalBtnYes">Iya</button>
+    `;
+    const btnNo = document.getElementById('modalBtnNo');
+    const btnYes = document.getElementById('modalBtnYes');
+    if(btnNo) btnNo.onclick = closeIt;
+    if(btnYes) btnYes.onclick = () => { closeIt(); if(onYes) onYes(); };
+  } else {
+    elBtns.innerHTML = `<button class="btn btn-primary" style="width:100%;" id="modalBtnOk">OK</button>`;
+    const btnOk = document.getElementById('modalBtnOk');
+    if(btnOk) btnOk.onclick = closeIt;
+  }
+};
+
 var loginView = document.getElementById('loginView');
 var loggedView = document.getElementById('loggedView');
 var jakiNav = document.getElementById('jakiNav');
@@ -217,6 +270,15 @@ var formDaftar = document.getElementById('formDaftar');
 var judulForm = document.getElementById('judulForm');
 var descForm = document.getElementById('descForm');
 
+function getTwoInitials(nama = '') {
+  const parts = nama.trim().split(/\s+/);
+  if (!parts[0]) return 'WG';
+  if (parts.length === 1) {
+    return parts[0].substring(0, 2).toUpperCase();
+  }
+  return (parts[0].charAt(0) + parts.charAt(0)).toUpperCase();
+}
+
 function renderLoggedUI(userObj){
   if(loginView) loginView.style.display='none';
   if(loggedView) loggedView.style.display='block';
@@ -224,13 +286,15 @@ function renderLoggedUI(userObj){
   var elNama = document.getElementById('displayNama');
   var elRtFull = document.getElementById('rtFull');
   var elAvatar = document.getElementById('avatarInit');
-  if(elNama) elNama.textContent = userObj.nama || 'Warga';
+  const namaVal = userObj.nama || 'Warga';
+  
+  if(elNama) elNama.textContent = namaVal;
   if(elRtFull) elRtFull.textContent = userObj.rt || 'RT 03 / RW 05';
   if(elAvatar) {
-    if(userObj.photo) {
-      elAvatar.innerHTML = `<img src="${userObj.photo}" alt="Avatar" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+    if(userObj.avatarEmoji) {
+      elAvatar.textContent = userObj.avatarEmoji;
     } else {
-      elAvatar.innerHTML = (userObj.nama || 'W').charAt(0).toUpperCase();
+      elAvatar.textContent = getTwoInitials(namaVal);
     }
   }
 }
@@ -241,7 +305,6 @@ function renderLoginUI(){
   if(jakiNav) jakiNav.classList.add('show');
 }
 
-// Cek sinkronisasi instan dari localStorage SEGERA tanpa kedip
 var initialUser = JSON.parse(localStorage.getItem('rw05_current_user')||'null');
 if(initialUser){
   renderLoggedUI(initialUser);
@@ -265,7 +328,7 @@ onAuthStateChanged(auth, async (user) => {
         rt: profileData.rt,
         phone: profileData.phone || initialUser?.phone || '',
         phoneVerified: profileData.phoneVerified || initialUser?.phoneVerified || false,
-        photo: profileData.photo || initialUser?.photo || null,
+        avatarEmoji: profileData.avatarEmoji || initialUser?.avatarEmoji || '',
         uid: user.uid
       };
       localStorage.setItem('rw05_current_user', JSON.stringify(currentPayload));
@@ -329,6 +392,7 @@ if(btnDaftar){
         rt: rt,
         email: email,
         uid: user.uid,
+        avatarEmoji: '',
         createdAt: serverTimestamp()
       };
 
@@ -348,12 +412,18 @@ if(btnDaftar){
 
 var btnKeluar = document.getElementById('btnKeluar');
 if(btnKeluar){
-  btnKeluar.addEventListener('click', async function(){
-    if(confirm('Keluar dari sesi akun ini?')){
-      await signOut(auth);
-      localStorage.removeItem('rw05_current_user');
-      renderLoginUI();
-    }
+  btnKeluar.addEventListener('click', function(){
+    window.showModal({
+      title: 'Keluar Akun',
+      desc: 'Apakah Anda yakin ingin keluar dari sesi akun ini?',
+      icon: '🚪',
+      type: 'confirm',
+      onYes: async () => {
+        await signOut(auth);
+        localStorage.removeItem('rw05_current_user');
+        renderLoginUI();
+      }
+    });
   });
 }
 

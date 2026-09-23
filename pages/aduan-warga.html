@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- @ts-nocheck -->
 <html lang="id">
 <head>
 <meta charset="UTF-8">
@@ -8,7 +9,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="stylesheet" href="style.css?v=27">
 <style>
-  body { background: #f6f8ff !important; margin: 0; padding: 0; }
+  body { background: #f6f8ff !important; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
   .header-app {
     background: #ffffff;
     color: #0f172a;
@@ -38,8 +39,33 @@
     margin-left: -6px;
     padding: 0;
     line-height: 1;
+    text-decoration: none;
   }
   .btn-search-icon { background: none; border: none; font-size: 20px; cursor: pointer; color: #0f172a; }
+
+  /* BAR PENCARIAN SLIDE-DOWN */
+  .search-bar-container {
+    display: none;
+    background: #ffffff;
+    padding: 10px 16px;
+    border-bottom: 1px solid #e2e8f0;
+    position: sticky;
+    top: 67px;
+    z-index: 99;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  }
+  .search-bar-container.show { display: block; }
+  .search-input-wrap { display: flex; align-items: center; background: #f1f5f9; border-radius: 12px; padding: 0 12px; }
+  .search-input-wrap input {
+    width: 100%;
+    padding: 10px 8px;
+    border: none;
+    background: transparent;
+    font-size: 13px;
+    outline: none;
+    color: #0f172a;
+  }
+  .btn-clear-search { background: none; border: none; font-size: 16px; color: #94a3b8; cursor: pointer; display: none; }
 
   /* HERO BANNER ALA JAKI */
   .hero-lapor-card {
@@ -94,7 +120,7 @@
   .section-header-row h3 { font-size: 15px; font-weight: 800; color: #0f172a; margin: 0; }
   .section-header-row a { font-size: 13px; font-weight: 700; color: #2563eb; text-decoration: none; }
 
-  /* LAPORAN AKTIF CARD */
+  /* LAPORAN CARD */
   .active-report-card {
     background: #ffffff;
     border-radius: 16px;
@@ -104,6 +130,7 @@
     box-shadow: 0 2px 10px rgba(0,0,0,0.03);
     display: flex;
     gap: 12px;
+    cursor: pointer;
   }
   .active-report-thumb { width: 90px; height: 90px; border-radius: 10px; object-fit: cover; background: #e2e8f0; flex-shrink: 0; }
   .active-report-info { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
@@ -143,6 +170,81 @@
   .form-control { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #cbd5e1; font-size: 13px; outline: none; box-sizing: border-box; }
   .btn-submit { width: 100%; padding: 14px; background: #0f172a; color: #ffffff; border: none; border-radius: 12px; font-weight: 800; font-size: 14px; cursor: pointer; }
   .badge-gps { display: inline-block; margin-top: 6px; padding: 4px 10px; background: #e0f2fe; color: #0369a1; border-radius: 20px; font-size: 11px; font-weight: 700; }
+
+  /* OPSI PRIVASI ANONIM BOX */
+  .privacy-option-box {
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .privacy-info h4 { margin: 0; font-size: 12px; font-weight: 800; color: #0f172a; }
+  .privacy-info p { margin: 2px 0 0; font-size: 10px; color: #64748b; }
+  .switch-toggle { position: relative; display: inline-block; width: 44px; height: 24px; flex-shrink: 0; }
+  .switch-toggle input { opacity: 0; width: 0; height: 0; }
+  .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; transition: .3s; border-radius: 24px; }
+  .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
+  input:checked + .slider { background-color: #2563eb; }
+  input:checked + .slider:before { transform: translateX(20px); }
+
+  /* DETAIL POPUP MODAL STYLING */
+  .detail-image-wrap {
+    width: 100%;
+    background: #0f172a;
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-height: 380px;
+  }
+  .detail-media-full {
+    width: 100%;
+    height: auto;
+    max-height: 380px;
+    object-fit: contain;
+    border-radius: 16px;
+    display: block;
+  }
+  .detail-title { font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 6px; line-height: 1.3; }
+  .detail-author { font-size: 12px; color: #64748b; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+  .detail-desc-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 14px; font-size: 13px; color: #334155; line-height: 1.5; white-space: pre-line; word-break: break-word; margin-bottom: 14px; }
+  .file-limit-info { font-size: 10px; color: #64748b; font-weight: 600; margin-top: 6px; text-align: center; }
+
+  /* STYLING WRAPPER MEDIA DENGAN TOMBOL HAPUS (X) */
+  .preview-media-wrapper {
+    position: relative;
+    display: inline-block;
+    max-width: 100%;
+  }
+  .btn-remove-media {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #ef4444;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+    font-weight: 900;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(239, 68, 68, 0.4);
+    z-index: 10;
+    transition: transform 0.15s ease;
+  }
+  .btn-remove-media:active {
+    transform: scale(0.9);
+  }
 </style>
 </head>
 <body>
@@ -151,10 +253,19 @@
   <!-- HEADER -->
   <div class="header-app">
     <div class="header-left-grp">
-      <a href="../index.html" class="btn-back">←</a>
+      <a href="index.html" class="btn-back">←</a>
       <h1 style="font-size:16px; font-weight:800; margin:0;">Laporan Warga</h1>
     </div>
-    <button class="btn-search-icon" onclick="alert('Cari laporan warga...')">🔍</button>
+    <button class="btn-search-icon" id="btnToggleSearch">🔍</button>
+  </div>
+
+  <!-- BAR PENCARIAN DINAMIS -->
+  <div class="search-bar-container" id="searchBarContainer">
+    <div class="search-input-wrap">
+      <span>🔍</span>
+      <input type="text" id="inputSearchQuery" placeholder="Cari aduan, judul, RT, atau nama...">
+      <button type="button" class="btn-clear-search" id="btnClearSearch">✕</button>
+    </div>
   </div>
 
   <!-- HERO CARD ALA JAKI -->
@@ -169,14 +280,19 @@
     </button>
   </div>
 
-  <!-- SECTION LAPORAN AKTIF MILIKMU -->
+  <!-- 1. SECTION LAPORAN SAYA (MILIK PELAPOR) -->
   <div class="section-header-row">
     <h3>Laporan Aktif Milikmu</h3>
     <a href="aktivitas.html">Lihat Semua</a>
   </div>
-
-  <!-- CONTAINER DINAMIS LAPORAN SAYA -->
   <div id="dynamicMyReports" style="display:flex; flex-direction:column;"></div>
+
+  <!-- 2. SECTION SEMUA LAPORAN WARGA (PUBLIK) -->
+  <div class="section-header-row" style="margin-top:28px;">
+    <h3>Semua Laporan Warga RW 05</h3>
+    <a href="javascript:void(0)" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">Atas ↑</a>
+  </div>
+  <div id="dynamicAllReports" style="display:flex; flex-direction:column;"></div>
 
   <div style="height:30px"></div>
 </div>
@@ -194,6 +310,18 @@
         <input type="text" id="aduanNama" class="form-control" placeholder="Masukkan nama kamu..." required>
       </div>
 
+      <!-- TOGGLE LAPOR ANONIM/SEMBUNYIKAN NAMA -->
+      <div class="privacy-option-box">
+        <div class="privacy-info">
+          <h4>🔒 Sembunyikan Nama Saya (Anonim)</h4>
+          <p>Nama kamu tidak akan terlihat oleh warga lain di aplikasi</p>
+        </div>
+        <label class="switch-toggle">
+          <input type="checkbox" id="chkAnonim">
+          <span class="slider"></span>
+        </label>
+      </div>
+
       <div class="form-group">
         <label for="aduanRT">RT Tempat Kejadian</label>
         <select id="aduanRT" class="form-control" required>
@@ -204,6 +332,15 @@
           <option value="RT 04">RT 04</option>
           <option value="RT 05">RT 05</option>
           <option value="RT 06">RT 06</option>
+          <option value="RT 07">RT 07</option>
+          <option value="RT 08">RT 08</option>
+          <option value="RT 09">RT 09</option>
+          <option value="RT 10">RT 10</option>
+          <option value="RT 11">RT 11</option>
+          <option value="RT 12">RT 12</option>
+          <option value="RT 13">RT 13</option>
+          <option value="RT 14">RT 14</option>
+          <option value="RT 15">RT 15</option>
         </select>
       </div>
 
@@ -217,20 +354,33 @@
         <textarea id="aduanDesc" class="form-control" rows="3" placeholder="Jelaskan kronologi atau lokasi detailnya..." required></textarea>
       </div>
 
-      <div class="form-group" style="display:flex; gap:10px;">
-        <button type="button" id="btnAmbilFoto" class="btn-trigger btn-camera" style="flex:1; padding:12px; border-radius:10px; font-weight:700; font-size:12px; cursor:pointer; background:#eff6ff; color:#1d4ed8; border:1.5px dashed #bfdbfe;">
-          <span>📷</span> Ganti / Pilih Foto
-        </button>
-        <button type="button" id="btnGPS" class="btn-trigger btn-gps" style="flex:1; padding:12px; border-radius:10px; font-weight:700; font-size:12px; cursor:pointer; background:#f0fdf4; color:#15803d; border:1.5px dashed #bbf7d0;">
-          <span>📍</span> Lock GPS
-        </button>
+      <div class="form-group" style="margin-bottom:8px;">
+        <div style="display:flex; gap:8px;">
+          <button type="button" id="btnAmbilFotoOnly" class="btn-trigger btn-camera" style="flex:1; padding:10px 6px; border-radius:10px; font-weight:700; font-size:11px; cursor:pointer; background:#eff6ff; color:#1d4ed8; border:1.5px dashed #bfdbfe;">
+            <span>📷</span> Pilih Foto
+          </button>
+          <button type="button" id="btnAmbilVideoOnly" class="btn-trigger btn-camera" style="flex:1; padding:10px 6px; border-radius:10px; font-weight:700; font-size:11px; cursor:pointer; background:#fef2f2; color:#b91c1c; border:1.5px dashed #fecaca;">
+            <span>📹</span> Pilih Video
+          </button>
+          <button type="button" id="btnGPS" class="btn-trigger btn-gps" style="flex:1; padding:10px 6px; border-radius:10px; font-weight:700; font-size:11px; cursor:pointer; background:#f0fdf4; color:#15803d; border:1.5px dashed #bbf7d0;">
+            <span>📍</span> Lock GPS
+          </button>
+        </div>
+        <div class="file-limit-info">
+          📌 <b>Foto:</b> Maks. 5 MB (otomatis dikompres) | <b>Video:</b> Maks. 800 KB (durasi 3–5 detik)
+        </div>
       </div>
 
-      <input type="file" id="inputFoto" accept="image/*" style="display:none;">
+      <input type="file" id="inputFoto" style="display:none;">
 
+      <!-- CONTAINER PREVIEW DUAL DENGAN TOMBOL HAPUS (X) -->
       <div id="previewContainer" style="display:none; text-align:center; margin-bottom:12px;">
-        <img id="imgPreview" src="" alt="Preview" style="max-width:100%; max-height:160px; border-radius:12px; border:1px solid #cbd5e1; object-fit:cover;">
-        <div style="font-size:11px; color:#10b981; margin-top:4px; font-weight:700;">✅ Foto siap dikirim</div>
+        <div class="preview-media-wrapper">
+          <button type="button" id="btnRemoveMedia" class="btn-remove-media" title="Hapus foto/video ini">✕</button>
+          <img id="imgPreview" src="" alt="Preview Foto" style="display:none; max-width:100%; max-height:180px; border-radius:12px; border:1px solid #cbd5e1; object-fit:cover;">
+          <video id="videoPreview" controls style="display:none; max-width:100%; max-height:180px; border-radius:12px; border:1px solid #cbd5e1;"></video>
+        </div>
+        <div style="font-size:11px; color:#10b981; margin-top:4px; font-weight:700;" id="previewStatusText">✅ Media siap dikirim</div>
       </div>
 
       <div id="gpsInfo" style="display:none; text-align:center; margin-bottom:14px;">
@@ -244,10 +394,36 @@
   </div>
 </div>
 
+<!-- MODAL DETAIL POPUP LAPORAN -->
+<div class="form-panel-modal" id="modalDetailAduan">
+  <div class="form-panel-content">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+      <span id="detailRtBadge" class="badge-kat">RT 00</span>
+      <button type="button" id="btnCloseDetailModal" style="background:none; border:none; font-size:20px; cursor:pointer;">✕</button>
+    </div>
+
+    <div class="detail-image-wrap">
+      <img id="detailFoto" src="" class="detail-media-full" alt="Bukti Aduan" style="display:none;">
+      <video id="detailVideo" src="" controls class="detail-media-full" style="display:none;"></video>
+    </div>
+
+    <div id="detailJudul" class="detail-title">Judul Aduan</div>
+    <div id="detailMeta" class="detail-author">Nama • Tanggal</div>
+    
+    <div style="font-size:11px; font-weight:800; color:#0f172a; margin-bottom:6px;">Detail Keterangan Pelapor:</div>
+    <div id="detailDesc" class="detail-desc-box">Deskripsi laporan...</div>
+    
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
+      <span style="font-size:11px; font-weight:700; color:#64748b;">Status Laporan:</span>
+      <div id="detailStatusBadge" class="badge-status-dinamis">Menunggu Verifikasi</div>
+    </div>
+  </div>
+</div>
+
 <script src="script.js?v=27"></script>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
   import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
   const firebaseConfig = {
@@ -263,9 +439,10 @@
   const db = getFirestore(app);
   const auth = getAuth(app);
 
-  /**
-   * Helper Cek Verifikasi/Login Warga
-   */
+  let globalReportsMap = {};
+  let rawReportsArray = [];
+  let currentActiveUserName = '';
+
   function checkAuthOrRedirect() {
     const userSession = localStorage.getItem('rw05_current_user') || localStorage.getItem('rw05_user_login');
     const firebaseUser = auth.currentUser;
@@ -278,115 +455,311 @@
   }
 
   let compressedBase64 = null;
-  /** @type {number | null} */
+  let isVideoType = false;
   let latValue = null;
-  /** @type {number | null} */
   let lngValue = null;
 
-  /**
-   * @param {string} currentUserName
-   */
-  function syncUserReportsRealtime(currentUserName) {
-    const container = document.getElementById('dynamicMyReports');
-    if (!container) return;
+  function escapeHtml(text = '') {
+    return String(text).replace(/[&<>"']/g, function(m = '') {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
+    });
+  }
 
-    onSnapshot(query(collection(db, "aduan_warga05"), orderBy("createdAt", "desc")), 
-      /** @param {import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js").QuerySnapshot} snap */
-      (snap) => {
-        /** @type {Array<{id: string, nama: string, rt: string, judul: string, fotoBase64: string, tanggal: string, status: string}>} */
-        let filteredReports = [];
-        snap.forEach(
-          /** @param {import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js").QueryDocumentSnapshot} docSnap */
-          (docSnap) => {
-            const d = docSnap.data();
-            const localIds = JSON.parse(localStorage.getItem('rw05_user_report_ids') || '[]');
-            const isOwnerByName = currentUserName && d.nama && d.nama.toLowerCase() === currentUserName.toLowerCase();
-            const isOwnerById = localIds.includes(docSnap.id);
+  function renderReports(filterKeyword = '') {
+    const containerMy = document.getElementById('dynamicMyReports');
+    const containerAll = document.getElementById('dynamicAllReports');
+    const cleanKeyword = filterKeyword.toLowerCase().trim();
 
-            if (isOwnerByName || isOwnerById) {
-              const dateStr = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }) : 'Baru saja';
-              filteredReports.push({
-                id: docSnap.id,
-                nama: d.nama || '-',
-                rt: d.rt || '-',
-                judul: d.judul || 'Tanpa Judul',
-                fotoBase64: d.fotoBase64 || '',
-                tanggal: dateStr,
-                status: d.status || 'Menunggu Verifikasi'
-              });
-            }
-          }
-        );
+    if (rawReportsArray.length === 0) {
+      if (containerMy) containerMy.innerHTML = `<div style="background:#fff; border-radius:16px; margin:0 16px; padding:20px; text-align:center; font-size:12px; color:#94a3b8; border:1px dashed #cbd5e1;">Belum ada laporan aktif milikmu. Buat laporan di atas!</div>`;
+      if (containerAll) containerAll.innerHTML = `<div style="background:#fff; border-radius:16px; margin:0 16px; padding:20px; text-align:center; font-size:12px; color:#94a3b8; border:1px dashed #cbd5e1;">Belum ada laporan warga.</div>`;
+      return;
+    }
 
-        if (filteredReports.length === 0) {
-          container.innerHTML = `
-            <div style="background:#fff; border-radius:16px; margin:0 16px; padding:20px; text-align:center; font-size:12px; color:#94a3b8; border:1px dashed #cbd5e1;">
-              Belum ada laporan aktif. Buat laporan di atas!
+    let myHtml = '';
+    let allHtml = '';
+    let myCount = 0;
+    let allCount = 0;
+
+    rawReportsArray.forEach((item) => {
+      const matchJudul = item.judul.toLowerCase().includes(cleanKeyword);
+      const matchDesc = item.deskripsi.toLowerCase().includes(cleanKeyword);
+      const matchRt = item.rt.toLowerCase().includes(cleanKeyword);
+      const matchNama = item.nama.toLowerCase().includes(cleanKeyword);
+
+      if (cleanKeyword && !matchJudul && !matchDesc && !matchRt && !matchNama) {
+        return;
+      }
+
+      let mediaThumb = `<img src="${item.foto}" class="active-report-thumb" alt="Thumb">`;
+      if (item.isVideo) {
+        mediaThumb = `
+          <div style="position:relative; width:90px; height:90px; flex-shrink:0;">
+            <video src="${item.foto}" class="active-report-thumb"></video>
+            <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.3); border-radius:10px; color:#fff; font-size:20px;">▶</div>
+          </div>
+        `;
+      }
+
+      const cardHtml = `
+        <div class="active-report-card" onclick="openDetailReportModal('${item.id}')">
+          ${mediaThumb}
+          <div class="active-report-info">
+            <div>
+              <span class="badge-kat">${escapeHtml(item.rt)}</span>
+              <div class="report-title-text" style="margin-top:4px;">${escapeHtml(item.judul)}</div>
+              <div class="report-meta-text" style="margin-top:2px;">${escapeHtml(item.nama)} • ${item.tanggal}</div>
             </div>
-          `;
-          return;
+            <div class="badge-status-dinamis ${item.statusClass}">${escapeHtml(item.status)}</div>
+          </div>
+        </div>
+      `;
+
+      if (item.isOwner) {
+        myHtml += cardHtml;
+        myCount++;
+      }
+
+      allHtml += cardHtml;
+      allCount++;
+    });
+
+    if (containerMy) {
+      containerMy.innerHTML = myCount > 0 ? myHtml : `
+        <div style="background:#fff; border-radius:16px; margin:0 16px; padding:20px; text-align:center; font-size:12px; color:#94a3b8; border:1px dashed #cbd5e1;">
+          ${cleanKeyword ? 'Tidak ada laporan milikmu yang cocok.' : 'Belum ada laporan aktif milikmu. Buat laporan di atas!'}
+        </div>
+      `;
+    }
+
+    if (containerAll) {
+      containerAll.innerHTML = allCount > 0 ? allHtml : `
+        <div style="background:#fff; border-radius:16px; margin:0 16px; padding:20px; text-align:center; font-size:12px; color:#94a3b8; border:1px dashed #cbd5e1;">
+          Tidak ada laporan warga yang cocok dengan pencarian "${escapeHtml(filterKeyword)}".
+        </div>
+      `;
+    }
+  }
+
+  function syncUserReportsRealtime(currentUserName) {
+    const qAduan = query(collection(db, "aduan_warga05"), orderBy("createdAt", "desc"), limit(20));
+
+    onSnapshot(qAduan, (snap) => {
+      rawReportsArray = [];
+      globalReportsMap = {};
+
+      snap.forEach((docSnap) => {
+        const d = docSnap.data();
+        const docId = docSnap.id;
+        
+        let dateStr = 'Baru saja';
+        if (d.createdAt?.toDate) {
+          const dt = d.createdAt.toDate();
+          const datePart = dt.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+          const timePart = dt.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }).replace('.', ':');
+          dateStr = `${datePart} • ${timePart} WIB`;
         }
 
-        container.innerHTML = filteredReports.map(r => {
-          const statusClass = (r.status || '').replace(/\s+/g, '');
-          return `
-            <div class="active-report-card">
-              <img src="${r.fotoBase64}" class="active-report-thumb" alt="Thumb">
-              <div class="active-report-info">
-                <div>
-                  <span class="badge-kat">${r.rt}</span>
-                  <div class="report-title-text" style="margin-top:4px;">${r.judul}</div>
-                  <div class="report-meta-text" style="margin-top:2px;">${r.nama} • ${r.tanggal}</div>
-                </div>
-                <div class="badge-status-dinamis ${statusClass}">${r.status}</div>
-              </div>
-            </div>
-          `;
-        }).join('');
-      }
-    );
+        const statusVal = d.status || 'Menunggu Verifikasi';
+        const statusClass = statusVal.replace(/\s+/g, '');
+        const foto = d.fotoBase64 || 'img/logo-resmi-karang-taruna.jpg';
+        const isVideo = d.isVideo === true;
+        
+        const isAnonim = d.isAnonim === true;
+        const namaPelapor = isAnonim ? 'Warga Anonim (Privasi)' : (d.nama || 'Warga');
+        
+        const rtVal = d.rt || 'RT -';
+        const judulVal = d.judul || 'Tanpa Judul';
+        const descVal = d.deskripsi || '-';
+
+        const localIds = JSON.parse(localStorage.getItem('rw05_user_report_ids') || '[]');
+        const isOwnerByName = currentUserName && d.nama && d.nama.toLowerCase() === currentUserName.toLowerCase();
+        const isOwnerById = localIds.includes(docId);
+
+        const reportObj = {
+          id: docId,
+          nama: namaPelapor,
+          rt: rtVal,
+          judul: judulVal,
+          deskripsi: descVal,
+          foto: foto,
+          isVideo: isVideo,
+          tanggal: dateStr,
+          status: statusVal,
+          statusClass: statusClass,
+          isOwner: isOwnerByName || isOwnerById
+        };
+
+        globalReportsMap[docId] = reportObj;
+        rawReportsArray.push(reportObj);
+      });
+
+      const searchInput = document.getElementById('inputSearchQuery');
+      renderReports(searchInput ? searchInput.value : '');
+    });
   }
+
+  window.openDetailReportModal = function(docId) {
+    const item = globalReportsMap[docId];
+    if (!item) return;
+
+    const modalDetail = document.getElementById('modalDetailAduan');
+    const detailFoto = document.getElementById('detailFoto');
+    const detailVideo = document.getElementById('detailVideo');
+    const detailJudul = document.getElementById('detailJudul');
+    const detailMeta = document.getElementById('detailMeta');
+    const detailDesc = document.getElementById('detailDesc');
+    const detailRtBadge = document.getElementById('detailRtBadge');
+    const detailStatusBadge = document.getElementById('detailStatusBadge');
+
+    if (item.isVideo) {
+      if (detailFoto) detailFoto.style.display = 'none';
+      if (detailVideo) {
+        detailVideo.src = item.foto;
+        detailVideo.style.display = 'block';
+      }
+    } else {
+      if (detailVideo) detailVideo.style.display = 'none';
+      if (detailFoto) {
+        detailFoto.src = item.foto;
+        detailFoto.style.display = 'block';
+      }
+    }
+
+    if (detailJudul) detailJudul.textContent = item.judul;
+    if (detailMeta) detailMeta.textContent = `Pelapor: ${item.nama} • ${item.tanggal}`;
+    if (detailDesc) detailDesc.textContent = item.deskripsi;
+    if (detailRtBadge) detailRtBadge.textContent = item.rt;
+    if (detailStatusBadge) {
+      detailStatusBadge.textContent = item.status;
+      detailStatusBadge.className = `badge-status-dinamis ${item.statusClass}`;
+    }
+
+    if (modalDetail) modalDetail.classList.add('show');
+  };
 
   document.addEventListener('DOMContentLoaded', () => {
     const currentUser = JSON.parse(localStorage.getItem('rw05_current_user') || 'null');
-    const inputNama = /** @type {HTMLInputElement | null} */ (document.getElementById('aduanNama'));
-    let activeName = currentUser && currentUser.nama ? currentUser.nama : '';
-    if (activeName && inputNama) {
-      inputNama.value = activeName;
+    const inputNama = document.getElementById('aduanNama');
+    currentActiveUserName = currentUser && currentUser.nama ? currentUser.nama : '';
+    if (currentActiveUserName && inputNama) {
+      inputNama.value = currentActiveUserName;
     }
 
-    syncUserReportsRealtime(activeName);
+    syncUserReportsRealtime(currentActiveUserName);
+
+    // FITUR SEARCH BAR
+    const btnToggleSearch = document.getElementById('btnToggleSearch');
+    const searchBarContainer = document.getElementById('searchBarContainer');
+    const inputSearchQuery = document.getElementById('inputSearchQuery');
+    const btnClearSearch = document.getElementById('btnClearSearch');
+
+    if (btnToggleSearch && searchBarContainer && inputSearchQuery) {
+      btnToggleSearch.addEventListener('click', () => {
+        searchBarContainer.classList.toggle('show');
+        if (searchBarContainer.classList.contains('show')) {
+          inputSearchQuery.focus();
+        } else {
+          inputSearchQuery.value = '';
+          if (btnClearSearch) btnClearSearch.style.display = 'none';
+          renderReports('');
+        }
+      });
+
+      inputSearchQuery.addEventListener('input', (e) => {
+        const queryVal = e.target.value;
+        if (btnClearSearch) {
+          btnClearSearch.style.display = queryVal.length > 0 ? 'block' : 'none';
+        }
+        renderReports(queryVal);
+      });
+    }
+
+    if (btnClearSearch && inputSearchQuery) {
+      btnClearSearch.addEventListener('click', () => {
+        inputSearchQuery.value = '';
+        btnClearSearch.style.display = 'none';
+        inputSearchQuery.focus();
+        renderReports('');
+      });
+    }
 
     const modalForm = document.getElementById('modalFormAduan');
+    const modalDetail = document.getElementById('modalDetailAduan');
     const btnTriggerFoto = document.getElementById('btnTriggerFoto');
     const btnTriggerVideo = document.getElementById('btnTriggerVideo');
     const btnCloseModal = document.getElementById('btnCloseModal');
+    const btnCloseDetailModal = document.getElementById('btnCloseDetailModal');
     
-    const btnAmbilFoto = document.getElementById('btnAmbilFoto');
-    const inputFoto = /** @type {HTMLInputElement | null} */ (document.getElementById('inputFoto'));
-    const imgPreview = /** @type {HTMLImageElement | null} */ (document.getElementById('imgPreview'));
+    const btnAmbilFotoOnly = document.getElementById('btnAmbilFotoOnly');
+    const btnAmbilVideoOnly = document.getElementById('btnAmbilVideoOnly');
+    const inputFoto = document.getElementById('inputFoto');
+    const imgPreview = document.getElementById('imgPreview');
+    const videoPreview = document.getElementById('videoPreview');
     const previewContainer = document.getElementById('previewContainer');
+    const previewStatusText = document.getElementById('previewStatusText');
+    const btnRemoveMedia = document.getElementById('btnRemoveMedia');
     const btnGPS = document.getElementById('btnGPS');
     const coordsText = document.getElementById('coordsText');
     const gpsInfo = document.getElementById('gpsInfo');
-    const formAduan = /** @type {HTMLFormElement | null} */ (document.getElementById('formAduan'));
-    const btnKirimAduan = /** @type {HTMLButtonElement | null} */ (document.getElementById('btnKirimAduan'));
+    const formAduan = document.getElementById('formAduan');
+    const btnKirimAduan = document.getElementById('btnKirimAduan');
+    const chkAnonim = document.getElementById('chkAnonim');
 
-    function openModalWithPhotoSelect() {
-      if (!checkAuthOrRedirect()) return;
+    // LOGIKA HAPUS MEDIA SAAT TOMBOL (X) DIKLIK
+    if (btnRemoveMedia) {
+      btnRemoveMedia.addEventListener('click', () => {
+        compressedBase64 = null;
+        isVideoType = false;
+        if (inputFoto) inputFoto.value = '';
+        if (imgPreview) { imgPreview.src = ''; imgPreview.style.display = 'none'; }
+        if (videoPreview) { videoPreview.src = ''; videoPreview.style.display = 'none'; }
+        if (previewContainer) previewContainer.style.display = 'none';
+      });
+    }
+
+    // AUTO-ATTACH & OPEN DARI INDEX (SESSIONSTORAGE)
+    const urlParams = new URLSearchParams(window.location.search);
+    const isAutoOpen = urlParams.get('autoOpen') === '1';
+    const tempPhoto = sessionStorage.getItem('temp_aduan_photo');
+
+    if (tempPhoto || isAutoOpen) {
+      if (tempPhoto) {
+        compressedBase64 = tempPhoto;
+        isVideoType = false;
+
+        if (videoPreview) videoPreview.style.display = 'none';
+        if (imgPreview) {
+          imgPreview.src = tempPhoto;
+          imgPreview.style.display = 'block';
+        }
+        if (previewStatusText) previewStatusText.textContent = '✅ Foto dari kamera siap dikirim';
+        if (previewContainer) previewContainer.style.display = 'block';
+
+        sessionStorage.removeItem('temp_aduan_photo');
+      }
       if (modalForm) modalForm.classList.add('show');
-      if (inputFoto) inputFoto.click();
     }
 
     if (btnTriggerFoto) {
-      btnTriggerFoto.addEventListener('click', openModalWithPhotoSelect);
+      btnTriggerFoto.addEventListener('click', () => {
+        if (!checkAuthOrRedirect()) return;
+        if (modalForm) modalForm.classList.add('show');
+        if (inputFoto) {
+          inputFoto.setAttribute('accept', 'image/*');
+          inputFoto.click();
+        }
+      });
     }
 
     if (btnTriggerVideo) {
       btnTriggerVideo.addEventListener('click', () => {
         if (!checkAuthOrRedirect()) return;
-        alert('📹 Fitur laporan video diarahkan menggunakan form lampiran/galeri.');
-        openModalWithPhotoSelect();
+        if (modalForm) modalForm.classList.add('show');
+        if (inputFoto) {
+          inputFoto.setAttribute('accept', 'video/*');
+          inputFoto.click();
+        }
       });
     }
 
@@ -396,30 +769,76 @@
       });
     }
 
-    if (btnAmbilFoto && inputFoto) {
-      btnAmbilFoto.addEventListener('click', () => inputFoto.click());
+    if (btnCloseDetailModal) {
+      btnCloseDetailModal.addEventListener('click', () => {
+        if (modalDetail) modalDetail.classList.remove('show');
+      });
+    }
+
+    if (btnAmbilFotoOnly && inputFoto) {
+      btnAmbilFotoOnly.addEventListener('click', () => {
+        inputFoto.setAttribute('accept', 'image/*');
+        inputFoto.click();
+      });
+    }
+
+    if (btnAmbilVideoOnly && inputFoto) {
+      btnAmbilVideoOnly.addEventListener('click', () => {
+        inputFoto.setAttribute('accept', 'video/*');
+        inputFoto.click();
+      });
+    }
+
+    if (inputFoto) {
       inputFoto.addEventListener('change', (e) => {
-        const target = /** @type {HTMLInputElement} */ (e.target);
+        const target = e.target;
         const file = target.files && target.files[0];
         if (!file) return;
-        compressImage(file, 800, 0.7, 
-          /** @param {string} base64Result */
-          (base64Result) => {
-            compressedBase64 = base64Result;
-            if (imgPreview) imgPreview.src = base64Result;
-            if (previewContainer) previewContainer.style.display = 'block';
+
+        if (file.type.startsWith('video/')) {
+          if (file.size > 800 * 1024) {
+            alert('⚠️ Ukuran video terlalu besar! Maksimal ukuran file video adalah 800 KB (durasi singkat ~3-5 detik).');
+            inputFoto.value = '';
+            return;
           }
-        );
+
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = (evt) => {
+            compressedBase64 = evt.target.result;
+            isVideoType = true;
+
+            if (imgPreview) imgPreview.style.display = 'none';
+            if (videoPreview) {
+              videoPreview.src = compressedBase64;
+              videoPreview.style.display = 'block';
+            }
+            if (previewStatusText) previewStatusText.textContent = '✅ Video singkat siap dikirim';
+            if (previewContainer) previewContainer.style.display = 'block';
+          };
+
+        } else {
+          isVideoType = false;
+          compressImage(file, 800, 0.7, (base64Result) => {
+            compressedBase64 = base64Result;
+            if (videoPreview) videoPreview.style.display = 'none';
+            if (imgPreview) {
+              imgPreview.src = base64Result;
+              imgPreview.style.display = 'block';
+            }
+            if (previewStatusText) previewStatusText.textContent = '✅ Foto siap dikirim';
+            if (previewContainer) previewContainer.style.display = 'block';
+          });
+        }
       });
     }
 
     if (btnGPS) {
       btnGPS.addEventListener('click', () => {
-        const win = /** @type {any} */ (window);
+        const win = window;
         if (typeof win.requestGeoLocation === 'function') {
           btnGPS.textContent = '📍 Merekam...';
           win.requestGeoLocation(
-            /** @param {{lat: number, lng: number}} pos */
             (pos) => {
               latValue = pos.lat;
               lngValue = pos.lng;
@@ -442,7 +861,7 @@
         e.preventDefault();
         if (!checkAuthOrRedirect()) return;
         if (!compressedBase64) {
-          alert('⚠️ Lampirkan foto bukti laporan terlebih dahulu.');
+          alert('⚠️ Lampirkan foto/video bukti laporan terlebih dahulu.');
           return;
         }
 
@@ -452,17 +871,20 @@
         }
 
         try {
-          const payloadNama = /** @type {HTMLInputElement} */ (document.getElementById('aduanNama')).value;
-          const payloadRt = /** @type {HTMLSelectElement} */ (document.getElementById('aduanRT')).value;
-          const payloadJudul = /** @type {HTMLInputElement} */ (document.getElementById('aduanJudul')).value;
-          const payloadDesc = /** @type {HTMLTextAreaElement} */ (document.getElementById('aduanDesc')).value;
+          const payloadNama = document.getElementById('aduanNama').value;
+          const payloadRt = document.getElementById('aduanRT').value;
+          const payloadJudul = document.getElementById('aduanJudul').value;
+          const payloadDesc = document.getElementById('aduanDesc').value;
+          const isAnonimChecked = chkAnonim ? chkAnonim.checked : false;
 
           const docRef = await addDoc(collection(db, "aduan_warga05"), {
             nama: payloadNama,
+            isAnonim: isAnonimChecked,
             rt: payloadRt,
             judul: payloadJudul,
             deskripsi: payloadDesc,
             fotoBase64: compressedBase64,
+            isVideo: isVideoType,
             latitude: latValue || null,
             longitude: lngValue || null,
             status: "Menunggu Verifikasi",
@@ -481,13 +903,14 @@
           if (previewContainer) previewContainer.style.display = 'none';
           if (gpsInfo) gpsInfo.style.display = 'none';
           compressedBase64 = null;
+          isVideoType = false;
           latValue = null;
           lngValue = null;
           btnGPS.textContent = '📍 Lock GPS';
           if (modalForm) modalForm.classList.remove('show');
         } catch (err) {
           console.error('Firestore Error:', err);
-          alert('❌ Gagal mengirim laporan. Periksa koneksi internet kamu.');
+          alert('❌ Gagal mengirim laporan. Ukuran file terlalu besar atau periksa koneksi internet.');
         } finally {
           if (btnKirimAduan) {
             btnKirimAduan.disabled = false;
@@ -498,20 +921,13 @@
     }
   });
 
-  /**
-   * @param {File} file
-   * @param {number} maxWidth
-   * @param {number} quality
-   * @param {(result: string) => void} callback
-   */
   function compressImage(file, maxWidth, quality, callback) {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = (event) => {
       const img = new Image();
-      const targetReader = /** @type {FileReader | null} */ (event.target);
-      if (targetReader && typeof targetReader.result === 'string') {
-        img.src = targetReader.result;
+      if (event.target && typeof event.target.result === 'string') {
+        img.src = event.target.result;
       }
       img.onload = () => {
         const canvas = document.createElement('canvas');

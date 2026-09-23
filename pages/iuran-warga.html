@@ -24,8 +24,15 @@ body { background: #f8fafc !important; font-family: -apple-system, BlinkMacSyste
 /* FORM INPUT */
 .form-group { margin-bottom: 12px; }
 .form-group label { display: block; font-size: 12px; font-weight: 700; color: #334155; margin-bottom: 6px; }
-.input-custom { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 13px; outline: none; }
+.input-custom { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 13px; outline: none; background: #fff; }
 .input-custom:focus { border-color: #2563eb; }
+
+/* PREVIEW BUKTI & TOMBOL HAPUS (X) */
+.upload-wrapper { position: relative; }
+.preview-box { display: none; margin-top: 10px; position: relative; border-radius: 10px; overflow: hidden; border: 1px solid #e2e8f0; max-height: 200px; background: #000; }
+.preview-img { width: 100%; height: 180px; object-fit: contain; }
+.btn-remove-file { position: absolute; top: 8px; right: 8px; background: #ef4444; color: #fff; border: none; width: 28px; height: 28px; border-radius: 50%; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
+
 .btn-submit { width: 100%; padding: 14px; background: #111; color: #fbbf24; border: none; border-radius: 12px; font-weight: 800; font-size: 14px; cursor: pointer; margin-top: 8px; }
 .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
 </style>
@@ -49,7 +56,7 @@ body { background: #f8fafc !important; font-family: -apple-system, BlinkMacSyste
     <h3 style="font-size:13px;font-weight:800;color:#0f172a;margin-bottom:8px">💳 Metode Pembayaran</h3>
     <div class="qris-box">
       <p class="rekeing-info">Scan QRIS / Transfer Bank RW 05</p>
-      <img src="../assets/img/qris-rw05.jpg" alt="QRIS RW 05" class="qris-img" id="qrisImg">
+      <img src="img/qris-rw05.jpg" alt="QRIS RW 05" class="qris-img" id="qrisImg">
       <div class="rekeing-info">
         <b>Bank DKI / BCA:</b> 1234-5678-90<br>
         a.n. <b>Kas Karang Taruna RW 05</b>
@@ -63,17 +70,12 @@ body { background: #f8fafc !important; font-family: -apple-system, BlinkMacSyste
     <form id="formIuran">
       <div class="form-group">
         <label>NIK (16 Digit)</label>
-        <input type="number" id="nik" class="input-custom" placeholder="Masukkan 16 digit NIK" required>
+        <input type="text" id="nik" class="input-custom" maxlength="16" placeholder="Masukkan 16 digit NIK" required oninput="this.value = this.value.replace(/[^0-9]/g, '');">
       </div>
 
       <div class="form-group">
         <label>Bulan Pembayaran</label>
-        <select id="bulan" class="input-custom" required>
-          <option value="September 2026">September 2026</option>
-          <option value="Oktober 2026">Oktober 2026</option>
-          <option value="November 2026">November 2026</option>
-          <option value="Desember 2026">Desember 2026</option>
-        </select>
+        <input type="text" id="bulan" class="input-custom" placeholder="Contoh: September 2026" required>
       </div>
 
       <div class="form-group">
@@ -84,6 +86,7 @@ body { background: #f8fafc !important; font-family: -apple-system, BlinkMacSyste
       <div class="form-group">
         <label>RT</label>
         <select id="rt" class="input-custom" required>
+          <option value="" disabled selected>Pilih RT</option>
           <option value="RT 01">RT 01</option>
           <option value="RT 02">RT 02</option>
           <option value="RT 03">RT 03</option>
@@ -91,12 +94,26 @@ body { background: #f8fafc !important; font-family: -apple-system, BlinkMacSyste
           <option value="RT 05">RT 05</option>
           <option value="RT 06">RT 06</option>
           <option value="RT 07">RT 07</option>
+          <option value="RT 08">RT 08</option>
+          <option value="RT 09">RT 09</option>
+          <option value="RT 010">RT 010</option>
+          <option value="RT 011">RT 011</option>
+          <option value="RT 012">RT 012</option>
+          <option value="RT 013">RT 013</option>
+          <option value="RT 014">RT 014</option>
+          <option value="RT 015">RT 015</option>
         </select>
       </div>
 
       <div class="form-group">
         <label>Upload Bukti Transfer / QRIS</label>
-        <input type="file" id="bukti" class="input-custom" accept="image/*" required>
+        <div class="upload-wrapper">
+          <input type="file" id="bukti" class="input-custom" accept="image/*" required>
+          <div class="preview-box" id="previewContainer">
+            <img id="previewImage" class="preview-img" alt="Bukti Transfer">
+            <button type="button" class="btn-remove-file" onclick="hapusBuktiTransfer()">✕</button>
+          </div>
+        </div>
       </div>
 
       <button type="submit" id="btnBayar" class="btn-submit">Bayar Sekarang</button>
@@ -108,7 +125,7 @@ body { background: #f8fafc !important; font-family: -apple-system, BlinkMacSyste
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, doc, onSnapshot, runTransaction, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, doc, onSnapshot, setDoc, getDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCZtvImbyZmqoEoY1hYZcuCbUpIl3R1fhE",
@@ -122,7 +139,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// FALLBACK GAMBAR JIKA QRIS BELUM TERSEDIA
+// FALLBACK GAMBAR QRIS
 const imgEl = document.getElementById('qrisImg');
 if (imgEl) {
   imgEl.addEventListener('error', function() {
@@ -130,81 +147,141 @@ if (imgEl) {
   });
 }
 
-// 1. LISTEN SALDO LIVE FIRESTORE
-const saldoRef = doc(db, "kas_rw05", "saldo_utama");
+// FUNGSI KOMPRESI GAMBAR SECARA OTOMATIS
+function compressImage(file, maxWidth = 600, quality = 0.6) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+      const img = new Image();
+      img.src = event.target.result;
+      img.onload = () => {
+        let width = img.width;
+        let height = img.height;
+        if (width > maxWidth) {
+          height = Math.round((height * maxWidth) / width);
+          width = maxWidth;
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.onerror = (err) => reject(err);
+    };
+    reader.onerror = (err) => reject(err);
+  });
+}
 
-onSnapshot(saldoRef, 
-  /** @param {any} snap */
-  (snap) => {
-    if (snap.exists()) {
-      const data = snap.data();
-      const total = data ? data.total || 0 : 0;
-      const saldoEl = document.getElementById('saldoVal');
-      if (saldoEl) saldoEl.textContent = "Rp " + total.toLocaleString('id-ID');
+// LOGIKA UPLOAD & PREVIEW BUKTI TRANSFER
+const buktiInput = document.getElementById('bukti');
+const previewContainer = document.getElementById('previewContainer');
+const previewImage = document.getElementById('previewImage');
+let base64Bukti = "";
+
+if (buktiInput) {
+  buktiInput.addEventListener('change', async function(e) {
+    const file = e.target.files[0];
+    if (file) {
+      try {
+        base64Bukti = await compressImage(file, 600, 0.6);
+        previewImage.src = base64Bukti;
+        previewContainer.style.display = 'block';
+      } catch (err) {
+        alert("⚠️ Gagal memproses gambar bukti transfer.");
+      }
     }
-  }
-);
+  });
+}
 
-// 2. LOGIKA TRANSAKSI PEMBAYARAN IURAN
+window.hapusBuktiTransfer = function() {
+  if (buktiInput) buktiInput.value = "";
+  base64Bukti = "";
+  if (previewContainer) previewContainer.style.display = 'none';
+  if (previewImage) previewImage.src = "";
+};
+
+// LISTEN SALDO LIVE FIRESTORE
+const saldoRef = doc(db, "kas_rw05", "saldo_utama");
+onSnapshot(saldoRef, (snap) => {
+  if (snap.exists()) {
+    const data = snap.data();
+    const total = data ? data.total || 0 : 0;
+    const saldoEl = document.getElementById('saldoVal');
+    if (saldoEl) saldoEl.textContent = "Rp " + total.toLocaleString('id-ID');
+  }
+});
+
+// SUBMIT FORM PEMBAYARAN
 const form = document.getElementById('formIuran');
 if (form) {
-  form.addEventListener('submit', 
-    /** @param {any} e */
-    async (e) => {
-      e.preventDefault();
-      const btn = document.getElementById('btnBayar');
-      if (btn) {
-        btn.disabled = true;
-        btn.textContent = "Memproses Pembayaran...";
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const nikEl = document.getElementById('nik');
+    const bulanEl = document.getElementById('bulan');
+    const nominalEl = document.getElementById('nominal');
+    const rtEl = document.getElementById('rt');
+
+    const nik = nikEl ? nikEl.value.trim() : '';
+    const bulan = bulanEl ? bulanEl.value.trim() : '';
+    const nominal = nominalEl ? parseInt(nominalEl.value) || 0 : 0;
+    const rt = rtEl ? rtEl.value : '';
+
+    if (nik.length !== 16) {
+      alert("⚠️ NIK harus berjumlah tepat 16 digit!");
+      if (nikEl) nikEl.focus();
+      return;
+    }
+
+    if (!base64Bukti) {
+      alert("⚠️ Silakan unggah foto bukti transfer terlebih dahulu.");
+      return;
+    }
+
+    const btn = document.getElementById('btnBayar');
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = "Memproses Pembayaran...";
+    }
+
+    try {
+      // 1. UPDATE SALDO KAS
+      const sfDoc = await getDoc(saldoRef);
+      let newTotal = nominal;
+      if (sfDoc.exists()) {
+        const oldData = sfDoc.data();
+        newTotal = (oldData ? oldData.total || 0 : 0) + nominal;
       }
+      await setDoc(saldoRef, { total: newTotal, updatedAt: serverTimestamp() }, { merge: true });
 
-      const nikEl = document.getElementById('nik');
-      const bulanEl = document.getElementById('bulan');
-      const nominalEl = document.getElementById('nominal');
-      const rtEl = document.getElementById('rt');
+      // 2. SIMPAN DOKUMEN TRANSAKSI KE COLLECTION "iuran_warga_rw05"
+      await addDoc(collection(db, "iuran_warga_rw05"), {
+        nik: nik,
+        bulan: bulan,
+        nominal: nominal,
+        rt: rt,
+        buktiUrl: base64Bukti,
+        status: "Berhasil",
+        createdAt: serverTimestamp()
+      });
 
-      const nik = nikEl ? nikEl.value : '';
-      const bulan = bulanEl ? bulanEl.value : '';
-      const nominal = nominalEl ? parseInt(nominalEl.value) || 0 : 0;
-      const rt = rtEl ? rtEl.value : '';
+      alert("✅ Pembayaran iuran berhasil dikirim! Data sudah masuk ke halaman admin.");
+      form.reset();
+      window.hapusBuktiTransfer();
 
-      try {
-        await runTransaction(db, 
-          /** @param {any} transaction */
-          async (transaction) => {
-            const sfDoc = await transaction.get(saldoRef);
-            if (!sfDoc.exists()) {
-              transaction.set(saldoRef, { total: nominal });
-            } else {
-              const oldData = sfDoc.data();
-              const newTotal = (oldData ? oldData.total || 0 : 0) + nominal;
-              transaction.update(saldoRef, { total: newTotal, updatedAt: serverTimestamp() });
-            }
-          }
-        );
-
-        await addDoc(collection(db, "riwayat_iuran"), {
-          nik: nik,
-          bulan: bulan,
-          nominal: nominal,
-          rt: rt,
-          createdAt: serverTimestamp()
-        });
-
-        alert("✅ Pembayaran iuran berhasil disimpan dan saldo kas live telah di-update!");
-        form.reset();
-
-      } catch (err) {
-        console.error("Gagal simpan:", err);
-        alert("❌ Terjadi kesalahan saat memproses pembayaran.");
-      } finally {
-        if (btn) {
-          btn.disabled = false;
-          btn.textContent = "Bayar Sekarang";
-        }
+    } catch (err) {
+      console.error("Gagal simpan:", err);
+      alert("❌ Terjadi kesalahan saat memproses pembayaran:\n" + (err.message || err));
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = "Bayar Sekarang";
       }
     }
-  );
+  });
 }
 </script>
 </body>

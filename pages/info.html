@@ -84,18 +84,19 @@ body {
   background: #f1f5f9;
 }
 
-/* LIST NOTIFIKASI ALA JAKI (NON-CLICKABLE CARD) */
+/* LIST NOTIFIKASI RAPET & LINE CLAMP 2 BARIS */
 .notif-list {
   display: flex;
   flex-direction: column;
 }
 .notif-item {
   display: flex;
-  gap: 12px;
-  padding: 16px;
+  gap: 10px;
+  padding: 10px 14px;
   border-bottom: 1px solid #f1f5f9;
   background: #fefce8; /* Belum dibaca: kuning lembut */
-  pointer-events: none;
+  pointer-events: auto !important;
+  cursor: pointer;
   user-select: text;
   transition: background-color 0.2s ease;
 }
@@ -103,28 +104,29 @@ body {
   background: #ffffff; /* Telah dibaca: putih */
 }
 .notif-avatar {
-  width: 42px;
-  height: 42px;
+  width: 36px;
+  height: 36px;
   background: #0f172a;
   color: #fbbf24;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 900;
   flex-shrink: 0;
   position: relative;
+  margin-top: 2px;
 }
 .notif-dot {
-  width: 9px;
-  height: 9px;
+  width: 8px;
+  height: 8px;
   background: #059669;
   border-radius: 50%;
   position: absolute;
-  top: 2px;
-  right: 2px;
-  border: 2px solid #fff;
+  top: 1px;
+  right: 1px;
+  border: 1.5px solid #fff;
 }
 .notif-item.read .notif-dot {
   display: none;
@@ -137,29 +139,43 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 .notif-sender {
-  font-size: 13.5px;
+  font-size: 12.5px;
   font-weight: 800;
   color: #0f172a;
 }
 .notif-time {
-  font-size: 11px;
+  font-size: 10.5px;
   color: #94a3b8;
   font-weight: 500;
 }
 .notif-text {
-  font-size: 13px;
+  font-size: 12.5px;
   color: #334155;
-  line-height: 1.45;
+  line-height: 1.35;
   word-break: break-word;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.notif-title-bold {
+.notif-title-inline {
   font-weight: 700;
   color: #0f172a;
-  display: block;
-  margin-bottom: 2px;
+}
+
+/* MODAL DETAIL POPUP */
+#notif-detail-modal {
+  position: fixed; inset: 0; background: rgba(15,23,42,0.6); backdrop-filter: blur(8px);
+  z-index: 1000000; display: none; align-items: center; justify-content: center; padding: 16px;
+}
+#notif-detail-modal.show { display: flex; }
+@keyframes modalIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
 }
 
 /* BOTTOM NAVBAR SELARAS INDEX */
@@ -189,12 +205,23 @@ body {
 
   <!-- BOTTOM NAVBAR KONSISTEN DENGAN INDEX -->
   <nav class="jaki-nav">
-    <a href="../index.html">🏠<span>Beranda</span></a>
+    <a href="index.html">🏠<span>Beranda</span></a>
     <a href="diskusi-rw.html">💬<span>Diskusi</span></a>
     <a class="center" href="aduan-warga.html"><div class="cam">📷</div><span>Lapor</span></a>
     <a class="active" href="info.html">🔔<span>Notifikasi</span></a>
     <a href="profil.html">👤<span>Profil</span></a>
   </nav>
+</div>
+
+<!-- MODAL DETAIL POPUP -->
+<div id="notif-detail-modal">
+  <div style="background:#fff; width:100%; max-width:400px; border-radius:22px; border:1px solid #e2e8f0; box-shadow:0 12px 32px rgba(0,0,0,0.18); overflow:hidden; animation: modalIn 0.25s ease;">
+    <div style="padding:16px 20px; border-bottom:1px solid #f1f5f9; display:flex; justify-content:space-between; align-items:center;">
+      <h3 id="modalDetailTitle" style="font-size:16px; font-weight:800; color:#0f172a;">Detail Notifikasi</h3>
+      <button onclick="closeNotifDetailModal()" style="background:#f1f5f9; border:none; width:32px; height:32px; border-radius:50%; font-weight:800; cursor:pointer;">✕</button>
+    </div>
+    <div id="modalDetailBody" style="padding:20px; font-size:13.5px; color:#334155; line-height:1.5; white-space:pre-line; max-height:60vh; overflow-y:auto;"></div>
+  </div>
 </div>
 
 <script type="module">
@@ -219,7 +246,6 @@ body {
   const popoverMenu = document.getElementById('popoverMenu');
   const btnMarkAllRead = document.getElementById('btnMarkAllRead');
 
-  // Load status baca dari localStorage agar bertahan saat halaman direfresh/dibuka ulang
   function getReadIds() {
     try {
       return JSON.parse(localStorage.getItem('rw05_read_notifs') || '[]');
@@ -240,7 +266,6 @@ body {
     localStorage.setItem('rw05_read_notifs', JSON.stringify(list));
   }
 
-  // Toggle popover titik tiga
   if (btnMenuDot && popoverMenu) {
     btnMenuDot.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -251,7 +276,6 @@ body {
     });
   }
 
-  // Tandai semua telah dibaca (manual lewat menu)
   if (btnMarkAllRead) {
     btnMarkAllRead.addEventListener('click', () => {
       const allIds = Array.from(document.querySelectorAll('.notif-item')).map(el => el.dataset.id).filter(Boolean);
@@ -261,7 +285,24 @@ body {
     });
   }
 
-  // DIUBAH KE "info_singkat" SUPAYA SINKRON DENGAN PANEL ADMIN
+  window.openNotifDetail = function(el, title, content, timeStr) {
+    el.classList.add('read');
+    const id = el.getAttribute('data-id');
+    if (id) saveReadId(id);
+
+    const modal = document.getElementById('notif-detail-modal');
+    const titleEl = document.getElementById('modalDetailTitle');
+    const bodyEl = document.getElementById('modalDetailBody');
+    if (titleEl) titleEl.textContent = title || 'Detail Notifikasi';
+    if (bodyEl) bodyEl.innerHTML = `<div style="font-size:11px; color:#94a3b8; margin-bottom:10px;">🕒 ${timeStr}</div>${content}`;
+    if (modal) modal.classList.add('show');
+  };
+
+  window.closeNotifDetailModal = function() {
+    const modal = document.getElementById('notif-detail-modal');
+    if (modal) modal.classList.remove('show');
+  };
+
   onSnapshot(query(collection(db, "info_singkat"), orderBy("createdAt", "desc")), (/** @type {any} */ snap) => {
     if (loadingNotif) loadingNotif.style.display = 'none';
     if (snap.empty) {
@@ -276,11 +317,9 @@ body {
 
     const readList = getReadIds();
     let html = '';
-    const allDocIds = [];
 
     snap.forEach((/** @type {any} */ docItem) => {
       const id = docItem.id;
-      allDocIds.push(id);
       const isRead = readList.includes(id);
       const d = docItem.data() || {};
       const timeStr = d.tanggal || 'Baru saja';
@@ -288,8 +327,12 @@ body {
       const content = d.isi || '';
       const iconBadge = d.ikon || '05';
       
+      const safeTitle = JSON.stringify(title).replace(/"/g, '&quot;');
+      const safeContent = JSON.stringify(content).replace(/"/g, '&quot;');
+      const cleanContentInline = content.replace(/\n/g, ' ');
+      
       html += `
-        <div class="notif-item ${isRead ? 'read' : ''}" data-id="${id}">
+        <div class="notif-item ${isRead ? 'read' : ''}" data-id="${id}" onclick="openNotifDetail(this, ${safeTitle}, ${safeContent}, '${timeStr}')">
           <div class="notif-avatar">
             ${iconBadge.length <= 2 ? iconBadge : '05'}
             <div class="notif-dot"></div>
@@ -300,8 +343,7 @@ body {
               <span class="notif-time">${timeStr}</span>
             </div>
             <div class="notif-text">
-              <span class="notif-title-bold">${title}</span>
-              ${content}
+              <span class="notif-title-inline">${title} - </span><span>${cleanContentInline}</span>
             </div>
           </div>
         </div>
@@ -314,6 +356,13 @@ body {
       loadingNotif.textContent = 'Gagal memuat pemberitahuan.';
     }
   });
+
+  const uniModalDetail = document.getElementById('notif-detail-modal');
+  if (uniModalDetail) {
+    uniModalDetail.addEventListener('click', (e) => {
+      if (e.target === uniModalDetail) closeNotifDetailModal();
+    });
+  }
 </script>
 </body>
 </html>
