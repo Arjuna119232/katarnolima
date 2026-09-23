@@ -131,15 +131,21 @@ jobs:
 
       - name: Build Signed Release APK
         run: |
-          GRADLE_DIR=$(find android/ -name "gradlew" | head -n 1)
-          if [ -n "$GRADLE_DIR" ]; then
-            WORK_DIR=$(dirname "$GRADLE_DIR")
-            echo "Working directory for Gradle: $WORK_DIR"
+          GRADLEW_PATH=$(find . -name "gradlew" | head -n 1)
+          if [ -z "$GRADLEW_PATH" ]; then
+            echo "gradlew tidak ditemukan, mencoba generate wrapper..."
+            gradle wrapper || true
+            GRADLEW_PATH=$(find . -name "gradlew" | head -n 1)
+          fi
+
+          if [ -n "$GRADLEW_PATH" ]; then
+            WORK_DIR=$(dirname "$GRADLEW_PATH")
+            echo "Working directory: $WORK_DIR"
             cd "$WORK_DIR"
             chmod +x gradlew
             ./gradlew assembleRelease
           else
-            echo "Error: gradlew not found!"
+            echo "Error: Gradle wrapper tidak dapat ditemukan/dibuat!"
             exit 1
           fi
         env:
@@ -150,12 +156,12 @@ jobs:
       - name: Locate and Rename APK
         run: |
           mkdir -p dist
-          echo "Listing all apk files in repo:"
-          find . -name "*.apk" || true
-          
-          APK_PATH=$(find android/ -name "*.apk" | head -n 1)
-          if [ -n "$APK_PATH" ]; then
-            echo "Found APK at: $APK_PATH"
+          APK_PATH=$(find . -name "*.apk" | grep -i "release" | head -n 1)
+          if [ -z "$APK_PATH" ]; then
+            APK_PATH=$(find . -name "*.apk" | head -n 1)
+          fi
+          echo "Found APK at: $APK_PATH"
+          if [ -f "$APK_PATH" ]; then
             cp "$APK_PATH" dist/katarnolima-rw05-v2.1.apk
           else
             echo "Error: Still no APK generated!"
