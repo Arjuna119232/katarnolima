@@ -28,17 +28,35 @@ jobs:
       - name: Build Signed Release APK
         working-directory: android
         run: |
-          chmod +x gradlew
-          ./gradlew assembleRelease
+          if [ -f "./gradlew" ]; then
+            chmod +x gradlew
+            ./gradlew assembleRelease
+          else
+            echo "gradlew tidak ditemukan di folder android, mencoba menjalankan gradle..."
+            gradle wrapper || true
+            if [ -f "./gradlew" ]; then
+              chmod +x gradlew
+              ./gradlew assembleRelease
+            else
+              gradle assembleRelease
+            fi
+          fi
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
-      - name: Rename APK Output
+      - name: Locate APK Output
         run: |
           mkdir -p dist
-          cp android/app/build/outputs/apk/release/app-release.apk dist/katarnolima-rw05-v2.1.apk
+          APK_FILE=$(find android/ -name "*.apk" | head -n 1)
+          if [ -n "$APK_FILE" ]; then
+            cp "$APK_FILE" dist/katarnolima-rw05-v2.1.apk
+          else
+            echo "APK tidak ditemukan setelah build!"
+            find android/ -maxdepth 4 -ls || true
+            exit 1
+          fi
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
