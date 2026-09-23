@@ -72,12 +72,22 @@ jobs:
           import os, glob
           from PIL import Image
 
-          src_path = 'katar-app-icon.png'
-          if not os.path.exists(src_path):
-              if os.path.exists('assets/katar-app-icon.png'):
-                  src_path = 'assets/katar-app-icon.png'
-              elif os.path.exists('img/katar-app-icon.png'):
-                  src_path = 'img/katar-app-icon.png'
+          possible_paths = [
+              'katar-app-icon.png',
+              'assets/katar-app-icon.png',
+              'img/katar-app-icon.png',
+              'assets/img/katar-app-icon.png'
+          ]
+          
+          src_path = None
+          for p in possible_paths:
+              if os.path.exists(p):
+                  src_path = p
+                  break
+
+          if not src_path:
+              print('Peringatan: File ikon tidak ditemukan di path umum, menggunakan gambar bawaan/lewati.')
+              exit(0)
 
           print(f'Menggunakan sumber ikon: {src_path}')
           im = Image.open(src_path).convert('RGBA')
