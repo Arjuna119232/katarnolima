@@ -134,9 +134,13 @@ jobs:
           GRADLE_DIR=$(find android/ -name "gradlew" | head -n 1)
           if [ -n "$GRADLE_DIR" ]; then
             WORK_DIR=$(dirname "$GRADLE_DIR")
+            echo "Working directory for Gradle: $WORK_DIR"
             cd "$WORK_DIR"
             chmod +x gradlew
             ./gradlew assembleRelease
+          else
+            echo "Error: gradlew not found!"
+            exit 1
           fi
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
@@ -146,16 +150,15 @@ jobs:
       - name: Locate and Rename APK
         run: |
           mkdir -p dist
-          APK_PATH=$(find android/ -name "*.apk" | grep -i "release" | head -n 1)
-          if [ -z "$APK_PATH" ]; then
-            APK_PATH=$(find android/ -name "*.apk" | head -n 1)
-          fi
-          echo "Found APK path: $APK_PATH"
-          if [ -f "$APK_PATH" ]; then
+          echo "Listing all apk files in repo:"
+          find . -name "*.apk" || true
+          
+          APK_PATH=$(find android/ -name "*.apk" | head -n 1)
+          if [ -n "$APK_PATH" ]; then
+            echo "Found APK at: $APK_PATH"
             cp "$APK_PATH" dist/katarnolima-rw05-v2.1.apk
           else
-            echo "Error: APK file not found!"
-            find android/ -name "*.apk" || true
+            echo "Error: Still no APK generated!"
             exit 1
           fi
 
