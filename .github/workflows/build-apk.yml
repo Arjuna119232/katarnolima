@@ -1,4 +1,4 @@
-Name: Build Signed Android APK v2.1
+name: Build Signed Android APK v2.1
 
 on:
   push:
@@ -64,16 +64,6 @@ jobs:
             fi
           else
             echo "AndroidManifest.xml tidak ditemukan!"
-          fi
-
-      - name: Configure Web Chrome Client for WebView Hardware Permissions
-        run: |
-          BRIDGE_ACTIVITY=$(find android/ -name "MainActivity.java" -o -name "BridgeActivity.java" | head -n 1)
-          if [ -f "$BRIDGE_ACTIVITY" ]; then
-            echo "Main Activity ditemukan di: $BRIDGE_ACTIVITY"
-            # Menambahkan handler perizinan webview dasar jika diperlukan
-          else
-            echo "Activity utama tidak ditemukan."
           fi
 
       - name: Apply HD Safe-Zone Icon
@@ -145,10 +135,9 @@ jobs:
         run: |
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/release.p12
 
-      - name: Configure Signing & Kotlin Resolution in build.gradle
+      - name: Configure Signing in build.gradle
         working-directory: android/app
         run: |
-          # Cek apakah configurations.all sudah ada, jika belum tambahkan di luar blok android
           if ! grep -q "configurations.all" build.gradle; then
             cat << 'EOF' >> build.gradle
 
@@ -162,52 +151,6 @@ jobs:
           EOF
           fi
 
-          # Menambahkan signingConfigs dan release buildType secara aman ke dalam blok android jika belum ada
-          if ! grep -q "signingConfigs" build.gradle; then
-            python3 -c "
-            with open('build.gradle', 'r') as f:
-                content = f.read()
-
-            signing_block = '''
-                signingConfigs {
-                    release {
-                        storeFile file('release.p12')
-                        storeType 'PKCS12'
-                        storePassword System.getenv(\"KEYSTORE_PASSWORD\")
-                        keyAlias System.getenv(\"KEY_ALIAS\")
-                        keyPassword System.getenv(\"KEY_PASSWORD\")
-                    }
-                }
-            '''
-            
-            build_type_release = '''
-                buildTypes {
-                    release {
-                        signingConfig signingConfigs.release
-                        minifyEnabled false
-                    }
-                }
-            '''
-
-            # Sisipkan signingConfigs sebelum closing brace blok android atau modifikasi sederhana
-            # Alternatif aman: replace buildTypes default atau inject ke dalam blok android
-            print('Injecting signing config handling...')
-            "
-          fi
-          
-          # Pendekatan injeksi aman via python agar tidak duplikasi blok android
-          python3 -c "
-          with open('build.gradle', 'r') as f:
-              code = f.read()
-
-          if 'signingConfigs' not in code:
-              target = 'defaultConfig {'
-              idx = code.find(target)
-              if idx != -1:
-                  # Cari penutup blok android atau sisipkan di blok android
-                  pass
-          "
-          # Solusi paling bersih untuk append blocks ke file build.gradle bawaan Capacitor tanpa duplikasi 'android {'
           cat << 'EOF' >> build.gradle
 
           android {
@@ -228,8 +171,6 @@ jobs:
               }
           }
           EOF
-          # Catatan: Jika Gradle komplain duplicate android block, gunakan android.extension, 
-          # tapi penambahan di akhir file di Groovy DSL seringkali merge/override properti inner.
 
       - name: Build Signed Release APK
         working-directory: android
