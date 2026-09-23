@@ -56,11 +56,19 @@ jobs:
           mkdir -p android/app
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/release.p12
 
-      - name: Configure Signing in build.gradle
+      - name: Fix Kotlin Conflict & Configure Signing
         run: |
           BUILD_GRADLE="android/app/build.gradle"
           if [ -f "$BUILD_GRADLE" ]; then
             cat << 'EOF' >> "$BUILD_GRADLE"
+
+          configurations.all {
+              resolutionStrategy {
+                  force 'org.jetbrains.kotlin:kotlin-stdlib:1.8.22'
+                  force 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22'
+                  force 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22'
+              }
+          }
 
           android {
               signingConfigs {
