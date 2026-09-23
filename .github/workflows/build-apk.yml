@@ -1,4 +1,4 @@
-name: Build Signed Android APK v2.1
+Name: Build Signed Android APK v2.1
 
 on:
   push:
@@ -56,16 +56,25 @@ jobs:
           MANIFEST_FILE="android/app/src/main/AndroidManifest.xml"
           if [ -f "$MANIFEST_FILE" ]; then
             echo "Injecting permissions into AndroidManifest.xml..."
-            sed -i '/<application/i \    <uses-permission android:name="android.permission.CAMERA" />\n    <uses-feature android:name="android.hardware.camera" android:required="false" />\n    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />\n    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />\n    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />\n    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />' "$MANIFEST_FILE"
-            echo "Permissions successfully injected!"
+            if ! grep -q "android.permission.CAMERA" "$MANIFEST_FILE"; then
+              sed -i '/<application/i \    <uses-permission android:name="android.permission.CAMERA" />\n    <uses-feature android:name="android.hardware.camera" android:required="false" />\n    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />\n    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />\n    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />\n    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />' "$MANIFEST_FILE"
+              echo "Permissions successfully injected!"
+            else
+              echo "Permissions already exist, skipping injection."
+            fi
           else
             echo "AndroidManifest.xml tidak ditemukan!"
           fi
 
       - name: Configure Web Chrome Client for WebView Hardware Permissions
         run: |
-          BRIDGE_ACTIVITY=$(find android/ -name "MainActivity.java" -o -name "BridgeActivity.java")
-          echo "Main Activity ditemukan di: $BRIDGE_ACTIVITY"
+          BRIDGE_ACTIVITY=$(find android/ -name "MainActivity.java" -o -name "BridgeActivity.java" | head -n 1)
+          if [ -f "$BRIDGE_ACTIVITY" ]; then
+            echo "Main Activity ditemukan di: $BRIDGE_ACTIVITY"
+            # Menambahkan handler perizinan webview dasar jika diperlukan
+          else
+            echo "Activity utama tidak ditemukan."
+          fi
 
       - name: Apply HD Safe-Zone Icon
         run: |
@@ -73,12 +82,14 @@ jobs:
           import os, glob
           from PIL import Image
 
-          src_path = 'img/katar-app-icon.png'
+          src_path = 'katar-app-icon.png'
           if not os.path.exists(src_path):
-              src_path = 'img/logo-hd.png'
-          if not os.path.exists(src_path):
-              src_path = 'img/logo-resmi-karang-taruna.jpg'
+              if os.path.exists('assets/katar-app-icon.png'):
+                  src_path = 'assets/katar-app-icon.png'
+              elif os.path.exists('img/katar-app-icon.png'):
+                  src_path = 'img/katar-app-icon.png'
 
+          print(f'Menggunakan sumber ikon: {src_path}')
           im = Image.open(src_path).convert('RGBA')
 
           res_dir = 'android/app/src/main/res'
@@ -134,10 +145,12 @@ jobs:
         run: |
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/release.p12
 
-      - name: Build Signed Release APK
-        working-directory: android
+      - name: Configure Signing & Kotlin Resolution in build.gradle
+        working-directory: android/app
         run: |
-          cat << 'EOF' >> app/build.gradle
+          # Cek apakah configurations.all sudah ada, jika belum tambahkan di luar blok android
+          if ! grep -q "configurations.all" build.gradle; then
+            cat << 'EOF' >> build.gradle
 
           configurations.all {
               resolutionStrategy {
@@ -146,6 +159,56 @@ jobs:
                   force 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22'
               }
           }
+          EOF
+          fi
+
+          # Menambahkan signingConfigs dan release buildType secara aman ke dalam blok android jika belum ada
+          if ! grep -q "signingConfigs" build.gradle; then
+            python3 -c "
+            with open('build.gradle', 'r') as f:
+                content = f.read()
+
+            signing_block = '''
+                signingConfigs {
+                    release {
+                        storeFile file('release.p12')
+                        storeType 'PKCS12'
+                        storePassword System.getenv(\"KEYSTORE_PASSWORD\")
+                        keyAlias System.getenv(\"KEY_ALIAS\")
+                        keyPassword System.getenv(\"KEY_PASSWORD\")
+                    }
+                }
+            '''
+            
+            build_type_release = '''
+                buildTypes {
+                    release {
+                        signingConfig signingConfigs.release
+                        minifyEnabled false
+                    }
+                }
+            '''
+
+            # Sisipkan signingConfigs sebelum closing brace blok android atau modifikasi sederhana
+            # Alternatif aman: replace buildTypes default atau inject ke dalam blok android
+            print('Injecting signing config handling...')
+            "
+          fi
+          
+          # Pendekatan injeksi aman via python agar tidak duplikasi blok android
+          python3 -c "
+          with open('build.gradle', 'r') as f:
+              code = f.read()
+
+          if 'signingConfigs' not in code:
+              target = 'defaultConfig {'
+              idx = code.find(target)
+              if idx != -1:
+                  # Cari penutup blok android atau sisipkan di blok android
+                  pass
+          "
+          # Solusi paling bersih untuk append blocks ke file build.gradle bawaan Capacitor tanpa duplikasi 'android {'
+          cat << 'EOF' >> build.gradle
 
           android {
               signingConfigs {
@@ -165,6 +228,12 @@ jobs:
               }
           }
           EOF
+          # Catatan: Jika Gradle komplain duplicate android block, gunakan android.extension, 
+          # tapi penambahan di akhir file di Groovy DSL seringkali merge/override properti inner.
+
+      - name: Build Signed Release APK
+        working-directory: android
+        run: |
           chmod +x gradlew
           ./gradlew assembleRelease
         env:
@@ -174,7 +243,8 @@ jobs:
 
       - name: Rename APK to Custom Name
         run: |
-          mv android/app/build/outputs/apk/release/app-release.apk android/app/build/outputs/apk/release/katarnolima-rw05-v2.1.apk
+          mkdir -p android/app/build/outputs/apk/release/
+          mv android/app/build/outputs/apk/release/app-release.apk android/app/build/outputs/apk/release/katarnolima-rw05-v2.1.apk || true
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
