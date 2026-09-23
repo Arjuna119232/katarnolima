@@ -4,114 +4,167 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>KATARNOLIMA RW 05 - Beranda</title>
-<link rel="icon" href="assets/img/logo-resmi-karang-taruna.jpg">
+<link rel="icon" href="img/logo-resmi-karang-taruna.jpg">
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="style.css?v=27">
+<link rel="stylesheet" href="style.css">
 <style>
 /* SPLASH SCREEN ANIMATION */
 #splash-screen {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: #ffffff;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  z-index: 999999;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: #ffffff; display: flex; flex-direction: column;
+  justify-content: center; align-items: center; z-index: 999999;
   transition: opacity 0.5s ease, visibility 0.5s ease;
 }
-
 .splash-logo {
-  width: 110px;
-  height: 110px;
-  border-radius: 24px;
+  width: 110px; height: 110px; border-radius: 24px;
   box-shadow: 0 10px 25px rgba(0,0,0,0.12);
   animation: zoomIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
-
 .splash-text {
-  margin-top: 18px;
-  font-size: 14px;
-  font-weight: 800;
-  color: #0f172a;
-  letter-spacing: 1px;
-  animation: fadeIn 1s ease forwards;
+  margin-top: 18px; font-size: 14px; font-weight: 800; color: #0f172a;
+  letter-spacing: 1px; animation: fadeIn 1s ease forwards;
 }
-
-@keyframes zoomIn {
-  0% { transform: scale(0.2); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
-}
-
-@keyframes fadeIn {
-  0% { opacity: 0; transform: translateY(10px); }
-  100% { opacity: 1; transform: translateY(0); }
-}
-
-#splash-screen.fade-out {
-  opacity: 0;
-  visibility: hidden;
-}
+@keyframes zoomIn { 0% { transform: scale(0.2); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+@keyframes fadeIn { 0% { opacity: 0; transform: translateY(10px); } 100% { opacity: 1; transform: translateY(0); } }
+#splash-screen.fade-out { opacity: 0; visibility: hidden; }
 
 /* Modal Animation Box & Blur Overlay ala JAKI */
-#satpam-modal {
+#satpam-modal, .modal-overlay {
   background: rgba(15, 23, 42, 0.4);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  opacity: 0;
-  transition: opacity 0.25s ease;
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  opacity: 0; transition: opacity 0.25s ease;
 }
-#satpam-modal.show-overlay {
-  opacity: 1;
-}
-
-.satpam-box {
-  transform: scale(0.85);
-  opacity: 0;
+#satpam-modal.show-overlay, .modal-overlay.show-overlay { opacity: 1; }
+.satpam-box, .modal-box {
+  transform: scale(0.85); opacity: 0;
   transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
-.satpam-box.show {
-  transform: scale(1);
-  opacity: 1;
-}
+.satpam-box.show, .modal-box.show { transform: scale(1); opacity: 1; }
 
 /* TOAST EXIT NOTIFICATION */
 #exit-toast {
-  position: fixed;
-  bottom: 90px;
-  left: 50%;
-  transform: translateX(-50%) translateY(20px);
-  background: rgba(15, 23, 42, 0.9);
-  color: #fff;
-  padding: 10px 20px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 700;
-  z-index: 9999999;
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: rgba(15, 23, 42, 0.9); color: #fff; padding: 10px 20px;
+  border-radius: 999px; font-size: 12px; font-weight: 700; z-index: 9999999;
+  opacity: 0; visibility: hidden; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
-#exit-toast.show {
-  opacity: 1;
-  visibility: visible;
-  transform: translateX(-50%) translateY(0);
+#exit-toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+
+/* OVERLAY UI KAMERA JAKI / CUSTOM CAMERA INTERFACE */
+.camera-overlay {
+  position: fixed;
+  inset: 0;
+  background: #000000;
+  z-index: 999999;
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  color: #ffffff;
+}
+.camera-overlay.show { display: flex; }
+
+.camera-header {
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  z-index: 10;
+}
+.camera-header button {
+  background: none; border: none; color: #fff; font-size: 18px; font-weight: 700; cursor: pointer;
+  display: flex; align-items: center; gap: 8px;
+}
+.camera-step-title { font-size: 14px; font-weight: 700; color: #ffffff; }
+
+.camera-viewport-wrap {
+  width: 100%; height: 100%; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center;
+}
+.camera-video-stream {
+  width: 100%; height: 100%; object-fit: cover;
+}
+
+.camera-controls-bar {
+  padding: 30px 24px 40px;
+  background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  z-index: 10;
+}
+.btn-cam-side {
+  width: 48px; height: 48px; border-radius: 50%; background: rgba(255,255,255,0.2);
+  border: none; color: #fff; font-size: 18px; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; backdrop-filter: blur(4px);
+}
+.btn-shutter-outer {
+  width: 72px; height: 72px; border-radius: 50%; border: 4px solid #ffffff;
+  display: flex; align-items: center; justify-content: center; background: transparent;
+  cursor: pointer; padding: 0;
+}
+.btn-shutter-inner {
+  width: 56px; height: 56px; border-radius: 50%; background: #2563eb; transition: transform 0.1s ease;
+}
+.btn-shutter-outer:active .btn-shutter-inner { transform: scale(0.88); }
+
+/* SLIDER BANNER 3 KOLOM */
+.slider-container {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+.slider-track {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.slider-track::-webkit-scrollbar { display: none; }
+.slider-slide {
+  flex: 0 0 100%;
+  width: 100%;
+  scroll-snap-align: start;
+}
+.slider-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 8px;
+}
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #cbd5e1;
+  transition: all 0.3s ease;
+}
+.dot.active {
+  width: 20px;
+  border-radius: 10px;
+  background: #2563eb;
 }
 </style>
 </head>
 <body>
 
-<!-- SPLASH SCREEN ANIMASI LOGO MEMBESAR -->
 <div id="splash-screen">
-  <img src="assets/img/logo-resmi-karang-taruna.jpg" alt="KATARNOLIMA Logo" class="splash-logo">
+  <img src="img/logo-resmi-karang-taruna.jpg" alt="KATARNOLIMA Logo" class="splash-logo">
   <div class="splash-text">KATARNOLIMA RW 05</div>
 </div>
 
-<!-- TOAST KETUK DUA KALI -->
+<!-- DYNAMIC ISLAND CONTAINER ELEMENT -->
+<div id="dynamic-island-greeting">
+  <span id="di-icon">☀️</span>
+  <span id="di-text">Selamat pagi, Warga!</span>
+</div>
+
 <div id="exit-toast">Ketuk sekali lagi untuk keluar aplikasi</div>
 
 <div class="app-jaki">
@@ -135,14 +188,13 @@
     <a class="g8-item" href="aduan-warga.html"><div class="g8-icon">📢</div><p>Aduan<br>Warga</p></a>
     <a class="g8-item" href="berita-rw.html"><div class="g8-icon">📰</div><p>Berita<br>RW</p></a>
     <a class="g8-item" href="iuran-warga.html"><div class="g8-icon">💰</div><p>Iuran<br>Warga</p></a>
-    <a class="g8-item" data-modal="sembako"><div class="g8-icon">🛒</div><p>Harga<br>Sembako</p></a>
+    <div class="g8-item" data-modal="sembako" style="cursor:pointer;"><div class="g8-icon">🛒</div><p>Harga<br>Sembako</p></div>
     <a class="g8-item" onclick="openSatpamModal()" style="cursor:pointer;"><div class="g8-icon">🛡️</div><p>Keamanan<br>Satpam</p></a>
-    <a class="g8-item" data-modal="bersih"><div class="g8-icon">🧹</div><p>Lingkungan<br>Bersih</p></a>
-    <a class="g8-item" data-modal="petaBalai"><div class="g8-icon blue">📍</div><p>Peta<br>Balai</p></a>
+    <div class="g8-item" data-modal="lingkungan" style="cursor:pointer;"><div class="g8-icon">🧹</div><p>Lingkungan<br>Bersih</p></div>
+    <div class="g8-item" data-modal="petaBalai" style="cursor:pointer;"><div class="g8-icon blue">📍</div><p>Peta<br>Balai</p></div>
     <a class="g8-item" href="semua-layanan.html"><div class="g8-icon">⊞</div><p>Semua<br>Layanan</p></a>
   </div>
 
-  <!-- KAS KARANG TARUNA (TOTAL KESELURUHAN & LINK KE RINCIAN) -->
   <div class="kas-card" onclick="window.location.href='kas-detail.html'" style="cursor:pointer;">
     <div class="kas-top">
       <span>Kas Karang Taruna RW 05</span>
@@ -154,21 +206,55 @@
     </div>
   </div>
 
-  <div class="mitigasi-card">
-    <div>
-      <h3>Yuk Ikut Kerja Bakti<br>Minggu Ini!</h3>
-      <button onclick="location.href='berita-rw.html'">Daftar Hadir</button>
+  <!-- SLIDER 3 BANNER SLIDE OTOMATIS & SWIPE -->
+  <div class="slider-container">
+    <div class="slider-track" id="sliderTrack">
+      <!-- SLIDE 1: KERJA BAKTI -->
+      <div class="slider-slide">
+        <div class="mitigasi-card" style="background:#fbbf24;">
+          <div>
+            <h3>Yuk Ikut Kerja Bakti<br>Minggu Ini!</h3>
+            <button onclick="window.open('https://wa.me/6289673580756?text=Halo%20Admin%20KATARNOLIMA,%20saya%20ingin%20daftar%20hadir%20kerja%20bakti%20minggu%20ini.','_blank')">Daftar Hadir</button>
+          </div>
+          <div class="mit-icon">🚜</div>
+        </div>
+      </div>
+      <!-- SLIDE 2: DAFTAR ANGGOTA KATARNOLIMA -->
+      <div class="slider-slide">
+        <div class="mitigasi-card" style="background:#2563eb; color:#ffffff;">
+          <div>
+            <h3 style="color:#ffffff;">Gabung Pemuda RW 05<br>Daftar Katarnolima!</h3>
+            <button style="background:#0f172a; color:#fbbf24;" onclick="window.open('https://wa.me/6289673580756?text=Halo%20Admin%20KATARNOLIMA,%20saya%20tertarik%20untuk%20mendaftar%20menjadi%20anggota%20Karang%20Taruna%20KATARNOLIMA.','_blank')">Gabung Anggota</button>
+          </div>
+          <div class="mit-icon">🤝</div>
+        </div>
+      </div>
+      <!-- SLIDE 3: SARAN & LAPORAN BUG APLIKASI -->
+      <div class="slider-slide">
+        <div class="mitigasi-card" style="background:#0284c7; color:#ffffff;">
+          <div>
+            <h3 style="color:#ffffff;">Kritik, Saran &<br>Lapor Error Aplikasi</h3>
+            <button style="background:#ffffff; color:#0284c7;" onclick="window.open('https://wa.me/6289673580756?text=Halo%20Admin%20KATARNOLIMA,%20saya%20ingin%20menyampaikan%20saran/laporan%20bug%20aplikasi.','_blank')">Kirim Pesan</button>
+          </div>
+          <div class="mit-icon">💡</div>
+        </div>
+      </div>
     </div>
-    <div class="mit-icon">🚜</div>
+    <!-- DOTS INDIKATOR -->
+    <div class="slider-dots">
+      <div class="dot active"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
   </div>
 
   <div id="kategori" class="section-jaki">
     <h2 class="h2-jaki">Jelajahi Layanan RW 05</h2>
     <div class="kategori-grid">
-      <div class="kat-card" data-modal="posyandu"><span>👶</span><p>Posyandu</p></div>
-      <div class="kat-card" data-modal="datawarga"><span>📋</span><p>Data Warga</p></div>
+      <div class="kat-card" data-modal="posyandu" style="cursor:pointer;"><span>👶</span><p>Posyandu</p></div>
+      <div class="kat-card" data-modal="datawarga" style="cursor:pointer;"><span>📋</span><p>Data Warga</p></div>
       <div class="kat-card" onclick="openSatpamModal()" style="cursor:pointer;"><span>🛡️</span><p>Keamanan Satpam</p></div>
-      <div class="kat-card" data-modal="belajar"><span>📚</span><p>Belajar Bersama</p></div>
+      <div class="kat-card" data-modal="belajar" style="cursor:pointer;"><span>📚</span><p>Belajar Bersama</p></div>
     </div>
   </div>
 
@@ -201,12 +287,15 @@
         <p>Mulai buka fitur <b>Laporan Warga dan 4 fitur lainnya.</b></p>
       </div>
     </div>
-    <div class="rekom-card" data-modal="petaBalai">
-      <div class="rekom-img" style="background:#ffe4b5"><div style="font-size:50px">🚲</div></div>
+
+    <!-- CARD MAPS COMING SOON -->
+    <div class="rekom-card" style="opacity: 0.7; filter: grayscale(80%); pointer-events: none; cursor: not-allowed; position: relative;">
+      <div style="position: absolute; top: 12px; right: 12px; background: #0f172a; color: #fbbf24; font-size: 10px; font-weight: 800; padding: 4px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px; z-index: 2;">Coming Soon</div>
+      <div class="rekom-img" style="background:#334155"><div style="font-size:50px">🗺️</div></div>
       <div class="rekom-text">
-        <span class="rekom-label">Panduan</span>
-        <h3>Keliling RW 05<br>dengan KATARNOLIMA</h3>
-        <p>Pakai fitur <b>Peta Balai dan 4 fitur lainnya.</b></p>
+        <span class="rekom-label" style="color:#64748b;">Peta Digital</span>
+        <h3 style="color:#475569;">Keliling RW 05<br>dengan OpenStreetMap</h3>
+        <p style="color:#64748b;">Lihat <b>Peta Wilayah & Titik Lokasi RW 05.</b></p>
       </div>
     </div>
 
@@ -218,17 +307,39 @@
 
   <div style="height:140px"></div>
 
-  <!-- BOTTOM NAVBAR -->
+  <!-- BOTTOM NAV -->
   <nav class="jaki-nav">
     <a class="active" href="index.html">🏠<span>Beranda</span></a>
     <a href="diskusi-rw.html">💬<span>Diskusi</span></a>
-    <a class="center" href="aduan-warga.html"><div class="cam">📷</div><span>Lapor</span></a>
+    <a class="center" href="javascript:void(0)" onclick="openCustomCamera()"><div class="cam">📷</div><span>Lapor</span></a>
     <a href="info.html">🔔<span>Info</span></a>
-    <a href="pages/profil.html">👤<span>Profil</span></a>
+    <a href="profil.html">👤<span>Profil</span></a>
   </nav>
 </div>
 
-<!-- FAB DARURAT -->
+<!-- OVERLAY INTERFACE KAMERA CUSTOM ALA JAKI -->
+<div class="camera-overlay" id="cameraOverlay">
+  <div class="camera-header">
+    <button onclick="closeCustomCamera()">← Ambil foto laporan</button>
+    <span class="camera-step-title">Langkah 1/5</span>
+  </div>
+
+  <div class="camera-viewport-wrap">
+    <video id="cameraStream" class="camera-video-stream" autoplay playsinline></video>
+    <canvas id="cameraCanvas" style="display:none;"></canvas>
+  </div>
+
+  <div class="camera-controls-bar">
+    <button class="btn-cam-side" onclick="triggerFileInputFallback()" title="Pilih dari Galeri">🖼️</button>
+    <button class="btn-shutter-outer" onclick="capturePhotoFromCamera()">
+      <div class="btn-shutter-inner"></div>
+    </button>
+    <button class="btn-cam-side" id="btnToggleCamFacing" onclick="toggleCameraFacing()" title="Ganti Kamera">🔄</button>
+  </div>
+
+  <input type="file" id="fallbackFileInput" accept="image/*" style="display:none;">
+</div>
+
 <div class="fab-container" id="fabContainer">
   <div class="fab-options" id="fabOptions">
     <div class="fab-option" onclick="window.open('tel:112','_self')">
@@ -248,22 +359,23 @@
   <div class="fab-close" id="fabClose">✕</div>
 </div>
 
-<!-- MODAL SERBAGUNA -->
-<div id="universal-modal" class="modal-overlay">
-  <div class="modal-box">
-    <div class="modal-header">
-      <h3 id="modal-title">Info RW 05</h3>
-      <div id="modal-close" class="modal-close">✕</div>
+<div id="universal-modal" class="modal-overlay" style="position:fixed; top:0; left:0; width:100%; height:100%; z-index:1000000; display:none; align-items:center; justify-content:center; padding:16px;">
+  <div class="modal-box" style="background:#fff; width:100%; max-width:400px; border-radius:24px; border:2px solid #10131a; box-shadow:4px 4px 0 #10131a; overflow:hidden;">
+    <div class="modal-header" style="padding:16px 20px; border-bottom:2px solid #10131a; display:flex; justify-content:space-between; align-items:center; background:#fcfbf7;">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span id="modal-icon-title" style="font-size:20px;">📢</span>
+        <h3 id="modal-title" style="font-size:16px; font-weight:800; color:#10131a; margin:0;">Info RW 05</h3>
+      </div>
+      <div id="modal-close" class="modal-close" onclick="closeUniversalModal()" style="background:none; border:2px solid #10131a; border-radius:8px; width:32px; height:32px; display:flex; align-items:center; justify-content:center; font-weight:800; cursor:pointer;">✕</div>
     </div>
-    <div id="modal-body" class="modal-body"></div>
+    <div id="modal-body" class="modal-body" style="padding:28px 20px;">
+      <div style="text-align:center; font-size:12px; color:#94a3b8;">Memuat data...</div>
+    </div>
   </div>
 </div>
 
-<!-- MODAL INFO KEAMANAN SATPAM -->
 <div id="satpam-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; z-index:1000000; align-items:center; justify-content:center; padding:16px;">
     <div class="satpam-box" style="background:#fff; width:100%; max-width:400px; border-radius:20px; border:2px solid #10131a; box-shadow:4px 4px 0 #10131a; overflow:hidden;">
-        
-        <!-- Header -->
         <div style="padding:16px 20px; border-bottom:2px solid #10131a; display:flex; justify-content:space-between; align-items:center; background:#fcfbf7;">
             <div style="display:flex; align-items:center; gap:8px;">
                 <span style="font-size:20px;">🛡️</span>
@@ -271,33 +383,43 @@
             </div>
             <button onclick="closeSatpamModal()" style="background:none; border:2px solid #10131a; border-radius:8px; width:32px; height:32px; font-weight:800; cursor:pointer;">✕</button>
         </div>
-
-        <!-- Body Info -->
         <div style="padding:20px;">
             <div style="background:#fcfbf7; border:1.5px solid #10131a; border-radius:12px; padding:14px; margin-bottom:14px;">
                 <div style="font-size:11px; font-weight:800; color:#173d1f; text-transform:uppercase; margin-bottom:4px;">Jam Operasional Jaga</div>
-                <div id="info-jam-jaga" style="font-size:14px; font-weight:800; color:#10131a;">22:00 – 04:00 WIB</div>
+                <div id="info-jam-jaga" style="font-size:14px; font-weight:800; color:#10131a;">Belum diatur admin</div>
             </div>
-
             <div style="background:#fcfbf7; border:1.5px solid #10131a; border-radius:12px; padding:14px; margin-bottom:14px;">
                 <div style="font-size:11px; font-weight:800; color:#173d1f; text-transform:uppercase; margin-bottom:4px;">Petugas yang Berjaga</div>
-                <div id="info-nama-petugas" style="font-size:15px; font-weight:800; color:#2563eb;">Danru Budi & Rekor (Menunggu Update Admin)</div>
+                <div id="info-nama-petugas" style="font-size:15px; font-weight:800; color:#2563eb;">Belum diatur admin</div>
             </div>
-
             <div style="background:#fff1f2; border:1.5px solid #e11d48; border-radius:12px; padding:14px;">
-                <div style="font-size:12px; font-weight:800; color:#be123c; margin-bottom:6px;">🚨 Himbauan Akses Portal (00:00 – 04:00 WIB)</div>
-                <p style="font-size:12px; color:#881337; margin:0; line-height:1.5;">
-                    Pukul 12 malam hingga 4 pagi, portal setiap jalan RW 05 ditutup. Akses keluar masuk warga wajib melalui portal pos satpam utama.
-                </p>
+                <div style="font-size:12px; font-weight:800; color:#be123c; margin-bottom:6px;">🚨 Himbauan Keamanan</div>
+                <p id="info-himbauan-keamanan" style="font-size:12px; color:#881337; margin:0; line-height:1.5;">Belum diatur admin</p>
             </div>
         </div>
-
     </div>
+</div>
+
+<!-- MODAL POPUP PUSH UPDATE APLIKASI -->
+<div id="modalPushUpdateApp" class="modal-overlay" style="position:fixed; top:0; left:0; width:100%; height:100%; z-index:1000001; display:none; align-items:center; justify-content:center; padding:16px;">
+  <div class="modal-box" style="background:#fff; width:100%; max-width:380px; border-radius:24px; border:2px solid #0f172a; box-shadow:0 10px 25px rgba(0,0,0,0.2); overflow:hidden; text-align:center; padding:24px;">
+    <div style="width:64px; height:64px; background:#fef3c7; border-radius:20px; display:flex; align-items:center; justify-content:center; font-size:32px; margin:0 auto 12px;">🚀</div>
+    <div style="font-size:10px; font-weight:800; color:#2563eb; letter-spacing:1px; text-transform:uppercase; margin-bottom:4px;">Pembaruan Aplikasi Tersedia</div>
+    <h3 id="appUpdateVersi" style="font-size:20px; font-weight:900; color:#0f172a; margin-bottom:12px;">Versi Baru</h3>
+    <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:12px; text-align:left; margin-bottom:18px;">
+      <div style="font-size:11px; font-weight:800; color:#64748b; margin-bottom:6px;">Catatan Perubahan:</div>
+      <p id="appUpdateCatatan" style="font-size:12px; color:#334155; line-height:1.5; white-space:pre-line; margin:0;"></p>
+    </div>
+    <div style="display:flex; gap:10px;">
+      <button onclick="closePushUpdateModal()" style="flex:1; padding:12px; border-radius:12px; border:1px solid #cbd5e1; background:#f1f5f9; color:#475569; font-weight:800; font-size:13px; cursor:pointer;">Nanti Saja</button>
+      <a id="appUpdateLinkBtn" href="#" target="_blank" style="flex:1; padding:12px; border-radius:12px; background:#0f172a; color:#fbbf24; font-weight:800; font-size:13px; text-decoration:none; display:flex; align-items:center; justify-content:center; gap:6px;">Unduh Update</a>
+    </div>
+  </div>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, doc, collection, onSnapshot, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCZtvImbyZmqoEoY1hYZcuCbUpIl3R1fhE",
@@ -310,99 +432,402 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Sync real-time saldo utama ke index
-onSnapshot(doc(db, "kas_rw05", "saldo_utama"), (snap) => {
-  if(snap.exists()) {
+// LISTENER PUSH UPDATE APLIKASI REALTIME
+onSnapshot(doc(db, "sistem_app", "update_info"), (snap) => {
+  const modal = document.getElementById('modalPushUpdateApp');
+  if (!modal) return;
+  const box = modal.querySelector('.modal-box');
+
+  if (snap.exists()) {
+    const data = snap.data();
+    if (data.isAktif === true) {
+      const elVersi = document.getElementById('appUpdateVersi');
+      const elCatatan = document.getElementById('appUpdateCatatan');
+      const elLink = document.getElementById('appUpdateLinkBtn');
+
+      if (elVersi) elVersi.textContent = 'Versi ' + (data.versi || '');
+      if (elCatatan) elCatatan.textContent = data.catatan || 'Perbaikan performa & peningkatan sistem.';
+      if (elLink) elLink.href = data.linkDownload || '#';
+
+      modal.style.display = 'flex';
+      setTimeout(() => {
+        modal.classList.add('show-overlay');
+        if (box) box.classList.add('show');
+      }, 10);
+    } else {
+      window.closePushUpdateModal();
+    }
+  } else {
+    window.closePushUpdateModal();
+  }
+});
+
+window.closePushUpdateModal = function() {
+  const modal = document.getElementById('modalPushUpdateApp');
+  if (!modal) return;
+  const box = modal.querySelector('.modal-box');
+  if (box) box.classList.remove('show');
+  modal.classList.remove('show-overlay');
+  setTimeout(() => { modal.style.display = 'none'; }, 250);
+};
+
+onSnapshot(doc(db, "kas_rw05", "saldo_utama"), (snap = null) => {
+  if (snap && snap.exists()) {
     const data = snap.data();
     const total = data.total || 0;
     const elSaldo = document.getElementById('manualSaldoKas');
     const elInfo = document.getElementById('manualInfoKas');
-    if(elSaldo) elSaldo.textContent = 'Rp ' + Number(total).toLocaleString('id-ID');
-    if(elInfo && data.pesan) elInfo.textContent = data.pesan;
+    if (elSaldo) elSaldo.textContent = 'Rp ' + Number(total).toLocaleString('id-ID');
+    if (elInfo && data.pesan) elInfo.textContent = data.pesan;
+  }
+});
+
+onSnapshot(query(collection(db, "keamanan_rw05"), orderBy("createdAt", "desc"), limit(1)), (snap) => {
+  const elJam = document.getElementById('info-jam-jaga');
+  const elPetugas = document.getElementById('info-nama-petugas');
+  const elHimbauan = document.getElementById('info-himbauan-keamanan');
+  if (!snap.empty) {
+    snap.forEach((docItem) => {
+      const d = docItem.data();
+      if (elJam) elJam.textContent = d.jadwal || 'Belum diatur admin';
+      if (elPetugas) {
+        const namaText = d.nama || '-';
+        const phoneText = d.phone ? ` • 📞 ${d.phone}` : '';
+        elPetugas.textContent = `${namaText}${phoneText}`;
+      }
+      if (elHimbauan) {
+        elHimbauan.textContent = d.himbauan || 'Belum diatur admin';
+      }
+    });
+  } else {
+    if (elJam) elJam.textContent = 'Belum diatur admin';
+    if (elPetugas) elPetugas.textContent = 'Belum diatur admin';
+    if (elHimbauan) elHimbauan.textContent = 'Belum diatur admin';
+  }
+});
+
+let unsubscribeModalIndex = null;
+
+function renderEmptyStateIndex(modalBody, titleMsg) {
+  modalBody.innerHTML = `
+    <div style="text-align:center; padding:16px 12px; color:#64748b;">
+      <div style="font-size:48px; margin-bottom:14px;">📭</div>
+      <div style="font-size:15px; font-weight:900; color:#10131a; margin-bottom:6px;">Belum Ada Data dari Admin</div>
+      <div style="font-size:12px; color:#475569; line-height:1.5;">${titleMsg}</div>
+    </div>
+  `;
+}
+
+window.openUniversalModalIndex = function(type) {
+  const modal = document.getElementById('universal-modal');
+  const box = modal.querySelector('.modal-box');
+  const iconEl = document.getElementById('modal-icon-title');
+  const titleEl = document.getElementById('modal-title');
+  const bodyEl = document.getElementById('modal-body');
+
+  if(!modal || !box) return;
+  if(unsubscribeModalIndex) { unsubscribeModalIndex(); unsubscribeModalIndex = null; }
+
+  bodyEl.innerHTML = '<div style="text-align:center; font-size:12px; color:#94a3b8; padding:24px 0;">Memuat data...</div>';
+  modal.style.display = 'flex';
+  setTimeout(() => {
+    modal.classList.add('show-overlay');
+    box.classList.add('show');
+  }, 10);
+
+  if (type === 'sembako') {
+    iconEl.textContent = '🛒'; titleEl.textContent = 'Harga Sembako RW 05';
+    unsubscribeModalIndex = onSnapshot(query(collection(db, "sembako_rw05"), orderBy("createdAt", "desc"), limit(5)), (snap) => {
+      if(snap.empty) { renderEmptyStateIndex(bodyEl, 'Harga sembako belum diupdate oleh pengurus RW 05.'); return; }
+      let html = '<p style="font-size:12px;color:#64748b;margin-bottom:12px;line-height:1.4;">Di Update Oleh Admin, Dan Harga Ini Hanyalah Patokan:</p>';
+      let pasarLokasi = 'Warung Gotong Royong RW 05';
+      snap.forEach((docItem) => {
+        const d = docItem.data(); if(d.pasar) pasarLokasi = d.pasar;
+        html += `<div style="background:#fcfbf7; border:1.5px solid #10131a; border-radius:12px; padding:10px 14px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-size:13px; font-weight:800; color:#10131a;">🌾 ${d.nama || 'Sembako'}</span>
+          <span style="font-size:13px; font-weight:800; color:#2563eb;">Rp ${Number(d.harga||0).toLocaleString('id-ID')} /${d.satuan||'Kg'}</span>
+        </div>`;
+      });
+      html += `<div style="background:#eff6ff; border:1.5px solid #2563eb; border-radius:12px; padding:10px; font-size:11px; font-weight:800; color:#1e40af; margin-top:8px;">📍 Lokasi: ${pasarLokasi}</div>`;
+      bodyEl.innerHTML = html;
+    });
+  } else if (type === 'lingkungan') {
+    iconEl.textContent = '🧹'; titleEl.textContent = 'Lingkungan Bersih';
+    unsubscribeModalIndex = onSnapshot(query(collection(db, "lingkungan_rw05"), orderBy("createdAt", "desc"), limit(1)), (snap) => {
+      if(snap.empty) { renderEmptyStateIndex(bodyEl, 'Jadwal kerja bakti lingkungan belum diupdate oleh pengurus RW 05.'); return; }
+      snap.forEach((docItem) => {
+        const d = docItem.data();
+        bodyEl.innerHTML = `<div style="background:#f0fdf4; border:1.5px solid #16a34a; border-radius:12px; padding:14px; margin-bottom:14px;"><div style="font-size:11px; font-weight:800; color:#166534; text-transform:uppercase; margin-bottom:4px;">🧹 ${d.judul || 'Jadwal Kerja Bakti'}:</div><div style="font-size:14px; font-weight:800; color:#15803d;">${d.tanggal || '-'}</div></div><div style="font-size:12px; color:#334155;">📍 <b>Titik Kumpul:</b> ${d.lokasi || '-'}</div>`;
+      });
+    });
+  } else if (type === 'posyandu') {
+    iconEl.textContent = '👶'; titleEl.textContent = 'Layanan Posyandu';
+    unsubscribeModalIndex = onSnapshot(query(collection(db, "posyandu_rw05"), orderBy("createdAt", "desc"), limit(1)), (snap) => {
+      if(snap.empty) { renderEmptyStateIndex(bodyEl, 'Jadwal pelayanan posyandu belum diupdate oleh pengurus RW 05.'); return; }
+      snap.forEach((docItem) => {
+        const d = docItem.data();
+        bodyEl.innerHTML = `<div style="background:#fdf2f8; border:1.5px solid #db2777; border-radius:12px; padding:14px; margin-bottom:14px;"><div style="font-size:11px; font-weight:800; color:#9d174d; text-transform:uppercase; margin-bottom:4px;">🏥 ${d.judul || 'Jadwal Pelayanan'}:</div><div style="font-size:14px; font-weight:800; color:#be185d;">${d.jadwal || '-'}</div></div><div style="font-size:12px; color:#334155;">💉 <b>Layanan:</b> ${d.keterangan || '-'}</div>`;
+      });
+    });
+  } else if (type === 'belajar') {
+    iconEl.textContent = '📚'; titleEl.textContent = 'Belajar Bersama';
+    unsubscribeModalIndex = onSnapshot(query(collection(db, "kegiatan_rw05"), orderBy("createdAt", "desc"), limit(1)), (snap) => {
+      if(snap.empty) { renderEmptyStateIndex(bodyEl, 'Jadwal belajar bersama/bimbel belum diupdate oleh pengurus RW 05.'); return; }
+      snap.forEach((docItem) => {
+        const d = docItem.data();
+        bodyEl.innerHTML = `<div style="background:#eff6ff; border:1.5px solid #2563eb; border-radius:12px; padding:14px; margin-bottom:14px;"><div style="font-size:11px; font-weight:800; color:#1e40af; text-transform:uppercase; margin-bottom:4px;">🎓 ${d.judul || 'Bimbel'}:</div><div style="font-size:14px; font-weight:800; color:#1d4ed8;">${d.jadwal || '-'}</div></div><div style="font-size:12px; color:#334155;">✏️ <b>Detail:</b> ${d.isi || '-'}</div>`;
+      });
+    });
+  } else if (type === 'datawarga') {
+    iconEl.textContent = '📋'; titleEl.textContent = 'Data Warga';
+    bodyEl.innerHTML = `
+      <p style="font-size:13px; color:#334155; line-height:1.6; margin-bottom:18px;">Pindahan baru, pembuatan surat pengantar, atau pembaruan KK/KTP wajib lapor ke Ketua RT setempat.</p>
+      <a href="https://wa.me/6289673580756?text=Halo%20Sekretaris%20RW05,%20saya%20ingin%20mengurus%20Data%20Warga" target="_blank" style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; background:#16a34a; color:#fff; font-weight:700; font-size:13px; padding:12px 0; border-radius:12px; text-decoration:none; box-sizing:border-box;">💬 Hubungi Sekretaris RW via WA</a>
+    `;
+  } else if (type === 'petaBalai') {
+    iconEl.textContent = '📍'; titleEl.textContent = 'Balai Serbaguna RW 05';
+    bodyEl.innerHTML = `
+      <div style="text-align:left">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
+          <img src="img/balai-1.jpg" style="width:100%;height:110px;object-fit:cover;border-radius:12px;border:1px solid #e2e8f0" alt="Papan Balai RW 05">
+          <img src="img/balai-2.jpg" style="width:100%;height:110px;object-fit:cover;border-radius:12px;border:1px solid #e2e8f0" alt="Ruangan Dalam Balai RW 05">
+        </div>
+        <p style="font-size:12px;color:#334155;line-height:1.5;margin-bottom:14px;background:#f8fafc;padding:10px 12px;border-radius:10px;border:1px solid #f1f5f9">
+          <b>📍 Alamat Lengkap:</b><br>
+          Jl. Poncol Gg. XI No.15 8, RT.8/RW.5, Kuningan Bar., Kec. Mampang Prpt., Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12710
+        </p>
+        <a href="https://maps.app.goo.gl/qYc6rwZgjHvN3AWCA" target="_blank" style="display:block;width:100%;background:#2563eb;color:#ffffff;text-align:center;padding:12px;border-radius:12px;font-weight:800;text-decoration:none;font-size:13px;box-shadow:0 4px 12px rgba(37,99,235,0.25)">
+          🗺️ Buka Navigasi Google Maps
+        </a>
+      </div>
+    `;
+  }
+};
+
+window.closeUniversalModal = function() {
+  const modal = document.getElementById('universal-modal');
+  if(!modal) return;
+  const box = modal.querySelector('.modal-box');
+  if(box) box.classList.remove('show');
+  modal.classList.remove('show-overlay');
+  setTimeout(() => { modal.style.display = 'none'; }, 250);
+  if(unsubscribeModalIndex) { unsubscribeModalIndex(); unsubscribeModalIndex = null; }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('[data-modal]').forEach(item => {
+    item.addEventListener('click', () => {
+      const modalType = item.getAttribute('data-modal');
+      if (modalType === 'sembako' || modalType === 'lingkungan' || modalType === 'posyandu' || modalType === 'belajar' || modalType === 'datawarga' || modalType === 'petaBalai') {
+        openUniversalModalIndex(modalType);
+      }
+    });
+  });
+  
+  const uniModal = document.getElementById('universal-modal');
+  if(uniModal) {
+    uniModal.addEventListener('click', (e) => {
+      if(e.target === uniModal) closeUniversalModal();
+    });
+  }
+
+  const pushModal = document.getElementById('modalPushUpdateApp');
+  if(pushModal) {
+    pushModal.addEventListener('click', (e) => {
+      if(e.target === pushModal) closePushUpdateModal();
+    });
+  }
+
+  const fallbackInput = document.getElementById('fallbackFileInput');
+  if(fallbackInput) {
+    fallbackInput.addEventListener('change', (e) => {
+      const file = e.target.files && e.target.files[0];
+      if(!file) return;
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (evt) => {
+        sessionStorage.setItem('temp_aduan_photo', evt.target.result);
+        closeCustomCamera();
+        window.location.href = 'aduan-warga.html?autoOpen=1';
+      };
+    });
   }
 });
 </script>
 
-<script src="script.js?v=27"></script>
-
+<script src="script.js"></script>
 <script>
     window.addEventListener('load', () => {
         const splash = document.getElementById('splash-screen');
-        if(splash) {
-            setTimeout(() => {
-                splash.classList.add('fade-out');
-            }, 1000);
-        }
-        
-        // Push state awal untuk simulasi double-tap back to exit
+        if(splash) { setTimeout(() => { splash.classList.add('fade-out'); }, 1000); }
         window.history.pushState(null, '', window.location.href);
-
-        // Load data kas manual dari localStorage (jika sudah di-set admin)
         const savedKasSaldo = localStorage.getItem('rw05_manual_kas_saldo');
         const savedKasInfo = localStorage.getItem('rw05_manual_kas_info');
-        if (savedKasSaldo) document.getElementById('manualSaldoKas').textContent = savedKasSaldo;
-        if (savedKasInfo) document.getElementById('manualInfoKas').textContent = savedKasInfo;
+        if (savedKasSaldo && document.getElementById('manualSaldoKas')) document.getElementById('manualSaldoKas').textContent = savedKasSaldo;
+        if (savedKasInfo && document.getElementById('manualInfoKas')) document.getElementById('manualInfoKas').textContent = savedKasInfo;
+
+        // LOGIC AUTO SLIDE & SWIPE INDIKATOR
+        const track = document.getElementById('sliderTrack');
+        const dots = document.querySelectorAll('.slider-dots .dot');
+        let currentIndex = 0;
+        let slideInterval;
+
+        function updateDots(index) {
+          dots.forEach((dot, idx) => {
+            if (idx === index) dot.classList.add('active');
+            else dot.classList.remove('active');
+          });
+        }
+
+        function scrollToSlide(index) {
+          if (!track) return;
+          const slideWidth = track.clientWidth;
+          track.scrollTo({
+            left: slideWidth * index,
+            behavior: 'smooth'
+          });
+          updateDots(index);
+        }
+
+        function startAutoSlide() {
+          slideInterval = setInterval(() => {
+            currentIndex = (currentIndex + 1) % dots.length;
+            scrollToSlide(currentIndex);
+          }, 3500);
+        }
+
+        function stopAutoSlide() {
+          clearInterval(slideInterval);
+        }
+
+        if (track) {
+          track.addEventListener('scroll', () => {
+            const slideWidth = track.clientWidth;
+            if (slideWidth > 0) {
+              const newIndex = Math.round(track.scrollLeft / slideWidth);
+              if (newIndex !== currentIndex && newIndex >= 0 && newIndex < dots.length) {
+                currentIndex = newIndex;
+                updateDots(currentIndex);
+              }
+            }
+          });
+
+          track.addEventListener('touchstart', stopAutoSlide);
+          track.addEventListener('touchend', startAutoSlide);
+          track.addEventListener('mouseenter', stopAutoSlide);
+          track.addEventListener('mouseleave', startAutoSlide);
+
+          startAutoSlide();
+        }
     });
 
     let lastBackPress = 0;
     const exitToast = document.getElementById('exit-toast');
-
     window.addEventListener('popstate', () => {
         const currentTime = new Date().getTime();
         window.history.pushState(null, '', window.location.href);
-
         if (currentTime - lastBackPress < 2000) {
             if (exitToast) exitToast.classList.remove('show');
-            if (typeof window.close === 'function') {
-                window.close();
-            } else {
-                alert('Aplikasi ditutup. Silakan tutup tab browser.');
-            }
+            if (typeof window.close === 'function') window.close();
+            else alert('Aplikasi ditutup. Silakan tutup tab browser.');
         } else {
             lastBackPress = currentTime;
             if (exitToast) {
                 exitToast.classList.add('show');
-                setTimeout(() => {
-                    exitToast.classList.remove('show');
-                }, 2000);
+                setTimeout(() => { exitToast.classList.remove('show'); }, 2000);
             }
         }
     });
 
     function openSatpamModal() {
         const modal = document.getElementById('satpam-modal');
+        if (!modal) return;
         const box = modal.querySelector('.satpam-box');
-
-        const savedGuard = localStorage.getItem('rw05_satpam_jaga');
-        if(savedGuard) {
-            try {
-                const data = JSON.parse(savedGuard);
-                document.getElementById('info-jam-jaga').textContent = data.jam || '22:00 – 04:00 WIB';
-                document.getElementById('info-nama-petugas').textContent = data.petugas || 'Belum diatur admin';
-            } catch(e) {
-                console.error("Gagal parse data satpam", e);
-            }
-        }
-
         if(modal && box) {
             modal.style.display = 'flex';
-            setTimeout(() => {
-                modal.classList.add('show-overlay');
-                box.classList.add('show');
-            }, 10);
+            setTimeout(() => { modal.classList.add('show-overlay'); box.classList.add('show'); }, 10);
+        }
+    }
+    function closeSatpamModal() {
+        const modal = document.getElementById('satpam-modal');
+        if (!modal) return;
+        const box = modal.querySelector('.satpam-box');
+        if(modal && box) {
+            box.classList.remove('show'); modal.classList.remove('show-overlay');
+            setTimeout(() => { modal.style.display = 'none'; }, 250);
         }
     }
 
-    function closeSatpamModal() {
-        const modal = document.getElementById('satpam-modal');
-        const box = modal.querySelector('.satpam-box');
-        if(modal && box) {
-            box.classList.remove('show');
-            modal.classList.remove('show-overlay');
-            setTimeout(() => {
-                modal.style.display = 'none';
-            }, 250);
-        }
+    let currentStream = null;
+    let useFacingMode = "environment";
+
+    async function openCustomCamera() {
+      const cameraOverlay = document.getElementById('cameraOverlay');
+      const videoEl = document.getElementById('cameraStream');
+      if (!cameraOverlay || !videoEl) return;
+
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        alert('⚠️ Kamera tidak didukung di browser ini. Mengalihkan ke galeri...');
+        triggerFileInputFallback();
+        return;
+      }
+
+      cameraOverlay.classList.add('show');
+      await startCameraStream(useFacingMode);
+    }
+
+    async function startCameraStream(facing) {
+      const videoEl = document.getElementById('cameraStream');
+      if (currentStream) {
+        currentStream.getTracks().forEach(track => track.stop());
+      }
+      try {
+        currentStream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: facing, width: { ideal: 1280 }, height: { ideal: 720 } },
+          audio: false
+        });
+        videoEl.srcObject = currentStream;
+      } catch (err) {
+        console.warn('Gagal akses kamera stream:', err);
+        alert('⚠️ Izin kamera ditolak atau tidak tersedia. Membuka pemilih file...');
+        triggerFileInputFallback();
+      }
+    }
+
+    function toggleCameraFacing() {
+      useFacingMode = (useFacingMode === "environment") ? "user" : "environment";
+      startCameraStream(useFacingMode);
+    }
+
+    function closeCustomCamera() {
+      const cameraOverlay = document.getElementById('cameraOverlay');
+      if (cameraOverlay) cameraOverlay.classList.remove('show');
+      if (currentStream) {
+        currentStream.getTracks().forEach(track => track.stop());
+        currentStream = null;
+      }
+    }
+
+    function triggerFileInputFallback() {
+      const fallbackInput = document.getElementById('fallbackFileInput');
+      if(fallbackInput) fallbackInput.click();
+    }
+
+    function capturePhotoFromCamera() {
+      const videoEl = document.getElementById('cameraStream');
+      const canvas = document.getElementById('cameraCanvas');
+      if (!videoEl || !canvas) return;
+
+      const context = canvas.getContext('2d');
+      canvas.width = videoEl.videoWidth || 640;
+      canvas.height = videoEl.videoHeight || 480;
+      context.drawImage(videoEl, 0, 0, canvas.width, canvas.height);
+
+      const capturedBase64 = canvas.toDataURL('image/jpeg', 0.8);
+      
+      sessionStorage.setItem('temp_aduan_photo', capturedBase64);
+      closeCustomCamera();
+      window.location.href = 'aduan-warga.html?autoOpen=1';
     }
 </script>
 </body>
