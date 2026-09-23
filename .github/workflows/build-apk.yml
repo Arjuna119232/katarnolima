@@ -203,20 +203,11 @@ jobs:
           EOF
           fi
 
-      - name: Build Signed Release APK (Root Gradlew)
+      - name: Build Signed Release APK (Inside Android Folder)
+        working-directory: android
         run: |
-          # Pastikan gradle wrapper ada di root atau cari di android/
-          GRADLE_CMD="./gradlew"
-          if [ ! -f "gradlew" ]; then
-            if [ -f "android/gradlew" ]; then
-              GRADLE_CMD="android/gradlew"
-            else
-              # generate wrapper jika belum ada
-              gradle wrapper || true
-            fi
-          fi
-          chmod +x $GRADLE_CMD || true
-          $GRADLE_CMD assembleRelease
+          chmod +x gradlew
+          ./gradlew assembleRelease
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
