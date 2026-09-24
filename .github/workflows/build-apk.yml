@@ -28,8 +28,14 @@ jobs:
 
       - name: Install Dependencies & Prepare Capacitor
         run: |
-          npm init -y || true
-          npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/app @capacitor/push-notifications --save-dev
+          cat << 'EOF' > package.json
+          {
+            "name": "katarnolima-rw05",
+            "version": "2.1.0",
+            "private": true
+          }
+          EOF
+          npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/assets @capacitor/push-notifications --save-dev
           pip install pillow -q
 
       - name: Populate Web Assets
@@ -45,7 +51,7 @@ jobs:
           cat << 'EOF' > capacitor.config.json
           {
             "appId": "com.katarnolima.rw05",
-            "appName": "KATARNOLIMA",
+            "appName": "KATARNOLIMA RW05",
             "webDir": "www",
             "plugins": {
               "PushNotifications": {
@@ -55,11 +61,10 @@ jobs:
           }
           EOF
 
-      - name: Force Re-create Android Native Project & Sync Firebase
+      - name: Ensure Android Project Exists & Copy Firebase Config
         run: |
-          # Hapus folder android lama yang kosong/tidak lengkap agar dibuat bersih dari awal
           if [ ! -f "android/app/build.gradle" ]; then
-            echo "Proyek Android belum lengkap, membuat ulang dari nol..."
+            echo "Membuat folder platform android dari awal..."
             rm -rf android
             npx cap add android
           fi
@@ -125,7 +130,7 @@ jobs:
               print('Ikon Berhasil Diterapkan!')
           "
 
-      - name: Bump Version to v2.1 in build.gradle
+      - name: Force Version 2.1 in Android Native
         run: |
           BUILD_GRADLE="android/app/build.gradle"
           if [ -f "$BUILD_GRADLE" ]; then
@@ -135,23 +140,25 @@ jobs:
             else
               sed -i '/defaultConfig {/a \        versionCode 2\n        versionName "2.1"' "$BUILD_GRADLE"
             fi
-            echo "Versi v2.1 berhasil diperbarui!"
+            echo "Versi v2.1 berhasil diperbarui di build.gradle!"
           fi
 
       - name: Decode Keystore from GitHub Secrets
         run: |
+          mkdir -p android/app
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/release.p12
 
-      - name: Build Signed Release APK
-        working-directory: android
+      - name: Fix Kotlin Conflict & Configure Signing
         run: |
-          cat << 'EOF' >> app/build.gradle
+          BUILD_GRADLE="android/app/build.gradle"
+          if [ -f "$BUILD_GRADLE" ]; then
+            cat << 'EOF' >> "$BUILD_GRADLE"
 
           configurations.all {
               resolutionStrategy {
                   force 'org.jetbrains.kotlin:kotlin-stdlib:1.8.22'
-                  force 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22'
                   force 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22'
+                  force 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22'
               }
           }
 
@@ -173,6 +180,15 @@ jobs:
               }
           }
           EOF
+          fi
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+
+      - name: Build Signed Release APK
+        working-directory: android
+        run: |
           chmod +x gradlew
           ./gradlew assembleRelease
         env:
@@ -190,7 +206,7 @@ jobs:
             find android/ -name "*.apk" -exec cp {} dist/katarnolima-rw05-v2.1.apk \;
           fi
 
-      - name: Upload APK Artifact
+      - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: katarnolima-rw05-v2.1
