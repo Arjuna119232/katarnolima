@@ -1,4 +1,4 @@
-name: Build Signed Android APK v2.1
+Name: Build Signed Android APK v2.1
 
 on:
   push:
@@ -26,86 +26,109 @@ jobs:
           distribution: temurin
           java-version: '21'
 
-      - name: Prepare Web Dir and Copy Web Assets
+      - name: Install Capacitor & Dependencies
         run: |
-          rm -rf android www
-          mkdir -p www assets
-          
-          if [ -f "icon.png" ]; then
-            cp icon.png assets/icon.png
-          fi
-          
-          # Salin seluruh file web asli ke folder www
-          cp -r index.html script.js manifest.json pages assets www/ 2>/dev/null || true
-          
-          # Buat package.json langsung dengan versi 2.1.0
-          cat << 'EOF' > package.json
-          {
-            "name": "katarnolima-rw05",
-            "version": "2.1.0",
-            "private": true
-          }
-          EOF
-          
-          npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/assets @capacitor/push-notifications --save-dev || true
-          
-          cat << 'EOF' > capacitor.config.json
-          {
-            "appId": "com.katarnolima.rw05",
-            "appName": "KATARNOLIMA RW05",
-            "webDir": "www",
-            "plugins": {
-              "PushNotifications": {
-                "presentationOptions": ["badge", "sound", "alert"]
-              }
-            },
-            "android": {
-              "icon": "assets/icon.png"
-            }
-          }
-          EOF
-          
-          npx cap add android
+          npm init -y || true
+          npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/app @capacitor/push-notifications
+          pip install pillow -q
 
-      - name: Copy google-services.json to Native Android
+      - name: Populate Web Assets
         run: |
+          mkdir -p www
+          rsync -av --exclude='.git' \
+                    --exclude='.github' \
+                    --exclude='android' \
+                    --exclude='node_modules' \
+                    --exclude='www' \
+                    ./ www/
+          echo '{"appId":"com.katarnolima.rw05","appName":"KATARNOLIMA","webDir":"www"}' > capacitor.config.json
+
+      - name: Init/Sync Android & Copy Firebase Config
+        run: |
+          npx cap add android || true
           if [ -f "google-services.json" ]; then
-            mkdir -p android/app
             cp google-services.json android/app/google-services.json
-            echo "google-services.json successfully copied to android/app/"
           fi
-
-      - name: Sync Capacitor Native & Generate Assets
-        run: |
-          npx cap copy android
-          npx @capacitor/assets generate --android || true
           npx cap sync android
 
-      - name: Force Version 2.1 in Android Native (Gradle & Manifest)
+      - name: Apply HD Safe-Zone Icon
+        run: |
+          python3 -c "
+          import os, glob
+          from PIL import Image
+
+          src_path = 'img/katar-app-icon.png'
+          if not os.path.exists(src_path):
+              src_path = 'img/logo-hd.png'
+          if not os.path.exists(src_path):
+              src_path = 'img/logo-resmi-karang-taruna.jpg'
+
+          if os.path.exists(src_path):
+              im = Image.open(src_path).convert('RGBA')
+
+              res_dir = 'android/app/src/main/res'
+              for xml_file in glob.glob(f'{res_dir}/mipmap-*/ic_launcher*.xml') + glob.glob(f'{res_dir}/drawable*/ic_launcher*.xml'):
+                  try:
+                      os.remove(xml_file)
+                  except Exception:
+                      pass
+
+              canvas_size = 2048
+              canvas = Image.new('RGBA', (canvas_size, canvas_size), (255, 255, 255, 0))
+
+              target_logo_size = int(canvas_size * 0.65)
+              im.thumbnail((target_logo_size, target_logo_size), Image.Resampling.LANCZOS)
+
+              pos_x = (canvas_size - im.width) // 2
+              pos_y = (canvas_size - im.height) // 2
+              canvas.paste(im, (pos_x, pos_y), im)
+
+              maps = {
+                  'mipmap-mdpi': 48,
+                  'mipmap-hdpi': 72,
+                  'mipmap-xhdpi': 96,
+                  'mipmap-xxhdpi': 144,
+                  'mipmap-xxxhdpi': 192
+              }
+
+              for folder, px in maps.items():
+                  target_dir = os.path.join(res_dir, folder)
+                  os.makedirs(target_dir, exist_ok=True)
+                  
+                  resized_icon = canvas.resize((px, px), Image.Resampling.LANCZOS)
+                  
+                  resized_icon.save(os.path.join(target_dir, 'ic_launcher.png'))
+                  resized_icon.save(os.path.join(target_dir, 'ic_launcher_round.png'))
+                  resized_icon.save(os.path.join(target_dir, 'ic_launcher_foreground.png'))
+
+              print('Ikon Berhasil Diterapkan!')
+          "
+
+      - name: Bump Version to v2.1 in build.gradle
         run: |
           BUILD_GRADLE="android/app/build.gradle"
-          if [ -f "$BUILD_GRADLE" ]; then
-            echo "Forcing Version 2.1 in build.gradle..."
+          if grep -q "versionCode" "$BUILD_GRADLE"; then
             sed -i 's/versionCode [0-9]*/versionCode 2/g' "$BUILD_GRADLE"
             sed -i 's/versionName "[^"]*"/versionName "2.1"/g' "$BUILD_GRADLE"
+          else
+            echo "Menambahkan konfigurasi versi ke defaultConfig..."
+            sed -i '/defaultConfig {/a \        versionCode 2\n        versionName "2.1"' "$BUILD_GRADLE"
           fi
 
-      - name: Decode Keystore from Secrets
+      - name: Decode Keystore from GitHub Secrets
         run: |
-          mkdir -p android/app
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/release.p12
 
-      - name: Fix Kotlin Conflict & Configure Signing
+      - name: Build Signed Release APK
+        working-directory: android
         run: |
-          BUILD_GRADLE="android/app/build.gradle"
-          if [ -f "$BUILD_GRADLE" ]; then
-            cat << 'EOF' >> "$BUILD_GRADLE"
+          cat << 'EOF' >> app/build.gradle
 
           configurations.all {
               resolutionStrategy {
                   force 'org.jetbrains.kotlin:kotlin-stdlib:1.8.22'
-                  force 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22'
                   force 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22'
+                  force 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22'
               }
           }
 
@@ -127,15 +150,6 @@ jobs:
               }
           }
           EOF
-          fi
-        env:
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-
-      - name: Build Signed Release APK
-        working-directory: android
-        run: |
           chmod +x gradlew
           ./gradlew assembleRelease
         env:
@@ -149,11 +163,9 @@ jobs:
           APK_SRC="android/app/build/outputs/apk/release/app-release.apk"
           if [ -f "$APK_SRC" ]; then
             cp "$APK_SRC" dist/katarnolima-rw05-v2.1.apk
-          else
-            find android/ -name "*.apk" -exec cp {} dist/katarnolima-rw05-v2.1.apk \;
           fi
 
-      - name: Upload Artifact
+      - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: katarnolima-rw05-v2.1
