@@ -38,9 +38,15 @@ jobs:
           npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/assets @capacitor/push-notifications --save-dev
           pip install pillow -q
 
-      - name: Populate Web Assets
+      - name: Populate Web Assets & Config
         run: |
-          mkdir -p www
+          mkdir -p www assets
+          
+          # Pastikan icon.png tersedia di folder assets untuk Capacitor
+          if [ -f "icon.png" ]; then
+            cp icon.png assets/icon.png
+          fi
+
           rsync -av --exclude='.git' \
                     --exclude='.github' \
                     --exclude='android' \
@@ -53,6 +59,9 @@ jobs:
             "appId": "com.katarnolima.rw05",
             "appName": "KATARNOLIMA RW05",
             "webDir": "www",
+            "android": {
+              "icon": "assets/icon.png"
+            },
             "plugins": {
               "PushNotifications": {
                 "presentationOptions": ["badge", "sound", "alert"]
@@ -74,28 +83,28 @@ jobs:
             cp google-services.json android/app/google-services.json
             echo "google-services.json berhasil disalin ke android/app/"
           fi
+          
           npx cap sync android
 
-      - name: Apply HD Safe-Zone Icon from Root (icon.png)
+      - name: Generate Native Assets & Override Safe-Zone Icon
         run: |
+          # 1. Jalankan generator aset bawaan Capacitor
+          npx @capacitor/assets generate --android || true
+
+          # 2. Timpa semua mipmap agar menggunakan icon.png secara permanen
           python3 -c "
           import os, glob
           from PIL import Image
 
           src_path = 'icon.png'
           if not os.path.exists(src_path):
-              src_path = 'img/katar-app-icon.png'
+              src_path = 'assets/icon.png'
 
           if os.path.exists(src_path):
               im = Image.open(src_path).convert('RGBA')
 
               res_dir = 'android/app/src/main/res'
-              for xml_file in glob.glob(f'{res_dir}/mipmap-*/ic_launcher*.xml') + glob.glob(f'{res_dir}/drawable*/ic_launcher*.xml'):
-                  try:
-                      os.remove(xml_file)
-                  except Exception:
-                      pass
-
+              
               canvas_size = 2048
               canvas = Image.new('RGBA', (canvas_size, canvas_size), (255, 255, 255, 0))
 
@@ -120,11 +129,12 @@ jobs:
                   
                   resized_icon = canvas.resize((px, px), Image.Resampling.LANCZOS)
                   
+                  # Simpan ke seluruh format launcher
                   resized_icon.save(os.path.join(target_dir, 'ic_launcher.png'))
                   resized_icon.save(os.path.join(target_dir, 'ic_launcher_round.png'))
                   resized_icon.save(os.path.join(target_dir, 'ic_launcher_foreground.png'))
 
-              print('Ikon icon.png berhasil diterapkan!')
+              print('Ikon Karang Taruna berhasil dipasang secara permanen!')
           "
 
       - name: Force Version 2.1 in build.gradle
