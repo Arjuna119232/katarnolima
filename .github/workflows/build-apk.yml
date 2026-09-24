@@ -28,63 +28,35 @@ jobs:
 
       - name: Prepare Web Dir and Generate Native Capacitor Android
         run: |
-          rm -rf android www
-          mkdir -p www
+          rm -rf www
+          mkdir -p www assets
+          
+          # Jika icon.png ada di root, salin ke folder assets agar terbaca capacitor/assets
+          if [ -f "icon.png" ]; then
+            cp icon.png assets/icon.png
+          fi
           
           # Copy seluruh aset web penting ke folder www
           cp -r index.html pages assets www/ 2>/dev/null || true
           
           npm init -y || true
-          npm install @capacitor/core @capacitor/cli @capacitor/android --save-dev || true
+          npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/assets --save-dev || true
           
-          # Buat capacitor.config.json dengan webDir 'www'
-          cat << 'EOF' > capacitor.config.json
-          {
-            "appId": "com.katarnolima.rw05",
-            "appName": "KATARNOLIMA RW05",
-            "webDir": "www",
-            "server": {
-              "androidScheme": "https"
-            }
-          }
-          EOF
+          # Gunakan file konfigurasi murni tanpa angka jika tersedia
+          if [ -f "capacitor.config.json" ]; then
+            echo "Using default capacitor.config.json"
+          fi
           
-          npx cap add android
+          if [ ! -d "android" ]; then
+            npx cap add android
+          fi
+          
           npx cap copy android
+          
+          # Generate ikon secara resmi menggunakan konfigurasi capacitor/assets
+          npx @capacitor/assets generate --android || true
+          
           npx cap sync android
-          
-          # HAPUS ADAPTIVE ICON XML BAWAAN AGAR ANDROID MEMBACA PNG KUSTOM
-          rm -rf android/app/src/main/res/mipmap-anydpi-v26
-          
-          # INJEKSI IKON KUSTOM KE FOLDER MIPMAP NATIVE ANDROID
-          mkdir -p android/app/src/main/res/mipmap-hdpi
-          mkdir -p android/app/src/main/res/mipmap-mdpi
-          mkdir -p android/app/src/main/res/mipmap-xhdpi
-          mkdir -p android/app/src/main/res/mipmap-xxhdpi
-          mkdir -p android/app/src/main/res/mipmap-xxxhdpi
-          
-          # Deteksi file ikon (bisa di root 'icon.png' atau di 'assets/img/katar-app-icon.png')
-          ICON_FILE="icon.png"
-          if [ ! -f "$ICON_FILE" ]; then
-            ICON_FILE="assets/img/katar-app-icon.png"
-          fi
-          
-          if [ -f "$ICON_FILE" ]; then
-            cp "$ICON_FILE" android/app/src/main/res/mipmap-hdpi/ic_launcher.png
-            cp "$ICON_FILE" android/app/src/main/res/mipmap-mdpi/ic_launcher.png
-            cp "$ICON_FILE" android/app/src/main/res/mipmap-xhdpi/ic_launcher.png
-            cp "$ICON_FILE" android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png
-            cp "$ICON_FILE" android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
-            
-            cp "$ICON_FILE" android/app/src/main/res/mipmap-hdpi/ic_launcher_round.png
-            cp "$ICON_FILE" android/app/src/main/res/mipmap-mdpi/ic_launcher_round.png
-            cp "$ICON_FILE" android/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png
-            cp "$ICON_FILE" android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png
-            cp "$ICON_FILE" android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png
-            echo "Custom icon successfully forced and adaptive config removed!"
-          else
-            echo "Warning: Custom icon file not found!"
-          fi
 
       - name: Copy google-services.json for Firebase & Notifications
         run: |
