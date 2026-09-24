@@ -26,10 +26,10 @@ jobs:
           distribution: temurin
           java-version: '21'
 
-      - name: Install Capacitor & Dependencies
+      - name: Install Dependencies & Prepare Capacitor
         run: |
           npm init -y || true
-          npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/app @capacitor/push-notifications
+          npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/app @capacitor/push-notifications --save-dev
           pip install pillow -q
 
       - name: Populate Web Assets
@@ -41,14 +41,33 @@ jobs:
                     --exclude='node_modules' \
                     --exclude='www' \
                     ./ www/
-          echo '{"appId":"com.katarnolima.rw05","appName":"KATARNOLIMA","webDir":"www"}' > capacitor.config.json
+          
+          cat << 'EOF' > capacitor.config.json
+          {
+            "appId": "com.katarnolima.rw05",
+            "appName": "KATARNOLIMA",
+            "webDir": "www",
+            "plugins": {
+              "PushNotifications": {
+                "presentationOptions": ["badge", "sound", "alert"]
+              }
+            }
+          }
+          EOF
 
-      - name: Init/Sync Android & Copy Firebase Config
+      - name: Ensure Android Project Exists & Sync Firebase
         run: |
-          npx cap add android || true
-          if [ -f "google-services.json" ]; then
-            cp google-services.json android/app/google-services.json
+          if [ ! -d "android" ]; then
+            echo "Membuat folder platform android..."
+            npx cap add android
           fi
+
+          if [ -f "google-services.json" ]; then
+            mkdir -p android/app
+            cp google-services.json android/app/google-services.json
+            echo "google-services.json berhasil disalin ke android/app/"
+          fi
+
           npx cap sync android
 
       - name: Apply HD Safe-Zone Icon
@@ -107,12 +126,17 @@ jobs:
       - name: Bump Version to v2.1 in build.gradle
         run: |
           BUILD_GRADLE="android/app/build.gradle"
-          if grep -q "versionCode" "$BUILD_GRADLE"; then
-            sed -i 's/versionCode [0-9]*/versionCode 2/g' "$BUILD_GRADLE"
-            sed -i 's/versionName "[^"]*"/versionName "2.1"/g' "$BUILD_GRADLE"
+          if [ -f "$BUILD_GRADLE" ]; then
+            if grep -q "versionCode" "$BUILD_GRADLE"; then
+              sed -i 's/versionCode [0-9]*/versionCode 2/g' "$BUILD_GRADLE"
+              sed -i 's/versionName "[^"]*"/versionName "2.1"/g' "$BUILD_GRADLE"
+            else
+              sed -i '/defaultConfig {/a \        versionCode 2\n        versionName "2.1"' "$BUILD_GRADLE"
+            fi
+            echo "Versi v2.1 berhasil diperbarui!"
           else
-            echo "Menambahkan konfigurasi versi ke defaultConfig..."
-            sed -i '/defaultConfig {/a \        versionCode 2\n        versionName "2.1"' "$BUILD_GRADLE"
+            echo "File build.gradle tidak ditemukan!"
+            exit 1
           fi
 
       - name: Decode Keystore from GitHub Secrets
@@ -163,6 +187,8 @@ jobs:
           APK_SRC="android/app/build/outputs/apk/release/app-release.apk"
           if [ -f "$APK_SRC" ]; then
             cp "$APK_SRC" dist/katarnolima-rw05-v2.1.apk
+          else
+            find android/ -name "*.apk" -exec cp {} dist/katarnolima-rw05-v2.1.apk \;
           fi
 
       - name: Upload APK Artifact
