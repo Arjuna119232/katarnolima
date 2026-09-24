@@ -1,4 +1,4 @@
-Name: Build Signed Android APK v2.1
+name: Build Signed Android APK v2.1
 
 on:
   push:
@@ -35,7 +35,7 @@ jobs:
           cp -r index.html pages assets www/ 2>/dev/null || true
           
           npm init -y || true
-          npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/assets || true
+          npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/assets --save-dev || true
           
           # Buat capacitor.config.json lengkap dengan konfigurasi ikon
           cat << 'EOF' > capacitor.config.json
@@ -54,8 +54,8 @@ jobs:
           
           npx cap add android
           
-          # Mengonversi dan memasang ikon secara otomatis dari folder assets/img/katar-app-icon.png
-          npx @capacitor/assets generate --icon assets/img/katar-app-icon.png --android
+          # Generate ikon otomatis dari file assets/img/katar-app-icon.png
+          npx @capacitor/assets generate --icon assets/img/katar-app-icon.png --android || true
           
           npx cap copy android
           npx cap sync android
