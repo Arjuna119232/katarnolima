@@ -28,10 +28,10 @@ jobs:
 
       - name: Prepare Web Dir and Generate Native Capacitor Android
         run: |
-          rm -rf www
+          rm -rf android www
           mkdir -p www assets
           
-          # Jika icon.png ada di root, salin ke folder assets agar terbaca capacitor/assets
+          # Jika icon.png ada di root, salin ke folder assets
           if [ -f "icon.png" ]; then
             cp icon.png assets/icon.png
           fi
@@ -42,18 +42,25 @@ jobs:
           npm init -y || true
           npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/assets --save-dev || true
           
-          # Gunakan file konfigurasi murni tanpa angka jika tersedia
-          if [ -f "capacitor.config.json" ]; then
-            echo "Using default capacitor.config.json"
-          fi
+          # Buat capacitor.config.json secara eksplisit dengan webDir 'www' dan konfigurasi ikon
+          cat << 'EOF' > capacitor.config.json
+          {
+            "appId": "com.katarnolima.rw05",
+            "appName": "KATARNOLIMA RW05",
+            "webDir": "www",
+            "server": {
+              "androidScheme": "https"
+            },
+            "android": {
+              "icon": "assets/icon.png"
+            }
+          }
+          EOF
           
-          if [ ! -d "android" ]; then
-            npx cap add android
-          fi
-          
+          npx cap add android
           npx cap copy android
           
-          # Generate ikon secara resmi menggunakan konfigurasi capacitor/assets
+          # Generate ikon menggunakan paket capacitor/assets secara resmi
           npx @capacitor/assets generate --android || true
           
           npx cap sync android
