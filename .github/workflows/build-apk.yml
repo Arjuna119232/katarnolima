@@ -1,4 +1,4 @@
-# Build Signed Release v2.1 - Clean Configuration
+# Build Signed Release v2.1 - Fix Gradlew Working Directory
 name: Build Signed Android APK v2.1 Clean
 
 on:
