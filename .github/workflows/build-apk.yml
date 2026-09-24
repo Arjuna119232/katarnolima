@@ -31,7 +31,7 @@ jobs:
           rm -rf android www
           mkdir -p www
           
-          # Copy seluruh aset web penting ke folder www (termasuk index.html, pages, assets, dll)
+          # Copy seluruh aset web penting ke folder www
           cp -r index.html pages assets www/ 2>/dev/null || true
           
           npm init -y || true
@@ -53,28 +53,37 @@ jobs:
           npx cap copy android
           npx cap sync android
           
-          # INJEKSI IKON DARI ROOT (icon.png) LANGSUNG KE NATIVE ANDROID MIPOPMAP
+          # HAPUS ADAPTIVE ICON XML BAWAAN AGAR ANDROID MEMBACA PNG KUSTOM
+          rm -rf android/app/src/main/res/mipmap-anydpi-v26
+          
+          # INJEKSI IKON KUSTOM KE FOLDER MIPMAP NATIVE ANDROID
           mkdir -p android/app/src/main/res/mipmap-hdpi
           mkdir -p android/app/src/main/res/mipmap-mdpi
           mkdir -p android/app/src/main/res/mipmap-xhdpi
           mkdir -p android/app/src/main/res/mipmap-xxhdpi
           mkdir -p android/app/src/main/res/mipmap-xxxhdpi
           
-          if [ -f "icon.png" ]; then
-            cp icon.png android/app/src/main/res/mipmap-hdpi/ic_launcher.png
-            cp icon.png android/app/src/main/res/mipmap-mdpi/ic_launcher.png
-            cp icon.png android/app/src/main/res/mipmap-xhdpi/ic_launcher.png
-            cp icon.png android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png
-            cp icon.png android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
+          # Deteksi file ikon (bisa di root 'icon.png' atau di 'assets/img/katar-app-icon.png')
+          ICON_FILE="icon.png"
+          if [ ! -f "$ICON_FILE" ]; then
+            ICON_FILE="assets/img/katar-app-icon.png"
+          fi
+          
+          if [ -f "$ICON_FILE" ]; then
+            cp "$ICON_FILE" android/app/src/main/res/mipmap-hdpi/ic_launcher.png
+            cp "$ICON_FILE" android/app/src/main/res/mipmap-mdpi/ic_launcher.png
+            cp "$ICON_FILE" android/app/src/main/res/mipmap-xhdpi/ic_launcher.png
+            cp "$ICON_FILE" android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png
+            cp "$ICON_FILE" android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
             
-            cp icon.png android/app/src/main/res/mipmap-hdpi/ic_launcher_round.png
-            cp icon.png android/app/src/main/res/mipmap-mdpi/ic_launcher_round.png
-            cp icon.png android/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png
-            cp icon.png android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png
-            cp icon.png android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png
-            echo "Custom icon from root successfully injected!"
+            cp "$ICON_FILE" android/app/src/main/res/mipmap-hdpi/ic_launcher_round.png
+            cp "$ICON_FILE" android/app/src/main/res/mipmap-mdpi/ic_launcher_round.png
+            cp "$ICON_FILE" android/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png
+            cp "$ICON_FILE" android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png
+            cp "$ICON_FILE" android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png
+            echo "Custom icon successfully forced and adaptive config removed!"
           else
-            echo "Warning: icon.png not found in root directory!"
+            echo "Warning: Custom icon file not found!"
           fi
 
       - name: Copy google-services.json for Firebase & Notifications
