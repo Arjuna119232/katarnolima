@@ -1,4 +1,3 @@
-# Build Signed Release v2.1 - Fix Gradlew Working Directory
 name: Build Signed Android APK v2.1 Clean
 
 on:
@@ -90,11 +89,9 @@ jobs:
           mkdir -p android/app
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/release.p12
 
-      - name: Fix Kotlin Conflict & Configure Signing
+      - name: Build Signed Release APK
         run: |
-          BUILD_GRADLE="android/app/build.gradle"
-          if [ -f "$BUILD_GRADLE" ]; then
-            cat << 'EOF' >> "$BUILD_GRADLE"
+          cat << 'EOF' >> android/app/build.gradle
 
           configurations.all {
               resolutionStrategy {
@@ -122,17 +119,8 @@ jobs:
               }
           }
           EOF
-          fi
-        env:
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-
-      - name: Build Signed Release APK
-        working-directory: android
-        run: |
-          chmod +x gradlew
-          ./gradlew assembleRelease
+          chmod +x android/gradlew
+          cd android && ./gradlew assembleRelease
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
