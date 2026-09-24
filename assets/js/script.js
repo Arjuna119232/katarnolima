@@ -86,30 +86,34 @@ document.addEventListener('DOMContentLoaded', function(){
         
         let permStatus = await pushNotifications.checkPermissions();
         
-        if (permStatus.receive === 'prompt' || permStatus.receive === 'none') {
+        if (permStatus.receive === 'prompt') {
           permStatus = await pushNotifications.requestPermissions();
         }
         
-        if (permStatus.receive === 'granted') {
-          console.log('Izin notifikasi native diberikan!');
-          pushNotifications.register();
-        } else {
+        if (permStatus.receive !== 'granted') {
           console.warn('Izin notifikasi ditolak oleh pengguna.');
+        } else {
+          console.log('Izin notifikasi diberikan!');
+          pushNotifications.register();
         }
       } else {
         if ('Notification' in window && Notification.permission === 'default') {
           Notification.requestPermission().then(function(permission) {
             if (permission === 'granted') {
-              console.log('Izin notifikasi Web/PWA diberikan.');
+              console.log('Izin notifikasi Web/PWA diberikan oleh warga.');
             }
           });
         }
       }
     } catch (e) {
-      console.warn('Error saat meminta izin notifikasi:', e);
+      console.warn('Gagal meminta izin notifikasi:', e);
     }
   }
-  mintaIzinNotifikasiNative();
+
+  // Berikan jeda 1 detik agar WebView Capacitor siap sempurna di halaman index
+  setTimeout(() => {
+    mintaIzinNotifikasiNative();
+  }, 1000);
 
   // ==========================================
   // STANDAR WEB API: KAMERA & LOKASI (GLOBAL)
