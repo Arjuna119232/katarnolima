@@ -1,4 +1,4 @@
-name: Build Signed Android APK v2.1 Clean
+name: Build Signed Android APK v2.1
 
 on:
   push:
@@ -64,8 +64,7 @@ jobs:
       - name: Init/Sync Android & Copy Firebase Config
         run: |
           if [ ! -f "android/gradlew" ]; then
-            echo "Membuat ulang folder android native..."
-            rm -rf android
+            echo "Membuat folder android native..."
             npx cap add android
           fi
 
@@ -88,10 +87,9 @@ jobs:
 
           if os.path.exists(src_path):
               im = Image.open(src_path).convert('RGBA')
-              res_dir = 'android/app/src/main/res'
 
-              # Hapus semua file ikon default bawaan Capacitor/Android
-              for xml_file in glob.glob(f'{res_dir}/mipmap-*/ic_launcher*.xml') + glob.glob(f'{res_dir}/drawable*/ic_launcher*.xml') + glob.glob(f'{res_dir}/mipmap-*/ic_launcher*.png'):
+              res_dir = 'android/app/src/main/res'
+              for xml_file in glob.glob(f'{res_dir}/mipmap-*/ic_launcher*.xml') + glob.glob(f'{res_dir}/drawable*/ic_launcher*.xml'):
                   try:
                       os.remove(xml_file)
                   except Exception:
@@ -125,9 +123,7 @@ jobs:
                   resized_icon.save(os.path.join(target_dir, 'ic_launcher_round.png'))
                   resized_icon.save(os.path.join(target_dir, 'ic_launcher_foreground.png'))
 
-              print('Ikon icon.png dari Root Berhasil Diterapkan ke Folder Native!')
-          else:
-              print('Warning: File icon.png tidak ditemukan!')
+              print('Ikon icon.png berhasil diterapkan!')
           "
 
       - name: Force Version 2.1 in Android Native
