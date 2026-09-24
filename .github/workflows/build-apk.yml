@@ -139,17 +139,24 @@ jobs:
               print('File icon.png tidak ditemukan!')
           "
 
-      - name: Bump Version to v2.1 in build.gradle
+      - name: Bump Version and Set minSdkVersion 24 in build.gradle
         run: |
           BUILD_GRADLE="android/app/build.gradle"
+          ROOT_GRADLE="android/variables.gradle"
+
+          if [ -f "$ROOT_GRADLE" ]; then
+            sed -i 's/minSdkVersion = [0-9]*/minSdkVersion = 24/g' "$ROOT_GRADLE"
+          fi
+
           if [ -f "$BUILD_GRADLE" ]; then
+            sed -i 's/minSdkVersion [0-9]*/minSdkVersion 24/g' "$BUILD_GRADLE"
             if grep -q "versionCode" "$BUILD_GRADLE"; then
               sed -i 's/versionCode [0-9]*/versionCode 2/g' "$BUILD_GRADLE"
               sed -i 's/versionName "[^"]*"/versionName "2.1"/g' "$BUILD_GRADLE"
             else
               sed -i '/defaultConfig {/a \        versionCode 2\n        versionName "2.1"' "$BUILD_GRADLE"
             fi
-            echo "Versi v2.1 berhasil diperbarui!"
+            echo "minSdkVersion 24 dan versi v2.1 berhasil diterapkan!"
           fi
 
       - name: Decode Keystore from Secrets
