@@ -3,48 +3,114 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KATARNOLIMA RW 05 - Forum Diskusi Warga</title>
-<link rel="icon" href="img/logo-resmi-karang-taruna.jpg">
+<title>Forum Diskusi Warga - KATARNOLIMA RW 05</title>
+<link rel="icon" href="../assets/img/logo-resmi-karang-taruna.jpg">
+<link rel="stylesheet" href="../assets/css/style.css?v=27">
 <style>
-  *{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
-  body{background:#f1f5f9;color:#0f172a;display:flex;justify-content:center;min-height:100vh}
-  .app-container{width:100%;max-width:440px;background:#f8fafc;display:flex;flex-direction:column;height:100vh;position:relative}
+  /* RESET & BASE SYSTEM */
+  *, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    -webkit-tap-highlight-color: transparent !important;
+    outline: none !important;
+  }
+  body {
+    background: #f8fafc;
+    color: #0f172a;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+  }
+  .app-container {
+    width: 100%;
+    max-width: 440px;
+    background: #f8fafc;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    position: relative;
+    box-shadow: 0 0 30px rgba(15, 23, 42, 0.05);
+  }
   
-  /* HEADER */
-  .header-app{background:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e2e8f0;position:sticky;top:0;z-index:10}
-  .header-left{display:flex;align-items:center;gap:10px}
-  .btn-back{text-decoration:none;color:#0f172a;font-size:20px;font-weight:800;width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:#f1f5f9}
-  .header-title h1{font-size:14px;font-weight:800;line-height:1.2}
-  .header-title p{font-size:10px;color:#64748b;font-weight:600}
+  /* STICKY HEADER */
+  .header-app {
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #e2e8f0;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
+  .header-left { display: flex; align-items: center; gap: 12px; }
+  .btn-back {
+    text-decoration: none;
+    color: #0f172a;
+    font-size: 18px;
+    font-weight: 800;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    transition: transform 0.15s ease;
+  }
+  .btn-back:active { transform: scale(0.92); }
+  .header-title h1 { font-size: 15px; font-weight: 800; line-height: 1.2; letter-spacing: -0.2px; }
+  .header-title p { font-size: 11px; color: #64748b; font-weight: 600; margin-top: 1px; }
 
-  /* TOGGLE SWITCH ROLE KHUSUS ADMIN */
-  .admin-switch-wrap{display:none;align-items:center;gap:6px;background:#0f172a;padding:4px 8px;border-radius:20px;color:#fff}
-  .admin-switch-wrap span{font-size:9px;font-weight:800;color:#fbbf24}
-  .switch-toggle{position:relative;display:inline-block;width:34px;height:18px;flex-shrink:0}
-  .switch-toggle input{opacity:0;width:0;height:0}
-  .slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background-color:#64748b;transition:.3s;border-radius:18px}
-  .slider:before{position:absolute;content:"";height:14px;width:14px;left:2px;bottom:2px;background-color:white;transition:.3s;border-radius:50%}
-  input:checked + .slider{background-color:#16a34a}
-  input:checked + .slider:before{transform:translateX(16px)}
+  /* SWITCH ROLE KHUSUS ADMIN */
+  .admin-switch-wrap {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    background: #0f172a;
+    padding: 4px 10px;
+    border-radius: 99px;
+    color: #fff;
+  }
+  .admin-switch-wrap span { font-size: 9px; font-weight: 800; color: #fbbf24; text-transform: uppercase; }
+  .switch-toggle { position: relative; display: inline-block; width: 34px; height: 18px; flex-shrink: 0; }
+  .switch-toggle input { opacity: 0; width: 0; height: 0; }
+  .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #64748b; transition: .3s; border-radius: 18px; }
+  .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 2px; bottom: 2px; background-color: white; transition: .3s; border-radius: 50%; }
+  input:checked + .slider { background-color: #22c55e; }
+  input:checked + .slider:before { transform: translateX(16px); }
 
-  /* BADGE LIMIT 30 KHUSUS WARGA (KANAN ATAS HEADER) */
-  .limit-badge-warga{
-    display:flex;
-    align-items:center;
-    gap:4px;
-    background:#fef3c7;
-    color:#92400e;
-    font-size:9px;
-    font-weight:800;
-    padding:4px 8px;
-    border-radius:12px;
-    border:1px solid #fde68a;
+  /* BADGE LIMIT UNTUK WARGA */
+  .limit-badge-warga {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: #fef3c7;
+    color: #b45309;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 5px 10px;
+    border-radius: 10px;
+    border: 1px solid #fde68a;
   }
 
-  /* CHAT AREA */
-  .chat-area{flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:12px}
+  /* CHAT AREA & MESSAGES */
+  .chat-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: #f8fafc;
+  }
   
-  /* PEMBATAS HARI ALA WHATSAPP */
   .date-separator {
     align-self: center;
     background: #e2e8f0;
@@ -52,63 +118,120 @@
     font-size: 10px;
     font-weight: 800;
     padding: 4px 12px;
-    border-radius: 12px;
-    margin: 4px 0 8px 0;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    border-radius: 99px;
+    margin: 6px 0;
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
 
-  /* WRAPPER BARIS CHAT */
-  .chat-row-user{display:flex;align-items:flex-end;gap:8px;max-width:78%;align-self:flex-start;height:fit-content}
-  .chat-row-admin{display:flex;justify-content:flex-end;width:100%;height:fit-content;align-self:flex-end}
+  /* WRAPPER ROWS */
+  .chat-row-user { display: flex; align-items: flex-end; gap: 8px; max-width: 82%; align-self: flex-start; }
+  .chat-row-admin { display: flex; justify-content: flex-end; width: 100%; align-self: flex-end; }
 
-  .chat-avatar{width:32px;height:32px;border-radius:50%;background:#0f172a;color:#fbbf24;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0;border:1px solid #cbd5e1}
-
-  /* BUBBLE CHAT WARGA */
-  .chat-bubble{
-    background:#fff;
-    padding:10px 14px;
-    border-radius:16px;
-    border-bottom-left-radius:4px;
-    border:1px solid #e2e8f0;
-    box-shadow:0 2px 4px rgba(0,0,0,0.02);
-    width:fit-content;
-    max-width:100%;
-    height:fit-content;
-    word-break:break-word;
+  .chat-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 12px;
+    background: #0f172a;
+    color: #fbbf24;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 800;
+    flex-shrink: 0;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.05);
   }
-  .chat-user{font-size:11px;font-weight:800;color:#2563eb;margin-bottom:2px;display:flex;align-items:center;gap:4px}
-  .chat-text{font-size:13px;line-height:1.4;word-break:break-word;color:#334155}
-  .chat-time{font-size:9px;color:#94a3b8;margin-top:4px;text-align:right}
 
-  /* BUBBLE CHAT ADMIN */
-  .chat-bubble.admin-msg{
-    background:#0f172a;
-    color:#fff;
-    border-radius:16px;
-    border-bottom-right-radius:4px;
-    border:none;
-    max-width:78%;
-    width:fit-content;
-    height:fit-content;
-    padding:10px 14px;
-    word-break:break-word;
+  /* BUBBLE WARGA */
+  .chat-bubble {
+    background: #ffffff;
+    padding: 10px 14px;
+    border-radius: 18px;
+    border-bottom-left-radius: 4px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.02);
+    width: fit-content;
+    max-width: 100%;
+    word-break: break-word;
   }
-  .chat-bubble.admin-msg .chat-user{color:#fbbf24;margin-bottom:4px}
-  .chat-bubble.admin-msg .chat-text{color:#f8fafc}
-  .chat-bubble.admin-msg .chat-time{color:#94a3b8}
+  .chat-user { font-size: 11px; font-weight: 800; color: #2563eb; margin-bottom: 2px; }
+  .chat-text { font-size: 13px; line-height: 1.45; word-break: break-word; color: #334155; }
+  .chat-time { font-size: 9px; color: #94a3b8; font-weight: 600; margin-top: 4px; text-align: right; }
 
-  .badge-admin{background:#ef4444;color:#fff;font-size:9px;font-weight:900;padding:2px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:0.5px}
+  /* BUBBLE ADMIN */
+  .chat-bubble.admin-msg {
+    background: #0f172a;
+    color: #ffffff;
+    border-radius: 18px;
+    border-bottom-right-radius: 4px;
+    border: none;
+    max-width: 82%;
+    width: fit-content;
+    padding: 10px 14px;
+    word-break: break-word;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
+  }
+  .chat-bubble.admin-msg .chat-user { color: #fbbf24; margin-bottom: 4px; }
+  .chat-bubble.admin-msg .chat-text { color: #f8fafc; }
+  .chat-bubble.admin-msg .chat-time { color: #94a3b8; }
 
-  /* INPUT BAR BOTTOM */
-  .input-bar{background:#fff;padding:12px 16px;border-top:1px solid #e2e8f0;display:flex;align-items:center;gap:10px;position:sticky;bottom:0}
-  .input-control{flex:1;padding:12px 14px;border:1.5px solid #cbd5e1;border-radius:20px;font-size:13px;outline:none;background:#f8fafc}
-  .input-control:focus{border-color:#0f172a;background:#fff}
-  .btn-send{background:#0f172a;color:#fbbf24;border:none;width:42px;height:42px;border-radius:50%;font-size:16px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .1s}
-  .btn-send:active{transform:scale(0.92)}
+  .badge-admin {
+    background: #ef4444;
+    color: #ffffff;
+    font-size: 9px;
+    font-weight: 900;
+    padding: 2px 8px;
+    border-radius: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
 
-  .empty-chat{text-align:center;padding:40px 20px;color:#94a3b8;font-size:12px}
+  /* INPUT BOTTOM BAR */
+  .input-bar {
+    background: #ffffff;
+    padding: 12px 16px;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: sticky;
+    bottom: 0;
+    z-index: 20;
+  }
+  .input-control {
+    flex: 1;
+    padding: 12px 16px;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 16px;
+    font-size: 13px;
+    outline: none;
+    background: #f8fafc;
+    color: #0f172a;
+    transition: all 0.2s ease;
+  }
+  .input-control:focus { border-color: #0f172a; background: #ffffff; box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.05); }
+  .btn-send {
+    background: #0f172a;
+    color: #fbbf24;
+    border: none;
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: transform 0.15s ease;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+  }
+  .btn-send:active { transform: scale(0.92); }
+
+  .empty-chat { text-align: center; padding: 40px 20px; color: #64748b; font-size: 12px; font-weight: 600; }
 </style>
 </head>
 <body>
@@ -117,7 +240,7 @@
   <!-- HEADER -->
   <div class="header-app">
     <div class="header-left">
-      <a href="index.html" class="btn-back">←</a>
+      <a href="../index.html" class="btn-back" title="Kembali">←</a>
       <div class="header-title">
         <h1>💬 Diskusi Warga</h1>
         <p>RW 05 Poncol Jaya</p>
@@ -133,15 +256,15 @@
       </label>
     </div>
 
-    <!-- TAMPILAN WARGA: BADGE LIMIT KANAN ATAS -->
+    <!-- TAMPILAN WARGA: BADGE LIMIT -->
     <div class="limit-badge-warga" id="wargaLimitBadge">
-      ⚡ 30 Chat Terbaru
+      ⚡ 30 Pesan Terbaru
     </div>
   </div>
 
   <!-- CHAT MESSAGES AREA -->
   <div class="chat-area" id="chatArea">
-    <div class="empty-chat" id="emptyChat">Memuat diskusi warga...</div>
+    <div class="empty-chat" id="emptyChat">Memuat obrolan diskusi warga...</div>
   </div>
 
   <!-- INPUT BAR -->
@@ -151,6 +274,7 @@
   </form>
 </div>
 
+<script src="../assets/js/script.js?v=27"></script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -173,7 +297,7 @@ const auth = getAuth(app);
 const userSession = JSON.parse(localStorage.getItem('rw05_current_user') || 'null');
 const currentUserName = userSession && userSession.nama ? userSession.nama : 'Warga';
 
-// FUNGSI INISIAL 2 HURUF
+// INISIAL AVATAR
 function getTwoInitials(nama = '') {
   const parts = nama.trim().split(/\s+/);
   if (!parts[0]) return 'WG';
@@ -181,7 +305,6 @@ function getTwoInitials(nama = '') {
   return (parts[0].charAt(0) + parts[1].charAt(0)).toUpperCase();
 }
 
-// DETERMINASI AVATAR WARGA (EMOJI / INISIAL)
 const currentUserAvatar = (userSession && userSession.avatarEmoji) ? userSession.avatarEmoji : getTwoInitials(currentUserName);
 
 // ELEMEN HEADER
@@ -192,14 +315,14 @@ const roleLabel = document.getElementById('roleLabel');
 
 let isSendingAsAdmin = false;
 
-// KONTROL VISIBILITAS HEADER BERDASARKAN STATUS LOGIN
+// CHECK STATUS AUTH FOR ADMIN SWITCH
 onAuthStateChanged(auth, (user) => {
   if (user && user.email) {
     if (adminSwitchWrap) adminSwitchWrap.style.display = 'flex';
-    if (wargaLimitBadge) wargaLimitBadge.style.display = 'none'; // Sembunyikan badge jika Admin
+    if (wargaLimitBadge) wargaLimitBadge.style.display = 'none';
   } else {
     if (adminSwitchWrap) adminSwitchWrap.style.display = 'none';
-    if (wargaLimitBadge) wargaLimitBadge.style.display = 'flex'; // Tampilkan badge di kanan atas jika Warga
+    if (wargaLimitBadge) wargaLimitBadge.style.display = 'flex';
     isSendingAsAdmin = false;
   }
 });
@@ -222,7 +345,7 @@ function escapeHtml(str = '') {
   return String(str).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m]));
 }
 
-// FUNGSI FORMAT TANGGAL WHATSAPP
+// FORMAT TANGGAL
 function formatDateLabel(dateObj) {
   if (!dateObj) return 'HARI INI';
   const now = new Date();
@@ -249,12 +372,12 @@ function formatDateLabel(dateObj) {
 const chatArea = document.getElementById('chatArea');
 const emptyChat = document.getElementById('emptyChat');
 
-// REALTIME LISTENER DENGAN LIMIT(30)
+// REALTIME LISTENER CHAT (LIMIT 30)
 const qDiskusi = query(collection(db, "diskusi_rw05"), orderBy("createdAt", "desc"), limit(30));
 
 onSnapshot(qDiskusi, (snap) => {
   if (snap.empty) {
-    if (emptyChat) emptyChat.textContent = "Belum ada diskusi. Mulai obrolan!";
+    if (emptyChat) emptyChat.textContent = "Belum ada diskusi. Mulai obrolan pertama!";
     return;
   }
 
@@ -287,7 +410,6 @@ onSnapshot(qDiskusi, (snap) => {
   let lastDateKey = null;
 
   messages.forEach((m) => {
-    // PEMBATAS HARI DITAMPILKAN DI AWAL SETIAP GANTI HARI
     if (m.dateKey !== lastDateKey) {
       const dateLabel = formatDateLabel(m.rawDate);
       html += `<div class="date-separator">${dateLabel}</div>`;
@@ -295,7 +417,6 @@ onSnapshot(qDiskusi, (snap) => {
     }
 
     if (m.isAdmin) {
-      // BUBBLE ADMIN -> KANAN
       html += `
         <div class="chat-row-admin">
           <div class="chat-bubble admin-msg">
@@ -308,7 +429,6 @@ onSnapshot(qDiskusi, (snap) => {
         </div>
       `;
     } else {
-      // BUBBLE WARGA -> KIRI
       html += `
         <div class="chat-row-user">
           <div class="chat-avatar">${m.userAvatar}</div>
@@ -355,7 +475,7 @@ if (formDiskusi) {
 
       inputPesan.value = '';
     } catch (err) {
-      alert('❌ Gagal mengirim: ' + err.message);
+      alert('❌ Gagal mengirim pesan: ' + err.message);
     } finally {
       btnKirim.disabled = false;
       inputPesan.disabled = false;

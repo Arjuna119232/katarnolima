@@ -3,49 +3,226 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Rincian Kas RW 05 - KATARNOLIMA</title>
-<link rel="icon" href="img/logo-resmi-karang-taruna.jpg">
+<title>Rincian Transaksi Kas RW 05 - KATARNOLIMA</title>
+<link rel="icon" href="../assets/img/logo-resmi-karang-taruna.jpg">
+<link rel="stylesheet" href="../assets/css/style.css?v=26">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
-body{background:#f1f5f9;color:#0f172a;padding-bottom:80px}
-.header{background:#fff;padding:16px 20px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:20}
-.btn-back{font-size:18px;text-decoration:none;color:#0f172a;font-weight:800}
-.container{padding:16px;max-width:600px;margin:0 auto}
-.saldo-banner{background:linear-gradient(135deg,#0f172a,#1e293b);color:#fff;border-radius:16px;padding:22px;margin-bottom:16px}
-.saldo-banner .lbl{font-size:11px;color:#94a3b8;font-weight:700;text-transform:uppercase}
-.saldo-banner .val{font-size:28px;font-weight:900;color:#fbbf24;margin-top:6px}
-.card-list{background:#fff;border-radius:16px;border:1px solid #e2e8f0;overflow:hidden}
-.trans-item{padding:14px 16px;border-bottom:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center}
-.trans-item:last-child{border-bottom:none}
-.trans-left b{font-size:13px;display:block}
-.trans-left span{font-size:11px;color:#64748b}
-.trans-right{font-weight:800;font-size:14px}
-.masuk{color:#16a34a}
-.keluar{color:#dc2626}
+/* RESET & SYSTEM BASE */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent !important;
+  outline: none !important;
+}
+
+body {
+  background: #f8fafc !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: #0f172a;
+  line-height: 1.5;
+  padding-bottom: 40px;
+}
+
+.container {
+  max-width: 440px;
+  margin: 0 auto;
+  background: #ffffff;
+  min-height: 100vh;
+  padding: 16px 20px 40px;
+  box-shadow: 0 0 30px rgba(15, 23, 42, 0.05);
+  position: relative;
+}
+
+/* STICKY HEADER */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.btn-back {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  color: #0f172a;
+  font-size: 18px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+  text-decoration: none;
+}
+.btn-back:active { transform: scale(0.92); }
+
+/* SALDO BANNER GRADIENT */
+.saldo-banner {
+  background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+  color: #ffffff;
+  border-radius: 20px;
+  padding: 22px 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.12);
+  position: relative;
+  overflow: hidden;
+}
+.saldo-banner::after {
+  content: "💵";
+  position: absolute;
+  right: -10px;
+  bottom: -15px;
+  font-size: 90px;
+  opacity: 0.08;
+  pointer-events: none;
+}
+
+.saldo-banner .lbl {
+  font-size: 11px;
+  font-weight: 800;
+  color: #fbbf24;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.saldo-banner .val {
+  font-size: 28px;
+  font-weight: 800;
+  color: #ffffff;
+  margin-top: 6px;
+  letter-spacing: -0.5px;
+}
+
+/* CARD LIST RIWAYAT */
+.card-list {
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.02);
+}
+
+.card-header-title {
+  padding: 14px 18px;
+  font-weight: 800;
+  font-size: 13px;
+  border-bottom: 1px solid #f1f5f9;
+  background: #f8fafc;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.trans-item {
+  padding: 14px 18px;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  transition: background 0.15s ease;
+}
+.trans-item:last-child { border-bottom: none; }
+.trans-item:active { background: #f8fafc; }
+
+.trans-left-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.trans-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.trans-icon.masuk { background: #dcfce7; color: #16a34a; }
+.trans-icon.keluar { background: #fee2e2; color: #dc2626; }
+
+.trans-info b {
+  font-size: 13px;
+  font-weight: 800;
+  color: #0f172a;
+  display: block;
+  line-height: 1.3;
+  margin-bottom: 2px;
+}
+.trans-info span {
+  font-size: 11px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.trans-right {
+  font-weight: 800;
+  font-size: 13.5px;
+  text-align: right;
+  flex-shrink: 0;
+}
+.trans-right.masuk { color: #16a34a; }
+.trans-right.keluar { color: #dc2626; }
+
+/* STATE STATE EMPTY / LOADING */
+.state-box {
+  text-align: center;
+  padding: 40px 20px;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 600;
+}
+.state-icon { font-size: 32px; margin-bottom: 8px; display: block; }
 </style>
 </head>
 <body>
 
-<div class="header">
-  <a href="index.html" class="btn-back">←</a>
-  <h2 style="font-size:16px;font-weight:900">Rincian Kas RW 05</h2>
-</div>
-
 <div class="container">
+  <!-- HEADER -->
+  <div class="header">
+    <a href="../index.html" class="btn-back" title="Kembali ke Beranda">←</a>
+    <h1 style="font-size:16px; font-weight:800; color:#0f172a; letter-spacing:-0.2px;">Rincian Transaksi Kas</h1>
+  </div>
+
+  <!-- SALDO BANNER -->
   <div class="saldo-banner">
-    <div class="lbl">Total Saldo Keseluruhan Kas RW 05</div>
+    <div class="lbl"><span>🔴</span> TOTAL SALDO KAS RW 05 (LIVE)</div>
     <div class="val" id="detailTotalSaldo">Rp 0</div>
   </div>
 
+  <!-- RIWAYAT TRANSAKSI -->
   <div class="card-list">
-    <div style="padding:14px 16px;font-weight:800;font-size:13px;border-bottom:1px solid #e2e8f0;background:#f8fafc">Riwayat Masuk & Keluar Kas</div>
+    <div class="card-header-title">
+      <span>Riwayat Transaksi Masuk & Keluar</span>
+      <span style="font-size:10px; font-weight:700; color:#64748b; background:#e2e8f0; padding:2px 8px; border-radius:6px;">Realtime</span>
+    </div>
     <div id="listDetailTransaksi">
-      <div style="padding:20px;text-align:center;color:#94a3b8;font-size:12px">Memuat rincian transaksi...</div>
+      <div class="state-box">
+        <span class="state-icon">🔄</span>
+        Memuat rincian transaksi kas...
+      </div>
     </div>
   </div>
 </div>
 
+<script src="../assets/js/script.js?v=26"></script>
 <script type="module">
+// @ts-nocheck
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, doc, collection, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
@@ -60,34 +237,66 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Ambil total saldo
+function escapeHtml(str = '') {
+  return String(str).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m]));
+}
+
+// LISTEN SALDO UTAMA REALTIME
 onSnapshot(doc(db, "kas_rw05", "saldo_utama"), (snap) => {
-  if(snap.exists()) {
+  if (snap.exists()) {
     const total = snap.data().total || 0;
     const el = document.getElementById('detailTotalSaldo');
-    if(el) el.textContent = 'Rp ' + Number(total).toLocaleString('id-ID');
+    if (el) el.textContent = 'Rp ' + Number(total).toLocaleString('id-ID');
   }
 });
 
-// Ambil list transaksi masuk/keluar
+// LISTEN RIWAYAT TRANSAKSI REALTIME
 const listContainer = document.getElementById('listDetailTransaksi');
 onSnapshot(query(collection(db, "transaksi_kas"), orderBy("createdAt", "desc")), (snap) => {
-  if(!listContainer) return;
+  if (!listContainer) return;
+  if (snap.empty) {
+    listContainer.innerHTML = `
+      <div class="state-box">
+        <span class="state-icon">📭</span>
+        Belum ada catatan transaksi kas masuk atau keluar saat ini.
+      </div>
+    `;
+    return;
+  }
+
   let html = '';
   snap.forEach(docItem => {
     const d = docItem.data();
     const isMasuk = d.jenis === 'masuk';
     const sign = isMasuk ? '+' : '-';
     const cls = isMasuk ? 'masuk' : 'keluar';
-    html += `<div class="trans-item">
-      <div class="trans-left">
-        <b>${d.keterangan || 'Transaksi Kas'}</b>
-        <span>${d.tanggalFormatted || '-'} • <strong style="color:${isMasuk?'#16a34a':'#dc2626'}">${isMasuk?'Pemasukan':'Pengeluaran'}</strong></span>
+    const iconSymbol = isMasuk ? '📈' : '📉';
+
+    html += `
+      <div class="trans-item">
+        <div class="trans-left-group">
+          <div class="trans-icon ${cls}">${iconSymbol}</div>
+          <div class="trans-info">
+            <b>${escapeHtml(d.keterangan || 'Transaksi Kas')}</b>
+            <span>${escapeHtml(d.tanggalFormatted || '-')}</span>
+          </div>
+        </div>
+        <div class="trans-right ${cls}">${sign}Rp ${Number(d.jumlah || 0).toLocaleString('id-ID')}</div>
       </div>
-      <div class="trans-right ${cls}">${sign}Rp ${Number(d.jumlah||0).toLocaleString('id-ID')}</div>
-    </div>`;
+    `;
   });
-  listContainer.innerHTML = html || '<div style="padding:20px;text-align:center;color:#94a3b8;font-size:12px">Belum ada rincian transaksi kas.</div>';
+
+  listContainer.innerHTML = html;
+}, (err) => {
+  console.error("Gagal load transaksi kas:", err);
+  if (listContainer) {
+    listContainer.innerHTML = `
+      <div class="state-box">
+        <span class="state-icon">❌</span>
+        Gagal memuat transaksi kas. Periksa koneksi internet Anda.
+      </div>
+    `;
+  }
 });
 </script>
 </body>

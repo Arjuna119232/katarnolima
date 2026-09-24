@@ -4,46 +4,274 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Ubah Profil - KATARNOLIMA RW 05</title>
-<link rel="icon" href="img/logo-resmi-karang-taruna.jpg">
-<link rel="stylesheet" href="style.css?v=36">
+<link rel="icon" href="../assets/img/logo-resmi-karang-taruna.jpg">
+<link rel="stylesheet" href="../assets/css/style.css?v=36">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
-html,body{background:#fff!important;width:100%;min-height:100vh;margin:0!important;color:#0f172a}
-.page-root{width:100%;max-width:440px;margin:0 auto;background:#fff;min-height:100vh;padding-bottom:40px}
+/* RESET & SYSTEM BASE */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent !important;
+  outline: none !important;
+}
 
-/* HEADER */
-.app-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid #e2e8f0;position:sticky;top:0;background:#fff;z-index:50}
-.header-left{display:flex;align-items:center;gap:12px;font-size:18px;font-weight:800;color:#0f172a;text-decoration:none}
-.btn-back{width:36px;height:36px;border-radius:50%;background:#f1f5f9;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;color:#0f172a}
-.btn-simpan{background:transparent;border:none;color:#2563eb;font-weight:700;font-size:15px;cursor:pointer}
-.btn-simpan:disabled{color:#94a3b8;cursor:not-allowed}
+html, body {
+  background: #f8fafc !important;
+  width: 100%;
+  min-height: 100vh;
+  color: #0f172a;
+  line-height: 1.5;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.page-root {
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto;
+  background: #ffffff;
+  min-height: 100vh;
+  padding-bottom: 40px;
+  box-shadow: 0 0 30px rgba(15, 23, 42, 0.05);
+  position: relative;
+}
+
+/* STICKY HEADER */
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  border-bottom: 1px solid #f1f5f9;
+  position: sticky;
+  top: 0;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 50;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 16px;
+  font-weight: 800;
+  color: #0f172a;
+  text-decoration: none;
+}
+
+.btn-back {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 800;
+  color: #0f172a;
+  transition: transform 0.15s ease;
+}
+.btn-back:active { transform: scale(0.92); }
+
+.btn-simpan {
+  background: #0f172a;
+  border: none;
+  color: #fbbf24;
+  font-weight: 800;
+  font-size: 12px;
+  padding: 8px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.1);
+  transition: transform 0.15s ease;
+}
+.btn-simpan:active { transform: scale(0.95); }
+.btn-simpan:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* AVATAR SECTION */
-.photo-section{text-align:center;padding:20px 16px;background:linear-gradient(180deg,#f8fafc 0%,#fff 100%)}
-.avatar-big{width:88px;height:88px;border-radius:50%;border:3px solid #e2e8f0;margin:0 auto;background:#111;display:flex;align-items:center;justify-content:center;color:#fbbf24;font-weight:900;font-size:38px}
-.avatar-info-text{margin-top:10px;color:#64748b;font-weight:700;font-size:12px}
+.photo-section {
+  text-align: center;
+  padding: 24px 20px;
+  background: linear-gradient(180deg, #eff6ff 0%, #ffffff 100%);
+  border-bottom: 1px solid #f1f5f9;
+}
 
-/* EMOJI PICKER LENGKAP */
-.emoji-category-title{font-size:10px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin:12px 0 6px;text-align:left;letter-spacing:0.5px}
-.emoji-picker-wrap{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-start;background:#f1f5f9;padding:12px;border-radius:14px;max-height:220px;overflow-y:auto}
-.emoji-item{font-size:24px;cursor:pointer;padding:6px;border-radius:10px;background:#fff;border:1px solid #e2e8f0;display:flex;align-items:center;justify-content:center;width:40px;height:40px;transition:transform 0.1s, border-color 0.1s}
-.emoji-item:active{transform:scale(1.2);border-color:#2563eb}
-.btn-reset-init{font-size:11px;font-weight:800;background:#cbd5e1;color:#0f172a;padding:8px 12px;border-radius:8px;cursor:pointer;display:inline-block;margin-top:10px}
+.avatar-big {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  border: 3px solid #ffffff;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.12);
+  margin: 0 auto;
+  background: #0f172a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fbbf24;
+  font-weight: 900;
+  font-size: 38px;
+}
+
+.avatar-info-text {
+  margin-top: 12px;
+  color: #64748b;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+/* EMOJI PICKER CATEGORY */
+.emoji-category-title {
+  font-size: 10px;
+  font-weight: 800;
+  color: #94a3b8;
+  text-transform: uppercase;
+  margin: 12px 0 6px;
+  text-align: left;
+  letter-spacing: 0.5px;
+}
+
+.emoji-picker-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: flex-start;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 12px;
+  border-radius: 18px;
+  max-height: 200px;
+  overflow-y: auto;
+  margin-top: 10px;
+}
+
+.emoji-item {
+  font-size: 22px;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+.emoji-item:active {
+  transform: scale(1.15);
+  border-color: #0f172a;
+}
+
+.btn-reset-init {
+  font-size: 11px;
+  font-weight: 800;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #0f172a;
+  padding: 8px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: inline-block;
+  margin-top: 12px;
+  transition: transform 0.15s ease;
+}
+.btn-reset-init:active { transform: scale(0.96); }
 
 /* FORM SECTION */
-.form-section{padding:16px}
-.form-group{margin-bottom:20px}
-.form-label{font-size:12px;font-weight:600;color:#64748b;margin-bottom:8px;display:block}
-.input-wrap{position:relative;display:flex;align-items:center}
-.form-input{width:100%;border:none;border-bottom:1.5px solid #cbd5e1;padding:8px 0;font-size:15px;font-weight:600;color:#0f172a;outline:none;background:transparent}
-.form-input:focus{border-color:#2563eb}
-.form-input.locked{color:#475569;background:transparent}
-.input-icon-right{position:absolute;right:0;color:#94a3b8;font-size:16px}
+.form-section { padding: 20px; }
 
-.phone-sub{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
-.phone-label{font-size:12px;font-weight:600;color:#64748b}
-.status-unverified{font-size:11px;font-weight:700;color:#ef4444;display:none}
-.status-verified{font-size:11px;font-weight:700;color:#0fb398;display:block}
+.form-group { margin-bottom: 20px; }
+
+.form-label {
+  font-size: 11px;
+  font-weight: 800;
+  color: #475569;
+  margin-bottom: 6px;
+  display: block;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.form-input {
+  width: 100%;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 14px;
+  padding: 12px 14px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #0f172a;
+  outline: none;
+  background: #f8fafc;
+  transition: all 0.2s ease;
+}
+.form-input:focus {
+  border-color: #0f172a;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.05);
+}
+.form-input.locked {
+  color: #64748b;
+  background: #f1f5f9;
+  border-color: #e2e8f0;
+}
+
+.input-icon-right {
+  position: absolute;
+  right: 14px;
+  color: #94a3b8;
+  font-size: 14px;
+}
+
+.phone-sub {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.phone-label {
+  font-size: 11px;
+  font-weight: 800;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-unverified {
+  font-size: 11px;
+  font-weight: 700;
+  color: #ef4444;
+  display: none;
+}
+.status-verified {
+  font-size: 11px;
+  font-weight: 700;
+  color: #16a34a;
+  display: block;
+}
+
+.btn-verify-action {
+  background: #16a34a;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+}
 </style>
 </head>
 <body>
@@ -61,7 +289,7 @@ html,body{background:#fff!important;width:100%;min-height:100vh;margin:0!importa
   <!-- AVATAR SECTION -->
   <div class="photo-section">
     <div class="avatar-big" id="editAvatarInit">WG</div>
-    <div class="avatar-info-text">Pilih Karakter Manusia atau Gunakan Inisial</div>
+    <div class="avatar-info-text">Pilih Karakter Emoji atau Gunakan Inisial Nama</div>
     
     <!-- DAFTAR EMOJI MANUSIA LENGKAP -->
     <div class="emoji-picker-wrap">
@@ -113,13 +341,14 @@ html,body{background:#fff!important;width:100%;min-height:100vh;margin:0!importa
       <span class="emoji-item" onclick="pickEmoji('🧗‍♂️')">🧗‍♂️</span>
       <span class="emoji-item" onclick="pickEmoji('🤾‍♂️')">🤾‍♂️</span>
     </div>
+
     <div class="btn-reset-init" onclick="pickEmoji('')">🔄 Gunakan 2 Huruf Inisial Nama</div>
   </div>
 
   <!-- INFORMASI DIRI -->
   <div class="form-section">
     <div class="form-group">
-      <label class="form-label">Nama Lengkap</label>
+      <label class="form-label">Nama Lengkap Sesuai KTP</label>
       <input type="text" class="form-input" id="inputNamaUbah" placeholder="Masukkan nama lengkap">
     </div>
 
@@ -132,7 +361,7 @@ html,body{background:#fff!important;width:100%;min-height:100vh;margin:0!importa
     </div>
 
     <div class="form-group">
-      <label class="form-label">E-mail</label>
+      <label class="form-label">E-mail Terdaftar</label>
       <div class="input-wrap">
         <input type="text" class="form-input locked" id="inputEmail" value="" readonly>
         <span class="input-icon-right">🔒</span>
@@ -141,18 +370,19 @@ html,body{background:#fff!important;width:100%;min-height:100vh;margin:0!importa
 
     <div class="form-group">
       <div class="phone-sub">
-        <span class="phone-label">No. Handphone</span>
+        <span class="phone-label">No. Handphone (WhatsApp)</span>
         <span class="status-unverified" id="phoneStatusText">Belum Terverifikasi</span>
       </div>
       <div class="input-wrap" style="gap: 8px;">
-        <input type="tel" class="form-input" id="inputPhone" value="" placeholder="Masukkan nomor handphone (opsional)">
-        <button type="button" id="btnVerifyPhone" style="display:none; background:#0fb398; color:#fff; border:none; border-radius:8px; padding:6px 12px; font-size:11px; font-weight:700; cursor:pointer; white-space:nowrap;">Verifikasi</button>
+        <input type="tel" class="form-input" id="inputPhone" value="" placeholder="Contoh: 08123456789">
+        <button type="button" class="btn-verify-action" id="btnVerifyPhone" style="display:none;">Verifikasi</button>
       </div>
     </div>
   </div>
 </div>
 
 <script type="module">
+// @ts-nocheck
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -169,22 +399,20 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-var inputNamaUbah = document.getElementById('inputNamaUbah');
-var inputEmail = document.getElementById('inputEmail');
-var inputUsername = document.getElementById('inputUsername');
-var avatarBig = document.getElementById('editAvatarInit');
-var inputPhone = document.getElementById('inputPhone');
-var phoneStatusText = document.getElementById('phoneStatusText');
-var btnVerifyPhone = document.getElementById('btnVerifyPhone');
+const inputNamaUbah = document.getElementById('inputNamaUbah');
+const inputEmail = document.getElementById('inputEmail');
+const inputUsername = document.getElementById('inputUsername');
+const avatarBig = document.getElementById('editAvatarInit');
+const inputPhone = document.getElementById('inputPhone');
+const phoneStatusText = document.getElementById('phoneStatusText');
+const btnVerifyPhone = document.getElementById('btnVerifyPhone');
 
 let currentEmoji = '';
 
 function getTwoInitials(nama = '') {
   const parts = nama.trim().split(/\s+/);
   if (!parts[0]) return 'WG';
-  if (parts.length === 1) {
-    return parts[0].substring(0, 2).toUpperCase();
-  }
+  if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
   return (parts[0].charAt(0) + parts[1].charAt(0)).toUpperCase();
 }
 
@@ -206,8 +434,10 @@ function renderAvatarDisplay() {
 function updatePhoneUIState(val, verified) {
   const cleanVal = (val || '').trim();
   if (verified) {
-    phoneStatusText.textContent = 'Terverifikasi';
-    phoneStatusText.className = 'status-verified';
+    if(phoneStatusText) {
+      phoneStatusText.textContent = 'Terverifikasi';
+      phoneStatusText.className = 'status-verified';
+    }
     if(btnVerifyPhone) {
       btnVerifyPhone.style.display = 'block';
       btnVerifyPhone.textContent = 'Sudah Verifikasi';
@@ -216,21 +446,21 @@ function updatePhoneUIState(val, verified) {
       btnVerifyPhone.disabled = true;
     }
   } else if (cleanVal.length > 0) {
-    phoneStatusText.style.display = 'block';
-    phoneStatusText.textContent = 'Belum Terverifikasi';
-    phoneStatusText.className = 'status-unverified';
+    if(phoneStatusText) {
+      phoneStatusText.style.display = 'block';
+      phoneStatusText.textContent = 'Belum Terverifikasi';
+      phoneStatusText.className = 'status-unverified';
+    }
     if(btnVerifyPhone) {
       btnVerifyPhone.style.display = 'block';
       btnVerifyPhone.textContent = 'Verifikasi';
-      btnVerifyPhone.style.background = '#0fb398';
-      btnVerifyPhone.style.color = '#fff';
+      btnVerifyPhone.style.background = '#16a34a';
+      btnVerifyPhone.style.color = '#ffffff';
       btnVerifyPhone.disabled = false;
     }
   } else {
-    phoneStatusText.style.display = 'none';
-    if(btnVerifyPhone) {
-      btnVerifyPhone.style.display = 'none';
-    }
+    if(phoneStatusText) phoneStatusText.style.display = 'none';
+    if(btnVerifyPhone) btnVerifyPhone.style.display = 'none';
   }
 }
 
@@ -258,7 +488,7 @@ if(inputPhone) {
   });
 }
 
-var localUser = JSON.parse(localStorage.getItem('rw05_current_user')||'null');
+const localUser = JSON.parse(localStorage.getItem('rw05_current_user')||'null');
 if(localUser) applyUserData(localUser);
 else updatePhoneUIState('', false);
 
@@ -286,18 +516,18 @@ onAuthStateChanged(auth, async (user) => {
 
 if(btnVerifyPhone && inputPhone){
   btnVerifyPhone.addEventListener('click', function(){
-    var currentPhoneVal = inputPhone.value.trim();
+    const currentPhoneVal = inputPhone.value.trim();
     if(!currentPhoneVal || currentPhoneVal.length < 9){
       alert('⚠️ Masukkan nomor handphone yang valid terlebih dahulu!');
       return;
     }
     const simulatedOtp = '54321';
     alert(`📲 Simulasi OTP terkirim ke WhatsApp/SMS ${currentPhoneVal}.\n(Kode uji coba Anda: ${simulatedOtp})`);
-    var inputOtp = prompt('Masukkan 5 digit kode OTP yang dikirim:');
+    const inputOtp = prompt('Masukkan 5 digit kode OTP yang dikirim:');
     if(inputOtp === simulatedOtp){
       updatePhoneUIState(currentPhoneVal, true);
 
-      var currentData = JSON.parse(localStorage.getItem('rw05_current_user')||'{}');
+      let currentData = JSON.parse(localStorage.getItem('rw05_current_user')||'{}');
       currentData.phoneVerified = true;
       currentData.phone = currentPhoneVal;
       localStorage.setItem('rw05_current_user', JSON.stringify(currentData));
@@ -308,12 +538,12 @@ if(btnVerifyPhone && inputPhone){
   });
 }
 
-var btnSimpan = document.getElementById('btnSimpanProfil');
+const btnSimpan = document.getElementById('btnSimpanProfil');
 if(btnSimpan){
   btnSimpan.addEventListener('click', async function(){
-    var newNama = inputNamaUbah ? inputNamaUbah.value.trim() : 'Warga';
-    var newPhone = inputPhone ? inputPhone.value.trim() : '';
-    var newEmail = inputEmail ? inputEmail.value.trim() : '';
+    const newNama = inputNamaUbah ? inputNamaUbah.value.trim() : 'Warga';
+    const newPhone = inputPhone ? inputPhone.value.trim() : '';
+    const newEmail = inputEmail ? inputEmail.value.trim() : '';
     
     if(newNama.length < 3){
       alert('Nama lengkap minimal 3 karakter.');
@@ -324,7 +554,7 @@ if(btnSimpan){
     btnSimpan.disabled = true;
 
     try {
-      var currentData = JSON.parse(localStorage.getItem('rw05_current_user')||'{}');
+      let currentData = JSON.parse(localStorage.getItem('rw05_current_user')||'{}');
       const isVerified = newPhone ? (currentData?.phone === newPhone && currentData?.phoneVerified) : false;
       
       const updatedUser = {

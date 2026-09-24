@@ -4,89 +4,384 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Admin Pro - KATARNOLIMA RW 05</title>
-<link rel="icon" href="img/logo-resmi-karang-taruna.jpg">
+<link rel="icon" href="../assets/img/logo-resmi-karang-taruna.jpg">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
-body{background:#f1f5f9;color:#0f172a}
-.admin-layout{display:flex;min-height:100vh}
-.sidebar{width:260px;background:#0f172a;color:#fff;position:fixed;left:0;top:0;bottom:0;z-index:50;overflow-y:auto;transition:transform .3s ease}
-.sidebar-header{padding:20px;border-bottom:1px solid #1e293b;display:flex;align-items:center;gap:10px}
-.logo-5{width:40px;height:40px;background:#fbbf24;color:#000;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px}
-.menu{padding:12px}
-.menu-label{font-size:10px;font-weight:800;color:#64748b;letter-spacing:1px;padding:12px 12px 6px;text-transform:uppercase}
-.menu-item{width:100%;display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;font-size:13px;font-weight:600;color:#94a3b8;background:none;border:none;cursor:pointer;text-align:left;transition:all .15s}
-.menu-item:hover{background:#1e293b;color:#fff}
-.menu-item.active{background:#fff;color:#0f172a;font-weight:800}
-.menu-item .icon{font-size:16px;width:22px;text-align:center}
-.main{margin-left:260px;flex:1;min-height:100vh}
-.topbar{height:64px;background:#fff;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;padding:0 20px;position:sticky;top:0;z-index:30}
-.hamburger{display:none;background:none;border:none;font-size:22px;cursor:pointer}
-.content{padding:20px;max-width:1200px}
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px}
-.stat-card{background:#fff;border-radius:16px;padding:16px;border:1px solid #e2e8f0;position:relative;}
-.stat-card .label{font-size:11px;color:#64748b;font-weight:700;text-transform:uppercase}
-.stat-card .value{font-size:22px;font-weight:900;margin-top:4px}
-.stat-card .sub{font-size:11px;color:#22c55e;font-weight:600;margin-top:4px}
-.tab-content{display:none}
-.tab-content.active{display:block}
-.card{background:#fff;border-radius:16px;padding:18px;border:1px solid #e2e8f0;margin-bottom:16px}
-.card-title{font-size:14px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:8px}
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.form-group{margin-bottom:12px}
-.form-group label{font-size:11px;font-weight:700;color:#475569;display:block;margin-bottom:4px}
-.form-control{width:100%;padding:11px 12px;border:1.5px solid #cbd5e1;border-radius:10px;font-size:13px;outline:none}
-.form-control:focus{border-color:#0f172a}
-textarea.form-control{resize:vertical;min-height:80px}
-.btn{padding:10px 16px;border-radius:10px;font-size:12px;font-weight:800;border:none;cursor:pointer;transition:transform .1s}
-.btn:active{transform:scale(.96)}
-.btn-primary{background:#0f172a;color:#fbbf24;width:100%}
-.btn-red{background:#ef4444;color:#fff}
-.btn-blue{background:#2563eb;color:#fff}
-.btn-green{background:#16a34a;color:#fff}
-.btn-outline{background:#f8fafc;border:1px solid #e2e8f0;color:#334155}
-.btn-sm{padding:6px 10px;font-size:11px}
-.table-wrap{overflow:auto;border-radius:12px;border:1px solid #e2e8f0}
-table{width:100%;border-collapse:collapse;font-size:12px}
-th{background:#f8fafc;padding:10px 12px;text-align:left;font-size:11px;font-weight:800;color:#475569;white-space:nowrap}
-td{padding:10px 12px;border-top:1px solid #f1f5f9;vertical-align:top}
-.live-dot{width:8px;height:8px;background:#22c55e;border-radius:50%;display:inline-block;animation:pulse 1.5s infinite}
-@keyframes pulse{0%{opacity:1}50%{opacity:.4}100%{opacity:1}}
-.overlay{position:fixed;inset:0;background:rgba(15,23,42,0.75);backdrop-filter:blur(8px);z-index:9999;display:none;align-items:center;justify-content:center;padding:20px}
-.overlay.show{display:flex}
-.modal-box{background:#fff;border-radius:20px;max-width:380px;width:100%;padding:22px;position:relative}
-@media(max-width:900px){
-  .sidebar{transform:translateX(-100%)}
-  .sidebar.open{transform:translateX(0)}
-  .main{margin-left:0}
-  .hamburger{display:block}
-  .form-grid{grid-template-columns:1fr}
+/* RESET & VARIABLE ROOT */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  -webkit-tap-highlight-color: transparent !important;
+  outline: none !important;
 }
-.admin-gate-overlay{position:fixed;inset:0;background:#0f172a;z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px}
-.admin-gate-box{background:#fff;border-radius:20px;width:100%;max-width:380px;padding:24px;text-align:center}
-.bukti-thumb{width:50px;height:50px;object-fit:cover;border-radius:8px;border:1px solid #cbd5e1;cursor:pointer;transition:transform 0.2s;}
-.bukti-thumb:hover{transform:scale(1.1);}
 
-.btn-reset-saldo {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  background: #fff1f2;
-  border: 1px solid #fecdd3;
-  color: #e11d48;
-  border-radius: 8px;
-  width: 28px;
-  height: 28px;
+body {
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+/* LAYOUT UTAMA */
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* SIDEBAR MODERN */
+.sidebar {
+  width: 270px;
+  background: #0f172a;
+  color: #ffffff;
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 50;
+  overflow-y: auto;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 4px 0 20px rgba(0,0,0,0.05);
+}
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+
+.sidebar-header {
+  padding: 24px 20px;
+  border-bottom: 1px solid #1e293b;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.logo-5 {
+  width: 42px;
+  height: 42px;
+  background: #fbbf24;
+  color: #0f172a;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-weight: 900;
+  font-size: 18px;
+  box-shadow: 0 4px 12px rgba(251, 191, 36, 0.25);
+}
+
+.menu { padding: 16px 12px; }
+.menu-label {
+  font-size: 10px;
+  font-weight: 800;
+  color: #64748b;
+  letter-spacing: 1px;
+  padding: 16px 12px 8px;
+  text-transform: uppercase;
+}
+.menu-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  border-radius: 12px;
   font-size: 13px;
+  font-weight: 600;
+  color: #94a3b8;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+  margin-bottom: 2px;
+}
+.menu-item:hover {
+  background: #1e293b;
+  color: #ffffff;
+}
+.menu-item.active {
+  background: #ffffff;
+  color: #0f172a;
+  font-weight: 800;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.menu-item .icon { font-size: 16px; width: 22px; text-align: center; }
+
+/* MAIN CONTENT */
+.main {
+  margin-left: 270px;
+  flex: 1;
+  min-height: 100vh;
+  transition: margin-left 0.3s ease;
+}
+
+.topbar {
+  height: 68px;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  box-shadow: 0 2px 10px rgba(15,23,42,0.02);
+}
+.hamburger {
+  display: none;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 8px;
+  font-size: 18px;
+  cursor: pointer;
+}
+.content {
+  padding: 24px;
+  max-width: 1240px;
+}
+
+/* STATS GRID */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.stat-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 20px;
+  border: 1px solid #e2e8f0;
+  position: relative;
+  box-shadow: 0 4px 16px rgba(15,23,42,0.03);
+}
+.stat-card .label {
+  font-size: 11px;
+  color: #64748b;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.stat-card .value {
+  font-size: 26px;
+  font-weight: 900;
+  margin-top: 6px;
+  color: #0f172a;
+}
+.stat-card .sub {
+  font-size: 11px;
+  color: #16a34a;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+.btn-reset-saldo {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
+  color: #e11d48;
+  border-radius: 10px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 .btn-reset-saldo:hover {
   background: #e11d48;
-  color: #fff;
+  color: #ffffff;
   border-color: #be123c;
+}
+
+/* TABS & CARDS */
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+.card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 24px;
+  border: 1px solid #e2e8f0;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 16px rgba(15,23,42,0.03);
+}
+.card-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* FORM STYLING */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.form-group { margin-bottom: 14px; }
+.form-group label {
+  font-size: 11px;
+  font-weight: 800;
+  color: #475569;
+  display: block;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.form-control {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 12px;
+  font-size: 13px;
+  outline: none;
+  background: #f8fafc;
+  color: #0f172a;
+  transition: all 0.2s ease;
+}
+.form-control:focus {
+  border-color: #0f172a;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(15,23,42,0.06);
+}
+textarea.form-control {
+  resize: vertical;
+  min-height: 90px;
+}
+
+/* BUTTONS */
+.btn {
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 800;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.btn:active { transform: scale(0.97); }
+.btn-primary { background: #0f172a; color: #fbbf24; width: 100%; }
+.btn-primary:hover { background: #1e293b; }
+.btn-red { background: #ef4444; color: #ffffff; }
+.btn-red:hover { background: #dc2626; }
+.btn-blue { background: #2563eb; color: #ffffff; }
+.btn-blue:hover { background: #1d4ed8; }
+.btn-green { background: #16a34a; color: #ffffff; }
+.btn-green:hover { background: #15803d; }
+.btn-outline { background: #f8fafc; border: 1px solid #cbd5e1; color: #334155; }
+.btn-sm { padding: 8px 12px; font-size: 11px; border-radius: 8px; }
+
+/* TABLE STYLING */
+.table-wrap {
+  overflow: auto;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+th {
+  background: #f8fafc;
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 800;
+  color: #475569;
+  white-space: nowrap;
+  border-bottom: 1px solid #e2e8f0;
+  text-transform: uppercase;
+}
+td {
+  padding: 12px 16px;
+  border-top: 1px solid #f1f5f9;
+  vertical-align: middle;
+  color: #334155;
+}
+tr:hover td { background: #fcfbf7; }
+
+/* LIVE DOT */
+.live-dot {
+  width: 8px;
+  height: 8px;
+  background: #22c55e;
+  border-radius: 50%;
+  display: inline-block;
+  animation: pulse 1.5s infinite;
+}
+@keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+
+/* MODALS */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(6px);
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.overlay.show { display: flex; }
+.modal-box {
+  background: #ffffff;
+  border-radius: 24px;
+  max-width: 400px;
+  width: 100%;
+  padding: 24px;
+  position: relative;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+
+.admin-gate-overlay {
+  position: fixed;
+  inset: 0;
+  background: #0f172a;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.admin-gate-box {
+  background: #ffffff;
+  border-radius: 24px;
+  width: 100%;
+  max-width: 380px;
+  padding: 28px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
+
+.bukti-thumb {
+  width: 52px;
+  height: 52px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+.bukti-thumb:hover { transform: scale(1.08); }
+
+@media(max-width: 900px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .main { margin-left: 0; }
+  .hamburger { display: block; }
+  .form-grid { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -95,15 +390,15 @@ td{padding:10px 12px;border-top:1px solid #f1f5f9;vertical-align:top}
 <!-- GATE LOGIN -->
 <div class="admin-gate-overlay" id="adminGate">
   <div class="admin-gate-box">
-    <div style="width:64px;height:64px;background:#fef3c7;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 12px">🔒</div>
-    <h2 style="font-size:18px;font-weight:900">Admin RW 05 Terkunci</h2>
-    <p style="font-size:11px;color:#64748b;margin-top:6px;line-height:1.4">Login admin Firebase untuk akses kontrol database warga.</p>
-    <input id="gateEmail" type="email" placeholder="Email admin" style="width:100%;padding:12px;border:1.5px solid #cbd5e1;border-radius:10px;margin-top:14px;font-size:13px">
-    <input id="gatePass" type="password" placeholder="Password admin" style="width:100%;padding:12px;border:1.5px solid #cbd5e1;border-radius:10px;margin-top:10px;font-size:13px">
+    <div style="width:68px;height:68px;background:#fef3c7;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 16px">🔒</div>
+    <h2 style="font-size:20px;font-weight:900;color:#0f172a">Admin RW 05 Terkunci</h2>
+    <p style="font-size:12px;color:#64748b;margin-top:6px;line-height:1.5">Login admin Firebase untuk akses kontrol database warga.</p>
+    <input id="gateEmail" type="email" placeholder="Email admin" class="form-control" style="margin-top:16px;">
+    <input id="gatePass" type="password" placeholder="Password admin" class="form-control" style="margin-top:10px;">
     <div id="gateError" style="font-size:11px;color:#ef4444;font-weight:700;margin-top:8px;display:none"></div>
-    <div style="display:flex;gap:8px;margin-top:14px">
-      <a href="profil.html" style="flex:1;display:flex;align-items:center;justify-content:center;padding:12px;border-radius:10px;text-decoration:none;background:#f1f5f9;color:#334155;font-weight:800;font-size:13px">Kembali</a>
-      <button id="btnGateLogin" style="flex:1;padding:12px;border-radius:10px;border:none;background:#0f172a;color:#fbbf24;font-weight:800;font-size:13px;cursor:pointer">Masuk Admin</button>
+    <div style="display:flex;gap:10px;margin-top:18px">
+      <a href="profil.html" class="btn btn-outline" style="flex:1;text-decoration:none;">Kembali</a>
+      <button id="btnGateLogin" class="btn btn-primary" style="flex:1;">Masuk Admin</button>
     </div>
   </div>
 </div>
@@ -112,7 +407,10 @@ td{padding:10px 12px;border-top:1px solid #f1f5f9;vertical-align:top}
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
       <div class="logo-5">05</div>
-      <div><div style="font-weight:900;font-size:14px;line-height:1">KATARNOLIMA</div><div style="font-size:10px;color:#94a3b8;font-weight:700">RW 05 Poncol Jaya</div></div>
+      <div>
+        <div style="font-weight:900;font-size:15px;line-height:1;color:#ffffff">KATARNOLIMA</div>
+        <div style="font-size:10px;color:#94a3b8;font-weight:700;margin-top:2px">RW 05 Poncol Jaya</div>
+      </div>
     </div>
     <div class="menu">
       <div class="menu-label">Utama</div>
@@ -143,8 +441,12 @@ td{padding:10px 12px;border-top:1px solid #f1f5f9;vertical-align:top}
   <main class="main">
     <div class="topbar">
       <button class="hamburger" id="hamburger">☰</button>
-      <div style="display:flex;align-items:center;gap:8px"><span class="live-dot"></span><span style="font-size:12px;font-weight:800">DATABASE VIEW MODE</span><span style="font-size:11px;background:#f1f5f9;padding:4px 8px;border-radius:6px" id="adminEmailLabel">Admin</span></div>
-      <div style="font-size:11px;color:#64748b">Sinkronisasi Realtime Firestore</div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span class="live-dot"></span>
+        <span style="font-size:12px;font-weight:800;color:#0f172a">DATABASE VIEW MODE</span>
+        <span style="font-size:11px;background:#f1f5f9;padding:4px 10px;border-radius:8px;font-weight:700;color:#475569" id="adminEmailLabel">Admin</span>
+      </div>
+      <div style="font-size:11px;color:#64748b;font-weight:600">Sinkronisasi Realtime Firestore</div>
     </div>
 
     <div class="content">
@@ -152,14 +454,25 @@ td{padding:10px 12px;border-top:1px solid #f1f5f9;vertical-align:top}
       <!-- DASHBOARD -->
       <div class="tab-content active" id="tab-dashboard">
         <div class="stats-grid">
-          <div class="stat-card"><div class="label">Total Akun Warga</div><div class="value" id="statWarga">0</div><div class="sub">Terdaftar Mandiri</div></div>
-          <div class="stat-card"><div class="label">Aduan Masuk</div><div class="value" id="statAduan">0</div><div class="sub" style="color:#ef4444">Masuk / Realtime</div></div>
-          <div class="stat-card"><div class="label">Berita Aktif</div><div class="value" id="statBerita">0</div><div class="sub">Terpublikasi</div></div>
-          
+          <div class="stat-card">
+            <div class="label">Total Akun Warga</div>
+            <div class="value" id="statWarga">0</div>
+            <div class="sub">Terdaftar Mandiri</div>
+          </div>
+          <div class="stat-card">
+            <div class="label">Aduan Masuk</div>
+            <div class="value" id="statAduan">0</div>
+            <div class="sub" style="color:#ef4444">Masuk / Realtime</div>
+          </div>
+          <div class="stat-card">
+            <div class="label">Berita Aktif</div>
+            <div class="value" id="statBerita">0</div>
+            <div class="sub">Terpublikasi</div>
+          </div>
           <div class="stat-card">
             <button class="btn-reset-saldo" onclick="window.resetSaldoKas()" title="Reset Total Saldo Kas ke Rp 0">🗑️</button>
             <div class="label">Saldo Kas</div>
-            <div class="value" style="font-size:18px" id="statSaldo">Rp 0</div>
+            <div class="value" style="font-size:20px;color:#2563eb" id="statSaldo">Rp 0</div>
             <div class="sub">Live Akumulasi</div>
           </div>
         </div>
@@ -169,7 +482,7 @@ td{padding:10px 12px;border-top:1px solid #f1f5f9;vertical-align:top}
       <div class="tab-content" id="tab-sembako">
         <div class="card">
           <div class="card-title">🛒 Update Harga Sembako & Informasi Pasar</div>
-          <form id="formSembako" style="display:grid;gap:12px">
+          <form id="formSembako" style="display:grid;gap:14px">
             <div class="form-grid">
               <div class="form-group"><label>Nama Bahan Pokok / Sembako</label><input id="sembakoNama" class="form-control" required placeholder="Contoh: Beras Premium / Telur Ayam"></div>
               <div class="form-group"><label>Harga (Rp / Satuan)</label><input id="sembakoHarga" type="number" class="form-control" required placeholder="Contoh: 15000"></div>
@@ -196,7 +509,7 @@ td{padding:10px 12px;border-top:1px solid #f1f5f9;vertical-align:top}
       <div class="tab-content" id="tab-keamanan">
         <div class="card">
           <div class="card-title">🛡️ Input Jadwal & Kontak Petugas Satpam / Ronda</div>
-          <form id="formKeamanan" style="display:grid;gap:12px">
+          <form id="formKeamanan" style="display:grid;gap:14px">
             <div class="form-grid">
               <div class="form-group"><label>Nama Petugas / Anggota Ronda</label><input id="satpamNama" class="form-control" required placeholder="Contoh: Pak Paksi / Tim Pos A"></div>
               <div class="form-group"><label>Shift / Jam Operasional Jaga</label><input id="satpamJadwal" class="form-control" required placeholder="Contoh: 22:00 – 04:00 WIB"></div>
@@ -218,7 +531,7 @@ td{padding:10px 12px;border-top:1px solid #f1f5f9;vertical-align:top}
       <div class="tab-content" id="tab-lingkungan">
         <div class="card">
           <div class="card-title">🧹 Kelola Kegiatan Lingkungan & Kebersihan (Kerja Bakti)</div>
-          <form id="formLingkungan" style="display:grid;gap:12px">
+          <form id="formLingkungan" style="display:grid;gap:14px">
             <div class="form-group"><label>Nama Kegiatan Kebersihan</label><input id="lingkunganJudul" class="form-control" required placeholder="Contoh: Kerja Bakti Massal Pembersihan Saluran Air"></div>
             <div class="form-grid">
               <div class="form-group"><label>Tanggal & Waktu Pelaksanaan</label><input id="lingkunganTanggal" class="form-control" required placeholder="Contoh: Minggu, 27 Sep 2026 (07:00 WIB)"></div>
@@ -238,7 +551,7 @@ td{padding:10px 12px;border-top:1px solid #f1f5f9;vertical-align:top}
       <div class="tab-content" id="tab-posyandu">
         <div class="card">
           <div class="card-title">👶 Jadwal & Informasi Layanan Posyandu</div>
-          <form id="formPosyandu" style="display:grid;gap:12px">
+          <form id="formPosyandu" style="display:grid;gap:14px">
             <div class="form-group"><label>Nama Layanan Posyandu</label><input id="posyanduJudul" class="form-control" required placeholder="Contoh: Posyandu Balita & Lansia Cempaka 05"></div>
             <div class="form-grid">
               <div class="form-group"><label>Tanggal & Jam Layanan</label><input id="posyanduJadwal" class="form-control" required placeholder="Contoh: Selasa, 29 Sep 2026 (08:30 WIB)"></div>
@@ -258,7 +571,7 @@ td{padding:10px 12px;border-top:1px solid #f1f5f9;vertical-align:top}
       <div class="tab-content" id="tab-kegiatan">
         <div class="card">
           <div class="card-title">🎓 Program Belajar Bersama & Kegiatan Pemuda / Karang Taruna</div>
-          <form id="formKegiatan" style="display:grid;gap:12px">
+          <form id="formKegiatan" style="display:grid;gap:14px">
             <div class="form-group"><label>Nama Program / Pelatihan / Belajar</label><input id="kegiatanJudul" class="form-control" required placeholder="Contoh: Bimbingan Belajar Anak & Kursus Bahasa Inggris"></div>
             <div class="form-grid">
               <div class="form-group"><label>Jadwal Rutin / Pelaksanaan</label><input id="kegiatanJadwal" class="form-control" required placeholder="Contoh: Setiap Sabtu Sore (15:30 WIB)"></div>
@@ -278,7 +591,7 @@ td{padding:10px 12px;border-top:1px solid #f1f5f9;vertical-align:top}
       <div class="tab-content" id="tab-info-singkat">
         <div class="card">
           <div class="card-title">📢 Buat Info Singkat Warga (Masuk Halaman Info & Kuning)</div>
-          <form id="formInfoSingkat" style="display:grid;gap:12px">
+          <form id="formInfoSingkat" style="display:grid;gap:14px">
             <div class="form-group"><label>Judul Info</label><input id="infoJudul" class="form-control" required placeholder="Contoh: Pemadaman Listrik RT 02"></div>
             <div class="form-group"><label>Isi Pesan Singkat</label><textarea id="infoIsi" class="form-control" required rows="3" placeholder="Tulis info singkat..."></textarea></div>
             <button type="submit" class="btn btn-primary">🚀 Kirim Info ke Warga</button>
@@ -292,7 +605,7 @@ td{padding:10px 12px;border-top:1px solid #f1f5f9;vertical-align:top}
         <!-- FORM PUSH UPDATE APLIKASI -->
         <div class="card" style="margin-top:16px;">
           <div class="card-title">🚀 Push Update Aplikasi (Notifikasi Warga)</div>
-          <form id="formPushUpdate" style="display:grid;gap:12px">
+          <form id="formPushUpdate" style="display:grid;gap:14px">
             <div class="form-grid">
               <div class="form-group">
                 <label>Versi Terbaru (misal: v2.0.0)</label>
@@ -347,7 +660,7 @@ td{padding:10px 12px;border-top:1px solid #f1f5f9;vertical-align:top}
       <div class="tab-content" id="tab-berita">
         <div class="card">
           <div class="card-title">📰 Publikasi Berita / Artikel Lengkap</div>
-          <form id="formBerita" style="display:grid;gap:12px">
+          <form id="formBerita" style="display:grid;gap:14px">
             <div class="form-group"><label>Kategori</label><select id="beritaKat" class="form-control"><option value="kegiatan|🌸|Kegiatan Warga">🌸 Kegiatan Warga</option><option value="pengumuman|📢|Pengumuman Resmi">📢 Pengumuman Resmi</option></select></div>
             <div class="form-group"><label>Judul Berita</label><input id="beritaJudul" class="form-control" required></div>
             <div class="form-group"><label>Isi Berita Lengkap</label><textarea id="beritaIsi" class="form-control" required rows="5"></textarea></div>
@@ -365,7 +678,7 @@ td{padding:10px 12px;border-top:1px solid #f1f5f9;vertical-align:top}
       <div class="tab-content" id="tab-warga">
         <div class="card">
           <div class="card-title">👥 Database Akun Warga Terdaftar (Pendaftaran Mandiri oleh Warga)</div>
-          <p style="font-size:12px;color:#64748b;margin-bottom:14px;">Warga mendaftar mandiri via halaman Profil. Admin mengelola data & menghapus akun jika diperlukan.</p>
+          <p style="font-size:12px;color:#64748b;margin-bottom:16px;">Warga mendaftar mandiri via halaman Profil. Admin mengelola data & menghapus akun jika diperlukan.</p>
           <div class="table-wrap">
             <table>
               <thead><tr><th>Nama Lengkap</th><th>RT / Wilayah</th><th>Email Terdaftar</th><th>Aksi Kontrol</th></tr></thead>
@@ -430,7 +743,7 @@ td{padding:10px 12px;border-top:1px solid #f1f5f9;vertical-align:top}
         <!-- TABEL BUKTI PEMBAYARAN IURAN WARGA -->
         <div class="card">
           <div class="card-title">📥 Bukti Pembayaran Iuran Warga (Masuk Real-time)</div>
-          <p style="font-size:12px;color:#64748b;margin-bottom:12px;">Hapus data bukti pembayaran iuran yang sudah tidak diperlukan agar kuota penyimpanan Firebase tidak penuh.</p>
+          <p style="font-size:12px;color:#64748b;margin-bottom:16px;">Hapus data bukti pembayaran iuran yang sudah tidak diperlukan agar kuota penyimpanan Firebase tidak penuh.</p>
           <div class="table-wrap">
             <table>
               <thead><tr><th>NIK (16 Digit)</th><th>Bulan</th><th>Nominal</th><th>RT</th><th>Bukti Transfer</th><th>Tanggal Kirim</th><th>Aksi Kontrol</th></tr></thead>
@@ -447,35 +760,35 @@ td{padding:10px 12px;border-top:1px solid #f1f5f9;vertical-align:top}
 <!-- CUSTOM MODAL POPUP UNIVERSAL -->
 <div class="overlay" id="appCustomModal">
   <div class="modal-box">
-    <button id="modalCloseX" style="position:absolute; top:14px; right:16px; background:none; border:none; font-size:18px; font-weight:800; color:#94a3b8; cursor:pointer; padding:4px;">✕</button>
-    <div id="modalIcon" style="font-size:32px; margin-bottom:8px;">📢</div>
+    <button id="modalCloseX" style="position:absolute; top:16px; right:18px; background:none; border:none; font-size:18px; font-weight:800; color:#94a3b8; cursor:pointer; padding:4px;">✕</button>
+    <div id="modalIcon" style="font-size:32px; margin-bottom:10px;">📢</div>
     <h3 id="modalTitle" style="font-size:16px; font-weight:900; color:#0f172a; margin-bottom:6px;">Notifikasi</h3>
-    <p id="modalDesc" style="font-size:12px; color:#475569; line-height:1.5; margin-bottom:18px;"></p>
-    <div id="modalButtons" style="display:flex; gap:8px;"></div>
+    <p id="modalDesc" style="font-size:12px; color:#475569; line-height:1.5; margin-bottom:20px;"></p>
+    <div id="modalButtons" style="display:flex; gap:10px;"></div>
   </div>
 </div>
 
 <!-- MODAL PREVIEW FOTO BUKTI TRANSFER -->
 <div class="overlay" id="modalPreviewBukti">
   <div class="modal-box" style="max-width:500px;text-align:center;">
-    <button onclick="window.closeModal('modalPreviewBukti')" style="position:absolute; top:14px; right:16px; background:none; border:none; font-size:18px; font-weight:800; color:#94a3b8; cursor:pointer; padding:4px;">✕</button>
-    <h3 style="font-weight:900;margin-bottom:12px;">Bukti Transfer / QRIS</h3>
-    <img id="imgFullBukti" src="" style="width:100%;max-height:400px;object-fit:contain;border-radius:12px;border:1px solid #cbd5e1;" alt="Bukti Transfer">
+    <button onclick="window.closeModal('modalPreviewBukti')" style="position:absolute; top:16px; right:18px; background:none; border:none; font-size:18px; font-weight:800; color:#94a3b8; cursor:pointer; padding:4px;">✕</button>
+    <h3 style="font-weight:900;margin-bottom:14px;color:#0f172a">Bukti Transfer / QRIS</h3>
+    <img id="imgFullBukti" src="" style="width:100%;max-height:400px;object-fit:contain;border-radius:14px;border:1px solid #cbd5e1;" alt="Bukti Transfer">
   </div>
 </div>
 
 <!-- MODAL EDIT BERITA -->
 <div class="overlay" id="modalEditBerita">
   <div class="modal-box">
-    <h3 style="font-weight:900">Edit Berita</h3>
+    <h3 style="font-weight:900;color:#0f172a">Edit Berita</h3>
     <input id="editBeritaId" type="hidden">
-    <div class="form-group" style="margin-top:12px"><label>Judul</label><input id="editBeritaJudul" class="form-control"></div>
+    <div class="form-group" style="margin-top:14px"><label>Judul</label><input id="editBeritaJudul" class="form-control"></div>
     <div class="form-group"><label>Isi</label><textarea id="editBeritaIsi" class="form-control"></textarea></div>
-    <div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-outline" style="flex:1" onclick="window.closeModal('modalEditBerita')">Batal</button><button class="btn btn-primary" style="flex:1" id="btnSimpanEditBerita">Simpan</button></div>
+    <div style="display:flex;gap:10px;margin-top:16px"><button class="btn btn-outline" style="flex:1" onclick="window.closeModal('modalEditBerita')">Batal</button><button class="btn btn-primary" style="flex:1" id="btnSimpanEditBerita">Simpan</button></div>
   </div>
 </div>
 
-<script src="script.js?v=28"></script>
+<script src="../assets/js/script.js?v=28"></script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, collection, doc, getDoc, setDoc, addDoc, updateDoc, deleteDoc, onSnapshot, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -654,7 +967,6 @@ window.closeModal = function(id){
 };
 
 function initAdmin(){
-  // --- FUNGSI RESET SALDO KAS MENJADI RP 0 ---
   window.resetSaldoKas = function() {
     window.showModal({
       title: 'Reset Saldo Kas',
@@ -688,7 +1000,6 @@ function initAdmin(){
     });
   };
 
-  // --- LOGIKA PUSH UPDATE APLIKASI (SIMPAN DAN CATAT RIWAYAT) ---
   const formPushUpdate = document.getElementById('formPushUpdate');
   if (formPushUpdate) {
     formPushUpdate.addEventListener('submit', async (e) => {
@@ -699,7 +1010,6 @@ function initAdmin(){
       const isAktif = document.getElementById('appStatusAktif').checked;
 
       try {
-        // 1. Update status aktif di sistem_app agar muncul di warga
         await setDoc(doc(db, "sistem_app", "update_info"), {
           versi: versi,
           linkDownload: link,
@@ -708,7 +1018,6 @@ function initAdmin(){
           updatedAt: serverTimestamp()
         });
 
-        // 2. Simpan entri baru ke koleksi riwayat_update_app
         await addDoc(collection(db, "riwayat_update_app"), {
           versi: versi,
           linkDownload: link,
@@ -724,7 +1033,6 @@ function initAdmin(){
     });
   }
 
-  // --- FUNGSI HAPUS / MATIKAN PUSH UPDATE ---
   window.hapusPushUpdate = function() {
     window.showModal({
       title: 'Matikan Notifikasi Update',
@@ -760,7 +1068,6 @@ function initAdmin(){
     });
   };
 
-  // --- BACA TABEL RIWAYAT PUSH UPDATE REALTIME ---
   const listRiwayatUpdateAdmin = document.getElementById('listRiwayatUpdateAdmin');
   if (listRiwayatUpdateAdmin) {
     onSnapshot(query(collection(db, "riwayat_update_app"), orderBy("createdAt", "desc"), limit(20)), (snap) => {
@@ -772,7 +1079,6 @@ function initAdmin(){
           ? '<span style="color:#16a34a;font-weight:800;font-size:10px;background:#dcfce7;padding:2px 6px;border-radius:4px;">AKTIF</span>' 
           : '<span style="color:#64748b;font-weight:700;font-size:10px;background:#f1f5f9;padding:2px 6px;border-radius:4px;">NONAKTIF</span>';
 
-        // Encode string data ke format JSON aman agar terhindar dari error kutip atau enter
         const safeData = JSON.stringify({
           versi: d.versi || '',
           linkDownload: d.linkDownload || '',
@@ -797,7 +1103,6 @@ function initAdmin(){
     });
   }
 
-  // --- FUNGSI PUSH ULANG DARI RIWAYAT ---
   window.pushUlangUpdate = function(data) {
     window.showModal({
       title: 'Push Ulang Notifikasi',
@@ -831,7 +1136,6 @@ function initAdmin(){
     });
   };
 
-  // --- FUNGSI HAPUS ITEM RIWAYAT ---
   window.hapusRiwayatUpdate = function(id) {
     window.showModal({
       title: 'Hapus Riwayat',
@@ -849,7 +1153,6 @@ function initAdmin(){
     });
   };
 
-  // --- 1. HARGA SEMBAKO & PASAR ---
   const formSembako = document.getElementById('formSembako');
   if(formSembako){
     formSembako.addEventListener('submit', async (e)=>{
@@ -901,7 +1204,6 @@ function initAdmin(){
     });
   };
 
-  // --- 2. KEAMANAN & SATPAM ---
   const formKeamanan = document.getElementById('formKeamanan');
   if(formKeamanan){
     formKeamanan.addEventListener('submit', async (e)=>{
@@ -929,11 +1231,11 @@ function initAdmin(){
       let html = '';
       snap.forEach(docItem => {
         const d = docItem.data();
-        html += `<div style="padding:10px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        html += `<div style="padding:12px;background:#f8fafc;border-radius:12px;border:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
           <div>
-            <div style="font-size:12px;font-weight:800;color:#0f172a">${d.nama||'-'}</div>
-            <div style="font-size:11px;color:#64748b">Shift/Jam Jaga: ${d.jadwal||'-'} • HP: ${d.phone||'-'}</div>
-            <div style="font-size:11px;color:#be123c;margin-top:2px"><b>Himbauan:</b> ${d.himbauan||'-'}</div>
+            <div style="font-size:13px;font-weight:800;color:#0f172a">${d.nama||'-'}</div>
+            <div style="font-size:11px;color:#64748b;margin-top:2px">Shift/Jam Jaga: ${d.jadwal||'-'} • HP: ${d.phone||'-'}</div>
+            <div style="font-size:11px;color:#be123c;margin-top:4px"><b>Himbauan:</b> ${d.himbauan||'-'}</div>
           </div>
           <button class="btn btn-red btn-sm" onclick="window.hapusKeamanan('${docItem.id}')">Hapus</button>
         </div>`;
@@ -952,7 +1254,6 @@ function initAdmin(){
     });
   };
 
-  // --- 3. LINGKUNGAN BERSIH ---
   const formLingkungan = document.getElementById('formLingkungan');
   if(formLingkungan){
     formLingkungan.addEventListener('submit', async (e)=>{
@@ -980,7 +1281,7 @@ function initAdmin(){
       let html = '';
       snap.forEach(docItem => {
         const d = docItem.data();
-        html += `<div style="padding:12px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;margin-bottom:8px">
+        html += `<div style="padding:14px;background:#f8fafc;border-radius:12px;border:1px solid #e2e8f0;margin-bottom:10px">
           <div style="display:flex;justify-content:space-between;align-items:flex-start">
             <div>
               <div style="font-size:13px;font-weight:800;color:#0f172a">${d.judul||'-'}</div>
@@ -1005,7 +1306,6 @@ function initAdmin(){
     });
   };
 
-  // --- 4. POSYANDU ---
   const formPosyandu = document.getElementById('formPosyandu');
   if(formPosyandu){
     formPosyandu.addEventListener('submit', async (e)=>{
@@ -1033,7 +1333,7 @@ function initAdmin(){
       let html = '';
       snap.forEach(docItem => {
         const d = docItem.data();
-        html += `<div style="padding:12px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;margin-bottom:8px">
+        html += `<div style="padding:14px;background:#f8fafc;border-radius:12px;border:1px solid #e2e8f0;margin-bottom:10px">
           <div style="display:flex;justify-content:space-between;align-items:flex-start">
             <div>
               <div style="font-size:13px;font-weight:800;color:#0f172a">${d.judul||'-'}</div>
@@ -1058,7 +1358,6 @@ function initAdmin(){
     });
   };
 
-  // --- 5. BELAJAR BERSAMA & KEGIATAN ---
   const formKegiatan = document.getElementById('formKegiatan');
   if(formKegiatan){
     formKegiatan.addEventListener('submit', async (e)=>{
@@ -1086,7 +1385,7 @@ function initAdmin(){
       let html = '';
       snap.forEach(docItem => {
         const d = docItem.data();
-        html += `<div style="padding:12px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;margin-bottom:8px">
+        html += `<div style="padding:14px;background:#f8fafc;border-radius:12px;border:1px solid #e2e8f0;margin-bottom:10px">
           <div style="display:flex;justify-content:space-between;align-items:flex-start">
             <div>
               <div style="font-size:13px;font-weight:800;color:#0f172a">${d.judul||'-'}</div>
@@ -1111,7 +1410,6 @@ function initAdmin(){
     });
   };
 
-  // --- KAS & TRANSAKSI ---
   const formKasTransaksi = document.getElementById('formKasTransaksi');
   if(formKasTransaksi) {
     formKasTransaksi.addEventListener('submit', async (e) => {
@@ -1208,7 +1506,6 @@ function initAdmin(){
     });
   };
 
-  // --- LIST BUKTI PEMBAYARAN IURAN WARGA REALTIME ---
   const listIuranWargaAdmin = document.getElementById('listIuranWargaAdmin');
   if(listIuranWargaAdmin) {
     onSnapshot(query(collection(db, "iuran_warga_rw05"), orderBy("createdAt", "desc"), limit(40)), (snap) => {
@@ -1258,7 +1555,6 @@ function initAdmin(){
     });
   };
 
-  // MODERASI DISKUSI RW
   const listDiskusiAdmin = document.getElementById('listDiskusiAdmin');
   if(listDiskusiAdmin) {
     onSnapshot(query(collection(db, "diskusi_rw05"), orderBy("createdAt", "desc"), limit(40)), (snap) => {
@@ -1266,7 +1562,7 @@ function initAdmin(){
       snap.forEach((docItem) => {
         const d = docItem.data();
         const timeStr = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleString('id-ID') : '-';
-        html += `<div style="padding:12px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;gap:12px;">
+        html += `<div style="padding:14px;background:#f8fafc;border-radius:12px;border:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;gap:12px;">
           <div style="flex:1;">
             <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
               <span style="font-weight:800;font-size:12px;color:#0f172a;">${d.userName || 'Warga'}</span>
@@ -1335,7 +1631,7 @@ function initAdmin(){
       let html='';
       snap.forEach((docItem)=>{
         const d=docItem.data()||{};
-        html+=`<div style="padding:10px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        html+=`<div style="padding:12px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
           <div><div style="font-size:12px;font-weight:800">${d.judul||''}</div><div style="font-size:10px;color:#64748b">${d.tanggal||'-'}</div></div>
           <button class="btn btn-red btn-sm" onclick="window.hapusInfoSingkat('${docItem.id}')">Hapus</button>
         </div>`;
@@ -1383,7 +1679,7 @@ function initAdmin(){
       let html='';
       snap.forEach((docItem)=>{
         const d=docItem.data()||{};
-        html+=`<div style="padding:12px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        html+=`<div style="padding:12px;background:#f8fafc;border-radius:12px;border:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
           <div><div style="font-size:12px;font-weight:800">${d.ikon||'📰'} ${d.judul||''}</div><div style="font-size:10px;color:#64748b">${d.tanggal||'-'}</div></div>
           <div style="display:flex;gap:6px"><button class="btn btn-outline btn-sm" onclick="window.editBerita('${docItem.id}')">Edit</button><button class="btn btn-red btn-sm" onclick="window.hapusBerita('${docItem.id}')">Hapus</button></div>
         </div>`;
@@ -1448,13 +1744,13 @@ function initAdmin(){
         let mediaPreview = '';
         if (mediaUrl) {
           if (isVideo) {
-            mediaPreview = `<video src="${mediaUrl}" controls style="width:120px;height:80px;border-radius:8px;object-fit:cover;margin-bottom:8px;border:1px solid #cbd5e1;"></video>`;
+            mediaPreview = `<video src="${mediaUrl}" controls style="width:120px;height:80px;border-radius:10px;object-fit:cover;margin-bottom:8px;border:1px solid #cbd5e1;"></video>`;
           } else {
-            mediaPreview = `<img src="${mediaUrl}" style="width:70px;height:70px;border-radius:8px;object-fit:cover;margin-bottom:8px;border:1px solid #cbd5e1;" />`;
+            mediaPreview = `<img src="${mediaUrl}" style="width:70px;height:70px;border-radius:10px;object-fit:cover;margin-bottom:8px;border:1px solid #cbd5e1;" />`;
           }
         }
 
-        html+=`<div style="padding:12px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;margin-bottom:10px">
+        html+=`<div style="padding:14px;background:#f8fafc;border-radius:12px;border:1px solid #e2e8f0;margin-bottom:12px">
           <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
             <div>
               <div style="font-weight:800;font-size:13px;color:#0f172a;">${d.judul || 'Aduan'} - ${d.rt||'-'}</div>
@@ -1464,7 +1760,7 @@ function initAdmin(){
           </div>
           <div style="font-size:12px;margin:8px 0;color:#334155;line-height:1.4;">${d.deskripsi||'-'}</div>
           ${mediaPreview}
-          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;">
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">
             <button class="btn btn-blue btn-sm" onclick="window.updateStatusAduan('${docItem.id}', 'Diproses')">Proses</button>
             <button class="btn btn-green btn-sm" onclick="window.updateStatusAduan('${docItem.id}', 'Selesai')">Selesai</button>
             <button class="btn btn-red btn-sm" onclick="window.hapusAduanAdmin('${docItem.id}', '${mediaUrl}', ${isVideo})">Hapus</button>

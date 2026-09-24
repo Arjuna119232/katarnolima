@@ -4,53 +4,66 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Semua Layanan - KATARNOLIMA RW 05</title>
-<link rel="icon" href="img/logo-resmi-karang-taruna.jpg">
-<link rel="stylesheet" href="style.css?v=26">
+<link rel="icon" href="../assets/img/logo-resmi-karang-taruna.jpg">
+<link rel="stylesheet" href="../assets/css/style.css?v=27">
 <style>
-*{ -webkit-tap-highlight-color:transparent!important; margin:0; padding:0; box-sizing:border-box; }
+/* RESET & SYSTEM BASE */
+*, *::before, *::after {
+  -webkit-tap-highlight-color: transparent !important;
+  outline: none !important;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 body {
   background: #f8fafc !important;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: #0f172a;
+  line-height: 1.5;
 }
+
 .layanan-container {
   width: 100%;
   max-width: 440px;
   margin: 0 auto;
-  background: #ffffff;
+  background: #f8fafc !important;
   min-height: 100vh;
-  padding-bottom: 30px;
-  box-shadow: 0 0 20px rgba(0,0,0,0.05);
+  padding-bottom: 40px;
+  box-shadow: 0 0 30px rgba(15, 23, 42, 0.05);
   position: relative;
 }
 
-/* HEADER MODERN */
+/* HEADER STICKY MODERN */
 .light-header {
-  padding: 14px 16px;
+  padding: 16px 20px;
   display: flex;
   align-items: center;
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   position: sticky;
   top: 0;
   z-index: 20;
   border-bottom: 1px solid #f1f5f9;
 }
+
 .btn-back-modern {
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   border-radius: 12px;
-  background: #f8fafc;
+  background: #f1f5f9;
   border: 1px solid #e2e8f0;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #0f172a;
   cursor: pointer;
-  transition: all 0.2s ease;
-  outline: none;
+  transition: transform 0.15s ease;
 }
 .btn-back-modern:active {
+  transform: scale(0.92);
   background: #e2e8f0;
-  transform: scale(0.95);
 }
 .btn-back-modern svg {
   width: 20px;
@@ -61,31 +74,54 @@ body {
   stroke-linejoin: round;
   fill: none;
 }
+
 .light-header h1 {
   flex: 1;
   font-size: 16px;
   font-weight: 800;
   color: #0f172a;
   text-align: center;
-  margin-right: 40px;
+  margin-right: 38px;
+  letter-spacing: -0.2px;
 }
 
-/* SECTION KATEGORI */
+/* SEKSI KARTU GROUP */
 .section-layanan {
+  margin: 16px 20px;
+  background: #ffffff;
+  border-radius: 20px;
   padding: 20px 16px;
-  border-bottom: 1px solid #f1f5f9;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.02);
 }
+
 .section-title {
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 800;
   color: #0f172a;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
+.section-title::before {
+  content: '';
+  display: inline-block;
+  width: 4px;
+  height: 14px;
+  background: #fbbf24;
+  border-radius: 4px;
+}
+
+/* GRID GRID ITEM LAYANAN */
 .grid-layanan {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 12px;
 }
+
 .item-layanan {
   display: flex;
   flex-direction: column;
@@ -94,119 +130,361 @@ body {
   text-decoration: none;
   cursor: pointer;
 }
+
 .icon-box {
-  width: 56px;
-  height: 56px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 18px;
+  width: 54px;
+  height: 54px;
+  border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
-  margin-bottom: 6px;
-  transition: transform 0.2s;
+  font-size: 22px;
+  margin-bottom: 8px;
+  position: relative;
+  transition: transform 0.15s ease;
+  border: 1px solid rgba(15, 23, 42, 0.04);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.02);
 }
 .item-layanan:active .icon-box {
-  transform: scale(0.92);
+  transform: scale(0.90);
 }
+
 .item-layanan p {
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   color: #334155;
-  line-height: 1.2;
+  line-height: 1.25;
 }
+
+/* KATEGORI WARNA SOFT IKON */
+.bg-blue { background: #eff6ff; }
+.bg-green { background: #f0fdf4; }
+.bg-amber { background: #fffbeb; }
+.bg-purple { background: #faf5ff; }
+.bg-rose { background: #fff1f2; }
+.bg-sky { background: #f0f9ff; }
+.bg-emerald { background: #ecfdf5; }
+.bg-indigo { background: #eef2ff; }
+
+/* STYLE FEATURE COMING SOON */
+.item-layanan.disabled {
+  pointer-events: none;
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+.item-layanan.disabled .icon-box {
+  background: #0f172a !important;
+  color: #ffffff;
+}
+.badge-soon {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #fbbf24;
+  color: #0f172a;
+  font-size: 8px;
+  font-weight: 900;
+  padding: 2px 6px;
+  border-radius: 8px;
+  letter-spacing: 0.5px;
+  border: 1.5px solid #ffffff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* UNIVERSAL MODAL POPUP */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.modal-overlay.show-overlay { opacity: 1; }
+
+.modal-box {
+  background: #ffffff;
+  width: 100%;
+  max-width: 380px;
+  border-radius: 24px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15);
+  overflow: hidden;
+  transform: scale(0.9);
+  transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.modal-overlay.show-overlay .modal-box { transform: scale(1); }
 </style>
 </head>
 <body>
+
 <div class="layanan-container">
   <!-- HEADER -->
   <div class="light-header">
-    <button class="btn-back-modern" id="backBtn" onclick="history.back()" aria-label="Kembali">
+    <button class="btn-back-modern" id="backBtn" onclick="goBackSafely()" aria-label="Kembali">
       <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
     </button>
     <h1>Semua Layanan RW 05</h1>
   </div>
 
-  <!-- UTAMAKAN KATEGORI KEBUTUHAN WARGA -->
+  <!-- SEKSI 1: LAYANAN PUBLIK & LAPORAN -->
   <div class="section-layanan">
     <div class="section-title">Layanan Publik & Laporan</div>
     <div class="grid-layanan">
       <a class="item-layanan" href="aduan-warga.html">
-        <div class="icon-box">📢</div>
-        <p>Aduan Warga</p>
+        <div class="icon-box bg-rose">📢</div>
+        <p>Aduan<br>Warga</p>
       </a>
       <a class="item-layanan" href="berita-rw.html">
-        <div class="icon-box">📰</div>
-        <p>Berita RW</p>
+        <div class="icon-box bg-sky">📰</div>
+        <p>Berita<br>RW</p>
       </a>
       <a class="item-layanan" href="iuran-warga.html">
-        <div class="icon-box">💰</div>
-        <p>Iuran Warga</p>
+        <div class="icon-box bg-amber">💰</div>
+        <p>Iuran<br>Warga</p>
       </a>
-      <div class="item-layanan" data-modal="petaBalai">
-        <div class="icon-box">📍</div>
-        <p>Peta Balai</p>
+      <div class="item-layanan" onclick="openServiceModal('petaBalai')">
+        <div class="icon-box bg-blue">📍</div>
+        <p>Peta<br>Balai</p>
       </div>
     </div>
   </div>
 
+  <!-- SEKSI 2: INFORMASI & LINGKUNGAN -->
   <div class="section-layanan">
     <div class="section-title">Informasi & Lingkungan</div>
     <div class="grid-layanan">
-      <div class="item-layanan" data-modal="sembako">
-        <div class="icon-box">🛒</div>
-        <p>Harga Sembako</p>
+      <div class="item-layanan" onclick="openServiceModal('sembako')">
+        <div class="icon-box bg-emerald">🛒</div>
+        <p>Harga<br>Sembako</p>
       </div>
-      <div class="item-layanan" data-modal="ronda">
-        <div class="icon-box">🛡️</div>
-        <p>Jadwal Ronda</p>
+      <div class="item-layanan" onclick="openServiceModal('keamanan')">
+        <div class="icon-box bg-indigo">🛡️</div>
+        <p>Keamanan<br>Satpam</p>
       </div>
-      <div class="item-layanan" data-modal="bersih">
-        <div class="icon-box">🧹</div>
-        <p>Kerja Bakti</p>
+      <div class="item-layanan" onclick="openServiceModal('lingkungan')">
+        <div class="icon-box bg-green">🧹</div>
+        <p>Lingkungan<br>Bersih</p>
       </div>
-      <div class="item-layanan" data-modal="posyandu">
-        <div class="icon-box">👶</div>
+      <div class="item-layanan" onclick="openServiceModal('posyandu')">
+        <div class="icon-box bg-rose">👶</div>
         <p>Posyandu</p>
       </div>
     </div>
   </div>
 
+  <!-- SEKSI 3: KEMASYARAKATAN -->
   <div class="section-layanan">
     <div class="section-title">Kemasyarakatan</div>
     <div class="grid-layanan">
-      <div class="item-layanan" data-modal="datawarga">
-        <div class="icon-box">📋</div>
-        <p>Data Warga</p>
+      <div class="item-layanan" onclick="openServiceModal('datawarga')">
+        <div class="icon-box bg-purple">📋</div>
+        <p>Data<br>Warga</p>
       </div>
-      <div class="item-layanan" data-modal="belajar">
-        <div class="icon-box">📚</div>
-        <p>Belajar Bersama</p>
+      <div class="item-layanan" onclick="openServiceModal('belajar')">
+        <div class="icon-box bg-sky">📚</div>
+        <p>Belajar<br>Bersama</p>
       </div>
-      <a class="item-layanan" href="kegiatan.html">
-        <div class="icon-box">⚽</div>
-        <p>Kegiatan</p>
-      </a>
       <a class="item-layanan" href="profil.html">
-        <div class="icon-box">👤</div>
-        <p>Akun Warga</p>
+        <div class="icon-box bg-blue">👤</div>
+        <p>Profil<br>Warga</p>
       </a>
+      <div class="item-layanan disabled">
+        <div class="icon-box">
+          🗺️
+          <span class="badge-soon">SOON</span>
+        </div>
+        <p style="color:#94a3b8;">Peta<br>Digital</p>
+      </div>
     </div>
   </div>
 
-  <!-- MODAL SERBAGUNA -->
+  <!-- UNIVERSAL MODAL POPUP -->
   <div id="universal-modal" class="modal-overlay">
     <div class="modal-box">
-      <div class="modal-header">
-        <h3 id="modal-title">Info RW 05</h3>
-        <div id="modal-close" class="modal-close">✕</div>
+      <div style="padding:16px 20px; border-bottom:1px solid #f1f5f9; display:flex; justify-content:space-between; align-items:center;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span id="modal-icon-title" style="font-size:20px;">📢</span>
+          <h3 id="modal-title" style="font-size:15px; font-weight:800; color:#0f172a; margin:0;">Info RW 05</h3>
+        </div>
+        <button type="button" id="modal-close" onclick="closeServiceModal()" style="background:#f1f5f9; border:none; width:32px; height:32px; border-radius:50%; font-size:16px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center;">✕</button>
       </div>
-      <div id="modal-body" class="modal-body"></div>
+      <div id="modal-body" style="padding:20px; font-size:13px; color:#334155; line-height:1.6;">
+        <div style="text-align:center; font-size:12px; color:#94a3b8; padding:16px 0;">Memuat data...</div>
+      </div>
     </div>
   </div>
 </div>
 
-<script src="script.js?v=26"></script>
+<script>
+function goBackSafely() {
+  if (document.referrer && document.referrer.indexOf(window.location.host) !== -1) {
+    window.history.back();
+  } else {
+    window.location.href = '../index.html';
+  }
+}
+</script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, onSnapshot, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCZtvImbyZmqoEoY1hYZcuCbUpIl3R1fhE",
+  authDomain: "katarnolima-rw05.firebaseapp.com",
+  projectId: "katarnolima-rw05",
+  storageBucket: "katarnolima-rw05.firebasestorage.app",
+  messagingSenderId: "965647612835",
+  appId: "1:965647612835:web:b712367f0d8beb7c5bf816"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+let unsubscribeModal = null;
+
+function renderEmptyState(modalBody, titleMsg) {
+  modalBody.innerHTML = `
+    <div style="text-align:center; padding:20px 12px; color:#64748b;">
+      <div style="font-size:40px; margin-bottom:10px;">📭</div>
+      <div style="font-size:14px; font-weight:800; color:#0f172a; margin-bottom:4px;">Belum Ada Data dari Admin</div>
+      <div style="font-size:12px; color:#64748b; line-height:1.5;">${titleMsg}</div>
+    </div>
+  `;
+}
+
+window.openServiceModal = function(type) {
+  const modal = document.getElementById('universal-modal');
+  const box = modal ? modal.querySelector('.modal-box') : null;
+  const modalIcon = document.getElementById('modal-icon-title');
+  const modalTitle = document.getElementById('modal-title');
+  const modalBody = document.getElementById('modal-body');
+
+  if(!modal || !box) return;
+  if (unsubscribeModal) { unsubscribeModal(); unsubscribeModal = null; }
+
+  modalBody.innerHTML = '<div style="text-align:center; font-size:12px; color:#94a3b8; padding:20px 0;">Memuat data...</div>';
+  modal.style.display = 'flex';
+  setTimeout(() => { modal.classList.add('show-overlay'); }, 10);
+
+  if (type === 'sembako') {
+    modalIcon.textContent = '🛒'; modalTitle.textContent = 'Harga Sembako RW 05';
+    unsubscribeModal = onSnapshot(query(collection(db, "sembako_rw05"), orderBy("createdAt", "desc"), limit(5)), (snap) => {
+      if(snap.empty) { renderEmptyState(modalBody, 'Harga sembako belum diupdate oleh pengurus RW 05.'); return; }
+      let html = '<p style="font-size:12px; color:#64748b; margin-bottom:12px;">Patokan harga komoditas pasar setempat:</p>';
+      let pasarLokasi = 'Warung Gotong Royong RW 05';
+      snap.forEach((docItem) => {
+        const d = docItem.data(); if(d.pasar) pasarLokasi = d.pasar;
+        html += `<div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:12px 14px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:13px; font-weight:800; color:#0f172a;">🌾 ${d.nama || 'Sembako'}</span>
+            <span style="font-size:13px; font-weight:800; color:#2563eb;">Rp ${Number(d.harga||0).toLocaleString('id-ID')} /${d.satuan||'Kg'}</span>
+          </div>`;
+      });
+      html += `<div style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:12px; padding:10px 12px; font-size:11px; font-weight:700; color:#1e40af; margin-top:10px;">📍 Lokasi: ${pasarLokasi}</div>`;
+      modalBody.innerHTML = html;
+    });
+  } else if (type === 'keamanan') {
+    modalIcon.textContent = '🛡️'; modalTitle.textContent = 'Info Keamanan Satpam';
+    unsubscribeModal = onSnapshot(query(collection(db, "keamanan_rw05"), orderBy("createdAt", "desc"), limit(1)), (snap) => {
+      if(snap.empty) {
+        renderEmptyState(modalBody, 'Info keamanan belum diatur oleh pengurus RW 05.');
+        return;
+      }
+      snap.forEach((docItem) => {
+        const d = docItem.data();
+        modalBody.innerHTML = `
+          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:14px; margin-bottom:10px;">
+            <div style="font-size:10px; font-weight:800; color:#64748b; text-transform:uppercase; margin-bottom:4px;">Jam Jaga Pos</div>
+            <div style="font-size:13px; font-weight:800; color:#0f172a;">${d.jadwal || '-'}</div>
+          </div>
+          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:14px; margin-bottom:10px;">
+            <div style="font-size:10px; font-weight:800; color:#64748b; text-transform:uppercase; margin-bottom:4px;">Petugas Berjaga</div>
+            <div style="font-size:14px; font-weight:800; color:#2563eb;">${d.nama || '-'}</div>
+            ${d.phone ? `<div style="font-size:11px; color:#16a34a; font-weight:800; margin-top:4px;">📞 Call/WA: ${d.phone}</div>` : ''}
+          </div>
+          <div style="background:#fef2f2; border:1px solid #fecaca; border-radius:14px; padding:14px;">
+            <div style="font-size:11px; font-weight:800; color:#b91c1c; margin-bottom:4px;">🚨 Himbauan Keamanan</div>
+            <p style="font-size:12px; color:#991b1b; margin:0; line-height:1.5;">${d.himbauan || '-'}</p>
+          </div>
+        `;
+      });
+    });
+  } else if (type === 'lingkungan') {
+    modalIcon.textContent = '🧹'; modalTitle.textContent = 'Lingkungan Bersih';
+    unsubscribeModal = onSnapshot(query(collection(db, "lingkungan_rw05"), orderBy("createdAt", "desc"), limit(1)), (snap) => {
+      if(snap.empty) { renderEmptyState(modalBody, 'Jadwal kerja bakti belum diupdate oleh pengurus RW 05.'); return; }
+      snap.forEach((docItem) => {
+        const d = docItem.data();
+        modalBody.innerHTML = `<div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:14px; padding:14px; margin-bottom:10px;"><div style="font-size:10px; font-weight:800; color:#166534; text-transform:uppercase; margin-bottom:4px;">🧹 ${d.judul || 'Jadwal Kerja Bakti'}:</div><div style="font-size:14px; font-weight:800; color:#15803d;">${d.tanggal || '-'}</div></div><div style="font-size:12px; color:#334155;">📍 <b>Titik Kumpul:</b> ${d.lokasi || '-'}</div>`;
+      });
+    });
+  } else if (type === 'posyandu') {
+    modalIcon.textContent = '👶'; modalTitle.textContent = 'Layanan Posyandu';
+    unsubscribeModal = onSnapshot(query(collection(db, "posyandu_rw05"), orderBy("createdAt", "desc"), limit(1)), (snap) => {
+      if(snap.empty) { renderEmptyState(modalBody, 'Jadwal pelayanan posyandu belum diupdate oleh pengurus RW 05.'); return; }
+      snap.forEach((docItem) => {
+        const d = docItem.data();
+        modalBody.innerHTML = `<div style="background:#fdf2f8; border:1px solid #fbcfe8; border-radius:14px; padding:14px; margin-bottom:10px;"><div style="font-size:10px; font-weight:800; color:#9d174d; text-transform:uppercase; margin-bottom:4px;">🏥 ${d.judul || 'Jadwal Pelayanan'}:</div><div style="font-size:14px; font-weight:800; color:#be185d;">${d.jadwal || '-'}</div></div><div style="font-size:12px; color:#334155;">💉 <b>Layanan:</b> ${d.keterangan || '-'}</div>`;
+      });
+    });
+  } else if (type === 'belajar') {
+    modalIcon.textContent = '📚'; modalTitle.textContent = 'Belajar Bersama';
+    unsubscribeModal = onSnapshot(query(collection(db, "kegiatan_rw05"), orderBy("createdAt", "desc"), limit(1)), (snap) => {
+      if(snap.empty) { renderEmptyState(modalBody, 'Jadwal belajar bersama belum diupdate oleh pengurus RW 05.'); return; }
+      snap.forEach((docItem) => {
+        const d = docItem.data();
+        modalBody.innerHTML = `<div style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:14px; padding:14px; margin-bottom:10px;"><div style="font-size:10px; font-weight:800; color:#1e40af; text-transform:uppercase; margin-bottom:4px;">🎓 ${d.judul || 'Bimbel'}:</div><div style="font-size:14px; font-weight:800; color:#1d4ed8;">${d.jadwal || '-'}</div></div><div style="font-size:12px; color:#334155;">✏️ <b>Detail:</b> ${d.isi || '-'}</div>`;
+      });
+    });
+  } else if (type === 'datawarga') {
+    modalIcon.textContent = '📋'; modalTitle.textContent = 'Data Warga & Administrasi';
+    modalBody.innerHTML = `
+      <p style="font-size:12.5px; color:#475569; line-height:1.6; margin-bottom:16px;">Pengurusan surat pengantar, lapor warga baru pendatang, atau perbaikan data KK/KTP dilakukan melalui Sekretaris RW 05.</p>
+      <a href="https://wa.me/6289673580756?text=Halo%20Sekretaris%20RW05,%20saya%20ingin%20mengurus%20Data%20Warga" target="_blank" style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; background:#16a34a; color:#ffffff; font-weight:800; font-size:13px; padding:12px 0; border-radius:14px; text-decoration:none;">💬 Hubungi Sekretaris RW via WA</a>
+    `;
+  } else if (type === 'petaBalai') {
+    modalIcon.textContent = '📍'; modalTitle.textContent = 'Balai Serbaguna RW 05';
+    modalBody.innerHTML = `
+      <div style="text-align:left">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px">
+          <img src="../assets/img/balai-1.jpg" style="width:100%; height:105px; object-fit:cover; border-radius:12px; border:1px solid #e2e8f0" alt="Balai RW 05">
+          <img src="../assets/img/balai-2.jpg" style="width:100%; height:105px; object-fit:cover; border-radius:12px; border:1px solid #e2e8f0" alt="Dalam Balai RW 05">
+        </div>
+        <p style="font-size:11.5px; color:#475569; line-height:1.5; margin-bottom:14px; background:#f8fafc; padding:10px 12px; border-radius:12px; border:1px solid #e2e8f0">
+          <b>📍 Alamat Lengkap:</b><br>
+          Jl. Poncol Gg. XI No.15 8, RT.8/RW.5, Kuningan Barat, Mampang Prapatan, Jakarta Selatan 12710
+        </p>
+        <a href="https://maps.app.goo.gl/qYc6rwZgjHvN3AWCA" target="_blank" style="display:block; width:100%; background:#2563eb; color:#ffffff; text-align:center; padding:12px; border-radius:14px; font-weight:800; text-decoration:none; font-size:13px; box-shadow:0 4px 14px rgba(37,99,235,0.2)">
+          🗺️ Navigasi Google Maps
+        </a>
+      </div>
+    `;
+  }
+};
+
+window.closeServiceModal = function() {
+  const modal = document.getElementById('universal-modal');
+  if(!modal) return;
+  modal.classList.remove('show-overlay');
+  setTimeout(() => { modal.style.display = 'none'; }, 200);
+  if (unsubscribeModal) { unsubscribeModal(); unsubscribeModal = null; }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  const serviceModal = document.getElementById('universal-modal');
+  if(serviceModal) {
+    serviceModal.addEventListener('click', (e) => {
+      if(e.target === serviceModal) closeServiceModal();
+    });
+  }
+});
+</script>
+<script src="../assets/js/script.js?v=27"></script>
 </body>
 </html>

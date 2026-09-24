@@ -4,189 +4,241 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Notifikasi RW 05 - KATARNOLIMA</title>
-<link rel="icon" href="img/logo-resmi-karang-taruna.jpg">
-<link rel="stylesheet" href="style.css?v=33">
+<link rel="icon" href="../assets/img/logo-resmi-karang-taruna.jpg">
+<link rel="stylesheet" href="../assets/css/style.css?v=33">
 <style>
-*{ -webkit-tap-highlight-color:transparent!important; margin:0; padding:0; box-sizing:border-box; }
+/* RESET & BASE SYSTEM */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent !important;
+  outline: none !important;
+}
+
 body {
   background: #f8fafc !important;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   color: #0f172a;
+  line-height: 1.5;
 }
+
 .info-container {
   width: 100%;
   max-width: 440px;
   margin: 0 auto;
   background: #ffffff;
   min-height: 100vh;
-  padding-bottom: 120px;
-  box-shadow: 0 0 20px rgba(0,0,0,0.05);
+  padding-bottom: 110px;
+  box-shadow: 0 0 30px rgba(15, 23, 42, 0.05);
   position: relative;
 }
 
-/* HEADER NOTIFIKASI */
+/* HEADER NOTIFIKASI STICKY */
 .light-header {
-  padding: 16px;
+  padding: 16px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   position: sticky;
   top: 0;
-  z-index: 20;
+  z-index: 30;
   border-bottom: 1px solid #f1f5f9;
 }
+
 .light-header h1 {
   font-size: 18px;
   font-weight: 800;
   color: #0f172a;
+  letter-spacing: -0.2px;
 }
+
 .header-actions {
   position: relative;
 }
+
 .btn-menu-dot {
-  background: none;
-  border: none;
-  font-size: 20px;
-  color: #64748b;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  font-size: 18px;
+  color: #475569;
   cursor: pointer;
-  padding: 4px 8px;
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease;
 }
+.btn-menu-dot:active { transform: scale(0.92); }
+
 .popover-menu {
   position: absolute;
-  top: 36px;
+  top: 44px;
   right: 0;
   background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+  border-radius: 14px;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.12);
   border: 1px solid #e2e8f0;
   padding: 6px;
   display: none;
-  min-width: 160px;
+  min-width: 170px;
   z-index: 40;
 }
-.popover-menu.show {
-  display: block;
-}
+.popover-menu.show { display: block; }
+
 .popover-item {
   width: 100%;
   background: none;
   border: none;
   text-align: left;
-  padding: 10px 14px;
-  font-size: 12.5px;
-  font-weight: 600;
+  padding: 10px 12px;
+  font-size: 12px;
+  font-weight: 700;
   color: #0f172a;
   border-radius: 8px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.15s ease;
 }
-.popover-item:hover {
-  background: #f1f5f9;
-}
+.popover-item:hover { background: #f1f5f9; }
 
-/* LIST NOTIFIKASI RAPET & LINE CLAMP 2 BARIS */
+/* LIST NOTIFIKASI ITEMS */
 .notif-list {
   display: flex;
   flex-direction: column;
 }
+
 .notif-item {
   display: flex;
-  gap: 10px;
-  padding: 10px 14px;
+  gap: 12px;
+  padding: 14px 20px;
   border-bottom: 1px solid #f1f5f9;
-  background: #fefce8; /* Belum dibaca: kuning lembut */
-  pointer-events: auto !important;
+  background: #fffbeb;
   cursor: pointer;
-  user-select: text;
   transition: background-color 0.2s ease;
 }
-.notif-item.read {
-  background: #ffffff; /* Telah dibaca: putih */
-}
+.notif-item:active { transform: scale(0.99); }
+.notif-item.read { background: #ffffff; }
+
 .notif-avatar {
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   background: #0f172a;
   color: #fbbf24;
-  border-radius: 50%;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 14px;
-  font-weight: 900;
+  font-weight: 800;
   flex-shrink: 0;
   position: relative;
-  margin-top: 2px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
 }
+
 .notif-dot {
-  width: 8px;
-  height: 8px;
-  background: #059669;
+  width: 9px;
+  height: 9px;
+  background: #22c55e;
   border-radius: 50%;
   position: absolute;
-  top: 1px;
-  right: 1px;
-  border: 1.5px solid #fff;
+  top: -2px;
+  right: -2px;
+  border: 2px solid #ffffff;
 }
-.notif-item.read .notif-dot {
-  display: none;
-}
+.notif-item.read .notif-dot { display: none; }
+
 .notif-main {
   flex: 1;
   min-width: 0;
 }
+
 .notif-sender-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 2px;
+  margin-bottom: 3px;
 }
+
 .notif-sender {
-  font-size: 12.5px;
+  font-size: 12px;
   font-weight: 800;
   color: #0f172a;
 }
+
 .notif-time {
-  font-size: 10.5px;
+  font-size: 10px;
   color: #94a3b8;
-  font-weight: 500;
+  font-weight: 600;
 }
+
 .notif-text {
-  font-size: 12.5px;
-  color: #334155;
-  line-height: 1.35;
+  font-size: 12px;
+  color: #475569;
+  line-height: 1.4;
   word-break: break-word;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
 }
+
 .notif-title-inline {
-  font-weight: 700;
+  font-weight: 800;
   color: #0f172a;
 }
 
-/* MODAL DETAIL POPUP */
+/* MODAL DETAIL NOTIFIKASI */
 #notif-detail-modal {
-  position: fixed; inset: 0; background: rgba(15,23,42,0.6); backdrop-filter: blur(8px);
-  z-index: 1000000; display: none; align-items: center; justify-content: center; padding: 16px;
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  transition: opacity 0.25s ease;
 }
-#notif-detail-modal.show { display: flex; }
-@keyframes modalIn {
-  from { transform: scale(0.9); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
-}
+#notif-detail-modal.show { display: flex; opacity: 1; }
 
-/* BOTTOM NAVBAR SELARAS INDEX */
-.jaki-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:440px;height:72px;background:rgba(255,255,255,.96);backdrop-filter:blur(18px);border-top:1px solid #e2e8f0;display:flex;justify-content:space-around;align-items:center;z-index:30;padding-bottom:6px}
-.jaki-nav a{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;color:#94a3b8;font-size:10px;font-weight:600;text-decoration:none}
-.jaki-nav a.active{color:#0f172a;font-weight:800}
-.jaki-nav a.center{position:relative;top:-14px;flex:unset;display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none}
-.jaki-nav .cam{width:56px;height:56px;background:#0fb398;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:26px;box-shadow:0 8px 22px rgba(15,179,152,.5);border:3px solid #fff;text-decoration:none}
+.modal-notif-box {
+  background: #ffffff;
+  width: 100%;
+  max-width: 380px;
+  border-radius: 24px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15);
+  overflow: hidden;
+  transform: scale(0.9);
+  transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+#notif-detail-modal.show .modal-notif-box { transform: scale(1); }
+
+/* STATE STATE EMPTY / LOADING */
+.state-box {
+  text-align: center;
+  padding: 50px 20px;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 600;
+}
+.state-icon { font-size: 36px; margin-bottom: 8px; display: block; }
 </style>
 </head>
 <body>
+
 <div class="info-container">
   <!-- HEADER NOTIFIKASI -->
   <div class="light-header">
@@ -194,36 +246,42 @@ body {
     <div class="header-actions">
       <button class="btn-menu-dot" id="btnMenuDot" aria-label="Menu Opsi">⋮</button>
       <div class="popover-menu" id="popoverMenu">
-        <button class="popover-item" id="btnMarkAllRead">Tandai telah dibaca</button>
+        <button class="popover-item" id="btnMarkAllRead">
+          <span>✓</span> Tandai semua telah dibaca
+        </button>
       </div>
     </div>
   </div>
 
-  <!-- CONTAINER LIST NOTIFIKASI DARI FIRESTORE ADMIN -->
-  <div id="loadingNotif" style="text-align:center; padding:32px; color:#64748b; font-size:12px;">Memuat pemberitahuan admin...</div>
+  <!-- CONTAINER LIST NOTIFIKASI -->
+  <div id="loadingNotif" class="state-box">
+    <span class="state-icon">🔄</span>
+    Memuat pemberitahuan admin...
+  </div>
   <div class="notif-list" id="notifList"></div>
 
-  <!-- BOTTOM NAVBAR KONSISTEN DENGAN INDEX -->
+  <!-- BOTTOM NAVIGATION BAR -->
   <nav class="jaki-nav">
-    <a href="index.html">🏠<span>Beranda</span></a>
+    <a href="../index.html">🏠<span>Beranda</span></a>
     <a href="diskusi-rw.html">💬<span>Diskusi</span></a>
-    <a class="center" href="aduan-warga.html"><div class="cam">📷</div><span>Lapor</span></a>
+    <a class="center" href="aduan-warga.html?autoOpen=1"><div class="cam">📷</div><span>Lapor</span></a>
     <a class="active" href="info.html">🔔<span>Notifikasi</span></a>
     <a href="profil.html">👤<span>Profil</span></a>
   </nav>
 </div>
 
-<!-- MODAL DETAIL POPUP -->
+<!-- MODAL DETAIL POPUP NOTIFIKASI -->
 <div id="notif-detail-modal">
-  <div style="background:#fff; width:100%; max-width:400px; border-radius:22px; border:1px solid #e2e8f0; box-shadow:0 12px 32px rgba(0,0,0,0.18); overflow:hidden; animation: modalIn 0.25s ease;">
+  <div class="modal-notif-box">
     <div style="padding:16px 20px; border-bottom:1px solid #f1f5f9; display:flex; justify-content:space-between; align-items:center;">
-      <h3 id="modalDetailTitle" style="font-size:16px; font-weight:800; color:#0f172a;">Detail Notifikasi</h3>
-      <button onclick="closeNotifDetailModal()" style="background:#f1f5f9; border:none; width:32px; height:32px; border-radius:50%; font-weight:800; cursor:pointer;">✕</button>
+      <h3 id="modalDetailTitle" style="font-size:15px; font-weight:800; color:#0f172a;">Detail Notifikasi</h3>
+      <button onclick="closeNotifDetailModal()" style="background:#f1f5f9; border:none; width:32px; height:32px; border-radius:50%; font-size:16px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center;">✕</button>
     </div>
-    <div id="modalDetailBody" style="padding:20px; font-size:13.5px; color:#334155; line-height:1.5; white-space:pre-line; max-height:60vh; overflow-y:auto;"></div>
+    <div id="modalDetailBody" style="padding:20px; font-size:13px; color:#334155; line-height:1.6; white-space:pre-line; max-height:60vh; overflow-y:auto;"></div>
   </div>
 </div>
 
+<script src="../assets/js/script.js?v=27"></script>
 <script type="module">
   // @ts-nocheck
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -253,6 +311,7 @@ body {
       return [];
     }
   }
+
   function saveReadId(id) {
     const list = getReadIds();
     if (!list.includes(id)) {
@@ -260,6 +319,7 @@ body {
       localStorage.setItem('rw05_read_notifs', JSON.stringify(list));
     }
   }
+
   function markAllReadIds(ids) {
     const list = getReadIds();
     ids.forEach(id => { if (!list.includes(id)) list.push(id); });
@@ -294,7 +354,7 @@ body {
     const titleEl = document.getElementById('modalDetailTitle');
     const bodyEl = document.getElementById('modalDetailBody');
     if (titleEl) titleEl.textContent = title || 'Detail Notifikasi';
-    if (bodyEl) bodyEl.innerHTML = `<div style="font-size:11px; color:#94a3b8; margin-bottom:10px;">🕒 ${timeStr}</div>${content}`;
+    if (bodyEl) bodyEl.innerHTML = `<div style="font-size:11px; font-weight:700; color:#64748b; margin-bottom:12px;">🕒 ${timeStr}</div>${escapeHtml(content)}`;
     if (modal) modal.classList.add('show');
   };
 
@@ -303,38 +363,45 @@ body {
     if (modal) modal.classList.remove('show');
   };
 
-  onSnapshot(query(collection(db, "info_singkat"), orderBy("createdAt", "desc")), (/** @type {any} */ snap) => {
+  function escapeHtml(str = '') {
+    return String(str).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m]));
+  }
+
+  onSnapshot(query(collection(db, "info_singkat"), orderBy("createdAt", "desc")), (snap) => {
     if (loadingNotif) loadingNotif.style.display = 'none';
     if (snap.empty) {
-      notifList.innerHTML = `
-        <div style="text-align:center; padding:48px 20px; color:#94a3b8; font-size:13px;">
-          <div style="font-size:36px; margin-bottom:8px;">🔔</div>
-          <p>Belum ada pemberitahuan dari Admin RW 05.</p>
-        </div>
-      `;
+      if (notifList) {
+        notifList.innerHTML = `
+          <div class="state-box">
+            <span class="state-icon">🔔</span>
+            <div style="font-weight:800; color:#0f172a; margin-bottom:4px;">Belum Ada Notifikasi</div>
+            <p>Belum ada pengumuman atau pemberitahuan dari Admin RW 05 saat ini.</p>
+          </div>
+        `;
+      }
       return;
     }
 
     const readList = getReadIds();
     let html = '';
 
-    snap.forEach((/** @type {any} */ docItem) => {
+    snap.forEach((docItem) => {
       const id = docItem.id;
       const isRead = readList.includes(id);
       const d = docItem.data() || {};
       const timeStr = d.tanggal || 'Baru saja';
-      const title = d.judul || '';
+      const title = d.judul || 'Informasi RW';
       const content = d.isi || '';
       const iconBadge = d.ikon || '05';
       
       const safeTitle = JSON.stringify(title).replace(/"/g, '&quot;');
       const safeContent = JSON.stringify(content).replace(/"/g, '&quot;');
-      const cleanContentInline = content.replace(/\n/g, ' ');
+      const cleanContentInline = escapeHtml(content.replace(/\n/g, ' '));
       
       html += `
         <div class="notif-item ${isRead ? 'read' : ''}" data-id="${id}" onclick="openNotifDetail(this, ${safeTitle}, ${safeContent}, '${timeStr}')">
           <div class="notif-avatar">
-            ${iconBadge.length <= 2 ? iconBadge : '05'}
+            ${iconBadge.length <= 2 ? iconBadge : '🔔'}
             <div class="notif-dot"></div>
           </div>
           <div class="notif-main">
@@ -343,17 +410,24 @@ body {
               <span class="notif-time">${timeStr}</span>
             </div>
             <div class="notif-text">
-              <span class="notif-title-inline">${title} - </span><span>${cleanContentInline}</span>
+              <span class="notif-title-inline">${escapeHtml(title)} - </span><span>${cleanContentInline}</span>
             </div>
           </div>
         </div>
       `;
     });
-    notifList.innerHTML = html;
-  }, (/** @type {any} */ err) => {
+
+    if (notifList) notifList.innerHTML = html;
+  }, (err) => {
     console.error("Gagal load notifikasi:", err);
     if (loadingNotif) {
-      loadingNotif.textContent = 'Gagal memuat pemberitahuan.';
+      loadingNotif.innerHTML = `
+        <div class="state-box">
+          <span class="state-icon">❌</span>
+          <div style="font-weight:800; color:#0f172a; margin-bottom:4px;">Gagal Memuat Notifikasi</div>
+          <p>Periksa koneksi internet Anda.</p>
+        </div>
+      `;
     }
   });
 

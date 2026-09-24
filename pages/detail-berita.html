@@ -4,34 +4,193 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Detail Berita - KATARNOLIMA RW 05</title>
-    <link rel="icon" href="img/logo-resmi-karang-taruna.jpg">
+    <link rel="icon" href="../assets/img/logo-resmi-karang-taruna.jpg">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f5f5f5; color: #10131a; line-height: 1.6; }
-        .mobile-container { max-width: 480px; margin: 0 auto; background-color: #ffffff; min-height: 100vh; padding-bottom: 40px; box-shadow: 0 0 15px rgba(0,0,0,0.06); }
-        .header-nav { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; position: sticky; top: 0; background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); z-index: 50; border-bottom: 1px solid #eee; }
-        .back-btn { font-size: 20px; text-decoration: none; color: #10131a; font-weight: 700; }
-        .brand-badge { font-size: 11px; font-weight: 800; letter-spacing: 0.1em; background: #0f172a; color: #fbbf24; padding: 4px 10px; border-radius: 999px; text-transform: uppercase; }
-        .content-body { padding: 20px 16px; }
-        .kicker { font-size: 11px; font-weight: 800; color: #2563eb; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 6px; }
-        .title { font-size: 22px; font-weight: 800; line-height: 1.25; color: #10131a; margin-bottom: 12px; }
-        .meta-info { font-size: 12px; color: #64748b; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid #f1f5f9; display: flex; flex-wrap: wrap; gap: 8px; }
-        .article-image { width: 100%; max-height: 320px; object-fit: cover; border-radius: 14px; margin-bottom: 18px; border: 1px solid #e2e8f0; }
-        .article-content { font-size: 14px; color: #333; white-space: pre-line; word-break: break-word; }
-        .loading-state, .error-state { text-align: center; padding: 40px 20px; color: #64748b; font-size: 13px; }
+        /* RESET & SYSTEM BASE */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent !important;
+            outline: none !important;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+            line-height: 1.6;
+        }
+
+        .mobile-container {
+            max-width: 440px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            min-height: 100vh;
+            padding-bottom: 40px;
+            box-shadow: 0 0 30px rgba(15, 23, 42, 0.05);
+            position: relative;
+        }
+
+        /* STICKY HEADER */
+        .header-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 20px;
+            position: sticky;
+            top: 0;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 50;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .back-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            color: #0f172a;
+            font-size: 18px;
+            font-weight: 800;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.15s ease;
+        }
+        .back-btn:active { transform: scale(0.92); }
+
+        .brand-badge {
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            background: #0f172a;
+            color: #fbbf24;
+            padding: 5px 12px;
+            border-radius: 99px;
+            text-transform: uppercase;
+        }
+
+        /* CONTENT BODY */
+        .content-body { padding: 20px; }
+
+        .kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 10px;
+            font-weight: 800;
+            color: #2563eb;
+            background: #eff6ff;
+            padding: 4px 10px;
+            border-radius: 8px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .title {
+            font-size: 20px;
+            font-weight: 800;
+            line-height: 1.35;
+            color: #0f172a;
+            margin-bottom: 12px;
+            letter-spacing: -0.2px;
+        }
+
+        .meta-info {
+            font-size: 11px;
+            font-weight: 600;
+            color: #64748b;
+            margin-bottom: 20px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .meta-item { display: flex; align-items: center; gap: 4px; }
+
+        .article-image-wrap {
+            width: 100%;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 16px rgba(15, 23, 42, 0.03);
+        }
+
+        .article-image {
+            width: 100%;
+            max-height: 320px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .article-content {
+            font-size: 13.5px;
+            color: #334155;
+            line-height: 1.7;
+            white-space: pre-line;
+            word-break: break-word;
+        }
+
+        /* BUTTON BACK ACTION */
+        .action-footer {
+            margin-top: 36px;
+            padding-top: 20px;
+            border-top: 1px solid #f1f5f9;
+            text-align: center;
+        }
+        .btn-return {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: #0f172a;
+            color: #fbbf24;
+            font-size: 12px;
+            font-weight: 800;
+            padding: 12px 24px;
+            border-radius: 14px;
+            text-decoration: none;
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.15);
+            transition: transform 0.15s ease;
+        }
+        .btn-return:active { transform: scale(0.96); }
+
+        /* LOADING & ERROR STATES */
+        .state-box {
+            text-align: center;
+            padding: 50px 20px;
+            color: #64748b;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .state-icon { font-size: 36px; margin-bottom: 10px; display: block; }
     </style>
 </head>
 <body>
 
 <div class="mobile-container">
+    <!-- HEADER STICKY -->
     <div class="header-nav">
-        <a href="berita-rw.html" class="back-btn">←</a>
+        <a href="berita-rw.html" class="back-btn" title="Kembali ke Berita RW">←</a>
         <div class="brand-badge">KATARNOLIMA RW 05</div>
     </div>
 
+    <!-- MAIN ARTICLE BODY -->
     <div class="content-body" id="article-container">
-        <div class="loading-state">Memuat artikel...</div>
+        <div class="state-box">
+            <span class="state-icon">🔄</span>
+            Memuat artikel...
+        </div>
     </div>
 </div>
 
@@ -58,7 +217,13 @@ async function loadArticleDetail() {
     const container = document.getElementById('article-container');
 
     if (!id) {
-        container.innerHTML = `<div class="error-state">ID Artikel tidak ditemukan. <br><a href="berita-rw.html" style="color:#2563eb;font-weight:700;">Kembali ke Berita RW</a></div>`;
+        container.innerHTML = `
+            <div class="state-box">
+                <span class="state-icon">⚠️</span>
+                <div style="font-weight:800; color:#0f172a; margin-bottom:6px;">ID Artikel Tidak Ditemukan</div>
+                <p style="margin-bottom:16px;">Silakan pilih berita yang ingin Anda baca melalui halaman daftar berita.</p>
+                <a href="berita-rw.html" class="btn-return">Kembali ke Berita RW</a>
+            </div>`;
         return;
     }
 
@@ -67,36 +232,56 @@ async function loadArticleDetail() {
         const docSnap = await getDoc(docRef);
 
         if (!docSnap.exists()) {
-            container.innerHTML = `<div class="error-state">Artikel tidak ditemukan atau sudah dihapus oleh admin. <br><a href="berita-rw.html" style="color:#2563eb;font-weight:700;margin-top:8px;display:inline-block;">Kembali ke Berita RW</a></div>`;
+            container.innerHTML = `
+                <div class="state-box">
+                    <span class="state-icon">📭</span>
+                    <div style="font-weight:800; color:#0f172a; margin-bottom:6px;">Artikel Tidak Ditemukan</div>
+                    <p style="margin-bottom:16px;">Berita ini mungkin telah dihapus oleh pengurus RW 05.</p>
+                    <a href="berita-rw.html" class="btn-return">Kembali ke Berita RW</a>
+                </div>`;
             return;
         }
 
         const d = docSnap.data();
-        document.title = `${d.judul || 'Detail'} - KATARNOLIMA RW 05`;
+        document.title = `${d.judul || 'Detail Berita'} - KATARNOLIMA RW 05`;
 
-        const imageHtml = d.fotoBase64 ? `<img src="${d.fotoBase64}" class="article-image" alt="Dokumentasi Berita">` : '';
+        const imageHtml = d.fotoBase64 
+            ? `<div class="article-image-wrap"><img src="${d.fotoBase64}" class="article-image" alt="Dokumentasi Berita"></div>` 
+            : '';
         const ikonKat = d.ikon || '🌸';
         const katLabel = d.kategoriLabel || 'Informasi Warga';
 
         container.innerHTML = `
-            <div class="kicker">${ikonKat} ${katLabel}</div>
-            <h1 class="title">${d.judul || 'Tanpa Judul'}</h1>
+            <div class="kicker"><span>${ikonKat}</span> <span>${katLabel}</span></div>
+            <h1 class="title">${escapeHtml(d.judul || 'Tanpa Judul')}</h1>
             <div class="meta-info">
-                <span>📅 ${d.tanggal || '-'}</span>
-                ${d.lokasi ? `<span>📍 ${d.lokasi}</span>` : ''}
-                <span>✍️ ${d.penulis || 'Pengurus RW 05'}</span>
+                <span class="meta-item">📅 ${d.tanggal || '-'}</span>
+                ${d.lokasi ? `<span class="meta-item">📍 ${escapeHtml(d.lokasi)}</span>` : ''}
+                <span class="meta-item">✍️ ${escapeHtml(d.penulis || 'Pengurus RW 05')}</span>
             </div>
             ${imageHtml}
-            <div class="article-content">${d.isi || 'Tidak ada konten.'}</div>
+            <div class="article-content">${escapeHtml(d.isi || 'Tidak ada konten deskripsi.')}</div>
             
-            <div style="margin-top: 32px; padding-top: 20px; border-top: 1px solid #eee; text-align: center;">
-                <a href="berita-rw.html" style="display: inline-block; background: #0f172a; color: #fbbf24; font-size: 12px; font-weight: 800; padding: 10px 20px; border-radius: 999px; text-decoration: none;">← Kembali ke Daftar Berita</a>
+            <div class="action-footer">
+                <a href="berita-rw.html" class="btn-return">← Kembali ke Daftar Berita</a>
             </div>
         `;
     } catch (error) {
         console.error("Gagal memuat detail berita:", error);
-        container.innerHTML = `<div class="error-state">Gagal memuat artikel. Periksa koneksi internet Anda.</div>`;
+        container.innerHTML = `
+            <div class="state-box">
+                <span class="state-icon">❌</span>
+                <div style="font-weight:800; color:#0f172a; margin-bottom:6px;">Gagal Memuat Berita</div>
+                <p style="margin-bottom:16px;">Periksa koneksi internet Anda lalu coba lagi.</p>
+                <a href="berita-rw.html" class="btn-return">Kembali ke Berita RW</a>
+            </div>`;
     }
+}
+
+function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, function(m) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
+    });
 }
 
 document.addEventListener('DOMContentLoaded', loadArticleDetail);

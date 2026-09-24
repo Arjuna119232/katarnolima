@@ -4,71 +4,414 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Cari Layanan - KATARNOLIMA RW 05</title>
-<link rel="icon" href="img/logo-resmi-karang-taruna.jpg">
-<link rel="stylesheet" href="style.css?v=26">
+<link rel="icon" href="../assets/img/logo-resmi-karang-taruna.jpg">
+<link rel="stylesheet" href="../assets/css/style.css?v=26">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
-html,body{background:#fff!important;width:100%;height:100%;display:block!important;margin:0!important}
-.cari-page{background:#fff;width:100%;min-height:100vh;max-width:440px;margin:0 auto;display:block}
-.cari-header{display:flex;align-items:center;gap:10px;padding:12px 12px;background:#fff;position:sticky;top:0;z-index:20;border-bottom:1px solid #f1f5f9;width:100%}
-.cari-header .back{width:38px;height:38px;display:flex;align-items:center;justify-content:center;border-radius:50%;flex-shrink:0;background:#f1f5f9;cursor:pointer}
-.cari-bar{flex:1;background:#f1f5f9;border-radius:28px;display:flex;align-items:center;gap:10px;padding:12px 16px;border:1px solid #f1f5f9}
-.cari-bar input{border:none;outline:none;width:100%;background:transparent;font-size:14px;color:#0f172a}
-.chip-row{display:flex;gap:8px;padding:12px 16px;overflow-x:auto;white-space:nowrap;scrollbar-width:none}
-.chip{padding:8px 14px;border-radius:999px;border:1px solid #e2e8f0;background:#fff;font-size:12px;font-weight:600;color:#475569;flex-shrink:0;cursor:pointer}
-.chip.active{background:#111;color:#fff;border-color:#111}
-.result-item{display:flex;gap:14px;padding:14px 16px;align-items:flex-start;cursor:pointer;border-bottom:1px solid #f8fafc}
-.result-item:active{background:#f8fafc}
-.result-icon{width:48px;height:48px;border-radius:50%;background:#fef3c7;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+/* RESET & BASE STYLES */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-tap-highlight-color: transparent !important;
+  outline: none !important;
+}
+
+html, body {
+  background: #f8fafc !important;
+  width: 100%;
+  min-height: 100vh;
+  display: block !important;
+  color: #0f172a;
+}
+
+.cari-page {
+  background: #ffffff;
+  width: 100%;
+  min-height: 100vh;
+  max-width: 440px;
+  margin: 0 auto;
+  display: block;
+  box-shadow: 0 0 40px rgba(15, 23, 42, 0.05);
+  position: relative;
+  padding-bottom: 24px;
+}
+
+/* STICKY HEADER */
+.cari-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: #ffffff;
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  border-bottom: 1px solid #f1f5f9;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.02);
+}
+
+.cari-header .back {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  flex-shrink: 0;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-decoration: none;
+}
+.cari-header .back:active {
+  transform: scale(0.92);
+  background: #e2e8f0;
+}
+
+/* SEARCH INPUT BAR */
+.cari-bar {
+  flex: 1;
+  background: #f8fafc;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  border: 1.5px solid #cbd5e1;
+  transition: all 0.2s ease;
+}
+.cari-bar:focus-within {
+  border-color: #0f172a;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.06);
+}
+.cari-bar input {
+  border: none;
+  outline: none;
+  width: 100%;
+  padding: 11px 0;
+  background: transparent;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #0f172a;
+}
+.cari-bar input::placeholder {
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.btn-clear-input {
+  background: #cbd5e1;
+  color: #ffffff;
+  border: none;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* CATEGORY FILTER CHIPS */
+.chip-row {
+  display: flex;
+  gap: 8px;
+  padding: 14px 16px;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  border-bottom: 1px solid #f1f5f9;
+  background: #ffffff;
+}
+.chip-row::-webkit-scrollbar {
+  display: none;
+}
+.chip {
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  font-size: 12px;
+  font-weight: 700;
+  color: #64748b;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.chip:active {
+  transform: scale(0.95);
+}
+.chip.active {
+  background: #0f172a;
+  color: #fbbf24;
+  border-color: #0f172a;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+}
+
+/* RESULTS CONTAINER & ITEM */
+.results-container {
+  padding: 12px 16px;
+}
+
+.result-item {
+  display: flex;
+  gap: 14px;
+  padding: 14px;
+  align-items: center;
+  cursor: pointer;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  margin-bottom: 10px;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.02);
+  transition: all 0.2s ease;
+}
+.result-item:active {
+  transform: scale(0.98);
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.result-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.04);
+}
+
+/* COLOR VARIATIONS FOR CATEGORY ICONS */
+.result-icon.cat-laporan { background: #fff1f2; color: #e11d48; }
+.result-icon.cat-iuran { background: #fefce8; color: #d97706; }
+.result-icon.cat-berita { background: #f0f9ff; color: #0284c7; }
+.result-icon.cat-darurat { background: #fef2f2; color: #b91c1c; }
+.result-icon.cat-fasilitas { background: #f0fdf4; color: #16a34a; }
+.result-icon.cat-profil { background: #faf5ff; color: #9333ea; }
+.result-icon.cat-semua { background: #f1f5f9; color: #334155; }
+
+.result-info {
+  flex: 1;
+  overflow: hidden;
+}
+.result-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.3;
+}
+.result-desc {
+  font-size: 12px;
+  color: #64748b;
+  margin-top: 3px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.result-arrow {
+  font-size: 14px;
+  color: #cbd5e1;
+  font-weight: 800;
+  margin-left: 4px;
+}
+
+/* EMPTY / INITIAL STATE */
+.state-box {
+  padding: 40px 20px;
+  text-align: center;
+  color: #64748b;
+}
+.state-icon {
+  font-size: 40px;
+  margin-bottom: 10px;
+  display: block;
+}
+.state-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 4px;
+}
+.state-desc {
+  font-size: 12px;
+  color: #94a3b8;
+  line-height: 1.5;
+}
 </style>
 </head>
 <body>
+
 <div class="cari-page">
+  <!-- HEADER & SEARCH BAR -->
   <div class="cari-header">
-    <a href="javascript:void(0)" class="back" id="backBtn"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="black" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg></a>
-    <div class="cari-bar"><span>🔍</span><input type="text" id="inputCari" placeholder="Cari Layanan di RW 05" autofocus></div>
+    <a href="javascript:void(0)" class="back" id="backBtn" title="Kembali">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/>
+      </svg>
+    </a>
+    <div class="cari-bar">
+      <span style="font-size:14px;">🔍</span>
+      <input type="text" id="inputCari" placeholder="Cari Layanan di RW 05..." autofocus autocomplete="off">
+      <button type="button" class="btn-clear-input" id="btnClearInput">✕</button>
+    </div>
   </div>
+
+  <!-- FILTER CHIPS -->
   <div class="chip-row" id="chipRow">
     <div class="chip active" data-filter="semua">Semua</div>
     <div class="chip" data-filter="laporan">Laporan</div>
     <div class="chip" data-filter="iuran">Iuran</div>
     <div class="chip" data-filter="berita">Berita</div>
     <div class="chip" data-filter="darurat">Darurat</div>
+    <div class="chip" data-filter="fasilitas">Fasilitas</div>
+    <div class="chip" data-filter="profil">Profil & Akun</div>
   </div>
-  <div id="hasilCari"><div style="padding:16px;color:#94a3b8;font-size:13px">Ketik untuk mencari layanan...</div></div>
+
+  <!-- HASIL PENCARIAN -->
+  <div class="results-container" id="hasilCari">
+    <div class="state-box">
+      <span class="state-icon">🔎</span>
+      <div class="state-title">Cari Layanan RW 05</div>
+      <div class="state-desc">Ketik nama layanan, aduan, atau informasi yang Anda butuhkan di atas.</div>
+    </div>
+  </div>
 </div>
+
 <script>
 // @ts-nocheck
+// DATABASE KELENGKAPAN SELURUH LAYANAN APLIKASI KATARNOLIMA RW 05
 const dataLayanan = [
-  {k:'Aduan Warga', d:'Lapor masalah di RW 05 jadi mudah', i:'📢', cat:'laporan', link:'aduan-warga.html'},
-  {k:'Iuran Warga', d:'Cek tagihan iuran bulanan', i:'💰', cat:'iuran', link:'iuran-warga.html'},
-  {k:'Kabar RW', d:'Baca berita resmi yang bebas hoaks', i:'📰', cat:'berita', link:'berita.html'},
-  {k:'Kontak Darurat 112', d:'Nomor penting di kala genting', i:'📞', cat:'darurat', link:'tel:112'},
-  {k:'Ambulans RW 05', d:'Panggil ambulans 24 jam gratis', i:'🚑', cat:'darurat', link:'https://wa.me/6289673580756?text=Butuh%20Ambulans%20RW05%20DARURAT'},
-  {k:'Jadwal Ronda', d:'Jadwal ronda malam RT 01 - RT 06', i:'🛡️', cat:'laporan', link:'#'},
-  {k:'Peta Balai RW', d:'Cek lokasi fasilitas RW 05', i:'📍', cat:'berita', link:'https://maps.app.goo.gl/3Xte1yjgYiVT49XK7'},
-  {k:'Semua Layanan', d:'Lihat semua layanan RW 05', i:'⊞', cat:'semua', link:'semua-layanan.html'}
+  // LAPORAN & ADUAN
+  {k:'Aduan Warga', d:'Lapor masalah fasilitas atau kejadian di RW 05', i:'📢', cat:'laporan', kw:'aduan lapor masalah aduan warga foto video lapor', link:'aduan-warga.html'},
+  {k:'Kamera Lapor Langsung', d:'Ambil foto/video laporan langsung dari kamera', i:'📷', cat:'laporan', kw:'kamera foto bukti lapor foto langsung', link:'aduan-warga.html?autoOpen=1'},
+  {k:'Keamanan & Satpam', d:'Informasi jadwal ronda, petugas satpam, & himbauan', i:'🛡️', cat:'laporan', kw:'keamanan satpam ronda jadwal pos jam jaga', link:'javascript:void(0)', isModal:'satpam'},
+  {k:'Lingkungan Bersih', d:'Jadwal kerja bakti & pembersihan saluran', i:'🧹', cat:'laporan', kw:'lingkungan bersih kerja bakti gotong royong sampah', link:'javascript:void(0)', isModal:'lingkungan'},
+
+  // IURAN & KEUANGAN
+  {k:'Iuran Warga', d:'Cek & bayar iuran bulanan warga RW 05', i:'💰', cat:'iuran', kw:'iuran kas bayar tagihan bulanan transfer qris', link:'iuran-warga.html'},
+  {k:'Kas Karang Taruna RW 05', d:'Rincian saldo kas & laporan keuangan terbuka', i:'💵', cat:'iuran', kw:'kas saldo uang rincian keuangan akumulasi', link:'kas-detail.html'},
+  {k:'Harga Sembako', d:'Patokan harga bahan pokok di pasar setempat', i:'🛒', cat:'iuran', kw:'sembako harga pasar beras minyak telur toko', link:'javascript:void(0)', isModal:'sembako'},
+
+  // BERITA & INFORMASI
+  {k:'Berita RW 05', d:'Baca berita resmi & pengumuman warga bebas hoaks', i:'📰', cat:'berita', kw:'berita kabar pengumuman artikel informasi', link:'berita-rw.html'},
+  {k:'Notifikasi & Info Singkat', d:'Pengumuman penting & pemadaman dari RW 05', i:'🔔', cat:'berita', kw:'notifikasi info pengumuman darurat listrik', link:'info.html'},
+  {k:'Forum Diskusi Warga', d:'Ruang obrolan & saran antar warga RW 05', i:'💬', cat:'berita', kw:'diskusi forum pesan obrolan masyarakat komplain', link:'diskusi-rw.html'},
+  {k:'Posyandu Balita & Lansia', d:'Jadwal layanan kesehatan & imunisasi', i:'👶', cat:'berita', kw:'posyandu bayi balita imunisasi lansia cek kesehatan', link:'javascript:void(0)', isModal:'posyandu'},
+  {k:'Belajar Bersama & Kegiatan', d:'Bimbel anak & program Karang Taruna', i:'📚', cat:'berita', kw:'belajar bimbel kegiatan pemuda pelatihan anak', link:'javascript:void(0)', isModal:'belajar'},
+
+  // DARURAT
+  {k:'Panggilan Darurat 112', d:'Telepon darurat resmi bebas pulsa', i:'📞', cat:'darurat', kw:'darurat panggilan 112 telepon darurat pertolongan', link:'tel:112'},
+  {k:'Ambulans RW 05', d:'Panggil ambulans 24 jam khusus RW 05', i:'🚑', cat:'darurat', kw:'ambulans sakit rumah sakit darurat medis', link:'https://wa.me/6289673580756?text=Butuh%20Ambulans%20RW05%20DARURAT'},
+  {k:'Lapor Banjir RW 05', d:'Laporan genangan & siaga banjir', i:'🌊', cat:'darurat', kw:'banjir air hujan genangan pompa siaga', link:'https://wa.me/6289673580756?text=Lapor%20Banjir%20RW05'},
+
+  // FASILITAS & WILAYAH
+  {k:'Balai Serbaguna & Rumah Singgah', d:'Pinjam balai warga untuk acara / rumah singgah', i:'🏝️', cat:'fasilitas', kw:'balai gedung rumah singgah pinjam acara rapat', link:'berita-rw.html'},
+  {k:'Peta Lokasi Balai RW 05', d:'Alamat & navigasi Google Maps Balai RW 05', i:'📍', cat:'fasilitas', kw:'peta balai alamat lokasi maps google peta', link:'javascript:void(0)', isModal:'petaBalai'},
+  {k:'Panduan Warga Baru', d:'Lapor diri & pengurusan KK/KTP di RW 05', i:'👩‍🌾', cat:'fasilitas', kw:'warga baru lapor diri pendatang kk ktp', link:'semua-layanan.html'},
+  {k:'Semua Layanan Katalog', d:'Lihat daftar lengkap seluruh fitur di RW 05', i:'⊞', cat:'fasilitas', kw:'semua layanan katalog fitur lengkap', link:'semua-layanan.html'},
+
+  // PROFIL & AKUN
+  {k:'Profil Saya & Data Warga', d:'Atur akun warga, RT, & nomor identitas', i:'👤', cat:'profil', kw:'profil akun data warga login register nama rt', link:'profil.html'},
+  {k:'Data Warga & Sekretaris RW', d:'Hubungi sekretaris RW untuk pengurusan dokumen', i:'📋', cat:'profil', kw:'data warga surat pengantar sekretaris wa', link:'javascript:void(0)', isModal:'datawarga'},
+  {k:'Saran & Lapor Bug Aplikasi', d:'Kirim masukan / laporan error aplikasi ke admin', i:'💡', cat:'profil', kw:'saran bug error pesan usul admin', link:'https://wa.me/6289673580756?text=Saran%20Fitur%20RW05'}
 ];
+
 const inputCari = document.getElementById('inputCari');
+const btnClearInput = document.getElementById('btnClearInput');
 const hasilCari = document.getElementById('hasilCari');
 const chipRow = document.getElementById('chipRow');
 let filterAktif = 'semua';
+
 function renderHasil(query){
   const q = query.toLowerCase().trim();
+
+  // Toggle tombol Hapus Input (✕)
+  if(btnClearInput) {
+    btnClearInput.style.display = q.length > 0 ? 'flex' : 'none';
+  }
+
   let filtered = dataLayanan.filter(function(item){
-    const matchQ = item.k.toLowerCase().includes(q) || item.d.toLowerCase().includes(q);
-    if(filterAktif !== 'semua'){ return item.cat === filterAktif && (q === '' || matchQ); }
+    const matchQ = item.k.toLowerCase().includes(q) || 
+                   item.d.toLowerCase().includes(q) || 
+                   (item.kw && item.kw.toLowerCase().includes(q));
+
+    if(filterAktif !== 'semua'){ 
+      return item.cat === filterAktif && (q === '' || matchQ); 
+    }
     return q === '' ? true : matchQ;
   });
+
   if(filtered.length === 0){
-    hasilCari.innerHTML = '<div style="padding:40px 16px;text-align:center;color:#94a3b8;font-size:13px">Tidak ada hasil untuk "'+query+'"</div>';
+    hasilCari.innerHTML = `
+      <div class="state-box">
+        <span class="state-icon">📭</span>
+        <div class="state-title">Tidak Ada Hasil</div>
+        <div class="state-desc">Tidak ditemukan layanan untuk kata kunci "${escapeHtml(query)}".</div>
+      </div>
+    `;
     return;
   }
+
   hasilCari.innerHTML = filtered.map(function(item){
-    return '<a href="'+item.link+'" class="result-item" style="text-decoration:none;color:inherit"><div class="result-icon">'+item.i+'</div><div><h4 style="font-size:14px;font-weight:700;color:#000">'+item.k+'</h4><p style="font-size:12px;color:#64748b;margin-top:3px">'+item.d+'</p></div></a>';
+    const onclickAttr = item.isModal 
+      ? `onclick="triggerModalParent('${item.isModal}')"` 
+      : '';
+
+    return `
+      <a href="${item.link}" ${onclickAttr} class="result-item">
+        <div class="result-icon cat-${item.cat}">${item.i}</div>
+        <div class="result-info">
+          <div class="result-title">${escapeHtml(item.k)}</div>
+          <div class="result-desc">${escapeHtml(item.d)}</div>
+        </div>
+        <span class="result-arrow">➔</span>
+      </a>
+    `;
   }).join('');
 }
+
+function triggerModalParent(type) {
+  // Jika dibuka di modal atau dipanggil dari index
+  if (window.opener && typeof window.opener.openUniversalModalIndex === 'function') {
+    window.opener.openUniversalModalIndex(type);
+    window.close();
+  } else if (parent && typeof parent.openUniversalModalIndex === 'function') {
+    parent.openUniversalModalIndex(type);
+  } else {
+    // Navigasi fallback balik ke index dengan penanda modal
+    window.location.href = `../index.html?openModal=${type}`;
+  }
+}
+
+function escapeHtml(str) {
+  return String(str).replace(/[&<>"']/g, function(m) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
+  });
+}
+
 inputCari.addEventListener('input', function(){ renderHasil(this.value); });
+
+if(btnClearInput) {
+  btnClearInput.addEventListener('click', function(){
+    inputCari.value = '';
+    inputCari.focus();
+    renderHasil('');
+  });
+}
+
 chipRow.addEventListener('click', function(e){
   if(e.target.classList.contains('chip')){
     document.querySelectorAll('.chip').forEach(function(c){ c.classList.remove('active'); });
@@ -77,10 +420,16 @@ chipRow.addEventListener('click', function(e){
     renderHasil(inputCari.value);
   }
 });
+
 renderHasil('');
+
 document.getElementById('backBtn').addEventListener('click', function(e){
   e.preventDefault();
-  if(window.history.length > 1){ window.history.back(); } else { window.location.href='index.html'; }
+  if(window.history.length > 1){ 
+    window.history.back(); 
+  } else { 
+    window.location.href='../index.html'; 
+  }
 });
 </script>
 </body>
