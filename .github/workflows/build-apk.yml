@@ -1,4 +1,4 @@
-Name: Build Signed Android APK v2.1
+name: Build Signed Android APK v2.1
 
 on:
   push:
