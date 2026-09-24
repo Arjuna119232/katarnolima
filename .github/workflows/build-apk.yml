@@ -35,14 +35,13 @@ jobs:
             "private": true
           }
           EOF
-          npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/assets @capacitor/push-notifications --save-dev
+          npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/assets @capacitor/push-notifications @capacitor/camera @capacitor/geolocation --save-dev
           pip install pillow -q
 
       - name: Populate Web Assets & Config
         run: |
           mkdir -p www assets
           
-          # Salin icon.png dari root ke assets
           if [ -f "icon.png" ]; then
             cp icon.png assets/icon.png
           fi
@@ -69,7 +68,6 @@ jobs:
 
       - name: Generate Clean Android Platform & Copy Firebase Config
         run: |
-          # Hapus folder android yang tidak lengkap lalu buat proyek native segar
           rm -rf android
           npx cap add android
 
@@ -81,6 +79,14 @@ jobs:
           
           npx cap sync android
 
+      - name: Inject Camera & Location Permissions into AndroidManifest
+        run: |
+          MANIFEST="android/app/src/main/AndroidManifest.xml"
+          if [ -f "$MANIFEST" ]; then
+            sed -i '/<\/manifest>/i \    <uses-permission android:name="android.permission.CAMERA" \/>\n    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" \/>\n    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" \/>\n    <uses-feature android:name="android.hardware.camera" android:required="false" \/>\n    <uses-feature android:name="android.hardware.location.gps" android:required="false" \/>' "$MANIFEST"
+            echo "Izin Kamera dan Lokasi berhasil didaftarkan di AndroidManifest!"
+          fi
+
       - name: Force Apply icon.png to All Android Densities
         run: |
           python3 -c "
@@ -89,7 +95,6 @@ jobs:
 
           res_dir = 'android/app/src/main/res'
 
-          # Hapus adaptive icon bawaan Capacitor agar OS Android wajib pakai ic_launcher baru
           anydpi_dir = os.path.join(res_dir, 'mipmap-anydpi-v26')
           if os.path.exists(anydpi_dir):
               shutil.rmtree(anydpi_dir)
