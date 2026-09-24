@@ -1,4 +1,5 @@
-name: Build Signed Android APK v2.1
+# Build Signed Release v2.1 - Clean Configuration
+name: Build Signed Android APK v2.1 Clean
 
 on:
   push:
