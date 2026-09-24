@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>KATARNOLIMA RW 05 - Beranda</title>
-<link rel="icon" href="img/logo-resmi-karang-taruna.jpg">
+<link rel="icon" href="assets/img/logo-resmi-karang-taruna.jpg">
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="assets/css/style.css">
 <style>
 /* SPLASH SCREEN ANIMATION */
 #splash-screen {
@@ -155,7 +155,7 @@
 <body>
 
 <div id="splash-screen">
-  <img src="img/logo-resmi-karang-taruna.jpg" alt="KATARNOLIMA Logo" class="splash-logo">
+  <img src="assets/img/logo-resmi-karang-taruna.jpg" alt="KATARNOLIMA Logo" class="splash-logo">
   <div class="splash-text">KATARNOLIMA RW 05</div>
 </div>
 
@@ -185,17 +185,17 @@
   </div>
 
   <div class="grid-8">
-    <a class="g8-item" href="aduan-warga.html"><div class="g8-icon">📢</div><p>Aduan<br>Warga</p></a>
-    <a class="g8-item" href="berita-rw.html"><div class="g8-icon">📰</div><p>Berita<br>RW</p></a>
-    <a class="g8-item" href="iuran-warga.html"><div class="g8-icon">💰</div><p>Iuran<br>Warga</p></a>
+    <a class="g8-item" href="pages/aduan-warga.html"><div class="g8-icon">📢</div><p>Aduan<br>Warga</p></a>
+    <a class="g8-item" href="pages/berita-rw.html"><div class="g8-icon">📰</div><p>Berita<br>RW</p></a>
+    <a class="g8-item" href="pages/iuran-warga.html"><div class="g8-icon">💰</div><p>Iuran<br>Warga</p></a>
     <div class="g8-item" data-modal="sembako" style="cursor:pointer;"><div class="g8-icon">🛒</div><p>Harga<br>Sembako</p></div>
     <a class="g8-item" onclick="openSatpamModal()" style="cursor:pointer;"><div class="g8-icon">🛡️</div><p>Keamanan<br>Satpam</p></a>
     <div class="g8-item" data-modal="lingkungan" style="cursor:pointer;"><div class="g8-icon">🧹</div><p>Lingkungan<br>Bersih</p></div>
     <div class="g8-item" data-modal="petaBalai" style="cursor:pointer;"><div class="g8-icon blue">📍</div><p>Peta<br>Balai</p></div>
-    <a class="g8-item" href="semua-layanan.html"><div class="g8-icon">⊞</div><p>Semua<br>Layanan</p></a>
+    <a class="g8-item" href="pages/semua-layanan.html"><div class="g8-icon">⊞</div><p>Semua<br>Layanan</p></a>
   </div>
 
-  <div class="kas-card" onclick="window.location.href='kas-detail.html'" style="cursor:pointer;">
+  <div class="kas-card" onclick="window.location.href='pages/kas-detail.html'" style="cursor:pointer;">
     <div class="kas-top">
       <span>Kas Karang Taruna RW 05</span>
       <span class="saldo" id="manualSaldoKas" style="color:#fbbf24;font-weight:900;">Rp 0</span>
@@ -261,9 +261,9 @@
   <div class="section-jaki" style="padding-top:26px">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
       <h2 class="h2-jaki">Rekomendasi Buat Kamu</h2>
-      <a href="semua-layanan.html" style="color:#2563eb;font-size:13px;font-weight:600;text-decoration:none">Lihat Semua</a>
+      <a href="pages/semua-layanan.html" style="color:#2563eb;font-size:13px;font-weight:600;text-decoration:none">Lihat Semua</a>
     </div>
-    <div class="rekom-card" onclick="location.href='berita-rw.html'">
+    <div class="rekom-card" onclick="location.href='pages/berita-rw.html'">
       <div class="rekom-img" style="background:#a7e3f7"><div style="font-size:60px">🏝️</div></div>
       <div class="rekom-text">
         <span class="rekom-label">Fitur Khusus RW 05</span>
@@ -271,7 +271,7 @@
         <p>Pakai fitur <b>Pinjam Balai dan Rumah Singgah.</b></p>
       </div>
     </div>
-    <div class="rekom-card" onclick="location.href='semua-layanan.html'">
+    <div class="rekom-card" onclick="location.href='pages/semua-layanan.html'">
       <div class="rekom-img" style="background:#c6e8ff"><div style="font-size:50px">👩‍🌾</div></div>
       <div class="rekom-text">
         <span class="rekom-label">Panduan</span>
@@ -279,7 +279,7 @@
         <p>Bersama <b>Lapor Diri dan 6 fitur lainnya.</b></p>
       </div>
     </div>
-    <div class="rekom-card" onclick="location.href='aduan-warga.html'">
+    <div class="rekom-card" onclick="location.href='pages/aduan-warga.html'">
       <div class="rekom-img" style="background:#0ed896"><div style="font-size:44px;background:#0a1d56;color:#fff;padding:12px 18px;border-radius:12px">RW05</div></div>
       <div class="rekom-text">
         <span class="rekom-label">Wajib Coba</span>
@@ -310,10 +310,10 @@
   <!-- BOTTOM NAV -->
   <nav class="jaki-nav">
     <a class="active" href="index.html">🏠<span>Beranda</span></a>
-    <a href="diskusi-rw.html">💬<span>Diskusi</span></a>
+    <a href="pages/diskusi-rw.html">💬<span>Diskusi</span></a>
     <a class="center" href="javascript:void(0)" onclick="openCustomCamera()"><div class="cam">📷</div><span>Lapor</span></a>
-    <a href="info.html">🔔<span>Info</span></a>
-    <a href="profil.html">👤<span>Profil</span></a>
+    <a href="pages/info.html">🔔<span>Info</span></a>
+    <a href="pages/profil.html">👤<span>Profil</span></a>
   </nav>
 </div>
 
@@ -589,8 +589,8 @@ window.openUniversalModalIndex = function(type) {
     bodyEl.innerHTML = `
       <div style="text-align:left">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
-          <img src="img/balai-1.jpg" style="width:100%;height:110px;object-fit:cover;border-radius:12px;border:1px solid #e2e8f0" alt="Papan Balai RW 05">
-          <img src="img/balai-2.jpg" style="width:100%;height:110px;object-fit:cover;border-radius:12px;border:1px solid #e2e8f0" alt="Ruangan Dalam Balai RW 05">
+          <img src="assets/img/balai-1.jpg" style="width:100%;height:110px;object-fit:cover;border-radius:12px;border:1px solid #e2e8f0" alt="Papan Balai RW 05">
+          <img src="assets/img/balai-2.jpg" style="width:100%;height:110px;object-fit:cover;border-radius:12px;border:1px solid #e2e8f0" alt="Ruangan Dalam Balai RW 05">
         </div>
         <p style="font-size:12px;color:#334155;line-height:1.5;margin-bottom:14px;background:#f8fafc;padding:10px 12px;border-radius:10px;border:1px solid #f1f5f9">
           <b>📍 Alamat Lengkap:</b><br>
@@ -648,14 +648,14 @@ document.addEventListener('DOMContentLoaded', () => {
       reader.onload = (evt) => {
         sessionStorage.setItem('temp_aduan_photo', evt.target.result);
         closeCustomCamera();
-        window.location.href = 'aduan-warga.html?autoOpen=1';
+        window.location.href = 'pages/aduan-warga.html?autoOpen=1';
       };
     });
   }
 });
 </script>
 
-<script src="script.js"></script>
+<script src="assets/js/script.js"></script>
 <script>
     window.addEventListener('load', () => {
         const splash = document.getElementById('splash-screen');
@@ -827,7 +827,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
       sessionStorage.setItem('temp_aduan_photo', capturedBase64);
       closeCustomCamera();
-      window.location.href = 'aduan-warga.html?autoOpen=1';
+      window.location.href = 'pages/aduan-warga.html?autoOpen=1';
     }
 </script>
 </body>
