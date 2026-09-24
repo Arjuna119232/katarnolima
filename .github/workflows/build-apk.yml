@@ -35,27 +35,31 @@ jobs:
           cp -r index.html pages assets www/ 2>/dev/null || true
           
           npm init -y || true
-          npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/assets --save-dev || true
-          
-          # Buat capacitor.config.json lengkap dengan konfigurasi ikon
-          cat << 'EOF' > capacitor.config.json
-          {
-            "appId": "com.katarnolima.rw05",
-            "appName": "KATARNOLIMA RW05",
-            "webDir": "www",
-            "server": {
-              "androidScheme": "https"
-            },
-            "android": {
-              "icon": "assets/img/katar-app-icon.png"
-            }
-          }
-          EOF
+          npm install @capacitor/core @capacitor/cli @capacitor/android --save-dev || true
           
           npx cap add android
           
-          # Generate ikon otomatis dari file assets/img/katar-app-icon.png
-          npx @capacitor/assets generate --icon assets/img/katar-app-icon.png --android || true
+          # Paksa salin ikon kustom langsung ke folder mipmap native Android
+          mkdir -p android/app/src/main/res/mipmap-hdpi
+          mkdir -p android/app/src/main/res/mipmap-mdpi
+          mkdir -p android/app/src/main/res/mipmap-xhdpi
+          mkdir -p android/app/src/main/res/mipmap-xxhdpi
+          mkdir -p android/app/src/main/res/mipmap-xxxhdpi
+          
+          if [ -f "assets/img/katar-app-icon.png" ]; then
+            cp assets/img/katar-app-icon.png android/app/src/main/res/mipmap-hdpi/ic_launcher.png
+            cp assets/img/katar-app-icon.png android/app/src/main/res/mipmap-mdpi/ic_launcher.png
+            cp assets/img/katar-app-icon.png android/app/src/main/res/mipmap-xhdpi/ic_launcher.png
+            cp assets/img/katar-app-icon.png android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png
+            cp assets/img/katar-app-icon.png android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
+            
+            cp assets/img/katar-app-icon.png android/app/src/main/res/mipmap-hdpi/ic_launcher_round.png
+            cp assets/img/katar-app-icon.png android/app/src/main/res/mipmap-mdpi/ic_launcher_round.png
+            cp assets/img/katar-app-icon.png android/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png
+            cp assets/img/katar-app-icon.png android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png
+            cp assets/img/katar-app-icon.png android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png
+            echo "Custom icon successfully injected!"
+          fi
           
           npx cap copy android
           npx cap sync android
