@@ -1,4 +1,4 @@
-name: Build Signed Android APK v2.1
+Name: Build Signed Android APK v2.1
 
 on:
   push:
@@ -72,14 +72,20 @@ jobs:
             echo "google-services.json successfully copied to android/app/"
           fi
 
-      - name: Inject Camera & Location Permissions to Manifest
+      - name: Inject Version & Permissions to AndroidManifest
         run: |
           MANIFEST_FILE="android/app/src/main/AndroidManifest.xml"
           if [ -f "$MANIFEST_FILE" ]; then
-            echo "Injecting permissions into fresh AndroidManifest.xml..."
-            if ! grep -q "android.permission.CAMERA" "$MANIFEST_FILE"; then
-              sed -i '/<application/i \    <uses-permission android:name="android.permission.CAMERA" />\n    <uses-feature android:name="android.hardware.camera" android:required="false" />\n    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />\n    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />' "$MANIFEST_FILE"
-              echo "Permissions injected successfully!"
+            echo "Injecting version and permissions into AndroidManifest.xml..."
+            
+            # Ubah versi aplikasi menjadi 2.1 secara otomatis
+            sed -i 's/android:versionName="[^"]*"/android:versionName="2.1"/g' "$MANIFEST_FILE"
+            sed -i 's/android:versionCode="[^"]*"/android:versionCode="2"/g' "$MANIFEST_FILE"
+            
+            # Tambahkan izin notifikasi dan kamera/lokasi jika belum ada
+            if ! grep -q "android.permission.POST_NOTIFICATIONS" "$MANIFEST_FILE"; then
+              sed -i '/<application/i \    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />\n    <uses-permission android:name="android.permission.CAMERA" />\n    <uses-feature android:name="android.hardware.camera" android:required="false" />\n    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />\n    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />' "$MANIFEST_FILE"
+              echo "Permissions & Version injected successfully!"
             fi
           fi
 
