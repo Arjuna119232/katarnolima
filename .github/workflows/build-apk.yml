@@ -31,11 +31,23 @@ jobs:
           rm -rf android www
           mkdir -p www
           
-          # Copy seluruh aset web penting
+          # Copy seluruh aset web penting ke folder www
           cp -r index.html pages assets www/ 2>/dev/null || true
           
           npm init -y || true
           npm install @capacitor/core @capacitor/cli @capacitor/android --save-dev || true
+          
+          # Buat capacitor.config.json dengan webDir 'www' SEBELUM cap add android
+          cat << 'EOF' > capacitor.config.json
+          {
+            "appId": "com.katarnolima.rw05",
+            "appName": "KATARNOLIMA RW05",
+            "webDir": "www",
+            "server": {
+              "androidScheme": "https"
+            }
+          }
+          EOF
           
           npx cap add android
           
