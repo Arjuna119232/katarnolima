@@ -42,6 +42,7 @@ jobs:
         run: |
           mkdir -p www assets
           
+          # Salin icon.png dari root ke assets
           if [ -f "icon.png" ]; then
             cp icon.png assets/icon.png
           fi
@@ -66,13 +67,11 @@ jobs:
           }
           EOF
 
-      - name: Ensure Android Project & Sync Capacitor
+      - name: Generate Clean Android Platform & Copy Firebase Config
         run: |
-          if [ ! -f "android/gradlew" ]; then
-            echo "File gradlew tidak ditemukan, membuat proyek android native bersih..."
-            rm -rf android
-            npx cap add android
-          fi
+          # Hapus folder android yang tidak lengkap lalu buat proyek native segar
+          rm -rf android
+          npx cap add android
 
           if [ -f "google-services.json" ]; then
             mkdir -p android/app
@@ -82,7 +81,7 @@ jobs:
           
           npx cap sync android
 
-      - name: Hard Reset & Apply Safe-Zone Icon
+      - name: Force Apply icon.png to All Android Densities
         run: |
           python3 -c "
           import os, glob, shutil
@@ -90,13 +89,11 @@ jobs:
 
           res_dir = 'android/app/src/main/res'
 
-          # 1. Hapus folder mipmap-anydpi-v26 agar Android tidak pakai adaptive icon bawaan Capacitor
+          # Hapus adaptive icon bawaan Capacitor agar OS Android wajib pakai ic_launcher baru
           anydpi_dir = os.path.join(res_dir, 'mipmap-anydpi-v26')
           if os.path.exists(anydpi_dir):
               shutil.rmtree(anydpi_dir)
-              print('Folder adaptive icon anydpi-v26 berhasil dihapus!')
 
-          # 2. Ambil icon.png dari root
           src_path = 'icon.png'
           if not os.path.exists(src_path):
               src_path = 'assets/icon.png'
@@ -128,15 +125,16 @@ jobs:
                   
                   resized_icon = canvas.resize((px, px), Image.Resampling.LANCZOS)
                   
-                  # Simpan langsung menggantikan seluruh ikon
                   resized_icon.save(os.path.join(target_dir, 'ic_launcher.png'))
                   resized_icon.save(os.path.join(target_dir, 'ic_launcher_round.png'))
                   resized_icon.save(os.path.join(target_dir, 'ic_launcher_foreground.png'))
 
-              print('Ikon Karang Taruna berhasil terpasang utuh di semua resolusi!')
+              print('Ikon icon.png dari Root Berhasil Dipasang!')
+          else:
+              print('File icon.png tidak ditemukan!')
           "
 
-      - name: Force Version 2.1 in build.gradle
+      - name: Bump Version to v2.1 in build.gradle
         run: |
           BUILD_GRADLE="android/app/build.gradle"
           if [ -f "$BUILD_GRADLE" ]; then
