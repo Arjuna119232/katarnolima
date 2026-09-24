@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function(){
           await pushNotifications.createChannel({
             id: 'default',
             name: 'Notifikasi RW 05',
-            description: 'Informasi dan pengumuman warga RW 05',
+            description: 'Informasi dan Pengumuman Warga RW 05',
             importance: 5,
             visibility: 1,
             sound: 'default',
@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', function(){
         // 2. Cek status izin saat ini
         let permStatus = await pushNotifications.checkPermissions();
 
-        // 3. Paksa minta izin jika belum granted
+        // 3. Minta izin jika belum granted atau statusnya prompt/none
         if (permStatus.receive !== 'granted') {
           permStatus = await pushNotifications.requestPermissions();
         }
@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', function(){
     }
   }
 
-  // Panggil dengan jeda 1.2 detik agar Native Bridge benar-benar siap
+  // Berikan jeda 1.2 detik agar Native Bridge benar-benar siap
   setTimeout(mintaIzinNotifikasiNative, 1200);
 
   // ==========================================
