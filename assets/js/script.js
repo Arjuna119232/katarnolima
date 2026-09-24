@@ -81,15 +81,33 @@ document.addEventListener('DOMContentLoaded', function(){
   // ==========================================
   async function mintaIzinNotifikasiNative() {
     try {
-      if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.PushNotifications) {
+      const isCapacitorNative = window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform();
+      const hasPushPlugin = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.PushNotifications;
+
+      if (isCapacitorNative || hasPushPlugin) {
         const pushNotifications = window.Capacitor.Plugins.PushNotifications;
-        
+
+        // 1. Buat Notification Channel untuk Android (Wajib untuk Android 8.0+)
+        if (pushNotifications.createChannel) {
+          await pushNotifications.createChannel({
+            id: 'default',
+            name: 'Notifikasi RW 05',
+            description: 'Informasi dan pengumuman warga RW 05',
+            importance: 5,
+            visibility: 1,
+            sound: 'default',
+            vibration: true
+          });
+        }
+
+        // 2. Cek status izin saat ini
         let permStatus = await pushNotifications.checkPermissions();
-        
-        if (permStatus.receive === 'prompt' || permStatus.receive === 'none' || !permStatus.receive) {
+
+        // 3. Paksa minta izin jika belum granted
+        if (permStatus.receive !== 'granted') {
           permStatus = await pushNotifications.requestPermissions();
         }
-        
+
         if (permStatus.receive === 'granted') {
           console.log('Izin notifikasi native diberikan!');
           await pushNotifications.register();
@@ -109,6 +127,7 @@ document.addEventListener('DOMContentLoaded', function(){
         pushNotifications.addListener('pushNotificationReceived', (notification) => {
           console.log('Notifikasi diterima saat app terbuka:', notification);
         });
+
       } else if ('Notification' in window && Notification.permission === 'default') {
         Notification.requestPermission().then(function(permission) {
           if (permission === 'granted') {
@@ -121,8 +140,8 @@ document.addEventListener('DOMContentLoaded', function(){
     }
   }
 
-  // Memberikan jeda 1 detik setelah DOM siap agar Bridge Capacitor terinisialisasi sempurna
-  setTimeout(mintaIzinNotifikasiNative, 1000);
+  // Panggil dengan jeda 1.2 detik agar Native Bridge benar-benar siap
+  setTimeout(mintaIzinNotifikasiNative, 1200);
 
   // ==========================================
   // STANDAR WEB API: KAMERA & LOKASI (GLOBAL)
