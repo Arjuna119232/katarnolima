@@ -341,6 +341,16 @@ if (chkAdminMode) {
   });
 }
 
+function checkAuthOrRedirect() {
+  const userSession = localStorage.getItem('rw05_current_user') || localStorage.getItem('rw05_user_login');
+  const firebaseUser = auth.currentUser;
+  if (!userSession && !firebaseUser) {
+    showCustomAlert('⚠️ Silakan login/daftar akun terlebih dahulu untuk mengirim pesan diskusi warga.', 'profil.html');
+    return false;
+  }
+  return true;
+}
+
 function showCustomAlert(message, redirectUrl) {
   let alertModal = document.getElementById('customAlertModal');
   if (!alertModal) {
@@ -483,6 +493,10 @@ const btnKirim = document.getElementById('btnKirim');
 if (formDiskusi) {
   formDiskusi.addEventListener('submit', async (e) => {
     e.preventDefault();
+    
+    // CEK LOGIN DI AWAL (LANGSUNG MUNCUL TANPA TUNGGU FIREBASE)
+    if (!checkAuthOrRedirect()) return;
+
     const textVal = inputPesan.value.trim();
     if (!textVal) return;
 
@@ -503,7 +517,7 @@ if (formDiskusi) {
       inputPesan.value = '';
     } catch (err) {
       console.error('Firestore Error:', err);
-      showCustomAlert('⚠️ Silakan login/daftar akun terlebih dahulu untuk mengirim pesan diskusi warga.', 'profil.html');
+      alert('❌ Gagal mengirim pesan. Periksa koneksi internet Anda.');
     } finally {
       btnKirim.disabled = false;
       inputPesan.disabled = false;
