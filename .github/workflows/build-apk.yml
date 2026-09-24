@@ -26,7 +26,7 @@ jobs:
           distribution: temurin
           java-version: '21'
 
-      - name: Prepare Web Dir and Generate Native Capacitor Android
+      - name: Prepare Web Dir and Copy Web Assets
         run: |
           rm -rf android www
           mkdir -p www assets
@@ -35,6 +35,7 @@ jobs:
             cp icon.png assets/icon.png
           fi
           
+          # Salin seluruh file web asli ke folder www
           cp -r index.html script.js manifest.json pages assets www/ 2>/dev/null || true
           
           npm init -y || true
@@ -58,7 +59,7 @@ jobs:
           
           npx cap add android
 
-      - name: Copy google-services.json for Firebase & Notifications
+      - name: Copy google-services.json to Native Android
         run: |
           if [ -f "google-services.json" ]; then
             mkdir -p android/app
@@ -66,40 +67,11 @@ jobs:
             echo "google-services.json successfully copied to android/app/"
           fi
 
-      - name: Sync Capacitor Native & Assets
+      - name: Sync Capacitor Native & Generate Assets
         run: |
           npx cap copy android
           npx @capacitor/assets generate --android || true
           npx cap sync android
-
-      - name: Inject Version & Permissions to AndroidManifest
-        run: |
-          MANIFEST_FILE="android/app/src/main/AndroidManifest.xml"
-          if [ -f "$MANIFEST_FILE" ]; then
-            echo "Injecting version and permissions into AndroidManifest.xml..."
-            
-            if grep -q "android:versionName" "$MANIFEST_FILE"; then
-              sed -i 's/android:versionName="[^"]*"/android:versionName="2.1"/g' "$MANIFEST_FILE"
-              sed -i 's/android:versionCode="[^"]*"/android:versionCode="2"/g' "$MANIFEST_FILE"
-            else
-              sed -i 's/<manifest/<manifest android:versionCode="2" android:versionName="2.1"/' "$MANIFEST_FILE"
-            fi
-            
-            if ! grep -q "android.permission.POST_NOTIFICATIONS" "$MANIFEST_FILE"; then
-              sed -i '/<application/i \    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />\n    <uses-permission android:name="android.permission.CAMERA" />\n    <uses-feature android:name="android.hardware.camera" android:required="false" />\n    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />\n    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />' "$MANIFEST_FILE"
-              echo "Permissions & Version injected successfully!"
-            fi
-          fi
-
-      - name: Force Version in build.gradle
-        run: |
-          BUILD_GRADLE="android/app/build.gradle"
-          if [ -f "$BUILD_GRADLE" ]; then
-            echo "Forcing version in build.gradle..."
-            sed -i 's/versionCode [0-9]*/versionCode 2/g' "$BUILD_GRADLE"
-            sed -i 's/versionName "[^"]*"/versionName "2.1"/g' "$BUILD_GRADLE"
-            echo "build.gradle successfully updated to version 2.1!"
-          fi
 
       - name: Decode Keystore from Secrets
         run: |
