@@ -341,6 +341,33 @@ if (chkAdminMode) {
   });
 }
 
+function showCustomAlert(message, redirectUrl) {
+  let alertModal = document.getElementById('customAlertModal');
+  if (!alertModal) {
+    alertModal = document.createElement('div');
+    alertModal.id = 'customAlertModal';
+    alertModal.style.cssText = 'position:fixed; inset:0; background:rgba(15,23,42,0.6); backdrop-filter:blur(6px); z-index:2000; display:flex; align-items:center; justify-content:center; padding:20px;';
+    alertModal.innerHTML = `
+      <div style="background:#ffffff; width:100%; max-width:320px; border-radius:24px; padding:24px 20px; text-align:center; box-shadow:0 10px 30px rgba(0,0,0,0.15);">
+        <div style="font-size:36px; margin-bottom:12px;">🔒</div>
+        <h3 style="font-size:15px; font-weight:800; color:#0f172a; margin-bottom:8px;">Autentikasi Diperlukan</h3>
+        <p id="customAlertMsg" style="font-size:12px; color:#475569; font-weight:600; line-height:1.4; margin-bottom:20px;"></p>
+        <button type="button" id="customAlertBtn" style="width:100%; padding:12px; background:#0f172a; color:#fbbf24; border:none; border-radius:14px; font-weight:800; font-size:13px; cursor:pointer;">Masuk / Daftar</button>
+      </div>
+    `;
+    document.body.appendChild(alertModal);
+  }
+  document.getElementById('customAlertMsg').textContent = message;
+  alertModal.style.display = 'flex';
+
+  document.getElementById('customAlertBtn').onclick = () => {
+    alertModal.style.display = 'none';
+    if (redirectUrl) {
+      window.location.href = redirectUrl;
+    }
+  };
+}
+
 function escapeHtml(str = '') {
   return String(str).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m]));
 }
@@ -475,7 +502,8 @@ if (formDiskusi) {
 
       inputPesan.value = '';
     } catch (err) {
-      alert('❌ Gagal mengirim pesan: ' + err.message);
+      console.error('Firestore Error:', err);
+      showCustomAlert('⚠️ Silakan login/daftar akun terlebih dahulu untuk mengirim pesan diskusi warga.', 'profil.html');
     } finally {
       btnKirim.disabled = false;
       inputPesan.disabled = false;
