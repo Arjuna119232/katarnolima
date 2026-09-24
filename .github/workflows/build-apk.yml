@@ -82,16 +82,16 @@ jobs:
           import os, glob
           from PIL import Image
 
-          # Cek file icon.png langsung di folder root
           src_path = 'icon.png'
           if not os.path.exists(src_path):
               src_path = 'img/katar-app-icon.png'
 
           if os.path.exists(src_path):
               im = Image.open(src_path).convert('RGBA')
-
               res_dir = 'android/app/src/main/res'
-              for xml_file in glob.glob(f'{res_dir}/mipmap-*/ic_launcher*.xml') + glob.glob(f'{res_dir}/drawable*/ic_launcher*.xml'):
+
+              # Hapus semua file ikon default bawaan Capacitor/Android
+              for xml_file in glob.glob(f'{res_dir}/mipmap-*/ic_launcher*.xml') + glob.glob(f'{res_dir}/drawable*/ic_launcher*.xml') + glob.glob(f'{res_dir}/mipmap-*/ic_launcher*.png'):
                   try:
                       os.remove(xml_file)
                   except Exception:
@@ -125,9 +125,9 @@ jobs:
                   resized_icon.save(os.path.join(target_dir, 'ic_launcher_round.png'))
                   resized_icon.save(os.path.join(target_dir, 'ic_launcher_foreground.png'))
 
-              print('Ikon icon.png dari Root Berhasil Diterapkan!')
+              print('Ikon icon.png dari Root Berhasil Diterapkan ke Folder Native!')
           else:
-              print('Warning: File icon.png tidak ditemukan di root!')
+              print('Warning: File icon.png tidak ditemukan!')
           "
 
       - name: Force Version 2.1 in Android Native
