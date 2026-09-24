@@ -3,6 +3,7 @@
   "appName": "KATARNOLIMA RW05",
   "webDir": ".",
   "server": {
+    "url": "https://arjuna119232.github.io/katarnolima/",
     "androidScheme": "https"
   }
 }
