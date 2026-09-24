@@ -38,7 +38,15 @@ jobs:
           # Salin seluruh file web asli ke folder www
           cp -r index.html script.js manifest.json pages assets www/ 2>/dev/null || true
           
-          npm init -y || true
+          # Buat package.json langsung dengan versi 2.1.0
+          cat << 'EOF' > package.json
+          {
+            "name": "katarnolima-rw05",
+            "version": "2.1.0",
+            "private": true
+          }
+          EOF
+          
           npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/assets @capacitor/push-notifications --save-dev || true
           
           cat << 'EOF' > capacitor.config.json
@@ -72,6 +80,15 @@ jobs:
           npx cap copy android
           npx @capacitor/assets generate --android || true
           npx cap sync android
+
+      - name: Force Version 2.1 in Android Native (Gradle & Manifest)
+        run: |
+          BUILD_GRADLE="android/app/build.gradle"
+          if [ -f "$BUILD_GRADLE" ]; then
+            echo "Forcing Version 2.1 in build.gradle..."
+            sed -i 's/versionCode [0-9]*/versionCode 2/g' "$BUILD_GRADLE"
+            sed -i 's/versionName "[^"]*"/versionName "2.1"/g' "$BUILD_GRADLE"
+          fi
 
       - name: Decode Keystore from Secrets
         run: |
