@@ -42,7 +42,6 @@ jobs:
         run: |
           mkdir -p www assets
           
-          # Pastikan icon.png tersedia di folder assets untuk Capacitor
           if [ -f "icon.png" ]; then
             cp icon.png assets/icon.png
           fi
@@ -59,9 +58,6 @@ jobs:
             "appId": "com.katarnolima.rw05",
             "appName": "KATARNOLIMA RW05",
             "webDir": "www",
-            "android": {
-              "icon": "assets/icon.png"
-            },
             "plugins": {
               "PushNotifications": {
                 "presentationOptions": ["badge", "sound", "alert"]
@@ -86,16 +82,21 @@ jobs:
           
           npx cap sync android
 
-      - name: Generate Native Assets & Override Safe-Zone Icon
+      - name: Hard Reset & Apply Safe-Zone Icon
         run: |
-          # 1. Jalankan generator aset bawaan Capacitor
-          npx @capacitor/assets generate --android || true
-
-          # 2. Timpa semua mipmap agar menggunakan icon.png secara permanen
           python3 -c "
-          import os, glob
+          import os, glob, shutil
           from PIL import Image
 
+          res_dir = 'android/app/src/main/res'
+
+          # 1. Hapus folder mipmap-anydpi-v26 agar Android tidak pakai adaptive icon bawaan Capacitor
+          anydpi_dir = os.path.join(res_dir, 'mipmap-anydpi-v26')
+          if os.path.exists(anydpi_dir):
+              shutil.rmtree(anydpi_dir)
+              print('Folder adaptive icon anydpi-v26 berhasil dihapus!')
+
+          # 2. Ambil icon.png dari root
           src_path = 'icon.png'
           if not os.path.exists(src_path):
               src_path = 'assets/icon.png'
@@ -103,8 +104,6 @@ jobs:
           if os.path.exists(src_path):
               im = Image.open(src_path).convert('RGBA')
 
-              res_dir = 'android/app/src/main/res'
-              
               canvas_size = 2048
               canvas = Image.new('RGBA', (canvas_size, canvas_size), (255, 255, 255, 0))
 
@@ -129,12 +128,12 @@ jobs:
                   
                   resized_icon = canvas.resize((px, px), Image.Resampling.LANCZOS)
                   
-                  # Simpan ke seluruh format launcher
+                  # Simpan langsung menggantikan seluruh ikon
                   resized_icon.save(os.path.join(target_dir, 'ic_launcher.png'))
                   resized_icon.save(os.path.join(target_dir, 'ic_launcher_round.png'))
                   resized_icon.save(os.path.join(target_dir, 'ic_launcher_foreground.png'))
 
-              print('Ikon Karang Taruna berhasil dipasang secara permanen!')
+              print('Ikon Karang Taruna berhasil terpasang utuh di semua resolusi!')
           "
 
       - name: Force Version 2.1 in build.gradle
