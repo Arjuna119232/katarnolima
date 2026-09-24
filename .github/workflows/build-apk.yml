@@ -1,4 +1,4 @@
-Name: Build Signed Android APK v2.1
+name: Build Signed Android APK v2.1
 
 on:
   push:
@@ -31,18 +31,15 @@ jobs:
           rm -rf android www
           mkdir -p www assets
           
-          # Jika icon.png ada di root, salin ke folder assets
           if [ -f "icon.png" ]; then
             cp icon.png assets/icon.png
           fi
           
-          # Copy seluruh aset web penting ke folder www
           cp -r index.html pages assets www/ 2>/dev/null || true
           
           npm init -y || true
           npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/assets --save-dev || true
           
-          # Buat capacitor.config.json secara eksplisit dengan webDir 'www' dan konfigurasi ikon
           cat << 'EOF' > capacitor.config.json
           {
             "appId": "com.katarnolima.rw05",
@@ -59,10 +56,7 @@ jobs:
           
           npx cap add android
           npx cap copy android
-          
-          # Generate ikon menggunakan paket capacitor/assets secara resmi
           npx @capacitor/assets generate --android || true
-          
           npx cap sync android
 
       - name: Copy google-services.json for Firebase & Notifications
@@ -78,11 +72,9 @@ jobs:
           if [ -f "$MANIFEST_FILE" ]; then
             echo "Injecting version and permissions into AndroidManifest.xml..."
             
-            # Ubah versi aplikasi menjadi 2.1 secara otomatis
             sed -i 's/android:versionName="[^"]*"/android:versionName="2.1"/g' "$MANIFEST_FILE"
             sed -i 's/android:versionCode="[^"]*"/android:versionCode="2"/g' "$MANIFEST_FILE"
             
-            # Tambahkan izin notifikasi dan kamera/lokasi jika belum ada
             if ! grep -q "android.permission.POST_NOTIFICATIONS" "$MANIFEST_FILE"; then
               sed -i '/<application/i \    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />\n    <uses-permission android:name="android.permission.CAMERA" />\n    <uses-feature android:name="android.hardware.camera" android:required="false" />\n    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />\n    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />' "$MANIFEST_FILE"
               echo "Permissions & Version injected successfully!"
