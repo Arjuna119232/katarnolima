@@ -55,10 +55,12 @@ jobs:
           }
           EOF
 
-      - name: Ensure Android Project Exists & Sync Firebase
+      - name: Force Re-create Android Native Project & Sync Firebase
         run: |
-          if [ ! -d "android" ]; then
-            echo "Membuat folder platform android..."
+          # Hapus folder android lama yang kosong/tidak lengkap agar dibuat bersih dari awal
+          if [ ! -f "android/app/build.gradle" ]; then
+            echo "Proyek Android belum lengkap, membuat ulang dari nol..."
+            rm -rf android
             npx cap add android
           fi
 
@@ -134,9 +136,6 @@ jobs:
               sed -i '/defaultConfig {/a \        versionCode 2\n        versionName "2.1"' "$BUILD_GRADLE"
             fi
             echo "Versi v2.1 berhasil diperbarui!"
-          else
-            echo "File build.gradle tidak ditemukan!"
-            exit 1
           fi
 
       - name: Decode Keystore from GitHub Secrets
