@@ -1,4 +1,4 @@
-Name: Build Signed Android APK v2.1
+name: Build Signed Android APK v2.1
 
 on:
   push:
@@ -35,11 +35,9 @@ jobs:
             cp icon.png assets/icon.png
           fi
           
-          # Salin seluruh file web (termasuk script.js, manifest.json, dll) ke folder www
           cp -r index.html script.js manifest.json pages assets www/ 2>/dev/null || true
           
           npm init -y || true
-          # Memasang plugin Push Notifications bersama core Capacitor
           npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/assets @capacitor/push-notifications --save-dev || true
           
           cat << 'EOF' > capacitor.config.json
