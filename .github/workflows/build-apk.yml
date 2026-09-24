@@ -31,16 +31,21 @@ jobs:
           rm -rf android www
           mkdir -p www
           
-          # Salin index.html, folder pages, dan folder assets secara utuh ke folder www
+          # Copy seluruh aset tanpa terkecuali
           cp -r index.html pages assets www/ 2>/dev/null || true
           
           npm init -y || true
-          npm install @capacitor/core @capacitor/cli @capacitor/android || true
+          npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/assets || true
           
-          # Buat config capacitor menunjuk ke folder www yang sudah lengkap
           echo '{"appId":"com.katarnolima.rw05","appName":"KATARNOLIMA RW05","webDir":"www","server":{"androidScheme":"https"}}' > capacitor.config.json
           
           npx cap add android
+          
+          # Jika ada logo di assets/img/ logo.png atau icon.png, generate icon app
+          if [ -f "assets/img/logo.png" ]; then
+            npx cap-assets generate --iconAvailableFrom assets/img/logo.png || true
+          fi
+          
           npx cap copy android
           npx cap sync android
 
@@ -53,9 +58,6 @@ jobs:
               sed -i '/<application/i \    <uses-permission android:name="android.permission.CAMERA" />\n    <uses-feature android:name="android.hardware.camera" android:required="false" />\n    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />\n    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />' "$MANIFEST_FILE"
               echo "Permissions injected successfully!"
             fi
-          else
-            echo "Error: Manifest file not found at $MANIFEST_FILE"
-            exit 1
           fi
 
       - name: Decode Keystore from Secrets
@@ -118,7 +120,6 @@ jobs:
           if [ -f "$APK_SRC" ]; then
             cp "$APK_SRC" dist/katarnolima-rw05-v2.1.apk
           else
-            echo "Mencari file APK alternatif..."
             find android/ -name "*.apk" -exec cp {} dist/katarnolima-rw05-v2.1.apk \;
           fi
 
