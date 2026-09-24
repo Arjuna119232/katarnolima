@@ -903,6 +903,25 @@ document.addEventListener('DOMContentLoaded', () => {
       };
     });
   }
+
+  // Pemicu otomatis pop-up izin notifikasi native (Capacitor) saat index dimuat
+  setTimeout(async () => {
+    if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.PushNotifications) {
+      try {
+        const pushNotifications = window.Capacitor.Plugins.PushNotifications;
+        let permStatus = await pushNotifications.checkPermissions();
+        if (permStatus.receive === 'prompt' || permStatus.receive === 'none') {
+          permStatus = await pushNotifications.requestPermissions();
+        }
+        if (permStatus.receive === 'granted') {
+          pushNotifications.register();
+          console.log('Izin notifikasi native diberikan!');
+        }
+      } catch (e) {
+        console.warn('Gagal meminta izin notifikasi:', e);
+      }
+    }
+  }, 1200);
 });
 </script>
 
