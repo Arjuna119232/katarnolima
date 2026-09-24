@@ -103,36 +103,80 @@ document.addEventListener('DOMContentLoaded', function(){
   setTimeout(mintaIzinNotifikasiAman, 1500);
 
   // ==========================================
-  // STANDAR WEB API: KAMERA & LOKASI (GLOBAL)
+  // STANDAR WEB API: KAMERA & LOKASI (GLOBAL + CAPACITOR SAFE)
   // ==========================================
   window.requestCameraStream = async function() {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+      // 1. Cek & minta izin Kamera via Capacitor Native jika tersedia
+      if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Camera) {
+        const cameraPlugin = window.Capacitor.Plugins.Camera;
+        let permStatus = await cameraPlugin.checkPermissions();
+        if (permStatus.camera !== 'granted') {
+          await cameraPlugin.requestPermissions({ permissions: ['camera'] });
+        }
+      }
+
+      // 2. Buka stream kamera via standar getUserMedia
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: 'environment' }, 
+        audio: false 
+      });
       return stream;
     } catch (err) {
-      alert('⚠️ Akses kamera ditolak/tidak tersedia di perangkat ini.');
+      console.error('Gagal membuka kamera:', err);
+      alert('⚠️ Akses kamera ditolak/tidak diizinkan di perangkat ini.');
       return null;
     }
   };
 
-  window.requestGeoLocation = function(callbackSuccess, callbackError) {
+  window.requestGeoLocation = async function(callbackSuccess, callbackError) {
     if (!navigator.geolocation) {
       if (typeof callbackError === 'function') callbackError(new Error('GeoNotSupported'));
       return;
     }
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        if (typeof callbackSuccess === 'function') callbackSuccess({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-          accuracy: position.coords.accuracy
-        });
-      },
-      (error) => {
-        if (typeof callbackError === 'function') callbackError(error);
-      },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-    );
+
+    try {
+      // 1. Cek & minta izin Lokasi via Capacitor Native jika tersedia
+      if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Geolocation) {
+        const geoPlugin = window.Capacitor.Plugins.Geolocation;
+        let permStatus = await geoPlugin.checkPermissions();
+        if (permStatus.location !== 'granted') {
+          await geoPlugin.requestPermissions();
+        }
+      }
+
+      // 2. Dapatkan koordinat presisi via Geolocation API
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          if (typeof callbackSuccess === 'function') callbackSuccess({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+            accuracy: position.coords.accuracy
+          });
+        },
+        (error) => {
+          console.warn('Gagal mendapat lokasi:', error);
+          if (typeof callbackError === 'function') callbackError(error);
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      );
+    } catch (err) {
+      console.warn('Permintaan izin lokasi dilewati:', err);
+      // Fallback tetap eksekusi navigator bawaan
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          if (typeof callbackSuccess === 'function') callbackSuccess({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+            accuracy: position.coords.accuracy
+          });
+        },
+        (error) => {
+          if (typeof callbackError === 'function') callbackError(error);
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      );
+    }
   };
 
   // ==========================================
