@@ -61,13 +61,8 @@ jobs:
           }
           EOF
 
-      - name: Init/Sync Android & Copy Firebase Config
+      - name: Sync Capacitor Native & Copy Firebase Config
         run: |
-          if [ ! -f "android/gradlew" ]; then
-            echo "Membuat folder android native..."
-            npx cap add android
-          fi
-
           if [ -f "google-services.json" ]; then
             mkdir -p android/app
             cp google-services.json android/app/google-services.json
@@ -126,7 +121,7 @@ jobs:
               print('Ikon icon.png berhasil diterapkan!')
           "
 
-      - name: Force Version 2.1 in Android Native
+      - name: Bump Version to v2.1 in build.gradle
         run: |
           BUILD_GRADLE="android/app/build.gradle"
           if [ -f "$BUILD_GRADLE" ]; then
@@ -144,11 +139,9 @@ jobs:
           mkdir -p android/app
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/release.p12
 
-      - name: Configure Signing in build.gradle
+      - name: Build Signed Release APK
         run: |
-          BUILD_GRADLE="android/app/build.gradle"
-          if [ -f "$BUILD_GRADLE" ]; then
-            cat << 'EOF' >> "$BUILD_GRADLE"
+          cat << 'EOF' >> android/app/build.gradle
 
           configurations.all {
               resolutionStrategy {
@@ -176,17 +169,8 @@ jobs:
               }
           }
           EOF
-          fi
-        env:
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-
-      - name: Build Signed Release APK
-        working-directory: android
-        run: |
-          chmod +x gradlew
-          ./gradlew assembleRelease
+          chmod +x android/gradlew
+          cd android && ./gradlew assembleRelease
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
