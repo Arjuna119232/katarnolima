@@ -12,6 +12,8 @@
     }
   },
   "android": {
-    "icon": "assets/img/katar-app-icon.png"
+    "icon": "assets/img/katar-app-icon.png",
+    "versionCode": 2,
+    "versionName": "2.1"
   }
 }
