@@ -86,34 +86,43 @@ document.addEventListener('DOMContentLoaded', function(){
         
         let permStatus = await pushNotifications.checkPermissions();
         
-        if (permStatus.receive === 'prompt') {
+        if (permStatus.receive === 'prompt' || permStatus.receive === 'none' || !permStatus.receive) {
           permStatus = await pushNotifications.requestPermissions();
         }
         
-        if (permStatus.receive !== 'granted') {
-          console.warn('Izin notifikasi ditolak oleh pengguna.');
+        if (permStatus.receive === 'granted') {
+          console.log('Izin notifikasi native diberikan!');
+          await pushNotifications.register();
         } else {
-          console.log('Izin notifikasi diberikan!');
-          pushNotifications.register();
+          console.warn('Izin notifikasi ditolak oleh pengguna.');
         }
-      } else {
-        if ('Notification' in window && Notification.permission === 'default') {
-          Notification.requestPermission().then(function(permission) {
-            if (permission === 'granted') {
-              console.log('Izin notifikasi Web/PWA diberikan oleh warga.');
-            }
-          });
-        }
+
+        // Listener pendaftaran token push notification
+        pushNotifications.addListener('registration', (token) => {
+          console.log('Push Registration Token:', token.value);
+        });
+
+        pushNotifications.addListener('registrationError', (error) => {
+          console.error('Push Registration Error:', error);
+        });
+
+        pushNotifications.addListener('pushNotificationReceived', (notification) => {
+          console.log('Notifikasi diterima saat app terbuka:', notification);
+        });
+      } else if ('Notification' in window && Notification.permission === 'default') {
+        Notification.requestPermission().then(function(permission) {
+          if (permission === 'granted') {
+            console.log('Izin notifikasi Web/PWA diberikan oleh warga.');
+          }
+        });
       }
-    } catch (e) {
-      console.warn('Gagal meminta izin notifikasi:', e);
+    } catch (err) {
+      console.warn('Gagal memproses izin notifikasi:', err);
     }
   }
 
-  // Berikan jeda 1 detik agar WebView Capacitor siap sempurna di halaman index
-  setTimeout(() => {
-    mintaIzinNotifikasiNative();
-  }, 1000);
+  // Memberikan jeda 1 detik setelah DOM siap agar Bridge Capacitor terinisialisasi sempurna
+  setTimeout(mintaIzinNotifikasiNative, 1000);
 
   // ==========================================
   // STANDAR WEB API: KAMERA & LOKASI (GLOBAL)
