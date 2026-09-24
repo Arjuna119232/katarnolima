@@ -80,29 +80,33 @@ document.addEventListener('DOMContentLoaded', function(){
   // IZIN NOTIFIKASI OTOMATIS (CAPACITOR & WEB)
   // ==========================================
   async function mintaIzinNotifikasiNative() {
-    if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.PushNotifications) {
-      const pushNotifications = window.Capacitor.Plugins.PushNotifications;
-      
-      let permStatus = await pushNotifications.checkPermissions();
-      
-      if (permStatus.receive === 'prompt') {
-        permStatus = await pushNotifications.requestPermissions();
-      }
-      
-      if (permStatus.receive !== 'granted') {
-        console.warn('Izin notifikasi ditolak oleh pengguna.');
+    try {
+      if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.PushNotifications) {
+        const pushNotifications = window.Capacitor.Plugins.PushNotifications;
+        
+        let permStatus = await pushNotifications.checkPermissions();
+        
+        if (permStatus.receive === 'prompt' || permStatus.receive === 'none') {
+          permStatus = await pushNotifications.requestPermissions();
+        }
+        
+        if (permStatus.receive === 'granted') {
+          console.log('Izin notifikasi native diberikan!');
+          pushNotifications.register();
+        } else {
+          console.warn('Izin notifikasi ditolak oleh pengguna.');
+        }
       } else {
-        console.log('Izin notifikasi diberikan!');
-        pushNotifications.register();
+        if ('Notification' in window && Notification.permission === 'default') {
+          Notification.requestPermission().then(function(permission) {
+            if (permission === 'granted') {
+              console.log('Izin notifikasi Web/PWA diberikan.');
+            }
+          });
+        }
       }
-    } else {
-      if ('Notification' in window && Notification.permission === 'default') {
-        Notification.requestPermission().then(function(permission) {
-          if (permission === 'granted') {
-            console.log('Izin notifikasi Web/PWA diberikan oleh warga.');
-          }
-        });
-      }
+    } catch (e) {
+      console.warn('Error saat meminta izin notifikasi:', e);
     }
   }
   mintaIzinNotifikasiNative();
