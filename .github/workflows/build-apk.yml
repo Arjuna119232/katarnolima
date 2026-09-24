@@ -1,4 +1,4 @@
-name: Build Signed Android APK v2.1
+Name: Build Signed Android APK v2.1
 
 on:
   push:
@@ -37,9 +37,25 @@ jobs:
           npm init -y || true
           npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/assets || true
           
-          echo '{"appId":"com.katarnolima.rw05","appName":"KATARNOLIMA RW05","webDir":"www","server":{"androidScheme":"https"}}' > capacitor.config.json
+          # Buat capacitor.config.json lengkap dengan konfigurasi ikon
+          cat << 'EOF' > capacitor.config.json
+          {
+            "appId": "com.katarnolima.rw05",
+            "appName": "KATARNOLIMA RW05",
+            "webDir": "www",
+            "server": {
+              "androidScheme": "https"
+            },
+            "android": {
+              "icon": "assets/img/katar-app-icon.png"
+            }
+          }
+          EOF
           
           npx cap add android
+          
+          # Mengonversi dan memasang ikon secara otomatis dari folder assets/img/katar-app-icon.png
+          npx @capacitor/assets generate --icon assets/img/katar-app-icon.png --android
           
           npx cap copy android
           npx cap sync android
