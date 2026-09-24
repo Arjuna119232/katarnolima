@@ -87,46 +87,59 @@ document.addEventListener('DOMContentLoaded', function(){
       if (isCapacitorNative || hasPushPlugin) {
         const pushNotifications = window.Capacitor.Plugins.PushNotifications;
 
-        // 1. Buat Notification Channel untuk Android (Wajib untuk Android 8.0+)
-        if (pushNotifications.createChannel) {
-          await pushNotifications.createChannel({
-            id: 'default',
-            name: 'Notifikasi RW 05',
-            description: 'Informasi dan Pengumuman Warga RW 05',
-            importance: 5,
-            visibility: 1,
-            sound: 'default',
-            vibration: true
-          });
-        }
-
-        // 2. Cek status izin saat ini
+        // 1. Minta Izin Notifikasi Terlebih Dahulu
         let permStatus = await pushNotifications.checkPermissions();
 
-        // 3. Minta izin jika belum granted atau statusnya prompt/none
         if (permStatus.receive !== 'granted') {
           permStatus = await pushNotifications.requestPermissions();
         }
 
+        // 2. Jika Warga Menekan "Izinkan", Buat Channel & Register dengan Jeda Aman (Mencegah Force Close)
         if (permStatus.receive === 'granted') {
           console.log('Izin notifikasi native diberikan!');
-          await pushNotifications.register();
+
+          // Buat Channel Notifikasi Android (Wajib untuk Android 8+)
+          if (pushNotifications.createChannel) {
+            try {
+              await pushNotifications.createChannel({
+                id: 'default',
+                name: 'Notifikasi RW 05',
+                description: 'Informasi dan Pengumuman Warga RW 05',
+                importance: 5,
+                visibility: 1,
+                sound: 'default',
+                vibration: true
+              });
+            } catch (errChannel) {
+              console.warn('Gagal membuat channel notifikasi:', errChannel);
+            }
+          }
+
+          // Pasang listener pendaftaran token
+          pushNotifications.addListener('registration', (token) => {
+            console.log('Push Registration Token:', token.value);
+          });
+
+          pushNotifications.addListener('registrationError', (error) => {
+            console.warn('Push Registration Error (Aplikasi Tetap Jalan):', error);
+          });
+
+          pushNotifications.addListener('pushNotificationReceived', (notification) => {
+            console.log('Notifikasi diterima saat app terbuka:', notification);
+          });
+
+          // Panggil register dengan jeda 500ms agar OS Android selesai memproses status izin
+          setTimeout(async () => {
+            try {
+              await pushNotifications.register();
+            } catch (errReg) {
+              console.warn('Gagal register push notification:', errReg);
+            }
+          }, 500);
+
         } else {
           console.warn('Izin notifikasi ditolak oleh pengguna.');
         }
-
-        // Listener pendaftaran token push notification
-        pushNotifications.addListener('registration', (token) => {
-          console.log('Push Registration Token:', token.value);
-        });
-
-        pushNotifications.addListener('registrationError', (error) => {
-          console.error('Push Registration Error:', error);
-        });
-
-        pushNotifications.addListener('pushNotificationReceived', (notification) => {
-          console.log('Notifikasi diterima saat app terbuka:', notification);
-        });
 
       } else if ('Notification' in window && Notification.permission === 'default') {
         Notification.requestPermission().then(function(permission) {
@@ -140,8 +153,8 @@ document.addEventListener('DOMContentLoaded', function(){
     }
   }
 
-  // Berikan jeda 1.2 detik agar Native Bridge benar-benar siap
-  setTimeout(mintaIzinNotifikasiNative, 1200);
+  // Berikan jeda 1.5 detik agar Native Bridge benar-benar siap
+  setTimeout(mintaIzinNotifikasiNative, 1500);
 
   // ==========================================
   // STANDAR WEB API: KAMERA & LOKASI (GLOBAL)
