@@ -77,18 +77,35 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 
   // ==========================================
-  // IZIN NOTIFIKASI OTOMATIS (WEB / PWA)
+  // IZIN NOTIFIKASI OTOMATIS (CAPACITOR & WEB)
   // ==========================================
-  function mintaIzinNotifikasiWeb() {
-    if ('Notification' in window && Notification.permission === 'default') {
-      Notification.requestPermission().then(function(permission) {
-        if (permission === 'granted') {
-          console.log('Izin notifikasi Web/PWA diberikan oleh warga.');
-        }
-      });
+  async function mintaIzinNotifikasiNative() {
+    if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.PushNotifications) {
+      const pushNotifications = window.Capacitor.Plugins.PushNotifications;
+      
+      let permStatus = await pushNotifications.checkPermissions();
+      
+      if (permStatus.receive === 'prompt') {
+        permStatus = await pushNotifications.requestPermissions();
+      }
+      
+      if (permStatus.receive !== 'granted') {
+        console.warn('Izin notifikasi ditolak oleh pengguna.');
+      } else {
+        console.log('Izin notifikasi diberikan!');
+        pushNotifications.register();
+      }
+    } else {
+      if ('Notification' in window && Notification.permission === 'default') {
+        Notification.requestPermission().then(function(permission) {
+          if (permission === 'granted') {
+            console.log('Izin notifikasi Web/PWA diberikan oleh warga.');
+          }
+        });
+      }
     }
   }
-  mintaIzinNotifikasiWeb();
+  mintaIzinNotifikasiNative();
 
   // ==========================================
   // STANDAR WEB API: KAMERA & LOKASI (GLOBAL)
