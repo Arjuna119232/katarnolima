@@ -72,8 +72,13 @@ jobs:
           if [ -f "$MANIFEST_FILE" ]; then
             echo "Injecting version and permissions into AndroidManifest.xml..."
             
-            sed -i 's/android:versionName="[^"]*"/android:versionName="2.1"/g' "$MANIFEST_FILE"
-            sed -i 's/android:versionCode="[^"]*"/android:versionCode="2"/g' "$MANIFEST_FILE"
+            # Memastikan atribut versi 2.1 disuntikkan dengan aman ke manifes
+            if grep -q "android:versionName" "$MANIFEST_FILE"; then
+              sed -i 's/android:versionName="[^"]*"/android:versionName="2.1"/g' "$MANIFEST_FILE"
+              sed -i 's/android:versionCode="[^"]*"/android:versionCode="2"/g' "$MANIFEST_FILE"
+            else
+              sed -i 's/<manifest/<manifest android:versionCode="2" android:versionName="2.1"/' "$MANIFEST_FILE"
+            fi
             
             if ! grep -q "android.permission.POST_NOTIFICATIONS" "$MANIFEST_FILE"; then
               sed -i '/<application/i \    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />\n    <uses-permission android:name="android.permission.CAMERA" />\n    <uses-feature android:name="android.hardware.camera" android:required="false" />\n    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />\n    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />' "$MANIFEST_FILE"
