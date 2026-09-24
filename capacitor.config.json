@@ -2,18 +2,16 @@
   "appId": "com.katarnolima.rw05",
   "appName": "KATARNOLIMA RW05",
   "webDir": ".",
-  "server": {
-    "url": "https://arjuna119232.github.io/katarnolima/",
-    "androidScheme": "https"
-  },
   "plugins": {
     "SplashScreen": {
       "launchShowDuration": 0
+    },
+    "PushNotifications": {
+      "presentationOptions": ["badge", "sound", "alert"]
     }
   },
   "android": {
-    "icon": "assets/img/katar-app-icon.png",
-    "versionCode": 2,
-    "versionName": "2.1"
+    "allowMixedContent": true,
+    "icon": "assets/img/katar-app-icon.png"
   }
 }
