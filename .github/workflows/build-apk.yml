@@ -1,4 +1,4 @@
-name: Build Signed Android APK v2.1
+Name: Build Signed Android APK v2.1
 
 on:
   push:
@@ -26,16 +26,23 @@ jobs:
           distribution: temurin
           java-version: '21'
 
-      - name: Fresh Generate Native Capacitor Android
+      - name: Prepare Web Dir and Generate Native Capacitor Android
         run: |
-          rm -rf android
+          rm -rf android www
+          mkdir -p www
+          
+          # Salin index.html, folder pages, dan folder assets secara utuh ke folder www
+          cp -r index.html pages assets www/ 2>/dev/null || true
+          
           npm init -y || true
           npm install @capacitor/core @capacitor/cli @capacitor/android || true
-          mkdir -p www
-          cp -rn index.html pages assets www/ 2>/dev/null || true
-          echo '{"appId":"com.katarnolima.rw05","appName":"KATARNOLIMA","webDir":"www"}' > capacitor.config.json
+          
+          # Buat config capacitor menunjuk ke folder www yang sudah lengkap
+          echo '{"appId":"com.katarnolima.rw05","appName":"KATARNOLIMA RW05","webDir":"www","server":{"androidScheme":"https"}}' > capacitor.config.json
+          
           npx cap add android
           npx cap copy android
+          npx cap sync android
 
       - name: Inject Camera & Location Permissions to Manifest
         run: |
