@@ -54,22 +54,25 @@ document.addEventListener('DOMContentLoaded', function(){
     }, 3800);
   }
 
-  // SPLASH SCREEN LOGIC LENGKAP DENGAN DISPLAY NONE
+  // LOGIKA SPLASH SCREEN (PERBAIKAN: DISembunyikan TOTAL DAN NONAKTIFKAN SENTUHAN)
   var splash = document.getElementById('splash-screen') || document.getElementById('splashScreen');
   if (splash) {
     if (sessionStorage.getItem('splashShown')) {
       splash.style.display = 'none';
+      splash.style.pointerEvents = 'none';
       initDynamicIslandAfterSplash();
     } else {
       setTimeout(function() {
         splash.style.opacity = '0';
-        splash.style.transition = 'opacity 0.4s ease';
+        splash.style.visibility = 'hidden';
+        splash.style.pointerEvents = 'none';
+        splash.style.transition = 'opacity 0.3s ease, visibility 0.3s ease';
         sessionStorage.setItem('splashShown', 'true');
         setTimeout(function() {
           splash.style.display = 'none';
           initDynamicIslandAfterSplash();
-        }, 400);
-      }, 1200);
+        }, 300);
+      }, 1000);
     }
   } else {
     initDynamicIslandAfterSplash();
@@ -259,7 +262,7 @@ document.addEventListener('DOMContentLoaded', function(){
   if(modal) modal.addEventListener('click', function(e){ if(e.target===modal) closeModal(); });
 
   // ==========================================
-  // LOGIKA NAVIGASI BACK HP PERSISI
+  // LOGIKA NAVIGASI BACK HP
   // ==========================================
   function goBackSafe(){ 
     if (window.history.length > 1 && document.referrer && document.referrer.indexOf(window.location.host) !== -1) {
