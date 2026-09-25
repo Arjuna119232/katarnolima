@@ -1,7 +1,7 @@
 // @ts-nocheck
 
 /**
- * KATARNOLIMA RW 05 - Core Script (Pure Online Mode)
+ * KATARNOLIMA RW 05 - Core Script (Pure Online Mode & FCM Integrated)
  */
 
 if ('serviceWorker' in navigator) {
@@ -57,26 +57,40 @@ document.addEventListener('DOMContentLoaded', function(){
         splash.style.opacity = '0';
         splash.style.visibility = 'hidden';
         splash.style.pointerEvents = 'none';
-        splash.style.transition = 'opacity 0.3s ease, visibility 0.3s ease';
+        splash.style.transition = 'opacity 0.4s ease, visibility 0.4s ease';
         sessionStorage.setItem('splashShown', 'true');
         setTimeout(function() {
           splash.style.display = 'none';
           initDynamicIslandAfterSplash();
-        }, 300);
-      }, 1000);
+        }, 400);
+      }, 1200);
     }
   } else {
     initDynamicIslandAfterSplash();
   }
 
-  // 3. IZIN NOTIFIKASI
+  // 3. INTEGRASI LENGKAP PUSH NOTIFICATION (FIREBASE FCM)
   async function mintaIzinNotifikasiAman() {
     try {
       if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.PushNotifications) {
         const push = window.Capacitor.Plugins.PushNotifications;
         let status = await push.checkPermissions();
         if (status.receive !== 'granted') {
-          await push.requestPermissions();
+          status = await push.requestPermissions();
+        }
+        if (status.receive === 'granted') {
+          await push.register();
+          
+          // Mendaftarkan token FCM perangkat ke memori lokal
+          push.addListener('registration', (token) => {
+            if (token && token.value) {
+              localStorage.setItem('rw05_fcm_token', token.value);
+            }
+          });
+
+          push.addListener('pushNotificationReceived', (notification) => {
+            console.log('Notifikasi Diterima:', notification);
+          });
         }
       } else if ('Notification' in window && Notification.permission === 'default') {
         await Notification.requestPermission();
@@ -85,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function(){
       console.warn('Izin notifikasi dilewati:', err);
     }
   }
-  setTimeout(mintaIzinNotifikasiAman, 1500);
+  setTimeout(mintaIzinNotifikasiAman, 1000);
 
   // 4. STANDAR WEB API: KAMERA & LOKASI
   window.requestCameraStream = async function() {
@@ -131,7 +145,6 @@ document.addEventListener('DOMContentLoaded', function(){
           });
         },
         (error) => {
-          console.warn('Gagal mendapat lokasi:', error);
           if (typeof callbackError === 'function') callbackError(error);
         },
         { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
@@ -186,12 +199,12 @@ document.addEventListener('DOMContentLoaded', function(){
     setInterval(verifyRealInternet, 10000);
   })();
 
-  // 6. LOGIKA PENCARIAN & FAB DARURAT
+  // 6. LOGIKA PENCARIAN (DINAMIS ALUR PATH) & FAB DARURAT
   var goCari = document.getElementById('goCari');
   if(goCari){ 
     goCari.addEventListener('click', function(e){ 
       e.preventDefault(); 
-      var pathNow = window.location.pathname;
+      var pathNow = window.location.pathname.toLowerCase();
       if (pathNow.includes('/pages/')) {
         window.location.href = 'cari-warga.html';
       } else {
@@ -238,18 +251,18 @@ document.addEventListener('DOMContentLoaded', function(){
   if(modal) modal.addEventListener('click', function(e){ if(e.target===modal) closeModal(); });
 
   // 8. LOGIKA NAVIGASI BACK HP (PRESISI KELUAR APLIKASI)
-  function goBackSafe(){ 
+  window.goBackSafe = function() { 
     if (window.history.length > 1 && document.referrer && document.referrer.indexOf(window.location.host) !== -1) {
       window.history.back();
     } else {
-      var pathNow = window.location.pathname;
+      var pathNow = window.location.pathname.toLowerCase();
       if (pathNow.includes('/pages/')) {
         window.location.replace('../index.html');
       } else {
         window.location.replace('index.html');
       }
     }
-  }
+  };
 
   document.querySelectorAll('.back, #backBtn, .btn-back-modern, .btn-back, .btn-back-berita, .btn-back-link').forEach(function(el){ 
     el.addEventListener('click', function(e){ 
@@ -296,7 +309,7 @@ document.addEventListener('DOMContentLoaded', function(){
     var path = window.location.pathname.toLowerCase();
     var fileName = path.substring(path.lastIndexOf('/') + 1);
     
-    // Hanya 4 file ini yang diizinkan memicu keluar aplikasi
+    // Hanya 4 halaman ini yang diizinkan keluar aplikasi
     var exactMainFiles = ['index.html', 'diskusi-rw.html', 'info.html', 'profil.html'];
     
     if (exactMainFiles.includes(fileName)) {
@@ -319,8 +332,10 @@ document.addEventListener('DOMContentLoaded', function(){
       return; 
     }
 
-    if (modal && modal.classList.contains('active')) { 
-      closeModal(); 
+    var activeModal = document.getElementById('universal-modal') || document.querySelector('.modal-overlay.show-overlay');
+    if (activeModal && (activeModal.classList.contains('active') || activeModal.classList.contains('show-overlay') || activeModal.style.display === 'flex')) { 
+      if (typeof closeUniversalModal === 'function') closeUniversalModal();
+      else activeModal.style.display = 'none';
       return; 
     }
 
@@ -337,7 +352,7 @@ document.addEventListener('DOMContentLoaded', function(){
     document.addEventListener('backbutton', onHardwareBackButton, false); 
   }
 
-  // 9. EFEK RIPPLE
+  // 9. EFEK RIPPLE SAAT KLIK
   function addRippleEffect(e){
     var el = this;
     if(navigator.vibrate) navigator.vibrate(10);
