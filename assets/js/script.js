@@ -237,7 +237,7 @@ document.addEventListener('DOMContentLoaded', function(){
   if(modalClose) modalClose.addEventListener('click', closeModal);
   if(modal) modal.addEventListener('click', function(e){ if(e.target===modal) closeModal(); });
 
-  // 8. LOGIKA NAVIGASI BACK HP (PRESISI KELUAR APLIKASI)
+  // 8. LOGIKA NAVIGASI BACK HP & KELUAR APLIKASI PRESI
   function goBackSafe(){ 
     if (window.history.length > 1 && document.referrer && document.referrer.indexOf(window.location.host) !== -1) {
       window.history.back();
@@ -296,13 +296,11 @@ document.addEventListener('DOMContentLoaded', function(){
     var path = window.location.pathname.toLowerCase();
     var fileName = path.substring(path.lastIndexOf('/') + 1);
     
-    // Hanya 4 file ini yang diizinkan memicu keluar aplikasi
-    var exactMainFiles = ['index.html', 'diskusi-rw.html', 'info.html', 'profil.html'];
+    // Berkas beranda utama
+    var isMainPage = (fileName === '' || fileName === 'index.html' || path.endsWith('/')) && !path.includes('/pages/');
     
-    if (exactMainFiles.includes(fileName)) {
-      return true;
-    }
-    if ((fileName === '' || path.endsWith('/')) && !path.includes('/pages/')) {
+    // HANYA picu keluar aplikasi jika berada di beranda utama DAN tidak memiliki riwayat navigasi sebelumnya
+    if (isMainPage && window.history.length <= 1) {
       return true;
     }
     return false;
@@ -311,19 +309,61 @@ document.addEventListener('DOMContentLoaded', function(){
   var onHardwareBackButton = function(e){
     if (e && typeof e.preventDefault === 'function') e.preventDefault();
 
+    // 1. Tutup FAB Darurat jika aktif
     if(fabContainer && fabContainer.classList.contains('active')){ 
-      fabContainer.classList.remove('active'); 
-      if(fabOptions) fabOptions.style.display='none'; 
-      if(fabClose) fabClose.style.display='none'; 
-      if(fabMain) fabMain.style.display='flex'; 
+      if (typeof window.closeFabDarurat === 'function') {
+        window.closeFabDarurat(false);
+      } else {
+        fabContainer.classList.remove('active'); 
+        if(fabOptions) fabOptions.style.display='none'; 
+        if(fabClose) fabClose.style.display='none'; 
+        if(fabMain) fabMain.style.display='flex'; 
+      }
       return; 
     }
 
+    // 2. Tutup Modal Serbaguna jika aktif
     if (modal && modal.classList.contains('active')) { 
       closeModal(); 
       return; 
     }
 
+    // 3. Tutup Modal Universal jika terbuka
+    var uniModal = document.getElementById('universal-modal');
+    if (uniModal && (uniModal.style.display === 'flex' || uniModal.classList.contains('show-overlay'))) {
+      if (typeof window.closeUniversalModal === 'function') window.closeUniversalModal();
+      return;
+    }
+
+    // 4. Tutup Modal Satpam jika terbuka
+    var satpamModal = document.getElementById('satpam-modal');
+    if (satpamModal && (satpamModal.style.display === 'flex' || satpamModal.classList.contains('show-overlay'))) {
+      if (typeof window.closeSatpamModal === 'function') window.closeSatpamModal();
+      return;
+    }
+
+    // 5. Tutup Modal Ambulans jika terbuka
+    var ambulansModal = document.getElementById('ambulans-modal');
+    if (ambulansModal && (ambulansModal.style.display === 'flex' || ambulansModal.classList.contains('show-overlay'))) {
+      if (typeof window.closeAmbulansModal === 'function') window.closeAmbulansModal();
+      return;
+    }
+
+    // 6. Tutup Overlay Kamera jika terbuka
+    var cameraOverlay = document.getElementById('cameraOverlay');
+    if (cameraOverlay && cameraOverlay.classList.contains('show')) {
+      if (typeof window.closeCustomCamera === 'function') window.closeCustomCamera();
+      return;
+    }
+
+    // 7. Tutup Custom Alert jika terbuka
+    var customAlert = document.getElementById('custom-alert-modal');
+    if (customAlert && (customAlert.style.display === 'flex' || customAlert.classList.contains('show-overlay'))) {
+      if (typeof window.closeCustomAlert === 'function') window.closeCustomAlert();
+      return;
+    }
+
+    // 8. Eksekusi keluar aplikasi HANYA jika berada di root beranda tanpa riwayat navigasi
     if (checkIsMainTab()) {
       handleExitApp();
     } else {
@@ -370,7 +410,7 @@ document.addEventListener('DOMContentLoaded', function(){
         const adCard = document.getElementById('admob-native-card');
         if (adCard) {
           await AdMob.showBanner({
-            adId: 'ca-app-pub-209615581034089/7642672909', // ID Unit Iklan Native
+            adId: 'ca-app-pub-209615581034089/7642672909',
             adSize: 'MEDIUM_RECTANGLE',
             position: 'CENTER',
             margin: 0
