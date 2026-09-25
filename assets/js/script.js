@@ -356,4 +356,33 @@ document.addEventListener('DOMContentLoaded', function(){
   document.querySelectorAll('.g8-item,.kat-card,.rekom-card,.jaki-item,.result-item,.menu-jaki.menu-item,.item-layanan').forEach(function(item){
     item.addEventListener('click', addRippleEffect);
   });
+
+  // 10. KONTROL IKLAN GOOGLE ADMOB (NATIVE CARD)
+  async function initAdMobNative() {
+    try {
+      if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.AdMob) {
+        const { AdMob } = window.Capacitor.Plugins;
+
+        // Inisialisasi AdMob SDK
+        await AdMob.initialize();
+
+        // Tampilkan Banner/Native Card jika elemen slotnya ada di halaman
+        const adCard = document.getElementById('admob-native-card');
+        if (adCard) {
+          await AdMob.showBanner({
+            adId: 'ca-app-pub-209615581034089/7642672909', // ID Unit Iklan Native
+            adSize: 'MEDIUM_RECTANGLE',
+            position: 'CENTER',
+            margin: 0
+          });
+          console.log('✅ AdMob Native berhasil dimuat!');
+        }
+      }
+    } catch (err) {
+      console.warn('⚠️ AdMob belum siap atau berjalan di Browser Web:', err);
+    }
+  }
+
+  // Panggil AdMob saat halaman selesai dimuat
+  setTimeout(initAdMobNative, 1000);
 });
