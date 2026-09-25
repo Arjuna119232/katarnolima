@@ -4,14 +4,6 @@
  * KATARNOLIMA RW 05 - Core Script (Pure Online Mode)
  */
 
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.getRegistrations().then(function(registrations) {
-    for (let registration of registrations) {
-      registration.unregister();
-    }
-  });
-}
-
 document.addEventListener('DOMContentLoaded', function(){
   // 1. DYNAMIC ISLAND (SAPAAN WARGA)
   function initDynamicIslandAfterSplash() {
@@ -69,14 +61,17 @@ document.addEventListener('DOMContentLoaded', function(){
     initDynamicIslandAfterSplash();
   }
 
-  // 3. IZIN NOTIFIKASI
+  // 3. IZIN & REGISTRASI NOTIFIKASI CAPACITOR (UNTUK APK ANDROID)
   async function mintaIzinNotifikasiAman() {
     try {
       if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.PushNotifications) {
         const push = window.Capacitor.Plugins.PushNotifications;
         let status = await push.checkPermissions();
         if (status.receive !== 'granted') {
-          await push.requestPermissions();
+          status = await push.requestPermissions();
+        }
+        if (status.receive === 'granted') {
+          await push.register();
         }
       } else if ('Notification' in window && Notification.permission === 'default') {
         await Notification.requestPermission();
@@ -85,6 +80,20 @@ document.addEventListener('DOMContentLoaded', function(){
       console.warn('Izin notifikasi dilewati:', err);
     }
   }
+
+  if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.PushNotifications) {
+    const push = window.Capacitor.Plugins.PushNotifications;
+    
+    push.addListener('registration', (token) => {
+      console.log('✅ Token FCM Capacitor Android:', token.value);
+      localStorage.setItem('rw05_fcm_token', token.value);
+    });
+
+    push.addListener('pushNotificationReceived', (notification) => {
+      console.log('📩 Notifikasi Masuk (Native Foreground):', notification);
+    });
+  }
+
   setTimeout(mintaIzinNotifikasiAman, 1500);
 
   // 4. STANDAR WEB API: KAMERA & LOKASI
@@ -237,7 +246,7 @@ document.addEventListener('DOMContentLoaded', function(){
   if(modalClose) modalClose.addEventListener('click', closeModal);
   if(modal) modal.addEventListener('click', function(e){ if(e.target===modal) closeModal(); });
 
-  // 8. LOGIKA NAVIGASI BACK HP & KELUAR APLIKASI PRESI
+  // 8. LOGIKA NAVIGASI BACK HP & KELUAR APLIKASI
   function goBackSafe(){ 
     if (window.history.length > 1 && document.referrer && document.referrer.indexOf(window.location.host) !== -1) {
       window.history.back();
@@ -296,10 +305,8 @@ document.addEventListener('DOMContentLoaded', function(){
     var path = window.location.pathname.toLowerCase();
     var fileName = path.substring(path.lastIndexOf('/') + 1);
     
-    // Berkas beranda utama
     var isMainPage = (fileName === '' || fileName === 'index.html' || path.endsWith('/')) && !path.includes('/pages/');
     
-    // HANYA picu keluar aplikasi jika berada di beranda utama DAN tidak memiliki riwayat navigasi sebelumnya
     if (isMainPage && window.history.length <= 1) {
       return true;
     }
@@ -309,7 +316,6 @@ document.addEventListener('DOMContentLoaded', function(){
   var onHardwareBackButton = function(e){
     if (e && typeof e.preventDefault === 'function') e.preventDefault();
 
-    // 1. Tutup FAB Darurat jika aktif
     if(fabContainer && fabContainer.classList.contains('active')){ 
       if (typeof window.closeFabDarurat === 'function') {
         window.closeFabDarurat(false);
@@ -322,48 +328,41 @@ document.addEventListener('DOMContentLoaded', function(){
       return; 
     }
 
-    // 2. Tutup Modal Serbaguna jika aktif
     if (modal && modal.classList.contains('active')) { 
       closeModal(); 
       return; 
     }
 
-    // 3. Tutup Modal Universal jika terbuka
     var uniModal = document.getElementById('universal-modal');
     if (uniModal && (uniModal.style.display === 'flex' || uniModal.classList.contains('show-overlay'))) {
       if (typeof window.closeUniversalModal === 'function') window.closeUniversalModal();
       return;
     }
 
-    // 4. Tutup Modal Satpam jika terbuka
     var satpamModal = document.getElementById('satpam-modal');
     if (satpamModal && (satpamModal.style.display === 'flex' || satpamModal.classList.contains('show-overlay'))) {
       if (typeof window.closeSatpamModal === 'function') window.closeSatpamModal();
       return;
     }
 
-    // 5. Tutup Modal Ambulans jika terbuka
     var ambulansModal = document.getElementById('ambulans-modal');
     if (ambulansModal && (ambulansModal.style.display === 'flex' || ambulansModal.classList.contains('show-overlay'))) {
       if (typeof window.closeAmbulansModal === 'function') window.closeAmbulansModal();
       return;
     }
 
-    // 6. Tutup Overlay Kamera jika terbuka
     var cameraOverlay = document.getElementById('cameraOverlay');
     if (cameraOverlay && cameraOverlay.classList.contains('show')) {
       if (typeof window.closeCustomCamera === 'function') window.closeCustomCamera();
       return;
     }
 
-    // 7. Tutup Custom Alert jika terbuka
     var customAlert = document.getElementById('custom-alert-modal');
     if (customAlert && (customAlert.style.display === 'flex' || customAlert.classList.contains('show-overlay'))) {
       if (typeof window.closeCustomAlert === 'function') window.closeCustomAlert();
       return;
     }
 
-    // 8. Eksekusi keluar aplikasi HANYA jika berada di root beranda tanpa riwayat navigasi
     if (checkIsMainTab()) {
       handleExitApp();
     } else {
@@ -402,11 +401,8 @@ document.addEventListener('DOMContentLoaded', function(){
     try {
       if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.AdMob) {
         const { AdMob } = window.Capacitor.Plugins;
-
-        // Inisialisasi AdMob SDK
         await AdMob.initialize();
 
-        // Tampilkan Banner/Native Card jika elemen slotnya ada di halaman
         const adCard = document.getElementById('admob-native-card');
         if (adCard) {
           await AdMob.showBanner({
@@ -423,6 +419,5 @@ document.addEventListener('DOMContentLoaded', function(){
     }
   }
 
-  // Panggil AdMob saat halaman selesai dimuat
   setTimeout(initAdMobNative, 1000);
 });
