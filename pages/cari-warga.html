@@ -290,9 +290,11 @@ html, body {
   </div>
 </div>
 
+<script src="../script.js"></script>
 <script>
 // @ts-nocheck
 // DATABASE KELENGKAPAN SELURUH LAYANAN APLIKASI KATARNOLIMA RW 05
+// PERBAIKAN JALUR UTAMA MENGGUNAKAN ../ UNTUK KEMBALI KE ROOT FOLDER
 const dataLayanan = [
   // LAPORAN & ADUAN
   {k:'Aduan Warga', d:'Lapor masalah fasilitas atau kejadian di RW 05', i:'📢', cat:'laporan', kw:'aduan lapor masalah aduan warga foto video lapor', link:'aduan-warga.html'},
@@ -307,8 +309,8 @@ const dataLayanan = [
 
   // BERITA & INFORMASI
   {k:'Berita RW 05', d:'Baca berita resmi & pengumuman warga bebas hoaks', i:'📰', cat:'berita', kw:'berita kabar pengumuman artikel informasi', link:'berita-rw.html'},
-  {k:'Notifikasi & Info Singkat', d:'Pengumuman penting & pemadaman dari RW 05', i:'🔔', cat:'berita', kw:'notifikasi info pengumuman darurat listrik', link:'info.html'},
-  {k:'Forum Diskusi Warga', d:'Ruang obrolan & saran antar warga RW 05', i:'💬', cat:'berita', kw:'diskusi forum pesan obrolan masyarakat komplain', link:'diskusi-rw.html'},
+  {k:'Notifikasi & Info Singkat', d:'Pengumuman penting & pemadaman dari RW 05', i:'🔔', cat:'berita', kw:'notifikasi info pengumuman darurat listrik', link:'../info.html'},
+  {k:'Forum Diskusi Warga', d:'Ruang obrolan & saran antar warga RW 05', i:'💬', cat:'berita', kw:'diskusi forum pesan obrolan masyarakat komplain', link:'../diskusi-rw.html'},
   {k:'Posyandu Balita & Lansia', d:'Jadwal layanan kesehatan & imunisasi', i:'👶', cat:'berita', kw:'posyandu bayi balita imunisasi lansia cek kesehatan', link:'javascript:void(0)', isModal:'posyandu'},
   {k:'Belajar Bersama & Kegiatan', d:'Bimbel anak & program Karang Taruna', i:'📚', cat:'berita', kw:'belajar bimbel kegiatan pemuda pelatihan anak', link:'javascript:void(0)', isModal:'belajar'},
 
@@ -324,7 +326,7 @@ const dataLayanan = [
   {k:'Semua Layanan Katalog', d:'Lihat daftar lengkap seluruh fitur di RW 05', i:'⊞', cat:'fasilitas', kw:'semua layanan katalog fitur lengkap', link:'semua-layanan.html'},
 
   // PROFIL & AKUN
-  {k:'Profil Saya & Data Warga', d:'Atur akun warga, RT, & nomor identitas', i:'👤', cat:'profil', kw:'profil akun data warga login register nama rt', link:'profil.html'},
+  {k:'Profil Saya & Data Warga', d:'Atur akun warga, RT, & nomor identitas', i:'👤', cat:'profil', kw:'profil akun data warga login register nama rt', link:'../profil.html'},
   {k:'Data Warga & Sekretaris RW', d:'Hubungi sekretaris RW untuk pengurusan dokumen', i:'📋', cat:'profil', kw:'data warga surat pengantar sekretaris wa', link:'javascript:void(0)', isModal:'datawarga'},
   {k:'Saran & Lapor Bug Aplikasi', d:'Kirim masukan / laporan error aplikasi ke admin', i:'💡', cat:'profil', kw:'saran bug error pesan usul admin', link:'https://wa.me/6289673580756?text=Saran%20Fitur%20RW05'}
 ];
@@ -338,7 +340,6 @@ let filterAktif = 'semua';
 function renderHasil(query){
   const q = query.toLowerCase().trim();
 
-  // Toggle tombol Hapus Input (✕)
   if(btnClearInput) {
     btnClearInput.style.display = q.length > 0 ? 'flex' : 'none';
   }
@@ -384,14 +385,12 @@ function renderHasil(query){
 }
 
 function triggerModalParent(type) {
-  // Jika dibuka di modal atau dipanggil dari index
   if (window.opener && typeof window.opener.openUniversalModalIndex === 'function') {
     window.opener.openUniversalModalIndex(type);
     window.close();
   } else if (parent && typeof parent.openUniversalModalIndex === 'function') {
     parent.openUniversalModalIndex(type);
   } else {
-    // Navigasi fallback balik ke index dengan penanda modal
     window.location.href = `../index.html?openModal=${type}`;
   }
 }
