@@ -723,7 +723,6 @@ body {
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, doc, collection, onSnapshot, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCZtvImbyZmqoEoY1hYZcuCbUpIl3R1fhE",
@@ -735,37 +734,6 @@ const firebaseConfig = {
 };
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
-// REGISTRASI WEB FCM DENGAN VAPID KEY
-const messaging = getMessaging(app);
-
-function registerFCMWebToken() {
-  getToken(messaging, { 
-    vapidKey: 'BJysrR3HECiA25MjsMnYOzveFqDGyx7Q9EP_OTVhkODwfjqvMe0lwwul_1avP-Ck8ffoZVLYOO0NlERc0OB-0VA' 
-  }).then((currentToken) => {
-    if (currentToken) {
-      console.log('✅ Token FCM Web Aktif:', currentToken);
-      localStorage.setItem('rw05_fcm_token', currentToken);
-    } else {
-      console.warn('⚠️ Tidak ada token FCM yang tersedia.');
-    }
-  }).catch((err) => {
-    console.error('❌ Error ambil Token FCM Web:', err);
-  });
-}
-
-onMessage(messaging, (payload) => {
-  console.log('📩 Notifikasi FCM Masuk:', payload);
-  if (payload.notification) {
-    if (typeof window.showCustomAlert === 'function') {
-      window.showCustomAlert(payload.notification.title, payload.notification.body, '🔔');
-    } else {
-      alert(`🔔 ${payload.notification.title}\n\n${payload.notification.body}`);
-    }
-  }
-});
-
-registerFCMWebToken();
 
 onSnapshot(doc(db, "sistem_app", "update_info"), (snap) => {
   const modal = document.getElementById('modalPushUpdateApp');
@@ -883,7 +851,7 @@ window.openUniversalModalIndex = function(type) {
           <span style="font-size:13px; font-weight:800; color:#2563eb;">Rp ${Number(d.harga||0).toLocaleString('id-ID')} /${d.satuan||'Kg'}</span>
         </div>`;
       });
-      html += `<div style="background:#eff6ff; border:1.5px solid #2563eb; border-radius:12px; padding:10px; font-size:11px; font-weight:800; color:#1e40af; margin-top:8px;">📍 Lokasi: ${pasarLokasi}</div>`;
+      html += `<div style="background:#eff6ff; border:1.5px solid #2563eb; border-radius:10px; padding:10px; font-size:11px; font-weight:800; color:#1e40af; margin-top:8px;">📍 Lokasi: ${pasarLokasi}</div>`;
       bodyEl.innerHTML = html;
     });
   } else if (type === 'lingkungan') {
