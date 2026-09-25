@@ -49,16 +49,15 @@ document.addEventListener('DOMContentLoaded', function(){
       diEl.classList.add('show');
     }, 300);
 
-    // Tampil 3.5 detik (total ~3.8 detik)
     setTimeout(() => {
       diEl.classList.remove('show');
     }, 3800);
   }
 
-  // SPLASH SCREEN & SEQUENCE GREETING HANYA DI AWAL SESI
+  // SPLASH SCREEN: HANYA TAMPIL 1 KALI SAAT APLIKASI DIBUKA PERTAMA KALI
   var splash = document.getElementById('splash-screen') || document.getElementById('splashScreen');
   if (splash) {
-    if (sessionStorage.getItem('splashShown')) {
+    if (sessionStorage.getItem('splashShown') || localStorage.getItem('appSplashShown')) {
       splash.style.display = 'none';
       initDynamicIslandAfterSplash();
     } else {
@@ -66,11 +65,12 @@ document.addEventListener('DOMContentLoaded', function(){
         splash.style.opacity = '0';
         splash.style.transition = 'opacity 0.4s ease';
         sessionStorage.setItem('splashShown', 'true');
+        localStorage.setItem('appSplashShown', 'true');
         setTimeout(function() {
           splash.style.display = 'none';
           initDynamicIslandAfterSplash();
         }, 400);
-      }, 1500);
+      }, 1200);
     }
   } else {
     initDynamicIslandAfterSplash();
@@ -211,7 +211,12 @@ document.addEventListener('DOMContentLoaded', function(){
   if(goCari){ 
     goCari.addEventListener('click', function(e){ 
       e.preventDefault(); 
-      window.location.href = 'pages/cari-warga.html'; // Diarahkan langsung ke folder pages/
+      var pathNow = window.location.pathname;
+      if (pathNow.includes('/pages/')) {
+        window.location.href = 'cari-warga.html';
+      } else {
+        window.location.href = 'pages/cari-warga.html';
+      }
     }); 
   }
   
@@ -255,7 +260,7 @@ document.addEventListener('DOMContentLoaded', function(){
   if(modal) modal.addEventListener('click', function(e){ if(e.target===modal) closeModal(); });
 
   // ==========================================
-  // LOGIKA NAVIGASI BACK & HARDWARE BUTTON HP
+  // LOGIKA NAVIGASI BACK & HARDWARE BUTTON HP (SANGAT AKURAT)
   // ==========================================
   window.navigateTo = function(url) {
     if (url.includes('index.html') || url === './' || url.endsWith('/')) {
@@ -266,10 +271,15 @@ document.addEventListener('DOMContentLoaded', function(){
   };
 
   function goBackSafe(){ 
-    if (document.referrer && document.referrer.indexOf(window.location.host) !== -1) {
+    if (window.history.length > 1 && document.referrer && document.referrer.indexOf(window.location.host) !== -1) {
       window.history.back();
     } else {
-      window.location.replace('index.html');
+      var pathNow = window.location.pathname;
+      if (pathNow.includes('/pages/')) {
+        window.location.replace('../index.html');
+      } else {
+        window.location.replace('index.html');
+      }
     }
   }
 
@@ -281,7 +291,6 @@ document.addEventListener('DOMContentLoaded', function(){
   var mainTabs = ['index.html', 'diskusi-rw.html', 'info.html', 'profil.html'];
   var backPressedOnce = false;
 
-  // Toast khusus ketuk 2x untuk keluar aplikasi
   function handleExitApp() {
     if (backPressedOnce) {
       if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) { 
@@ -321,7 +330,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
     var currentPath = window.location.pathname;
     var isMainTab = mainTabs.some(function(page) { 
-      return currentPath.endsWith(page); 
+      return currentPath.endsWith('/' + page) || currentPath === page; 
     }) || currentPath.endsWith('/') || currentPath === '' || currentPath.endsWith('/public/');
 
     if (isMainTab) {
