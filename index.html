@@ -906,11 +906,23 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
-<!-- MEMANGGIL SCRIPT.JS DARI ASSETS/JS/ DENGAN PATH YANG BENAR -->
+<!-- MEMANGGIL CORE SCRIPT DENGAN BENAR -->
 <script src="assets/js/script.js"></script>
 
 <script>
     window.addEventListener('load', () => {
+        // PENANGANAN PENUH SPLASH SCREEN AGAR TIDAK STUCK
+        const forceDismissSplash = () => {
+          const splash = document.getElementById('splash-screen');
+          if (splash) {
+            splash.style.opacity = '0';
+            splash.style.visibility = 'hidden';
+            splash.style.pointerEvents = 'none';
+            setTimeout(() => { splash.style.display = 'none'; }, 300);
+          }
+        };
+        setTimeout(forceDismissSplash, 1000);
+
         const savedKasSaldo = localStorage.getItem('rw05_manual_kas_saldo');
         const savedKasInfo = localStorage.getItem('rw05_manual_kas_info');
         if (savedKasSaldo && document.getElementById('manualSaldoKas')) document.getElementById('manualSaldoKas').textContent = savedKasSaldo;
@@ -1075,22 +1087,6 @@ document.addEventListener('DOMContentLoaded', () => {
       closeCustomCamera();
       window.location.href = 'pages/aduan-warga.html?autoOpen=1';
     }
-
-    // JARING PENGAMAN UTAMA TERHADAP STUCK SPLASH SCREEN
-    function forceDismissSplash() {
-      const splash = document.getElementById('splash-screen');
-      if (splash) {
-        splash.style.opacity = '0';
-        splash.style.visibility = 'hidden';
-        splash.style.pointerEvents = 'none';
-        setTimeout(() => {
-          splash.style.display = 'none';
-        }, 300);
-      }
-    }
-
-    // Sembunyikan otomatis splash screen dalam 1 detik tanpa syarat
-    setTimeout(forceDismissSplash, 1000);
 </script>
 </body>
 </html>
