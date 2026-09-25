@@ -13,7 +13,7 @@ if ('serviceWorker' in navigator) {
 }
 
 document.addEventListener('DOMContentLoaded', function(){
-  // Fungsi panggil Dynamic Island (hanya sekali per sesi, sapaan ke Warga)
+  // Fungsi panggil Dynamic Island (sapaan ke Warga)
   function initDynamicIslandAfterSplash() {
     if (sessionStorage.getItem('diShown')) return;
     sessionStorage.setItem('diShown', 'true');
@@ -54,10 +54,10 @@ document.addEventListener('DOMContentLoaded', function(){
     }, 3800);
   }
 
-  // SPLASH SCREEN: HANYA TAMPIL 1 KALI SAAT APLIKASI DIBUKA PERTAMA KALI
+  // SPLASH SCREEN LOGIC LENGKAP DENGAN DISPLAY NONE
   var splash = document.getElementById('splash-screen') || document.getElementById('splashScreen');
   if (splash) {
-    if (sessionStorage.getItem('splashShown') || localStorage.getItem('appSplashShown')) {
+    if (sessionStorage.getItem('splashShown')) {
       splash.style.display = 'none';
       initDynamicIslandAfterSplash();
     } else {
@@ -65,7 +65,6 @@ document.addEventListener('DOMContentLoaded', function(){
         splash.style.opacity = '0';
         splash.style.transition = 'opacity 0.4s ease';
         sessionStorage.setItem('splashShown', 'true');
-        localStorage.setItem('appSplashShown', 'true');
         setTimeout(function() {
           splash.style.display = 'none';
           initDynamicIslandAfterSplash();
@@ -77,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 
   // ==========================================
-  // IZIN NOTIFIKASI OTOMATIS (AMAT SANGAT AMAN)
+  // IZIN NOTIFIKASI OTOMATIS
   // ==========================================
   async function mintaIzinNotifikasiAman() {
     try {
@@ -98,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function(){
   setTimeout(mintaIzinNotifikasiAman, 1500);
 
   // ==========================================
-  // STANDAR WEB API: KAMERA & LOKASI (GLOBAL + CAPACITOR SAFE)
+  // STANDAR WEB API: KAMERA & LOKASI
   // ==========================================
   window.requestCameraStream = async function() {
     try {
@@ -260,16 +259,8 @@ document.addEventListener('DOMContentLoaded', function(){
   if(modal) modal.addEventListener('click', function(e){ if(e.target===modal) closeModal(); });
 
   // ==========================================
-  // LOGIKA NAVIGASI BACK & HARDWARE BUTTON HP (SANGAT AKURAT)
+  // LOGIKA NAVIGASI BACK HP PERSISI
   // ==========================================
-  window.navigateTo = function(url) {
-    if (url.includes('index.html') || url === './' || url.endsWith('/')) {
-      window.location.replace(url);
-    } else {
-      window.location.href = url;
-    }
-  };
-
   function goBackSafe(){ 
     if (window.history.length > 1 && document.referrer && document.referrer.indexOf(window.location.host) !== -1) {
       window.history.back();
@@ -287,7 +278,6 @@ document.addEventListener('DOMContentLoaded', function(){
     el.addEventListener('click', function(e){ e.preventDefault(); goBackSafe(); }); 
   });
 
-  // Daftar 4 Halaman Utama
   var mainTabs = ['index.html', 'diskusi-rw.html', 'info.html', 'profil.html'];
   var backPressedOnce = false;
 
@@ -347,7 +337,7 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 
   // ==========================================
-  // EFEK RIPPLE SAAT TOMBOL DIKLIK
+  // EFEK RIPPLE
   // ==========================================
   function addRippleEffect(e){
     var el = this;
