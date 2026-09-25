@@ -906,13 +906,11 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
-<!-- PERBAIKAN JALUR SCRIPT.JS LANGSUNG DARI ROOT -->
+<!-- PERBAIKAN PANGGILAN SCRIPT.JS DARI ROOT FOLDER -->
 <script src="script.js"></script>
+
 <script>
     window.addEventListener('load', () => {
-        const splash = document.getElementById('splash-screen');
-        if(splash) { setTimeout(() => { splash.classList.add('fade-out'); }, 1000); }
-        window.history.pushState(null, '', window.location.href);
         const savedKasSaldo = localStorage.getItem('rw05_manual_kas_saldo');
         const savedKasInfo = localStorage.getItem('rw05_manual_kas_info');
         if (savedKasSaldo && document.getElementById('manualSaldoKas')) document.getElementById('manualSaldoKas').textContent = savedKasSaldo;
@@ -963,23 +961,6 @@ document.addEventListener('DOMContentLoaded', () => {
           track.addEventListener('mouseenter', stopAutoSlide);
           track.addEventListener('mouseleave', startAutoSlide);
           startAutoSlide();
-        }
-    });
-
-    let lastBackPress = 0;
-    const exitToast = document.getElementById('exit-toast');
-    window.addEventListener('popstate', () => {
-        const currentTime = new Date().getTime();
-        window.history.pushState(null, '', window.location.href);
-        if (currentTime - lastBackPress < 2000) {
-            if (exitToast) exitToast.classList.remove('show');
-            if (typeof window.close === 'function') window.close();
-        } else {
-            lastBackPress = currentTime;
-            if (exitToast) {
-                exitToast.classList.add('show');
-                setTimeout(() => { exitToast.classList.remove('show'); }, 2000);
-            }
         }
     });
 
