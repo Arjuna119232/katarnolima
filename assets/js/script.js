@@ -1,7 +1,7 @@
 // @ts-nocheck
 
 /**
- * KATARNOLIMA RW 05 - Core Script (Pure Online Mode & FCM Integrated)
+ * KATARNOLIMA RW 05 - Core Script (Pure Online Mode)
  */
 
 if ('serviceWorker' in navigator) {
@@ -57,37 +57,26 @@ document.addEventListener('DOMContentLoaded', function(){
         splash.style.opacity = '0';
         splash.style.visibility = 'hidden';
         splash.style.pointerEvents = 'none';
-        splash.style.transition = 'opacity 0.4s ease, visibility 0.4s ease';
+        splash.style.transition = 'opacity 0.3s ease, visibility 0.3s ease';
         sessionStorage.setItem('splashShown', 'true');
         setTimeout(function() {
           splash.style.display = 'none';
           initDynamicIslandAfterSplash();
-        }, 400);
-      }, 1200);
+        }, 300);
+      }, 1000);
     }
   } else {
     initDynamicIslandAfterSplash();
   }
 
-  // 3. INTEGRASI PUSH NOTIFICATION (FIREBASE FCM)
+  // 3. IZIN NOTIFIKASI
   async function mintaIzinNotifikasiAman() {
     try {
       if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.PushNotifications) {
         const push = window.Capacitor.Plugins.PushNotifications;
         let status = await push.checkPermissions();
         if (status.receive !== 'granted') {
-          status = await push.requestPermissions();
-        }
-        if (status.receive === 'granted') {
-          await push.register();
-          push.addListener('registration', (token) => {
-            if (token && token.value) {
-              localStorage.setItem('rw05_fcm_token', token.value);
-            }
-          });
-          push.addListener('pushNotificationReceived', (notification) => {
-            console.log('Notifikasi Diterima:', notification);
-          });
+          await push.requestPermissions();
         }
       } else if ('Notification' in window && Notification.permission === 'default') {
         await Notification.requestPermission();
@@ -96,9 +85,9 @@ document.addEventListener('DOMContentLoaded', function(){
       console.warn('Izin notifikasi dilewati:', err);
     }
   }
-  setTimeout(mintaIzinNotifikasiAman, 1000);
+  setTimeout(mintaIzinNotifikasiAman, 1500);
 
-  // 4. KAMERA & LOKASI
+  // 4. STANDAR WEB API: KAMERA & LOKASI
   window.requestCameraStream = async function() {
     try {
       if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Camera) {
@@ -142,6 +131,7 @@ document.addEventListener('DOMContentLoaded', function(){
           });
         },
         (error) => {
+          console.warn('Gagal mendapat lokasi:', error);
           if (typeof callbackError === 'function') callbackError(error);
         },
         { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
@@ -201,7 +191,7 @@ document.addEventListener('DOMContentLoaded', function(){
   if(goCari){ 
     goCari.addEventListener('click', function(e){ 
       e.preventDefault(); 
-      var pathNow = window.location.pathname.toLowerCase();
+      var pathNow = window.location.pathname;
       if (pathNow.includes('/pages/')) {
         window.location.href = 'cari-warga.html';
       } else {
@@ -247,29 +237,23 @@ document.addEventListener('DOMContentLoaded', function(){
   if(modalClose) modalClose.addEventListener('click', closeModal);
   if(modal) modal.addEventListener('click', function(e){ if(e.target===modal) closeModal(); });
 
-  // 8. LOGIKA NAVIGASI BACK PERANGKAT (HARDWARE / SYSTEM NAV)
-  window.goBackSafe = function() { 
-    var pathLower = window.location.pathname.toLowerCase();
-    
-    if (pathLower.includes('/pages/')) {
-      if (window.history.length > 1 && document.referrer && document.referrer.indexOf(window.location.host) !== -1) {
-        window.history.back();
-      } else {
-        window.location.href = '../index.html';
-      }
+  // 8. LOGIKA NAVIGASI BACK HP (PRESISI KELUAR APLIKASI)
+  function goBackSafe(){ 
+    if (window.history.length > 1 && document.referrer && document.referrer.indexOf(window.location.host) !== -1) {
+      window.history.back();
     } else {
-      if (window.history.length > 1 && document.referrer && document.referrer.indexOf(window.location.host) !== -1) {
-        window.history.back();
+      var pathNow = window.location.pathname;
+      if (pathNow.includes('/pages/')) {
+        window.location.replace('../index.html');
       } else {
-        window.location.href = 'index.html';
+        window.location.replace('index.html');
       }
     }
-  };
+  }
 
   document.querySelectorAll('.back, #backBtn, .btn-back-modern, .btn-back, .btn-back-berita, .btn-back-link').forEach(function(el){ 
     el.addEventListener('click', function(e){ 
       e.preventDefault(); 
-      e.stopPropagation();
       goBackSafe(); 
     }); 
   });
@@ -309,71 +293,51 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 
   function checkIsMainTab() {
-    var fullUrl = window.location.href.toLowerCase();
+    var path = window.location.pathname.toLowerCase();
+    var fileName = path.substring(path.lastIndexOf('/') + 1);
     
-    if (fullUrl.includes('/pages/')) {
-      return false;
-    }
-
-    var cleanPath = window.location.pathname.split('/').pop().toLowerCase();
+    // Hanya 4 file ini yang diizinkan memicu keluar aplikasi
     var exactMainFiles = ['index.html', 'diskusi-rw.html', 'info.html', 'profil.html'];
-
-    if (exactMainFiles.includes(cleanPath)) {
+    
+    if (exactMainFiles.includes(fileName)) {
       return true;
     }
-
-    if (cleanPath === '' || cleanPath === 'public' || cleanPath === 'android_asset') {
+    if ((fileName === '' || path.endsWith('/')) && !path.includes('/pages/')) {
       return true;
     }
-
     return false;
   }
 
-  function setupHardwareBackButton() {
-    if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
-      const App = window.Capacitor.Plugins.App;
+  var onHardwareBackButton = function(e){
+    if (e && typeof e.preventDefault === 'function') e.preventDefault();
 
-      App.addListener('backButton', function(data) {
-        var activeModal = document.querySelector('.overlay.show') || document.getElementById('universal-modal');
-        if (activeModal && (activeModal.classList.contains('show') || activeModal.classList.contains('active') || activeModal.style.display === 'flex')) {
-          if (typeof window.closeModal === 'function') {
-            window.closeModal(activeModal.id);
-          } else {
-            activeModal.classList.remove('show', 'active');
-            activeModal.style.display = 'none';
-          }
-          return;
-        }
-
-        if (checkIsMainTab()) {
-          handleExitApp();
-        } else {
-          goBackSafe();
-        }
-      });
-    } else {
-      document.addEventListener('backbutton', function(e) {
-        if (e && typeof e.preventDefault === 'function') e.preventDefault();
-        
-        var activeModal = document.querySelector('.overlay.show') || document.getElementById('universal-modal');
-        if (activeModal && (activeModal.classList.contains('show') || activeModal.classList.contains('active'))) {
-          if (typeof window.closeModal === 'function') window.closeModal(activeModal.id);
-          else activeModal.classList.remove('show', 'active');
-          return;
-        }
-
-        if (checkIsMainTab()) {
-          handleExitApp();
-        } else {
-          goBackSafe();
-        }
-      }, false);
+    if(fabContainer && fabContainer.classList.contains('active')){ 
+      fabContainer.classList.remove('active'); 
+      if(fabOptions) fabOptions.style.display='none'; 
+      if(fabClose) fabClose.style.display='none'; 
+      if(fabMain) fabMain.style.display='flex'; 
+      return; 
     }
+
+    if (modal && modal.classList.contains('active')) { 
+      closeModal(); 
+      return; 
+    }
+
+    if (checkIsMainTab()) {
+      handleExitApp();
+    } else {
+      goBackSafe();
+    }
+  };
+
+  if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) { 
+    window.Capacitor.Plugins.App.addListener('backButton', onHardwareBackButton); 
+  } else { 
+    document.addEventListener('backbutton', onHardwareBackButton, false); 
   }
 
-  setupHardwareBackButton();
-
-  // 9. EFEK RIPPLE SAAT KLIK
+  // 9. EFEK RIPPLE
   function addRippleEffect(e){
     var el = this;
     if(navigator.vibrate) navigator.vibrate(10);
