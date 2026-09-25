@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function(){
     initDynamicIslandAfterSplash();
   }
 
-  // 3. INTEGRASI LENGKAP PUSH NOTIFICATION (FIREBASE FCM)
+  // 3. INTEGRASI PUSH NOTIFICATION (FIREBASE FCM)
   async function mintaIzinNotifikasiAman() {
     try {
       if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.PushNotifications) {
@@ -80,14 +80,11 @@ document.addEventListener('DOMContentLoaded', function(){
         }
         if (status.receive === 'granted') {
           await push.register();
-          
-          // Mendaftarkan token FCM perangkat ke memori lokal
           push.addListener('registration', (token) => {
             if (token && token.value) {
               localStorage.setItem('rw05_fcm_token', token.value);
             }
           });
-
           push.addListener('pushNotificationReceived', (notification) => {
             console.log('Notifikasi Diterima:', notification);
           });
@@ -101,7 +98,7 @@ document.addEventListener('DOMContentLoaded', function(){
   }
   setTimeout(mintaIzinNotifikasiAman, 1000);
 
-  // 4. STANDAR WEB API: KAMERA & LOKASI
+  // 4. KAMERA & LOKASI
   window.requestCameraStream = async function() {
     try {
       if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Camera) {
@@ -199,7 +196,7 @@ document.addEventListener('DOMContentLoaded', function(){
     setInterval(verifyRealInternet, 10000);
   })();
 
-  // 6. LOGIKA PENCARIAN (DINAMIS ALUR PATH) & FAB DARURAT
+  // 6. LOGIKA PENCARIAN & FAB DARURAT
   var goCari = document.getElementById('goCari');
   if(goCari){ 
     goCari.addEventListener('click', function(e){ 
@@ -250,16 +247,21 @@ document.addEventListener('DOMContentLoaded', function(){
   if(modalClose) modalClose.addEventListener('click', closeModal);
   if(modal) modal.addEventListener('click', function(e){ if(e.target===modal) closeModal(); });
 
-  // 8. LOGIKA NAVIGASI BACK HP (PRESISI KELUAR APLIKASI)
+  // 8. LOGIKA NAVIGASI BACK PERANGKAT (HARDWARE / SYSTEM NAV)
   window.goBackSafe = function() { 
-    if (window.history.length > 1 && document.referrer && document.referrer.indexOf(window.location.host) !== -1) {
-      window.history.back();
-    } else {
-      var pathNow = window.location.pathname.toLowerCase();
-      if (pathNow.includes('/pages/')) {
-        window.location.replace('../index.html');
+    var pathLower = window.location.pathname.toLowerCase();
+    
+    if (pathLower.includes('/pages/')) {
+      if (window.history.length > 1 && document.referrer && document.referrer.indexOf(window.location.host) !== -1) {
+        window.history.back();
       } else {
-        window.location.replace('index.html');
+        window.location.href = '../index.html';
+      }
+    } else {
+      if (window.history.length > 1 && document.referrer && document.referrer.indexOf(window.location.host) !== -1) {
+        window.history.back();
+      } else {
+        window.location.href = 'index.html';
       }
     }
   };
@@ -267,6 +269,7 @@ document.addEventListener('DOMContentLoaded', function(){
   document.querySelectorAll('.back, #backBtn, .btn-back-modern, .btn-back, .btn-back-berita, .btn-back-link').forEach(function(el){ 
     el.addEventListener('click', function(e){ 
       e.preventDefault(); 
+      e.stopPropagation();
       goBackSafe(); 
     }); 
   });
@@ -306,51 +309,69 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 
   function checkIsMainTab() {
-    var path = window.location.pathname.toLowerCase();
-    var fileName = path.substring(path.lastIndexOf('/') + 1);
+    var fullUrl = window.location.href.toLowerCase();
     
-    // Hanya 4 halaman ini yang diizinkan keluar aplikasi
+    if (fullUrl.includes('/pages/')) {
+      return false;
+    }
+
+    var cleanPath = window.location.pathname.split('/').pop().toLowerCase();
     var exactMainFiles = ['index.html', 'diskusi-rw.html', 'info.html', 'profil.html'];
-    
-    if (exactMainFiles.includes(fileName)) {
+
+    if (exactMainFiles.includes(cleanPath)) {
       return true;
     }
-    if ((fileName === '' || path.endsWith('/')) && !path.includes('/pages/')) {
+
+    if (cleanPath === '' || cleanPath === 'public' || cleanPath === 'android_asset') {
       return true;
     }
+
     return false;
   }
 
-  var onHardwareBackButton = function(e){
-    if (e && typeof e.preventDefault === 'function') e.preventDefault();
+  function setupHardwareBackButton() {
+    if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
+      const App = window.Capacitor.Plugins.App;
 
-    if(fabContainer && fabContainer.classList.contains('active')){ 
-      fabContainer.classList.remove('active'); 
-      if(fabOptions) fabOptions.style.display='none'; 
-      if(fabClose) fabClose.style.display='none'; 
-      if(fabMain) fabMain.style.display='flex'; 
-      return; 
-    }
+      App.addListener('backButton', function(data) {
+        var activeModal = document.querySelector('.overlay.show') || document.getElementById('universal-modal');
+        if (activeModal && (activeModal.classList.contains('show') || activeModal.classList.contains('active') || activeModal.style.display === 'flex')) {
+          if (typeof window.closeModal === 'function') {
+            window.closeModal(activeModal.id);
+          } else {
+            activeModal.classList.remove('show', 'active');
+            activeModal.style.display = 'none';
+          }
+          return;
+        }
 
-    var activeModal = document.getElementById('universal-modal') || document.querySelector('.modal-overlay.show-overlay');
-    if (activeModal && (activeModal.classList.contains('active') || activeModal.classList.contains('show-overlay') || activeModal.style.display === 'flex')) { 
-      if (typeof closeUniversalModal === 'function') closeUniversalModal();
-      else activeModal.style.display = 'none';
-      return; 
-    }
-
-    if (checkIsMainTab()) {
-      handleExitApp();
+        if (checkIsMainTab()) {
+          handleExitApp();
+        } else {
+          goBackSafe();
+        }
+      });
     } else {
-      goBackSafe();
-    }
-  };
+      document.addEventListener('backbutton', function(e) {
+        if (e && typeof e.preventDefault === 'function') e.preventDefault();
+        
+        var activeModal = document.querySelector('.overlay.show') || document.getElementById('universal-modal');
+        if (activeModal && (activeModal.classList.contains('show') || activeModal.classList.contains('active'))) {
+          if (typeof window.closeModal === 'function') window.closeModal(activeModal.id);
+          else activeModal.classList.remove('show', 'active');
+          return;
+        }
 
-  if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) { 
-    window.Capacitor.Plugins.App.addListener('backButton', onHardwareBackButton); 
-  } else { 
-    document.addEventListener('backbutton', onHardwareBackButton, false); 
+        if (checkIsMainTab()) {
+          handleExitApp();
+        } else {
+          goBackSafe();
+        }
+      }, false);
+    }
   }
+
+  setupHardwareBackButton();
 
   // 9. EFEK RIPPLE SAAT KLIK
   function addRippleEffect(e){
