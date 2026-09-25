@@ -39,7 +39,9 @@
     box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
   }
   .header-left-grp { display: flex; align-items: center; gap: 12px; }
-  .btn-back {
+  
+  /* DIUBAH MENJADI .btn-back-direct AGAR TIDAK DICEGAT OLEH SCRIPT.JS */
+  .btn-back-direct {
     background: #f1f5f9;
     border: 1px solid #e2e8f0;
     color: #0f172a;
@@ -55,7 +57,8 @@
     text-decoration: none;
     transition: transform 0.15s ease;
   }
-  .btn-back:active { transform: scale(0.92); }
+  .btn-back-direct:active { transform: scale(0.92); }
+  
   .btn-search-icon {
     background: #f1f5f9;
     border: 1px solid #e2e8f0;
@@ -331,7 +334,8 @@
   <!-- HEADER -->
   <div class="header-app">
     <div class="header-left-grp">
-      <a href="index.html" class="btn-back">←</a>
+      <!-- CLASS DIUBAH MENJADI btn-back-direct AGAR MENGARAH LANGSUNG KE INDEX.HTML -->
+      <a href="index.html" class="btn-back-direct">←</a>
       <h1 style="font-size:16px; font-weight:800; margin:0; letter-spacing:-0.2px;">Laporan Warga</h1>
     </div>
     <button class="btn-search-icon" id="btnToggleSearch">🔍</button>
