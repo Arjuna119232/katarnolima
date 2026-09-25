@@ -3,9 +3,6 @@
   "appName": "KATARNOLIMA RW05",
   "webDir": ".",
   "plugins": {
-    "App": {
-      "hardwareBackButton": true
-    },
     "SplashScreen": {
       "launchShowDuration": 0
     },
