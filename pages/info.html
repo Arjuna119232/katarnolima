@@ -355,12 +355,20 @@ body {
     const bodyEl = document.getElementById('modalDetailBody');
     if (titleEl) titleEl.textContent = title || 'Detail Notifikasi';
     if (bodyEl) bodyEl.innerHTML = `<div style="font-size:11px; font-weight:700; color:#64748b; margin-bottom:12px;">🕒 ${timeStr}</div>${escapeHtml(content)}`;
-    if (modal) modal.classList.add('show');
+    if (modal) {
+      modal.classList.add('show');
+      window.history.pushState({ modalOpen: true }, '', window.location.href);
+    }
   };
 
-  window.closeNotifDetailModal = function() {
+  window.closeNotifDetailModal = function(shouldPopHistory = true) {
     const modal = document.getElementById('notif-detail-modal');
-    if (modal) modal.classList.remove('show');
+    if (modal && modal.classList.contains('show')) {
+      modal.classList.remove('show');
+      if (shouldPopHistory && window.history.state && window.history.state.modalOpen) {
+        window.history.back();
+      }
+    }
   };
 
   function escapeHtml(str = '') {
@@ -434,9 +442,33 @@ body {
   const uniModalDetail = document.getElementById('notif-detail-modal');
   if (uniModalDetail) {
     uniModalDetail.addEventListener('click', (e) => {
-      if (e.target === uniModalDetail) closeNotifDetailModal();
+      if (e.target === uniModalDetail) closeNotifDetailModal(true);
     });
   }
+</script>
+
+<script>
+// --- PENANGANAN NAVIGASI BACK SISTEM HP AGAR MENDORONG KE INDEX.HTML ---
+function goToIndex() {
+  window.location.href = '../index.html';
+}
+
+// Menyiapkan history state saat halaman pertama kali dibuka
+window.history.pushState({ page: 'info' }, '', window.location.href);
+
+// Menangkap event gesture/tombol back HP
+window.addEventListener('popstate', function(e) {
+  const modal = document.getElementById('notif-detail-modal');
+  
+  // Jika modal detail sedang terbuka, tutup modalnya terlebih dahulu
+  if (modal && modal.classList.contains('show')) {
+    closeNotifDetailModal(false);
+    return;
+  }
+  
+  // Jika tidak ada modal terbuka, dorong halaman kembali ke Beranda (index.html)
+  goToIndex();
+});
 </script>
 </body>
 </html>

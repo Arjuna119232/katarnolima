@@ -117,6 +117,29 @@ html, body {
   box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.05);
 }
 
+/* PASSWORD INPUT WRAPPER & TOGGLE EYE BUTTON */
+.password-wrap {
+  position: relative;
+  width: 100%;
+}
+.password-wrap .input-jaki {
+  padding-right: 44px;
+}
+.btn-toggle-eye {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
 .label-kecil {
   font-size: 11px;
   font-weight: 800;
@@ -396,7 +419,10 @@ html, body {
       <span class="label-kecil">EMAIL</span>
       <input id="inputEmailLogin" type="email" class="input-jaki" placeholder="nama@email.com">
       <span class="label-kecil">PASSWORD</span>
-      <input id="inputPassLogin" type="password" class="input-jaki" placeholder="••••••••">
+      <div class="password-wrap">
+        <input id="inputPassLogin" type="password" class="input-jaki" placeholder="••••••••">
+        <button type="button" class="btn-toggle-eye" onclick="togglePasswordVisibility('inputPassLogin', this)">👁️</button>
+      </div>
       <button id="btnMasuk" class="btn-masuk">Masuk Akun</button>
     </div>
 
@@ -409,7 +435,10 @@ html, body {
       <span class="label-kecil">EMAIL</span>
       <input id="inputEmailDaftar" type="email" class="input-jaki" placeholder="nama@email.com">
       <span class="label-kecil">PASSWORD (MIN. 6 KARAKTER)</span>
-      <input id="inputPassDaftar" type="password" class="input-jaki" placeholder="••••••••">
+      <div class="password-wrap">
+        <input id="inputPassDaftar" type="password" class="input-jaki" placeholder="••••••••">
+        <button type="button" class="btn-toggle-eye" onclick="togglePasswordVisibility('inputPassDaftar', this)">👁️</button>
+      </div>
       <button id="btnDaftar" class="btn-masuk">Daftar Akun Baru</button>
     </div>
 
@@ -539,6 +568,19 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
+
+// FUNGSI TOGGLE LIHAT PASSWORD (MATA)
+window.togglePasswordVisibility = function(inputId, btnEl) {
+  const inputEl = document.getElementById(inputId);
+  if (!inputEl) return;
+  if (inputEl.type === "password") {
+    inputEl.type = "text";
+    btnEl.textContent = "🙈";
+  } else {
+    inputEl.type = "password";
+    btnEl.textContent = "👁️";
+  }
+};
 
 window.showModal = function({ title = 'Info', desc = '', icon = '📢', type = 'alert', onYes = null }) {
   const modal = document.getElementById('appCustomModal');
@@ -769,6 +811,26 @@ if(linkDaftar){
     }
   });
 }
+</script>
+
+<script>
+// --- PENANGANAN NAVIGASI BACK SISTEM HP AGAR MENDORONG KE INDEX.HTML ---
+function goToIndex() {
+  window.location.href = '../index.html';
+}
+
+// Menyiapkan history state saat halaman dibuka
+window.history.pushState({ page: 'profil' }, '', window.location.href);
+
+// Menangkap gesture/tombol back HP
+window.addEventListener('popstate', function(e) {
+  const modal = document.getElementById('appCustomModal');
+  if (modal && modal.classList.contains('show')) {
+    modal.classList.remove('show');
+    return;
+  }
+  goToIndex();
+});
 </script>
 </body>
 </html>

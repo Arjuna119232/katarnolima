@@ -294,7 +294,6 @@ html, body {
 <script>
 // @ts-nocheck
 // DATABASE KELENGKAPAN SELURUH LAYANAN APLIKASI KATARNOLIMA RW 05
-// PERBAIKAN JALUR UTAMA MENGGUNAKAN ../ UNTUK KEMBALI KE ROOT FOLDER
 const dataLayanan = [
   // LAPORAN & ADUAN
   {k:'Aduan Warga', d:'Lapor masalah fasilitas atau kejadian di RW 05', i:'📢', cat:'laporan', kw:'aduan lapor masalah aduan warga foto video lapor', link:'aduan-warga.html'},
@@ -422,13 +421,21 @@ chipRow.addEventListener('click', function(e){
 
 renderHasil('');
 
+// --- PENANGANAN NAVIGASI BACK SISTEM HP AGAR KE INDEX.HTML ---
+function goToIndex() {
+  window.location.href = '../index.html';
+}
+
+// Menahan riwayat halaman saat dibuka agar gesture back menangkap event popstate
+window.history.pushState({ page: 'cari-warga' }, '', window.location.href);
+
+window.addEventListener('popstate', function(e) {
+  goToIndex();
+});
+
 document.getElementById('backBtn').addEventListener('click', function(e){
   e.preventDefault();
-  if(window.history.length > 1){ 
-    window.history.back(); 
-  } else { 
-    window.location.href='../index.html'; 
-  }
+  goToIndex();
 });
 </script>
 </body>

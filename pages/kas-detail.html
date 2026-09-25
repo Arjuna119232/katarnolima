@@ -195,7 +195,7 @@ body {
 <div class="container">
   <!-- HEADER -->
   <div class="header">
-    <a href="../index.html" class="btn-back" title="Kembali ke Beranda">←</a>
+    <a href="javascript:void(0)" onclick="goToIndex()" class="btn-back" title="Kembali ke Beranda">←</a>
     <h1 style="font-size:16px; font-weight:800; color:#0f172a; letter-spacing:-0.2px;">Rincian Transaksi Kas</h1>
   </div>
 
@@ -297,6 +297,21 @@ onSnapshot(query(collection(db, "transaksi_kas"), orderBy("createdAt", "desc")),
       </div>
     `;
   }
+});
+</script>
+
+<script>
+// --- PENANGANAN NAVIGASI BACK SISTEM HP AGAR MENDORONG KE INDEX.HTML ---
+function goToIndex() {
+  window.location.href = '../index.html';
+}
+
+// Menyiapkan history state saat halaman dibuka
+window.history.pushState({ page: 'kas-detail' }, '', window.location.href);
+
+// Menangkap event gesture / tombol back HP
+window.addEventListener('popstate', function(e) {
+  goToIndex();
 });
 </script>
 </body>

@@ -37,7 +37,7 @@ html, body {
   position: relative;
 }
 
-/* STICKY HEADER */
+/* STICKY HEADER MODERN */
 .app-header {
   display: flex;
   align-items: center;
@@ -52,6 +52,7 @@ html, body {
   z-index: 50;
 }
 
+/* TOMBOL PANAH BACK MODERN (SVG DESIGN) */
 .btn-back-link {
   width: 38px;
   height: 38px;
@@ -59,17 +60,27 @@ html, body {
   background: #f1f5f9;
   border: 1px solid #e2e8f0;
   color: #0f172a;
-  font-size: 18px;
-  font-weight: 800;
   display: flex;
   align-items: center;
   justify-content: center;
   text-decoration: none;
   cursor: pointer;
-  transition: transform 0.15s ease;
+  transition: all 0.15s ease;
   flex-shrink: 0;
 }
-.btn-back-link:active { transform: scale(0.92); }
+.btn-back-link:active {
+  transform: scale(0.92);
+  background: #e2e8f0;
+}
+.btn-back-link svg {
+  width: 20px;
+  height: 20px;
+  stroke: #0f172a;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
 
 .header-title-text {
   font-size: 15px;
@@ -88,7 +99,7 @@ html, body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 36px 24px 48px;
+  padding: 24px 20px 40px;
   text-align: center;
 }
 
@@ -96,7 +107,7 @@ html, body {
   display: flex;
   align-items: center;
   gap: 14px;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .logo-5 {
@@ -134,7 +145,7 @@ html, body {
   font-size: 11.5px;
   font-weight: 800;
   color: #2563eb;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
   background: #eff6ff;
   padding: 6px 16px;
   border-radius: 99px;
@@ -143,11 +154,11 @@ html, body {
 }
 
 .desc-text {
-  font-size: 13.5px;
+  font-size: 13px;
   color: #475569;
-  line-height: 1.65;
-  max-width: 340px;
-  margin-bottom: 28px;
+  line-height: 1.6;
+  max-width: 360px;
+  margin-bottom: 20px;
 }
 
 /* CARDS PENGEMBANG & KONTRIBUSI */
@@ -156,24 +167,28 @@ html, body {
   flex-direction: column;
   gap: 12px;
   width: 100%;
-  max-width: 340px;
+  max-width: 360px;
 }
 
 .dev-card {
   background: #f8fafc;
   border: 1px solid #e2e8f0;
   border-radius: 16px;
-  padding: 16px;
+  padding: 14px 16px;
   text-align: left;
-  display: flex;
-  align-items: center;
-  gap: 12px;
   box-shadow: 0 2px 8px rgba(15, 23, 42, 0.02);
 }
 
+.dev-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
 .dev-card-icon {
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   border-radius: 12px;
   background: #ffffff;
   border: 1px solid #cbd5e1;
@@ -196,16 +211,119 @@ html, body {
   font-size: 13.5px;
   color: #0f172a;
   display: block;
-  margin-top: 2px;
+  margin-top: 1px;
   font-weight: 800;
 }
 
+/* LINKS SOSMED & BANK BUTTONS */
+.social-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed #e2e8f0;
+}
+
+.btn-sosmed {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 6px 12px;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: transform 0.15s ease;
+  cursor: pointer;
+  border: none;
+}
+.btn-sosmed:active { transform: scale(0.95); }
+
+.btn-ig { background: #fdf2f8; color: #db2777; border: 1px solid #fbcfe8; }
+.btn-coffee { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+
+.sub-person {
+  font-size: 12px;
+  color: #334155;
+  font-weight: 700;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .footer-copyright {
-  margin-top: 32px;
+  margin-top: 28px;
   font-size: 11px;
   font-weight: 600;
   color: #94a3b8;
 }
+
+/* MODERN POPUP MODAL STYLING */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.modal-overlay.show-overlay { opacity: 1; }
+
+.modal-box {
+  background: #ffffff;
+  width: 100%;
+  max-width: 320px;
+  border-radius: 20px;
+  padding: 22px 20px;
+  text-align: center;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15);
+  transform: scale(0.9);
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.modal-overlay.show-overlay .modal-box { transform: scale(1); }
+
+.modal-icon {
+  font-size: 36px;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.modal-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 4px;
+}
+
+.modal-desc {
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.5;
+  margin-bottom: 18px;
+}
+
+.btn-modal-close {
+  width: 100%;
+  padding: 12px;
+  background: #0f172a;
+  color: #fbbf24;
+  border: none;
+  border-radius: 12px;
+  font-weight: 800;
+  font-size: 13px;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+.btn-modal-close:active { transform: scale(0.96); }
 </style>
 </head>
 <body>
@@ -213,7 +331,9 @@ html, body {
 <div class="page-root">
   <!-- HEADER -->
   <div class="app-header">
-    <a href="profil.html" class="btn-back-link" title="Kembali ke Profil">←</a>
+    <a href="javascript:void(0)" onclick="goToProfil()" class="btn-back-link" title="Kembali ke Profil">
+      <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </a>
     <div class="header-title-text">Tentang Aplikasi KATARNOLIMA</div>
   </div>
 
@@ -228,7 +348,7 @@ html, body {
     </div>
     
     <div class="version-badge">
-      <span>🚀</span> Versi 2.1.0 (Build 2026)
+      <span>🚀</span> Versi 2.1.1 (Build 2026)
     </div>
 
     <p class="desc-text">
@@ -237,19 +357,60 @@ html, body {
 
     <!-- PENGEMBANG & KONTRIBUSI -->
     <div class="dev-card-stack">
+      <!-- KARANG TARUNA OFFICIAL -->
       <div class="dev-card">
-        <div class="dev-card-icon">💻</div>
-        <div class="dev-card-info">
-          <span>Pengembang / Pembuat Aplikasi</span>
-          <b>Arjuna Mahendra</b>
+        <div class="dev-card-header">
+          <div class="dev-card-icon">🏛️</div>
+          <div class="dev-card-info">
+            <span>Organisasi Resmi</span>
+            <b>Karang Taruna RW 05</b>
+          </div>
+        </div>
+        <div class="social-links">
+          <a href="https://www.instagram.com/katarnolima?igsh=MWU3cnJicHRmNGtzdg==" target="_blank" class="btn-sosmed btn-ig">
+            📸 Instagram Official
+          </a>
         </div>
       </div>
 
+      <!-- PEMBUAT APLIKASI -->
       <div class="dev-card">
-        <div class="dev-card-icon">🧪</div>
-        <div class="dev-card-info">
-          <span>Beta Tester Aplikasi</span>
-          <b>Maulana Alfarizi & Raka Jovanka</b>
+        <div class="dev-card-header">
+          <div class="dev-card-icon">💻</div>
+          <div class="dev-card-info">
+            <span>Pengembang / Pembuat Aplikasi</span>
+            <b>0xmahen</b>
+          </div>
+        </div>
+        <div class="social-links">
+          <button type="button" class="btn-sosmed btn-coffee" onclick="salinNorekBCA()">
+            ☕ Give Me Coffee
+          </button>
+        </div>
+      </div>
+
+      <!-- BETA TESTER -->
+      <div class="dev-card">
+        <div class="dev-card-header">
+          <div class="dev-card-icon">🧪</div>
+          <div class="dev-card-info">
+            <span>Beta Tester Aplikasi</span>
+            <b>Penguji Sistem & Fitur</b>
+          </div>
+        </div>
+        
+        <div class="sub-person" style="margin-top:0;">
+          <span>Maulana Alfarizi</span>
+          <a href="https://www.instagram.com/alfariziiii_ll?stkn=MW9sYWwxM3pjaDJ3cQ==" target="_blank" class="btn-sosmed btn-ig">
+            📸 Instagram
+          </a>
+        </div>
+
+        <div class="sub-person" style="border-top:1px dashed #e2e8f0; padding-top:8px;">
+          <span>Raka Jovanka</span>
+          <a href="https://www.instagram.com/raka_jvnka_22?stkn=MXUyb2V1czhuZXk4MA==" target="_blank" class="btn-sosmed btn-ig">
+            📸 Instagram
+          </a>
         </div>
       </div>
     </div>
@@ -259,6 +420,91 @@ html, body {
     </div>
   </div>
 </div>
+
+<!-- MODERN CUSTOM POPUP MODAL -->
+<div id="custom-modal" class="modal-overlay">
+  <div class="modal-box">
+    <span class="modal-icon" id="modal-icon">✅</span>
+    <div class="modal-title" id="modal-title">Berhasil Disalin!</div>
+    <div class="modal-desc" id="modal-desc">Norek BCA berhasil disalin.</div>
+    <button type="button" class="btn-modal-close" onclick="closeCustomModal()">Siap, Mengerti</button>
+  </div>
+</div>
+
+<script>
+let isModalOpen = false;
+
+function playSuccessSound() {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance('Norek BCA berhasil disalin');
+    utterance.lang = 'id-ID';
+    utterance.pitch = 1.1;
+    utterance.rate = 1.0;
+    window.speechSynthesis.speak(utterance);
+  }
+}
+
+function salinNorekBCA() {
+  navigator.clipboard.writeText('2100172502');
+  playSuccessSound();
+  showCustomModal('☕', 'Berhasil Disalin!', 'Norek BCA berhasil disalin.');
+}
+
+function showCustomModal(icon, title, desc) {
+  const modal = document.getElementById('custom-modal');
+  document.getElementById('modal-icon').textContent = icon;
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-desc').textContent = desc;
+
+  if (modal) {
+    modal.style.display = 'flex';
+    setTimeout(() => {
+      modal.classList.add('show-overlay');
+      isModalOpen = true;
+    }, 10);
+  }
+}
+
+function closeCustomModal() {
+  const modal = document.getElementById('custom-modal');
+  if (modal) {
+    modal.classList.remove('show-overlay');
+    setTimeout(() => {
+      modal.style.display = 'none';
+      isModalOpen = false;
+    }, 200);
+  }
+}
+
+function goToProfil() {
+  window.location.href = 'profil.html';
+}
+
+// Menangkap gesture / tombol back HP
+window.addEventListener('popstate', function(e) {
+  if (isModalOpen) {
+    closeCustomModal();
+    // Menjaga agar pengguna tetap di halaman tentang.html setelah pop-up ditutup
+    window.history.pushState({ page: 'tentang' }, '', window.location.href);
+    return;
+  }
+  
+  goToProfil();
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Set history state awal
+  window.history.pushState({ page: 'tentang' }, '', window.location.href);
+
+  const modal = document.getElementById('custom-modal');
+  if (modal) {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeCustomModal();
+    });
+  }
+});
+</script>
 
 </body>
 </html>

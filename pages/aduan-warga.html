@@ -5,9 +5,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>KATARNOLIMA RW 05 - Lapor Aduan Warga</title>
-<link rel="icon" href="../assets/img/logo-resmi-karang-taruna.jpg">
-<link rel="manifest" href="../manifest.json">
-<link rel="stylesheet" href="../assets/css/style.css?v=27">
+<link rel="icon" href="assets/img/logo-resmi-karang-taruna.jpg">
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="assets/css/style.css?v=27">
 <style>
   /* RESET & BASE SYSTEM */
   *, *::before, *::after {
@@ -331,7 +331,7 @@
   <!-- HEADER -->
   <div class="header-app">
     <div class="header-left-grp">
-      <a href="../index.html" class="btn-back">←</a>
+      <a href="index.html" class="btn-back">←</a>
       <h1 style="font-size:16px; font-weight:800; margin:0; letter-spacing:-0.2px;">Laporan Warga</h1>
     </div>
     <button class="btn-search-icon" id="btnToggleSearch">🔍</button>
@@ -498,7 +498,7 @@
   </div>
 </div>
 
-<script src="../assets/js/script.js?v=27"></script>
+<script src="assets/js/script.js?v=27"></script>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -520,6 +520,36 @@
   let globalReportsMap = {};
   let rawReportsArray = [];
   let currentActiveUserName = '';
+
+  // STATE TRACKING UNTUK MODAL AGAR NAVIGASI BACK HP HANYA MENUTUP MODAL
+  let activeModalType = null; // 'form' atau 'detail'
+
+  function openModalWithHistory(type) {
+    activeModalType = type;
+    window.history.pushState({ modalOpen: type }, '', window.location.href);
+  }
+
+  function closeModalWithoutHistory() {
+    if (activeModalType) {
+      activeModalType = null;
+      window.history.back();
+    }
+  }
+
+  // EVENT LISTENER TANGKAP GESTURE / TOMBOL BACK HP
+  window.addEventListener('popstate', () => {
+    const modalForm = document.getElementById('modalFormAduan');
+    const modalDetail = document.getElementById('modalDetailAduan');
+    
+    if (modalForm && modalForm.classList.contains('show')) {
+      modalForm.classList.remove('show');
+      activeModalType = null;
+    }
+    if (modalDetail && modalDetail.classList.contains('show')) {
+      modalDetail.classList.remove('show');
+      activeModalType = null;
+    }
+  });
 
   function checkAuthOrRedirect() {
     const userSession = localStorage.getItem('rw05_current_user') || localStorage.getItem('rw05_user_login');
@@ -666,7 +696,7 @@
 
         const statusVal = d.status || 'Menunggu Verifikasi';
         const statusClass = statusVal.replace(/\s+/g, '');
-        const foto = d.fotoBase64 || '../assets/img/logo-resmi-karang-taruna.jpg';
+        const foto = d.fotoBase64 || 'assets/img/logo-resmi-karang-taruna.jpg';
         const isVideo = d.isVideo === true;
         
         const isAnonim = d.isAnonim === true;
@@ -739,7 +769,10 @@
       detailStatusBadge.className = `badge-status-dinamis ${item.statusClass}`;
     }
 
-    if (modalDetail) modalDetail.classList.add('show');
+    if (modalDetail) {
+      modalDetail.classList.add('show');
+      openModalWithHistory('detail');
+    }
   };
 
   document.addEventListener('DOMContentLoaded', () => {
@@ -842,13 +875,19 @@
 
         sessionStorage.removeItem('temp_aduan_photo');
       }
-      if (modalForm) modalForm.classList.add('show');
+      if (modalForm) {
+        modalForm.classList.add('show');
+        openModalWithHistory('form');
+      }
     }
 
     if (btnTriggerFoto) {
       btnTriggerFoto.addEventListener('click', () => {
         if (!checkAuthOrRedirect()) return;
-        if (modalForm) modalForm.classList.add('show');
+        if (modalForm) {
+          modalForm.classList.add('show');
+          openModalWithHistory('form');
+        }
         if (inputFoto) {
           inputFoto.setAttribute('accept', 'image/*');
           inputFoto.click();
@@ -859,7 +898,10 @@
     if (btnTriggerVideo) {
       btnTriggerVideo.addEventListener('click', () => {
         if (!checkAuthOrRedirect()) return;
-        if (modalForm) modalForm.classList.add('show');
+        if (modalForm) {
+          modalForm.classList.add('show');
+          openModalWithHistory('form');
+        }
         if (inputFoto) {
           inputFoto.setAttribute('accept', 'video/*');
           inputFoto.click();
@@ -869,13 +911,19 @@
 
     if (btnCloseModal) {
       btnCloseModal.addEventListener('click', () => {
-        if (modalForm) modalForm.classList.remove('show');
+        if (modalForm) {
+          modalForm.classList.remove('show');
+          closeModalWithoutHistory();
+        }
       });
     }
 
     if (btnCloseDetailModal) {
       btnCloseDetailModal.addEventListener('click', () => {
-        if (modalDetail) modalDetail.classList.remove('show');
+        if (modalDetail) {
+          modalDetail.classList.remove('show');
+          closeModalWithoutHistory();
+        }
       });
     }
 
@@ -1011,7 +1059,11 @@
           latValue = null;
           lngValue = null;
           btnGPS.textContent = '📍 Lock GPS';
-          if (modalForm) modalForm.classList.remove('show');
+          
+          if (modalForm) {
+            modalForm.classList.remove('show');
+            closeModalWithoutHistory();
+          }
         } catch (err) {
           console.error('Firestore Error:', err);
           alert('❌ Gagal mengirim laporan. Ukuran file terlalu besar atau periksa koneksi internet.');

@@ -63,6 +63,7 @@
     background: #f1f5f9;
     border: 1px solid #e2e8f0;
     transition: transform 0.15s ease;
+    cursor: pointer;
   }
   .btn-back:active { transform: scale(0.92); }
   .header-title h1 { font-size: 15px; font-weight: 800; line-height: 1.2; letter-spacing: -0.2px; }
@@ -240,7 +241,7 @@
   <!-- HEADER -->
   <div class="header-app">
     <div class="header-left">
-      <a href="../index.html" class="btn-back" title="Kembali">←</a>
+      <a href="javascript:void(0)" onclick="goToIndex()" class="btn-back" title="Kembali">←</a>
       <div class="header-title">
         <h1>💬 Diskusi Warga</h1>
         <p>RW 05 Poncol Jaya</p>
@@ -525,6 +526,21 @@ if (formDiskusi) {
     }
   });
 }
+</script>
+
+<script>
+// --- PENANGANAN NAVIGASI BACK SISTEM HP AGAR MENDORONG KE INDEX.HTML ---
+function goToIndex() {
+  window.location.href = '../index.html';
+}
+
+// Menyiapkan history state saat halaman dibuka
+window.history.pushState({ page: 'diskusi-rw' }, '', window.location.href);
+
+// Menangkap gesture/tombol back HP
+window.addEventListener('popstate', function(e) {
+  goToIndex();
+});
 </script>
 </body>
 </html>

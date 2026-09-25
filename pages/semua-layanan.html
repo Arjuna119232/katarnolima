@@ -227,7 +227,7 @@ body {
 <div class="layanan-container">
   <!-- HEADER -->
   <div class="light-header">
-    <button class="btn-back-modern" id="backBtn" onclick="goBackSafely()" aria-label="Kembali">
+    <button class="btn-back-modern" id="backBtn" onclick="goToIndex()" aria-label="Kembali">
       <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
     </button>
     <h1>Semua Layanan RW 05</h1>
@@ -313,7 +313,7 @@ body {
           <span id="modal-icon-title" style="font-size:20px;">📢</span>
           <h3 id="modal-title" style="font-size:15px; font-weight:800; color:#0f172a; margin:0;">Info RW 05</h3>
         </div>
-        <button type="button" id="modal-close" onclick="closeServiceModal()" style="background:#f1f5f9; border:none; width:32px; height:32px; border-radius:50%; font-size:16px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center;">✕</button>
+        <button type="button" id="modal-close" onclick="closeServiceModal(true)" style="background:#f1f5f9; border:none; width:32px; height:32px; border-radius:50%; font-size:16px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center;">✕</button>
       </div>
       <div id="modal-body" style="padding:20px; font-size:13px; color:#334155; line-height:1.6;">
         <div style="text-align:center; font-size:12px; color:#94a3b8; padding:16px 0;">Memuat data...</div>
@@ -321,16 +321,6 @@ body {
     </div>
   </div>
 </div>
-
-<script>
-function goBackSafely() {
-  if (document.referrer && document.referrer.indexOf(window.location.host) !== -1) {
-    window.history.back();
-  } else {
-    window.location.href = '../index.html';
-  }
-}
-</script>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -371,7 +361,10 @@ window.openServiceModal = function(type) {
 
   modalBody.innerHTML = '<div style="text-align:center; font-size:12px; color:#94a3b8; padding:20px 0;">Memuat data...</div>';
   modal.style.display = 'flex';
-  setTimeout(() => { modal.classList.add('show-overlay'); }, 10);
+  setTimeout(() => { 
+    modal.classList.add('show-overlay'); 
+    window.history.pushState({ modalOpen: true }, '', window.location.href);
+  }, 10);
 
   if (type === 'sembako') {
     modalIcon.textContent = '🛒'; modalTitle.textContent = 'Harga Sembako RW 05';
@@ -468,23 +461,53 @@ window.openServiceModal = function(type) {
   }
 };
 
-window.closeServiceModal = function() {
+window.closeServiceModal = function(shouldPopHistory = true) {
   const modal = document.getElementById('universal-modal');
   if(!modal) return;
   modal.classList.remove('show-overlay');
   setTimeout(() => { modal.style.display = 'none'; }, 200);
   if (unsubscribeModal) { unsubscribeModal(); unsubscribeModal = null; }
+
+  // Pop history state jika penutupan dipicu dari klik tombol/overlay
+  if (shouldPopHistory && window.history.state && window.history.state.modalOpen) {
+    window.history.back();
+  }
 };
 
 document.addEventListener('DOMContentLoaded', () => {
   const serviceModal = document.getElementById('universal-modal');
   if(serviceModal) {
     serviceModal.addEventListener('click', (e) => {
-      if(e.target === serviceModal) closeServiceModal();
+      if(e.target === serviceModal) closeServiceModal(true);
     });
   }
 });
 </script>
+
+<script>
+// --- PENANGANAN NAVIGASI BACK SISTEM HP AGAR MENDORONG KE INDEX.HTML ---
+function goToIndex() {
+  window.location.href = '../index.html';
+}
+
+// Menyiapkan history state awal saat halaman pertama kali dimuat
+window.history.pushState({ page: 'semua-layanan' }, '', window.location.href);
+
+// Menangkap gesture/tombol back HP
+window.addEventListener('popstate', function(e) {
+  const modal = document.getElementById('universal-modal');
+  
+  // Jika modal/pop-up sedang terbuka, tutup modal persis seperti menekan tombol X (tanpa pop history tambahan)
+  if (modal && modal.classList.contains('show-overlay')) {
+    closeServiceModal(false);
+    return;
+  }
+  
+  // Jika modal tidak terbuka, dorong halaman kembali ke Beranda (index.html)
+  goToIndex();
+});
+</script>
+
 <script src="../assets/js/script.js?v=27"></script>
 </body>
 </html>
