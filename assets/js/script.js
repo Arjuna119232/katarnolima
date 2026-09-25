@@ -81,17 +81,13 @@ document.addEventListener('DOMContentLoaded', function(){
   // ==========================================
   async function mintaIzinNotifikasiAman() {
     try {
-      // 1. Coba via Capacitor Push Notifications jika tersedia
       if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.PushNotifications) {
         const push = window.Capacitor.Plugins.PushNotifications;
-        
         let status = await push.checkPermissions();
         if (status.receive !== 'granted') {
           await push.requestPermissions();
         }
-      } 
-      // 2. Fallback via Standard Web Notification API
-      else if ('Notification' in window && Notification.permission === 'default') {
+      } else if ('Notification' in window && Notification.permission === 'default') {
         await Notification.requestPermission();
       }
     } catch (err) {
@@ -99,7 +95,6 @@ document.addEventListener('DOMContentLoaded', function(){
     }
   }
 
-  // Panggil pemicu izin notifikasi 1.5 detik setelah aplikasi dibuka
   setTimeout(mintaIzinNotifikasiAman, 1500);
 
   // ==========================================
@@ -107,7 +102,6 @@ document.addEventListener('DOMContentLoaded', function(){
   // ==========================================
   window.requestCameraStream = async function() {
     try {
-      // 1. Cek & minta izin Kamera via Capacitor Native jika tersedia
       if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Camera) {
         const cameraPlugin = window.Capacitor.Plugins.Camera;
         let permStatus = await cameraPlugin.checkPermissions();
@@ -116,7 +110,6 @@ document.addEventListener('DOMContentLoaded', function(){
         }
       }
 
-      // 2. Buka stream kamera via standar getUserMedia
       const stream = await navigator.mediaDevices.getUserMedia({ 
         video: { facingMode: 'environment' }, 
         audio: false 
@@ -136,7 +129,6 @@ document.addEventListener('DOMContentLoaded', function(){
     }
 
     try {
-      // 1. Cek & minta izin Lokasi via Capacitor Native jika tersedia
       if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Geolocation) {
         const geoPlugin = window.Capacitor.Plugins.Geolocation;
         let permStatus = await geoPlugin.checkPermissions();
@@ -145,7 +137,6 @@ document.addEventListener('DOMContentLoaded', function(){
         }
       }
 
-      // 2. Dapatkan koordinat presisi via Geolocation API
       navigator.geolocation.getCurrentPosition(
         (position) => {
           if (typeof callbackSuccess === 'function') callbackSuccess({
@@ -162,7 +153,6 @@ document.addEventListener('DOMContentLoaded', function(){
       );
     } catch (err) {
       console.warn('Permintaan izin lokasi dilewati:', err);
-      // Fallback tetap eksekusi navigator bawaan
       navigator.geolocation.getCurrentPosition(
         (position) => {
           if (typeof callbackSuccess === 'function') callbackSuccess({
@@ -218,7 +208,12 @@ document.addEventListener('DOMContentLoaded', function(){
   // LOGIKA PENCARIAN & FAB DARURAT
   // ==========================================
   var goCari = document.getElementById('goCari');
-  if(goCari){ goCari.addEventListener('click', function(e){ e.preventDefault(); window.location.href='cari-warga.html'; }); }
+  if(goCari){ 
+    goCari.addEventListener('click', function(e){ 
+      e.preventDefault(); 
+      window.location.href = 'pages/cari-warga.html'; // Diarahkan langsung ke folder pages/
+    }); 
+  }
   
   var fabContainer = document.getElementById('fabContainer');
   var fabMain = document.getElementById('fabMain');
@@ -282,11 +277,11 @@ document.addEventListener('DOMContentLoaded', function(){
     el.addEventListener('click', function(e){ e.preventDefault(); goBackSafe(); }); 
   });
 
+  // Daftar 4 Halaman Utama
   var mainTabs = ['index.html', 'diskusi-rw.html', 'info.html', 'profil.html'];
-  var currentPath = window.location.pathname;
-  var isMainTab = mainTabs.some(function(page) { return currentPath.endsWith(page); }) || currentPath.endsWith('/') || currentPath === '' || window.location.href.endsWith('/public/');
   var backPressedOnce = false;
 
+  // Toast khusus ketuk 2x untuk keluar aplikasi
   function handleExitApp() {
     if (backPressedOnce) {
       if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) { 
@@ -297,10 +292,16 @@ document.addEventListener('DOMContentLoaded', function(){
     } else {
       backPressedOnce = true;
       var toast = document.createElement('div');
-      toast.textContent = 'Ketuk sekali lagi untuk keluar aplikasi';
-      toast.style.cssText = 'position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:rgba(15,23,42,0.9);color:#fff;padding:10px 20px;border-radius:999px;font-size:12px;font-weight:700;z-index:9999999;box-shadow:0 4px 12px rgba(0,0,0,0.2)';
+      toast.id = 'exit-app-toast';
+      toast.innerHTML = '📱 Ketuk sekali lagi untuk keluar aplikasi';
+      toast.style.cssText = 'position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:rgba(15,23,42,0.92);color:#ffffff;padding:12px 22px;border-radius:999px;font-size:12px;font-weight:700;z-index:9999999;box-shadow:0 6px 16px rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.1);backdrop-filter:blur(4px);transition:all 0.3s ease;';
       document.body.appendChild(toast);
-      setTimeout(function(){ toast.remove(); backPressedOnce = false; }, 2000);
+      
+      setTimeout(function(){ 
+        toast.style.opacity = '0';
+        setTimeout(function() { toast.remove(); }, 300);
+        backPressedOnce = false; 
+      }, 2000);
     }
   }
 
@@ -312,28 +313,28 @@ document.addEventListener('DOMContentLoaded', function(){
       if(fabMain) fabMain.style.display='flex'; 
       return; 
     }
+
     if (modal && modal.classList.contains('active')) { 
       closeModal(); 
       return; 
     }
-    var pathCheck = window.location.pathname;
-    var currentIsMain = mainTabs.some(function(page) { return pathCheck.endsWith(page); }) || pathCheck.endsWith('/') || pathCheck === '' || window.location.href.endsWith('/public/');
-    if (currentIsMain) { handleExitApp(); } else { goBackSafe(); }
+
+    var currentPath = window.location.pathname;
+    var isMainTab = mainTabs.some(function(page) { 
+      return currentPath.endsWith(page); 
+    }) || currentPath.endsWith('/') || currentPath === '' || currentPath.endsWith('/public/');
+
+    if (isMainTab) {
+      handleExitApp();
+    } else {
+      goBackSafe();
+    }
   };
 
   if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) { 
     window.Capacitor.Plugins.App.addListener('backButton', onHardwareBackButton); 
   } else { 
     document.addEventListener('backbutton', onHardwareBackButton, false); 
-  }
-
-  if (isMainTab) { 
-    history.replaceState({page: 'mainTab'}, '', location.href); 
-    window.addEventListener('popstate', function(){ 
-      var pathCheck = window.location.pathname;
-      var currentIsMain = mainTabs.some(function(page) { return pathCheck.endsWith(page); }) || pathCheck.endsWith('/') || pathCheck === '' || window.location.href.endsWith('/public/');
-      if (currentIsMain) { history.pushState({page: 'mainTab'}, '', location.href); handleExitApp(); }
-    }); 
   }
 
   // ==========================================
