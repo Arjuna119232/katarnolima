@@ -13,7 +13,7 @@ if ('serviceWorker' in navigator) {
 }
 
 document.addEventListener('DOMContentLoaded', function(){
-  // Fungsi panggil Dynamic Island (sapaan ke Warga)
+  // 1. DYNAMIC ISLAND (SAPAAN WARGA)
   function initDynamicIslandAfterSplash() {
     if (sessionStorage.getItem('diShown')) return;
     sessionStorage.setItem('diShown', 'true');
@@ -29,32 +29,23 @@ document.addEventListener('DOMContentLoaded', function(){
     let icon = '☀️';
 
     if (hour >= 4 && hour < 11) {
-      greeting = 'Selamat pagi';
-      icon = '☀️';
+      greeting = 'Selamat pagi'; icon = '☀️';
     } else if (hour >= 11 && hour < 15) {
-      greeting = 'Selamat siang';
-      icon = '🌤️';
+      greeting = 'Selamat siang'; icon = '🌤️';
     } else if (hour >= 15 && hour < 18) {
-      greeting = 'Selamat sore';
-      icon = '🌇';
+      greeting = 'Selamat sore'; icon = '🌇';
     } else {
-      greeting = 'Selamat malam';
-      icon = '🌙';
+      greeting = 'Selamat malam'; icon = '🌙';
     }
 
     if (iconEl) iconEl.textContent = icon;
     if (textEl) textEl.textContent = `${greeting}, Warga!`;
 
-    setTimeout(() => {
-      diEl.classList.add('show');
-    }, 300);
-
-    setTimeout(() => {
-      diEl.classList.remove('show');
-    }, 3800);
+    setTimeout(() => { diEl.classList.add('show'); }, 300);
+    setTimeout(() => { diEl.classList.remove('show'); }, 3800);
   }
 
-  // LOGIKA SPLASH SCREEN (PERBAIKAN: DISembunyikan TOTAL DAN NONAKTIFKAN SENTUHAN)
+  // 2. LOGIKA SPLASH SCREEN
   var splash = document.getElementById('splash-screen') || document.getElementById('splashScreen');
   if (splash) {
     if (sessionStorage.getItem('splashShown')) {
@@ -78,9 +69,7 @@ document.addEventListener('DOMContentLoaded', function(){
     initDynamicIslandAfterSplash();
   }
 
-  // ==========================================
-  // IZIN NOTIFIKASI OTOMATIS
-  // ==========================================
+  // 3. IZIN NOTIFIKASI
   async function mintaIzinNotifikasiAman() {
     try {
       if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.PushNotifications) {
@@ -93,15 +82,12 @@ document.addEventListener('DOMContentLoaded', function(){
         await Notification.requestPermission();
       }
     } catch (err) {
-      console.warn('Izin notifikasi dilewati, aplikasi tetap lancar:', err);
+      console.warn('Izin notifikasi dilewati:', err);
     }
   }
-
   setTimeout(mintaIzinNotifikasiAman, 1500);
 
-  // ==========================================
-  // STANDAR WEB API: KAMERA & LOKASI
-  // ==========================================
+  // 4. STANDAR WEB API: KAMERA & LOKASI
   window.requestCameraStream = async function() {
     try {
       if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Camera) {
@@ -111,7 +97,6 @@ document.addEventListener('DOMContentLoaded', function(){
           await cameraPlugin.requestPermissions({ permissions: ['camera'] });
         }
       }
-
       const stream = await navigator.mediaDevices.getUserMedia({ 
         video: { facingMode: 'environment' }, 
         audio: false 
@@ -129,7 +114,6 @@ document.addEventListener('DOMContentLoaded', function(){
       if (typeof callbackError === 'function') callbackError(new Error('GeoNotSupported'));
       return;
     }
-
     try {
       if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Geolocation) {
         const geoPlugin = window.Capacitor.Plugins.Geolocation;
@@ -138,7 +122,6 @@ document.addEventListener('DOMContentLoaded', function(){
           await geoPlugin.requestPermissions();
         }
       }
-
       navigator.geolocation.getCurrentPosition(
         (position) => {
           if (typeof callbackSuccess === 'function') callbackSuccess({
@@ -154,7 +137,6 @@ document.addEventListener('DOMContentLoaded', function(){
         { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
       );
     } catch (err) {
-      console.warn('Permintaan izin lokasi dilewati:', err);
       navigator.geolocation.getCurrentPosition(
         (position) => {
           if (typeof callbackSuccess === 'function') callbackSuccess({
@@ -171,9 +153,7 @@ document.addEventListener('DOMContentLoaded', function(){
     }
   };
 
-  // ==========================================
-  // INDIKATOR DETEKSI KONEKSI INTERNET
-  // ==========================================
+  // 5. DETEKSI KONEKSI INTERNET
   (function() {
     const netBanner = document.createElement('div');
     netBanner.id = 'netStatusBanner';
@@ -206,9 +186,7 @@ document.addEventListener('DOMContentLoaded', function(){
     setInterval(verifyRealInternet, 10000);
   })();
 
-  // ==========================================
-  // LOGIKA PENCARIAN & FAB DARURAT
-  // ==========================================
+  // 6. LOGIKA PENCARIAN & FAB DARURAT
   var goCari = document.getElementById('goCari');
   if(goCari){ 
     goCari.addEventListener('click', function(e){ 
@@ -247,9 +225,7 @@ document.addEventListener('DOMContentLoaded', function(){
     });
   }
 
-  // ==========================================
-  // LOGIKA MODAL SERBAGUNA
-  // ==========================================
+  // 7. LOGIKA MODAL SERBAGUNA
   var modal = document.getElementById('universal-modal');
   var modalTitle = document.getElementById('modal-title');
   var modalBody = document.getElementById('modal-body');
@@ -261,9 +237,7 @@ document.addEventListener('DOMContentLoaded', function(){
   if(modalClose) modalClose.addEventListener('click', closeModal);
   if(modal) modal.addEventListener('click', function(e){ if(e.target===modal) closeModal(); });
 
-  // ==========================================
-  // LOGIKA NAVIGASI BACK HP
-  // ==========================================
+  // 8. LOGIKA NAVIGASI BACK HP (PRESISI KELUAR APLIKASI)
   function goBackSafe(){ 
     if (window.history.length > 1 && document.referrer && document.referrer.indexOf(window.location.host) !== -1) {
       window.history.back();
@@ -277,11 +251,13 @@ document.addEventListener('DOMContentLoaded', function(){
     }
   }
 
-  document.querySelectorAll('.back, #backBtn, .btn-back-modern').forEach(function(el){ 
-    el.addEventListener('click', function(e){ e.preventDefault(); goBackSafe(); }); 
+  document.querySelectorAll('.back, #backBtn, .btn-back-modern, .btn-back, .btn-back-berita, .btn-back-link').forEach(function(el){ 
+    el.addEventListener('click', function(e){ 
+      e.preventDefault(); 
+      goBackSafe(); 
+    }); 
   });
 
-  var mainTabs = ['index.html', 'diskusi-rw.html', 'info.html', 'profil.html'];
   var backPressedOnce = false;
 
   function handleExitApp() {
@@ -293,21 +269,48 @@ document.addEventListener('DOMContentLoaded', function(){
       }
     } else {
       backPressedOnce = true;
-      var toast = document.createElement('div');
-      toast.id = 'exit-app-toast';
-      toast.innerHTML = '📱 Ketuk sekali lagi untuk keluar aplikasi';
-      toast.style.cssText = 'position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:rgba(15,23,42,0.92);color:#ffffff;padding:12px 22px;border-radius:999px;font-size:12px;font-weight:700;z-index:9999999;box-shadow:0 6px 16px rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.1);backdrop-filter:blur(4px);transition:all 0.3s ease;';
-      document.body.appendChild(toast);
-      
-      setTimeout(function(){ 
-        toast.style.opacity = '0';
-        setTimeout(function() { toast.remove(); }, 300);
-        backPressedOnce = false; 
-      }, 2000);
+      var toast = document.getElementById('exit-app-toast') || document.getElementById('exit-toast');
+      if (toast) {
+        toast.classList.add('show');
+        setTimeout(function() {
+          toast.classList.remove('show');
+          backPressedOnce = false;
+        }, 2000);
+      } else {
+        var newToast = document.createElement('div');
+        newToast.id = 'exit-app-toast';
+        newToast.innerHTML = '📱 Ketuk sekali lagi untuk keluar aplikasi';
+        newToast.style.cssText = 'position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:rgba(15,23,42,0.92);color:#ffffff;padding:12px 22px;border-radius:999px;font-size:12px;font-weight:700;z-index:9999999;box-shadow:0 6px 16px rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.1);backdrop-filter:blur(4px);transition:all 0.3s ease;';
+        document.body.appendChild(newToast);
+        
+        setTimeout(function(){ 
+          newToast.style.opacity = '0';
+          setTimeout(function() { newToast.remove(); }, 300);
+          backPressedOnce = false; 
+        }, 2000);
+      }
     }
   }
 
-  var onHardwareBackButton = function(){
+  function checkIsMainTab() {
+    var path = window.location.pathname.toLowerCase();
+    var fileName = path.substring(path.lastIndexOf('/') + 1);
+    
+    // Hanya 4 file ini yang diizinkan memicu keluar aplikasi
+    var exactMainFiles = ['index.html', 'diskusi-rw.html', 'info.html', 'profil.html'];
+    
+    if (exactMainFiles.includes(fileName)) {
+      return true;
+    }
+    if ((fileName === '' || path.endsWith('/')) && !path.includes('/pages/')) {
+      return true;
+    }
+    return false;
+  }
+
+  var onHardwareBackButton = function(e){
+    if (e && typeof e.preventDefault === 'function') e.preventDefault();
+
     if(fabContainer && fabContainer.classList.contains('active')){ 
       fabContainer.classList.remove('active'); 
       if(fabOptions) fabOptions.style.display='none'; 
@@ -321,12 +324,7 @@ document.addEventListener('DOMContentLoaded', function(){
       return; 
     }
 
-    var currentPath = window.location.pathname;
-    var isMainTab = mainTabs.some(function(page) { 
-      return currentPath.endsWith('/' + page) || currentPath === page; 
-    }) || currentPath.endsWith('/') || currentPath === '' || currentPath.endsWith('/public/');
-
-    if (isMainTab) {
+    if (checkIsMainTab()) {
       handleExitApp();
     } else {
       goBackSafe();
@@ -339,9 +337,7 @@ document.addEventListener('DOMContentLoaded', function(){
     document.addEventListener('backbutton', onHardwareBackButton, false); 
   }
 
-  // ==========================================
-  // EFEK RIPPLE
-  // ==========================================
+  // 9. EFEK RIPPLE
   function addRippleEffect(e){
     var el = this;
     if(navigator.vibrate) navigator.vibrate(10);
