@@ -53,7 +53,7 @@ body {
 }
 @keyframes zoomIn { 0% { transform: scale(0.2); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 @keyframes fadeIn { 0% { opacity: 0; transform: translateY(10px); } 100% { opacity: 1; transform: translateY(0); } }
-#splash-screen.fade-out { opacity: 0; visibility: hidden; }
+#splash-screen.fade-out { opacity: 0; visibility: hidden; pointer-events: none; }
 
 /* BANNER HEADER MODERN */
 .jaki-banner-abad {
@@ -906,7 +906,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
-<!-- PERBAIKAN PANGGILAN SCRIPT.JS DARI ROOT FOLDER -->
+<!-- PERBAIKAN PANGGILAN SCRIPT.JS LANGSUNG DARI ROOT FOLDER -->
 <script src="script.js"></script>
 
 <script>
