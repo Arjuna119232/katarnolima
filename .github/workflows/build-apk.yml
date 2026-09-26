@@ -35,13 +35,13 @@ jobs:
             "private": true
           }
           EOF
-          npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/assets @capacitor/push-notifications @capacitor/camera @capacitor/geolocation --save-dev
+          npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/assets @capacitor/app @capacitor/push-notifications @capacitor/camera @capacitor/geolocation --save-dev
           pip install pillow -q
 
       - name: Populate Web Assets & Config
         run: |
           mkdir -p www assets
-          
+
           if [ -f "icon.png" ]; then
             cp icon.png assets/icon.png
           fi
@@ -52,7 +52,7 @@ jobs:
                     --exclude='node_modules' \
                     --exclude='www' \
                     ./ www/
-          
+
           cat << 'EOF' > capacitor.config.json
           {
             "appId": "com.katarnolima.rw05",
@@ -61,6 +61,12 @@ jobs:
             "plugins": {
               "PushNotifications": {
                 "presentationOptions": ["badge", "sound", "alert"]
+              },
+              "Camera": {
+                "permissions": ["camera", "photos"]
+              },
+              "Geolocation": {
+                "permissions": ["location"]
               }
             }
           }
@@ -71,20 +77,56 @@ jobs:
           rm -rf android
           npx cap add android
 
-          # Copy google-services.json ke app folder
           if [ -f "google-services.json" ]; then
             mkdir -p android/app
             cp google-services.json android/app/google-services.json
             echo "google-services.json berhasil disalin!"
           fi
 
-          # Injeksi Classpath Google Services ke android/build.gradle
           sed -i '/dependencies {/a \        classpath "com.google.gms:google-services:4.4.1"' android/build.gradle
-
-          # Injeksi Plugin Google Services ke android/app/build.gradle
           echo "apply plugin: 'com.google.gms.google-services'" >> android/app/build.gradle
 
           npx cap sync android
+
+      - name: Inject Custom MainActivity (Jembatan Izin Kamera & Lokasi WebView)
+        run: |
+          PKG_DIR="android/app/src/main/java/com/katarnolima/rw05"
+          mkdir -p "$PKG_DIR"
+          cat << 'EOF' > "$PKG_DIR/MainActivity.java"
+          package com.katarnolima.rw05;
+
+          import android.os.Bundle;
+          import android.webkit.GeolocationPermissions;
+          import android.webkit.PermissionRequest;
+          import com.getcapacitor.BridgeActivity;
+          import com.getcapacitor.BridgeWebChromeClient;
+
+          public class MainActivity extends BridgeActivity {
+            @Override
+            public void onCreate(Bundle savedInstanceState) {
+              super.onCreate(savedInstanceState);
+
+              // Aktifkan Geolocation API di WebView
+              this.bridge.getWebView().getSettings().setGeolocationEnabled(true);
+
+              // Ganti WebChromeClient agar getUserMedia() & navigator.geolocation
+              // otomatis diberi izin oleh WebView (izin OS tetap diminta lebih dulu
+              // lewat plugin Capacitor Camera/Geolocation di kode JS).
+              this.bridge.getWebView().setWebChromeClient(new BridgeWebChromeClient(this.bridge) {
+                @Override
+                public void onPermissionRequest(final PermissionRequest request) {
+                  runOnUiThread(() -> request.grant(request.getResources()));
+                }
+
+                @Override
+                public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
+                  callback.invoke(origin, true, false);
+                }
+              });
+            }
+          }
+          EOF
+          echo "MainActivity.java custom berhasil ditulis!"
 
       - name: Force Apply icon.png to All Android Densities
         run: |
@@ -126,9 +168,9 @@ jobs:
               for folder, px in maps.items():
                   target_dir = os.path.join(res_dir, folder)
                   os.makedirs(target_dir, exist_ok=True)
-                  
+
                   resized_icon = canvas.resize((px, px), Image.Resampling.LANCZOS)
-                  
+
                   resized_icon.save(os.path.join(target_dir, 'ic_launcher.png'))
                   resized_icon.save(os.path.join(target_dir, 'ic_launcher_round.png'))
                   resized_icon.save(os.path.join(target_dir, 'ic_launcher_foreground.png'))
