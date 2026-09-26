@@ -525,7 +525,7 @@ body {
       <a href="pages/semua-layanan.html" style="color:#2563eb; font-size:13px; font-weight:700; text-decoration:none">Lihat Semua</a>
     </div>
 
-    <!-- FITUR KHUSUS RW 05 (DISAMAKAN DENGAN PETA DIGITAL: ABU-ABU & COMING SOON) -->
+    <!-- FITUR KHUSUS RW 05 -->
     <div class="rekom-card" style="opacity: 0.7; filter: grayscale(80%); pointer-events: none; position: relative;">
       <div style="position: absolute; top: 12px; right: 12px; background: #0f172a; color: #fbbf24; font-size: 9px; font-weight: 900; padding: 3px 8px; border-radius: 6px; text-transform: uppercase;">Coming Soon</div>
       <div class="rekom-img" style="background:#f1f5f9"><div style="font-size:36px">🏝️</div></div>
@@ -536,7 +536,7 @@ body {
       </div>
     </div>
 
-    <!-- PETA DIGITAL (COMING SOON) -->
+    <!-- PETA DIGITAL -->
     <div class="rekom-card" style="opacity: 0.7; filter: grayscale(80%); pointer-events: none; position: relative;">
       <div style="position: absolute; top: 12px; right: 12px; background: #0f172a; color: #fbbf24; font-size: 9px; font-weight: 900; padding: 3px 8px; border-radius: 6px; text-transform: uppercase;">Coming Soon</div>
       <div class="rekom-img" style="background:#f1f5f9"><div style="font-size:36px">🗺️</div></div>
@@ -606,7 +606,7 @@ body {
       <div class="fab-icon">🚑</div>
     </div>
     
-    <!-- OPSIONAL NATNIAI (DISABLED / COMING SOON HITAM) -->
+    <!-- OPSIONAL NATNIAI -->
     <div class="fab-option disabled-soon" style="pointer-events: none; opacity: 0.65; cursor: not-allowed;">
       <span class="fab-label" style="background: #0f172a; color: #ffffff; border: 1px solid #334155;">
         NatniAi <small style="background:#fbbf24; color:#0f172a; font-size:8px; font-weight:900; padding:1px 4px; border-radius:4px; margin-left:4px;">SOON</small>
@@ -867,7 +867,6 @@ window.openUniversalModalIndex = function(type) {
   setTimeout(() => {
     modal.classList.add('show-overlay');
     box.classList.add('show');
-    if (typeof window.pushModalHistoryState === 'function') window.pushModalHistoryState('universal');
   }, 10);
 
   if (type === 'sembako') {
@@ -947,7 +946,6 @@ window.closeUniversalModal = function() {
   modal.classList.remove('show-overlay');
   setTimeout(() => { modal.style.display = 'none'; }, 250);
   if(unsubscribeModalIndex) { unsubscribeModalIndex(); unsubscribeModalIndex = null; }
-  if (typeof window.popModalHistoryState === 'function') window.popModalHistoryState('universal');
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -1066,20 +1064,6 @@ document.addEventListener('DOMContentLoaded', () => {
           startAutoSlide();
         }
 
-        window.activeModalHistory = null;
-
-        window.pushModalHistoryState = function(modalName) {
-            window.activeModalHistory = modalName;
-            window.history.pushState({ activeModal: modalName }, '', window.location.href);
-        };
-
-        window.popModalHistoryState = function(modalName) {
-            if (window.activeModalHistory === modalName) {
-                window.activeModalHistory = null;
-                window.history.back();
-            }
-        };
-
         const fabContainer = document.getElementById('fabContainer');
         const fabMain = document.getElementById('fabMain');
         const fabClose = document.getElementById('fabClose');
@@ -1091,105 +1075,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (fabOptions) fabOptions.style.display = 'flex';
                 if (fabClose) fabClose.style.display = 'flex';
                 fabMain.style.display = 'none';
-                window.pushModalHistoryState('fab');
             });
         }
 
-        window.closeFabDarurat = function(shouldPopHistory = true) {
+        window.closeFabDarurat = function() {
             if (fabContainer && fabContainer.classList.contains('active')) {
                 fabContainer.classList.remove('active');
                 if (fabOptions) fabOptions.style.display = 'none';
                 if (fabClose) fabClose.style.display = 'none';
                 if (fabMain) fabMain.style.display = 'flex';
-                if (shouldPopHistory) window.popModalHistoryState('fab');
-                else window.activeModalHistory = null;
             }
         };
 
         if (fabClose) {
             fabClose.addEventListener('click', () => {
-                window.closeFabDarurat(true);
+                window.closeFabDarurat();
             });
-        }
-    });
-
-    let lastBackPress = 0;
-    const exitToast = document.getElementById('exit-toast');
-
-    window.history.pushState(null, '', window.location.href);
-
-    window.addEventListener('popstate', () => {
-        const uniModal = document.getElementById('universal-modal');
-        const satpamModal = document.getElementById('satpam-modal');
-        const ambulansModal = document.getElementById('ambulans-modal');
-        const cameraOverlay = document.getElementById('cameraOverlay');
-        const fabContainer = document.getElementById('fabContainer');
-        const customAlert = document.getElementById('custom-alert-modal');
-
-        if (uniModal && uniModal.style.display === 'flex') {
-            const box = uniModal.querySelector('.modal-box');
-            if (box) box.classList.remove('show');
-            uniModal.classList.remove('show-overlay');
-            setTimeout(() => { uniModal.style.display = 'none'; }, 250);
-            window.activeModalHistory = null;
-            return;
-        }
-
-        if (satpamModal && satpamModal.style.display === 'flex') {
-            const box = satpamModal.querySelector('.satpam-box');
-            if (box) box.classList.remove('show');
-            satpamModal.classList.remove('show-overlay');
-            setTimeout(() => { satpamModal.style.display = 'none'; }, 250);
-            window.activeModalHistory = null;
-            return;
-        }
-
-        if (ambulansModal && ambulansModal.style.display === 'flex') {
-            const box = ambulansModal.querySelector('.ambulans-box');
-            if (box) box.classList.remove('show');
-            ambulansModal.classList.remove('show-overlay');
-            setTimeout(() => { ambulansModal.style.display = 'none'; }, 250);
-            window.activeModalHistory = null;
-            return;
-        }
-
-        if (cameraOverlay && cameraOverlay.classList.contains('show')) {
-            closeCustomCamera();
-            window.activeModalHistory = null;
-            return;
-        }
-
-        if (fabContainer && fabContainer.classList.contains('active')) {
-            window.closeFabDarurat(false);
-            return;
-        }
-
-        if (customAlert && customAlert.style.display === 'flex') {
-            closeCustomAlert();
-            window.activeModalHistory = null;
-            return;
-        }
-
-        const currentTime = new Date().getTime();
-        window.history.pushState(null, '', window.location.href);
-
-        if (currentTime - lastBackPress < 2000) {
-            if (exitToast) exitToast.classList.remove('show');
-            if (typeof window.close === 'function') {
-                window.close();
-            } else if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
-                window.Capacitor.Plugins.App.exitApp();
-            } else {
-                alert('Aplikasi ditutup.');
-            }
-        } else {
-            lastBackPress = currentTime;
-            if (exitToast) {
-                exitToast.classList.add('show');
-                setTimeout(() => {
-                    exitToast.classList.remove('show');
-                }, 2000);
-            }
         }
     });
 
@@ -1202,7 +1103,6 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => { 
                 modal.classList.add('show-overlay'); 
                 box.classList.add('show'); 
-                if (typeof window.pushModalHistoryState === 'function') window.pushModalHistoryState('satpam');
             }, 10);
         }
     }
@@ -1213,12 +1113,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if(modal && box) {
             box.classList.remove('show'); modal.classList.remove('show-overlay');
             setTimeout(() => { modal.style.display = 'none'; }, 250);
-            if (typeof window.popModalHistoryState === 'function') window.popModalHistoryState('satpam');
         }
     }
 
     function openAmbulansModal() {
-        if (typeof window.closeFabDarurat === 'function') window.closeFabDarurat(false);
+        if (typeof window.closeFabDarurat === 'function') window.closeFabDarurat();
 
         const modal = document.getElementById('ambulans-modal');
         if (!modal) return;
@@ -1228,7 +1127,6 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => { 
                 modal.classList.add('show-overlay'); 
                 box.classList.add('show'); 
-                if (typeof window.pushModalHistoryState === 'function') window.pushModalHistoryState('ambulans');
             }, 10);
         }
     }
@@ -1239,7 +1137,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if(modal && box) {
             box.classList.remove('show'); modal.classList.remove('show-overlay');
             setTimeout(() => { modal.style.display = 'none'; }, 250);
-            if (typeof window.popModalHistoryState === 'function') window.popModalHistoryState('ambulans');
         }
     }
 
@@ -1255,7 +1152,6 @@ document.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => {
         modal.classList.add('show-overlay');
         if (box) box.classList.add('show');
-        if (typeof window.pushModalHistoryState === 'function') window.pushModalHistoryState('alert');
       }, 10);
     }
 
@@ -1266,7 +1162,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (box) box.classList.remove('show');
       modal.classList.remove('show-overlay');
       setTimeout(() => { modal.style.display = 'none'; }, 250);
-      if (typeof window.popModalHistoryState === 'function') window.popModalHistoryState('alert');
     }
 
     let currentStream = null;
@@ -1285,7 +1180,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       cameraOverlay.classList.add('show');
-      if (typeof window.pushModalHistoryState === 'function') window.pushModalHistoryState('camera');
       await startCameraStream(useFacingMode);
     }
 
@@ -1351,7 +1245,6 @@ document.addEventListener('DOMContentLoaded', () => {
       isFlashOn = false;
       const flashBtn = document.getElementById('btnToggleFlash');
       if(flashBtn) flashBtn.classList.remove('active');
-      if (typeof window.popModalHistoryState === 'function') window.popModalHistoryState('camera');
     }
 
     function triggerFileInputFallback() {
