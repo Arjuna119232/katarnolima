@@ -5,7 +5,7 @@
     android:versionName="1.0">
 
     <uses-sdk
-        android:minSdkVersion="15"
+        android:minSdkVersion="21"
         android:targetSdkVersion="33" />
 
     <!-- DAFTAR IZIN (PERMISSIONS) -->
@@ -28,13 +28,17 @@
         android:icon="@mipmap/ic_launcher"
         android:label="KATARNOLIMA"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
-        android:appComponentFactory="androidx.core.app.CoreComponentFactory">
+        android:supportsRtl="true">
 
-        <!-- META-DATA GOOGLE ADMOB (Unit App ID Anda) -->
+        <!-- DEFAULT NOTIFICATION CHANNEL ID UNTUK FCM -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="default" />
+
+        <!-- SAMPLE ADMOB APP ID (Aman digunakan selama akun masih ditinjau) -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-209615581034089~4852943754" />
+            android:value="ca-app-pub-3940256099942544~3347511713" />
 
         <!-- MAIN ACTIVITY -->
         <activity
@@ -61,21 +65,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-
-        <!-- FIREBASE & CAPACITOR PUSH NOTIFICATION SERVICES -->
-        <service
-            android:name="com.capacitorjs.plugins.pushnotifications.MessagingService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
-
-        <provider
-            android:name="com.google.firebase.provider.FirebaseInitProvider"
-            android:authorities="com.katarnolima.rw05.firebaseinitprovider"
-            android:exported="false"
-            android:directBootAware="true" />
 
     </application>
 </manifest>
