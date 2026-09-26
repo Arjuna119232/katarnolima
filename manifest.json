@@ -1,0 +1,20 @@
+{
+  "name": "KATARNOLIMA RW 05",
+  "short_name": "Katarnolima",
+  "description": "Aplikasi warga RW 05 - informasi, layanan, dan komunitas Karang Taruna",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f8fafc",
+  "theme_color": "#0f172a",
+  "lang": "id",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
