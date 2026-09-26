@@ -1,40 +1,43 @@
 // @ts-nocheck
+
 /**
- * KATARNOLIMA RW 05 - Core Script (Fixed for APK - Anti Force Close)
- * Fix: Push Notification tidak langsung request, pakai checkPermissions dulu
+ * KATARNOLIMA RW 05 - Core Script (Pure Online Mode)
  */
 
-// 0. NONAKTIFKAN SERVICE WORKER (tetap)
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.getRegistrations().then(function(registrations) {
-    for (let registration of registrations) {
-      registration.unregister();
-    }
-  });
-}
-
 document.addEventListener('DOMContentLoaded', function(){
-  // 1. DYNAMIC ISLAND
+  // 1. DYNAMIC ISLAND (SAPAAN WARGA)
   function initDynamicIslandAfterSplash() {
     if (sessionStorage.getItem('diShown')) return;
     sessionStorage.setItem('diShown', 'true');
+
     const diEl = document.getElementById('dynamic-island-greeting');
     if (!diEl) return;
+
     const iconEl = document.getElementById('di-icon');
     const textEl = document.getElementById('di-text');
+
     const hour = new Date().getHours();
-    let greeting = 'Selamat pagi'; let icon = '☀️';
-    if (hour >= 4 && hour < 11) { greeting = 'Selamat pagi'; icon = '☀️'; }
-    else if (hour >= 11 && hour < 15) { greeting = 'Selamat siang'; icon = '🌤️'; }
-    else if (hour >= 15 && hour < 18) { greeting = 'Selamat sore'; icon = '🌇'; }
-    else { greeting = 'Selamat malam'; icon = '🌙'; }
+    let greeting = 'Selamat pagi';
+    let icon = '☀️';
+
+    if (hour >= 4 && hour < 11) {
+      greeting = 'Selamat pagi'; icon = '☀️';
+    } else if (hour >= 11 && hour < 15) {
+      greeting = 'Selamat siang'; icon = '🌤️';
+    } else if (hour >= 15 && hour < 18) {
+      greeting = 'Selamat sore'; icon = '🌇';
+    } else {
+      greeting = 'Selamat malam'; icon = '🌙';
+    }
+
     if (iconEl) iconEl.textContent = icon;
     if (textEl) textEl.textContent = `${greeting}, Warga!`;
+
     setTimeout(() => { diEl.classList.add('show'); }, 300);
     setTimeout(() => { diEl.classList.remove('show'); }, 3800);
   }
 
-  // 2. SPLASH
+  // 2. LOGIKA SPLASH SCREEN
   var splash = document.getElementById('splash-screen') || document.getElementById('splashScreen');
   if (splash) {
     if (sessionStorage.getItem('splashShown')) {
@@ -48,73 +51,69 @@ document.addEventListener('DOMContentLoaded', function(){
         splash.style.pointerEvents = 'none';
         splash.style.transition = 'opacity 0.3s ease, visibility 0.3s ease';
         sessionStorage.setItem('splashShown', 'true');
-        setTimeout(function() { splash.style.display = 'none'; initDynamicIslandAfterSplash(); }, 300);
+        setTimeout(function() {
+          splash.style.display = 'none';
+          initDynamicIslandAfterSplash();
+        }, 300);
       }, 1000);
     }
-  } else { initDynamicIslandAfterSplash(); }
+  } else {
+    initDynamicIslandAfterSplash();
+  }
 
-  // 3. PUSH NOTIFICATIONS - FIX ANTI FC
-  async function setupPushNotifications() {
+  // 3. IZIN & REGISTRASI NOTIFIKASI CAPACITOR (UNTUK APK ANDROID)
+  async function mintaIzinNotifikasiAman() {
     try {
-      if (!window.Capacitor || !window.Capacitor.Plugins || !window.Capacitor.Plugins.PushNotifications) {
-        console.log('PushNotifications plugin tidak tersedia di web');
-        return;
+      if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.PushNotifications) {
+        const push = window.Capacitor.Plugins.PushNotifications;
+        let status = await push.checkPermissions();
+        if (status.receive !== 'granted') {
+          status = await push.requestPermissions();
+        }
+        if (status.receive === 'granted') {
+          await push.register();
+        }
+      } else if ('Notification' in window && Notification.permission === 'default') {
+        await Notification.requestPermission();
       }
-      const PushNotifications = window.Capacitor.Plugins.PushNotifications;
-      
-      // FIX: Cek permission dulu, jangan langsung request
-      let perm = await PushNotifications.checkPermissions();
-      console.log('Push perm status:', perm);
-
-      if (perm.receive === 'prompt') {
-        // Jangan auto-request di startup, tunggu user interaksi atau delay
-        // perm = await PushNotifications.requestPermissions();
-        console.log('Push permission masih prompt, skip auto-register untuk cegah FC');
-        return;
-      }
-
-      if (perm.receive === 'granted') {
-        await PushNotifications.register();
-      }
-
-      PushNotifications.addListener('registration', function(token){
-        console.log('✅ FCM Token:', token.value);
-        localStorage.setItem('rw05_fcm_token', token.value);
-      });
-
-      PushNotifications.addListener('registrationError', function(error){
-        console.warn('⚠️ Error registrasi FCM:', error);
-      });
-
-      PushNotifications.addListener('pushNotificationReceived', function(notification){
-        console.log('📩 Notifikasi:', notification);
-      });
-
     } catch (err) {
-      console.warn('Push notification skipped (anti-FC):', err);
+      console.warn('Izin notifikasi dilewati:', err);
     }
   }
 
-  // FIX: delay 5 detik, bukan 1.2 detik, dan hanya jalan di native
-  if (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()) {
-    setTimeout(setupPushNotifications, 5000);
-  } else {
-    // kalau di browser, tetap coba tapi tanpa crash
-    setTimeout(setupPushNotifications, 5000);
+  if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.PushNotifications) {
+    const push = window.Capacitor.Plugins.PushNotifications;
+    
+    push.addListener('registration', (token) => {
+      console.log('✅ Token FCM Capacitor Android:', token.value);
+      localStorage.setItem('rw05_fcm_token', token.value);
+    });
+
+    push.addListener('pushNotificationReceived', (notification) => {
+      console.log('📩 Notifikasi Masuk (Native Foreground):', notification);
+    });
   }
 
-  // 4. KAMERA & LOKASI (tetap, tapi dengan safe-check)
+  setTimeout(mintaIzinNotifikasiAman, 1500);
+
+  // 4. STANDAR WEB API: KAMERA & LOKASI
   window.requestCameraStream = async function() {
     try {
-      if (window.Capacitor?.Plugins?.Camera) {
+      if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Camera) {
         const cameraPlugin = window.Capacitor.Plugins.Camera;
-        try { await cameraPlugin.requestPermissions({ permissions: ['camera'] }); } catch(e){}
+        let permStatus = await cameraPlugin.checkPermissions();
+        if (permStatus.camera !== 'granted') {
+          await cameraPlugin.requestPermissions({ permissions: ['camera'] });
+        }
       }
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: 'environment' }, 
+        audio: false 
+      });
       return stream;
     } catch (err) {
-      console.error('Gagal kamera:', err);
-      alert('⚠️ Akses kamera ditolak / tidak tersedia. Akan membuka galeri.');
+      console.error('Gagal membuka kamera:', err);
+      alert('⚠️ Akses kamera ditolak/tidak diizinkan di perangkat ini.');
       return null;
     }
   };
@@ -125,31 +124,59 @@ document.addEventListener('DOMContentLoaded', function(){
       return;
     }
     try {
-      if (window.Capacitor?.Plugins?.Geolocation) {
-        try { await window.Capacitor.Plugins.Geolocation.requestPermissions(); } catch(e){}
+      if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Geolocation) {
+        const geoPlugin = window.Capacitor.Plugins.Geolocation;
+        let permStatus = await geoPlugin.checkPermissions();
+        if (permStatus.location !== 'granted') {
+          await geoPlugin.requestPermissions();
+        }
       }
       navigator.geolocation.getCurrentPosition(
-        (position) => { if (typeof callbackSuccess === 'function') callbackSuccess({ lat: position.coords.latitude, lng: position.coords.longitude, accuracy: position.coords.accuracy }); },
-        (error) => { if (typeof callbackError === 'function') callbackError(error); },
+        (position) => {
+          if (typeof callbackSuccess === 'function') callbackSuccess({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+            accuracy: position.coords.accuracy
+          });
+        },
+        (error) => {
+          console.warn('Gagal mendapat lokasi:', error);
+          if (typeof callbackError === 'function') callbackError(error);
+        },
         { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
       );
     } catch (err) {
       navigator.geolocation.getCurrentPosition(
-        (position) => { if (typeof callbackSuccess === 'function') callbackSuccess({ lat: position.coords.latitude, lng: position.coords.longitude, accuracy: position.coords.accuracy }); },
-        (error) => { if (typeof callbackError === 'function') callbackError(error); },
+        (position) => {
+          if (typeof callbackSuccess === 'function') callbackSuccess({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+            accuracy: position.coords.accuracy
+          });
+        },
+        (error) => {
+          if (typeof callbackError === 'function') callbackError(error);
+        },
         { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
       );
     }
   };
 
-  // 5. OFFLINE DETECTION (tetap)
+  // 5. DETEKSI KONEKSI INTERNET
   (function() {
     const netBanner = document.createElement('div');
     netBanner.id = 'netStatusBanner';
-    netBanner.style.cssText = `position: fixed; top: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 440px; background: #ef4444; color: #ffffff; text-align: center; padding: 8px 12px; font-size: 12px; font-weight: 700; z-index: 99999; display: none;`;
-    netBanner.innerHTML = '⚠️ Koneksi terputus.';
+    netBanner.style.cssText = `
+      position: fixed; top: 0; left: 50%; transform: translateX(-50%);
+      width: 100%; max-width: 440px; background: #ef4444; color: #ffffff;
+      text-align: center; padding: 8px 12px; font-size: 12px; font-weight: 700;
+      z-index: 99999; display: none; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    `;
+    netBanner.innerHTML = '⚠️ Koneksi terputus. Pastikan data/internet aktif...';
     document.body.appendChild(netBanner);
+
     function showOfflineBanner(show) { netBanner.style.display = show ? 'block' : 'none'; }
+
     async function verifyRealInternet() {
       if (!navigator.onLine) { showOfflineBanner(true); return; }
       try {
@@ -158,7 +185,9 @@ document.addEventListener('DOMContentLoaded', function(){
         await fetch('https://www.gstatic.com/generate_204', { mode: 'no-cors', cache: 'no-store', signal: controller.signal });
         clearTimeout(timeoutId);
         showOfflineBanner(false);
-      } catch (err) { showOfflineBanner(true); }
+      } catch (err) {
+        showOfflineBanner(true);
+      }
     }
     verifyRealInternet();
     window.addEventListener('offline', () => showOfflineBanner(true));
@@ -166,17 +195,229 @@ document.addEventListener('DOMContentLoaded', function(){
     setInterval(verifyRealInternet, 10000);
   })();
 
-  // 6,7,8 tetap sama seperti aslinya
+  // 6. LOGIKA PENCARIAN & FAB DARURAT
   var goCari = document.getElementById('goCari');
-  if(goCari){ goCari.addEventListener('click', function(e){ e.preventDefault(); var pathNow = window.location.pathname; if (pathNow.includes('/pages/')) { window.location.href = 'cari-warga.html'; } else { window.location.href = 'pages/cari-warga.html'; } }); }
+  if(goCari){ 
+    goCari.addEventListener('click', function(e){ 
+      e.preventDefault(); 
+      var pathNow = window.location.pathname;
+      if (pathNow.includes('/pages/')) {
+        window.location.href = 'cari-warga.html';
+      } else {
+        window.location.href = 'pages/cari-warga.html';
+      }
+    }); 
+  }
+  
   var fabContainer = document.getElementById('fabContainer');
   var fabMain = document.getElementById('fabMain');
   var fabClose = document.getElementById('fabClose');
   var fabOptions = document.getElementById('fabOptions');
-  if(fabMain && fabContainer){ fabMain.addEventListener('click', function(e){ e.stopPropagation(); fabContainer.classList.add('active'); if(fabOptions) fabOptions.style.display = 'flex'; fabMain.style.display = 'none'; if(fabClose) fabClose.style.display = 'flex'; }); }
-  if(fabClose && fabContainer){ fabClose.addEventListener('click', function(e){ e.stopPropagation(); fabContainer.classList.remove('active'); if(fabOptions) fabOptions.style.display = 'none'; if(fabClose) fabClose.style.display = 'none'; if(fabMain) fabMain.style.display = 'flex'; }); }
-  function goBackSafe(){ if (window.history.length > 1 && document.referrer && document.referrer.indexOf(window.location.host) !== -1) { window.history.back(); } else { var pathNow = window.location.pathname; if (pathNow.includes('/pages/')) { window.location.replace('../index.html'); } else { window.location.replace('index.html'); } } }
-  document.querySelectorAll('.back, #backBtn, .btn-back-modern, .btn-back-berita, .btn-back-link').forEach(function(el){ el.addEventListener('click', function(e){ e.preventDefault(); goBackSafe(); }); });
-  function addRippleEffect(e){ var el = this; if(navigator.vibrate) navigator.vibrate(10); var rect = el.getBoundingClientRect(); var ripple = document.createElement('span'); ripple.className = 'ripple'; ripple.style.background = 'rgba(251,191,36,0.22)'; var size = Math.max(rect.width, rect.height) * 1.2; ripple.style.width = ripple.style.height = size + 'px'; ripple.style.left = (e.clientX - rect.left - size/2) + 'px'; ripple.style.top = (e.clientY - rect.top - size/2) + 'px'; el.appendChild(ripple); setTimeout(function(){ ripple.remove(); }, 350); }
-  document.querySelectorAll('.g8-item,.kat-card,.rekom-card,.jaki-item,.result-item,.menu-jaki.menu-item,.item-layanan').forEach(function(item){ item.addEventListener('click', addRippleEffect); });
+  
+  if(fabMain && fabContainer){
+    fabMain.addEventListener('click', function(e){
+      e.stopPropagation();
+      fabContainer.classList.add('active');
+      if(fabOptions) fabOptions.style.display = 'flex';
+      fabMain.style.display = 'none';
+      if(fabClose) fabClose.style.display = 'flex';
+    });
+  }
+  
+  if(fabClose && fabContainer){
+    fabClose.addEventListener('click', function(e){
+      e.stopPropagation();
+      fabContainer.classList.remove('active');
+      if(fabOptions) fabOptions.style.display = 'none';
+      if(fabClose) fabClose.style.display = 'none';
+      if(fabMain) fabMain.style.display = 'flex';
+    });
+  }
+
+  // 7. LOGIKA MODAL SERBAGUNA
+  var modal = document.getElementById('universal-modal');
+  var modalTitle = document.getElementById('modal-title');
+  var modalBody = document.getElementById('modal-body');
+  var modalClose = document.getElementById('modal-close');
+
+  function openModal(t,b){ if(!modal||!modalTitle||!modalBody) return; modalTitle.innerHTML=t; modalBody.innerHTML=b; modal.classList.add('active'); document.body.style.overflow='hidden'; }
+  function closeModal(){ if(!modal) return; modal.classList.remove('active'); document.body.style.overflow=''; }
+
+  if(modalClose) modalClose.addEventListener('click', closeModal);
+  if(modal) modal.addEventListener('click', function(e){ if(e.target===modal) closeModal(); });
+
+  // 8. LOGIKA NAVIGASI BACK HP & KELUAR APLIKASI
+  function goBackSafe(){ 
+    if (window.history.length > 1 && document.referrer && document.referrer.indexOf(window.location.host) !== -1) {
+      window.history.back();
+    } else {
+      var pathNow = window.location.pathname;
+      if (pathNow.includes('/pages/')) {
+        window.location.replace('../index.html');
+      } else {
+        window.location.replace('index.html');
+      }
+    }
+  }
+
+  document.querySelectorAll('.back, #backBtn, .btn-back-modern, .btn-back, .btn-back-berita, .btn-back-link').forEach(function(el){ 
+    el.addEventListener('click', function(e){ 
+      e.preventDefault(); 
+      goBackSafe(); 
+    }); 
+  });
+
+  var backPressedOnce = false;
+
+  function handleExitApp() {
+    if (backPressedOnce) {
+      if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) { 
+        window.Capacitor.Plugins.App.exitApp(); 
+      } else { 
+        if (typeof window.close === 'function') window.close();
+      }
+    } else {
+      backPressedOnce = true;
+      var toast = document.getElementById('exit-app-toast') || document.getElementById('exit-toast');
+      if (toast) {
+        toast.classList.add('show');
+        setTimeout(function() {
+          toast.classList.remove('show');
+          backPressedOnce = false;
+        }, 2000);
+      } else {
+        var newToast = document.createElement('div');
+        newToast.id = 'exit-app-toast';
+        newToast.innerHTML = '📱 Ketuk sekali lagi untuk keluar aplikasi';
+        newToast.style.cssText = 'position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:rgba(15,23,42,0.92);color:#ffffff;padding:12px 22px;border-radius:999px;font-size:12px;font-weight:700;z-index:9999999;box-shadow:0 6px 16px rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.1);backdrop-filter:blur(4px);transition:all 0.3s ease;';
+        document.body.appendChild(newToast);
+        
+        setTimeout(function(){ 
+          newToast.style.opacity = '0';
+          setTimeout(function() { newToast.remove(); }, 300);
+          backPressedOnce = false; 
+        }, 2000);
+      }
+    }
+  }
+
+  function checkIsMainTab() {
+    var path = window.location.pathname.toLowerCase();
+    var fileName = path.substring(path.lastIndexOf('/') + 1);
+    
+    var isMainPage = (fileName === '' || fileName === 'index.html' || path.endsWith('/')) && !path.includes('/pages/');
+    
+    if (isMainPage && window.history.length <= 1) {
+      return true;
+    }
+    return false;
+  }
+
+  var onHardwareBackButton = function(e){
+    if (e && typeof e.preventDefault === 'function') e.preventDefault();
+
+    if(fabContainer && fabContainer.classList.contains('active')){ 
+      if (typeof window.closeFabDarurat === 'function') {
+        window.closeFabDarurat(false);
+      } else {
+        fabContainer.classList.remove('active'); 
+        if(fabOptions) fabOptions.style.display='none'; 
+        if(fabClose) fabClose.style.display='none'; 
+        if(fabMain) fabMain.style.display='flex'; 
+      }
+      return; 
+    }
+
+    if (modal && modal.classList.contains('active')) { 
+      closeModal(); 
+      return; 
+    }
+
+    var uniModal = document.getElementById('universal-modal');
+    if (uniModal && (uniModal.style.display === 'flex' || uniModal.classList.contains('show-overlay'))) {
+      if (typeof window.closeUniversalModal === 'function') window.closeUniversalModal();
+      return;
+    }
+
+    var satpamModal = document.getElementById('satpam-modal');
+    if (satpamModal && (satpamModal.style.display === 'flex' || satpamModal.classList.contains('show-overlay'))) {
+      if (typeof window.closeSatpamModal === 'function') window.closeSatpamModal();
+      return;
+    }
+
+    var ambulansModal = document.getElementById('ambulans-modal');
+    if (ambulansModal && (ambulansModal.style.display === 'flex' || ambulansModal.classList.contains('show-overlay'))) {
+      if (typeof window.closeAmbulansModal === 'function') window.closeAmbulansModal();
+      return;
+    }
+
+    var cameraOverlay = document.getElementById('cameraOverlay');
+    if (cameraOverlay && cameraOverlay.classList.contains('show')) {
+      if (typeof window.closeCustomCamera === 'function') window.closeCustomCamera();
+      return;
+    }
+
+    var customAlert = document.getElementById('custom-alert-modal');
+    if (customAlert && (customAlert.style.display === 'flex' || customAlert.classList.contains('show-overlay'))) {
+      if (typeof window.closeCustomAlert === 'function') window.closeCustomAlert();
+      return;
+    }
+
+    if (checkIsMainTab()) {
+      handleExitApp();
+    } else {
+      goBackSafe();
+    }
+  };
+
+  if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) { 
+    window.Capacitor.Plugins.App.addListener('backButton', onHardwareBackButton); 
+  } else { 
+    document.addEventListener('backbutton', onHardwareBackButton, false); 
+  }
+
+  // 9. EFEK RIPPLE
+  function addRippleEffect(e){
+    var el = this;
+    if(navigator.vibrate) navigator.vibrate(10);
+    var rect = el.getBoundingClientRect();
+    var ripple = document.createElement('span');
+    ripple.className = 'ripple';
+    ripple.style.background = 'rgba(251,191,36,0.22)';
+    var size = Math.max(rect.width, rect.height) * 1.2;
+    ripple.style.width = ripple.style.height = size + 'px';
+    ripple.style.left = (e.clientX - rect.left - size/2) + 'px';
+    ripple.style.top = (e.clientY - rect.top - size/2) + 'px';
+    el.appendChild(ripple);
+    setTimeout(function(){ ripple.remove(); }, 350);
+  }
+
+  document.querySelectorAll('.g8-item,.kat-card,.rekom-card,.jaki-item,.result-item,.menu-jaki.menu-item,.item-layanan').forEach(function(item){
+    item.addEventListener('click', addRippleEffect);
+  });
+
+  // 10. KONTROL IKLAN GOOGLE ADMOB (NATIVE CARD)
+  async function initAdMobNative() {
+    try {
+      if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.AdMob) {
+        const { AdMob } = window.Capacitor.Plugins;
+        await AdMob.initialize();
+
+        const adCard = document.getElementById('admob-native-card');
+        if (adCard) {
+          await AdMob.showBanner({
+            adId: 'ca-app-pub-209615581034089/7642672909',
+            adSize: 'MEDIUM_RECTANGLE',
+            position: 'CENTER',
+            margin: 0
+          });
+          console.log('✅ AdMob Native berhasil dimuat!');
+        }
+      }
+    } catch (err) {
+      console.warn('⚠️ AdMob belum siap atau berjalan di Browser Web:', err);
+    }
+  }
+
+  setTimeout(initAdMobNative, 1000);
 });
