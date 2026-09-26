@@ -106,12 +106,8 @@ jobs:
             public void onCreate(Bundle savedInstanceState) {
               super.onCreate(savedInstanceState);
 
-              // Aktifkan Geolocation API di WebView
               this.bridge.getWebView().getSettings().setGeolocationEnabled(true);
 
-              // Ganti WebChromeClient agar getUserMedia() & navigator.geolocation
-              // otomatis diberi izin oleh WebView (izin OS tetap diminta lebih dulu
-              // lewat plugin Capacitor Camera/Geolocation di kode JS).
               this.bridge.getWebView().setWebChromeClient(new BridgeWebChromeClient(this.bridge) {
                 @Override
                 public void onPermissionRequest(final PermissionRequest request) {
@@ -127,6 +123,22 @@ jobs:
           }
           EOF
           echo "MainActivity.java custom berhasil ditulis!"
+
+      - name: Ensure Camera & Location Permissions in Manifest
+        run: |
+          MANIFEST="android/app/src/main/AndroidManifest.xml"
+          PERMS='    <uses-permission android:name="android.permission.CAMERA" />
+              <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+              <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+              <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+              <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+              <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+              <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+              <uses-feature android:name="android.hardware.camera" android:required="false" />
+              <uses-feature android:name="android.hardware.location.gps" android:required="false" />'
+          awk -v perms="$PERMS" '/<application/ && !x {print perms; x=1} {print}' "$MANIFEST" > "$MANIFEST.tmp" && mv "$MANIFEST.tmp" "$MANIFEST"
+          echo "--- Manifest setelah disuntik izin ---"
+          grep -E "uses-permission|uses-feature" "$MANIFEST"
 
       - name: Force Apply icon.png to All Android Densities
         run: |
