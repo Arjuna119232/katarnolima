@@ -241,7 +241,7 @@
   <!-- HEADER -->
   <div class="header-app">
     <div class="header-left">
-      <a href="javascript:void(0)" onclick="goToIndex()" class="btn-back" title="Kembali">←</a>
+      <a href="../index.html" class="btn-back" id="btnBackHeader" title="Kembali">←</a>
       <div class="header-title">
         <h1>💬 Diskusi Warga</h1>
         <p>RW 05 Poncol Jaya</p>
@@ -495,7 +495,7 @@ if (formDiskusi) {
   formDiskusi.addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    // CEK LOGIN DI AWAL (LANGSUNG MUNCUL TANPA TUNGGU FIREBASE)
+    // CEK LOGIN DI AWAL
     if (!checkAuthOrRedirect()) return;
 
     const textVal = inputPesan.value.trim();
@@ -529,18 +529,32 @@ if (formDiskusi) {
 </script>
 
 <script>
-// --- PENANGANAN NAVIGASI BACK SISTEM HP AGAR MENDORONG KE INDEX.HTML ---
-function goToIndex() {
-  window.location.href = '../index.html';
+// --- PENANGANAN NAVIGASI BACK SISTEM HP AGAR KE INDEX.HTML ---
+const handleHardwareBackButtonPages = function(e) {
+  if (e && typeof e.preventDefault === 'function') e.preventDefault();
+
+  if (window.history.length > 1 && document.referrer && document.referrer.includes(window.location.host)) {
+    window.history.back();
+  } else {
+    window.location.href = '../index.html';
+  }
+};
+
+if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
+  window.Capacitor.Plugins.App.removeAllListeners();
+  window.Capacitor.Plugins.App.addListener('backButton', handleHardwareBackButtonPages);
+} else {
+  document.removeEventListener('backbutton', handleHardwareBackButtonPages);
+  document.addEventListener('backbutton', handleHardwareBackButtonPages, false);
 }
 
-// Menyiapkan history state saat halaman dibuka
-window.history.pushState({ page: 'diskusi-rw' }, '', window.location.href);
-
-// Menangkap gesture/tombol back HP
-window.addEventListener('popstate', function(e) {
-  goToIndex();
-});
+const btnBackHeader = document.getElementById('btnBackHeader');
+if (btnBackHeader) {
+  btnBackHeader.addEventListener('click', function(e) {
+    e.preventDefault();
+    handleHardwareBackButtonPages(e);
+  });
+}
 </script>
 </body>
 </html>

@@ -331,7 +331,7 @@ html, body {
 <div class="page-root">
   <!-- HEADER -->
   <div class="app-header">
-    <a href="javascript:void(0)" onclick="goToProfil()" class="btn-back-link" title="Kembali ke Profil">
+    <a href="profil.html" class="btn-back-link" id="btnBackHeader" title="Kembali ke Profil">
       <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
     </a>
     <div class="header-title-text">Tentang Aplikasi KATARNOLIMA</div>
@@ -431,9 +431,8 @@ html, body {
   </div>
 </div>
 
+<script src="../assets/js/script.js?v=27"></script>
 <script>
-let isModalOpen = false;
-
 function playSuccessSound() {
   if ('speechSynthesis' in window) {
     window.speechSynthesis.cancel();
@@ -461,7 +460,6 @@ function showCustomModal(icon, title, desc) {
     modal.style.display = 'flex';
     setTimeout(() => {
       modal.classList.add('show-overlay');
-      isModalOpen = true;
     }, 10);
   }
 }
@@ -472,31 +470,53 @@ function closeCustomModal() {
     modal.classList.remove('show-overlay');
     setTimeout(() => {
       modal.style.display = 'none';
-      isModalOpen = false;
     }, 200);
   }
 }
 
-function goToProfil() {
-  window.location.href = 'profil.html';
-}
+// --- PENANGANAN NAVIGASI BACK SISTEM HP & CAPACITOR ANDROID ---
+const handleHardwareBackButtonPages = function(e) {
+  if (e && typeof e.preventDefault === 'function') e.preventDefault();
 
-// Menangkap gesture / tombol back HP
-window.addEventListener('popstate', function(e) {
-  if (isModalOpen) {
+  const modal = document.getElementById('custom-modal');
+  
+  // Jika modal custom sedang terbuka, tutup modalnya terlebih dahulu
+  if (modal && modal.classList.contains('show-overlay')) {
     closeCustomModal();
-    // Menjaga agar pengguna tetap di halaman tentang.html setelah pop-up ditutup
-    window.history.pushState({ page: 'tentang' }, '', window.location.href);
     return;
   }
-  
-  goToProfil();
+
+  if (window.history.length > 1 && document.referrer && document.referrer.includes(window.location.host)) {
+    window.history.back();
+  } else {
+    window.location.href = 'profil.html';
+  }
+};
+
+if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
+  window.Capacitor.Plugins.App.removeAllListeners();
+  window.Capacitor.Plugins.App.addListener('backButton', handleHardwareBackButtonPages);
+} else {
+  document.removeEventListener('backbutton', handleHardwareBackButtonPages);
+  document.addEventListener('backbutton', handleHardwareBackButtonPages, false);
+}
+
+const btnBackHeader = document.getElementById('btnBackHeader');
+if (btnBackHeader) {
+  btnBackHeader.addEventListener('click', function(e) {
+    e.preventDefault();
+    handleHardwareBackButtonPages(e);
+  });
+}
+
+window.addEventListener('popstate', function(e) {
+  const modal = document.getElementById('custom-modal');
+  if (modal && modal.classList.contains('show-overlay')) {
+    closeCustomModal();
+  }
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Set history state awal
-  window.history.pushState({ page: 'tentang' }, '', window.location.href);
-
   const modal = document.getElementById('custom-modal');
   if (modal) {
     modal.addEventListener('click', (e) => {

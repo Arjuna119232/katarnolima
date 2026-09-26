@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>KATARNOLIMA RW 05 - Berita & Informasi RW</title>
-<link rel="icon" href="assets/img/logo-resmi-karang-taruna.jpg">
-<link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="assets/css/style.css?v=27">
+<link rel="icon" href="../assets/img/logo-resmi-karang-taruna.jpg">
+<link rel="manifest" href="../manifest.json">
+<link rel="stylesheet" href="../assets/css/style.css?v=27">
 <style>
   /* RESET & BASE SYSTEM */
   *, *::before, *::after {
@@ -230,8 +230,8 @@
   <!-- HEADER BLUE -->
   <div class="berita-header-blue">
     <div class="header-nav-top">
-      <!-- Navigasi kembali: Mengutamakan history back, jika tidak ada baru mengarah ke index.html -->
-      <a href="index.html" class="btn-back-berita" onclick="if(history.length > 1){ history.back(); return false; }">←</a>
+      <!-- FIXED PATH KE ../index.html -->
+      <a href="../index.html" class="btn-back-berita" id="btnBackHeader">←</a>
       <h1>Berita & Informasi</h1>
     </div>
     <div class="berita-greeting">Hai, Warga RW 05! 👋</div>
@@ -255,7 +255,7 @@
   <div style="height:20px;"></div>
 </div>
 
-<script src="assets/js/script.js?v=27"></script>
+<script src="../assets/js/script.js?v=27"></script>
 <script type="module">
   // @ts-nocheck
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -272,6 +272,25 @@
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
+
+  // LOGIKA PENANGAAN BACK HARDWARE HP & TOMBOL HEADER
+  const handleHardwareBackButtonPages = function(e) {
+    if (e && typeof e.preventDefault === 'function') e.preventDefault();
+
+    if (window.history.length > 1 && document.referrer && document.referrer.includes(window.location.host)) {
+      window.history.back();
+    } else {
+      window.location.href = '../index.html';
+    }
+  };
+
+  if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
+    window.Capacitor.Plugins.App.removeAllListeners();
+    window.Capacitor.Plugins.App.addListener('backButton', handleHardwareBackButtonPages);
+  } else {
+    document.removeEventListener('backbutton', handleHardwareBackButtonPages);
+    document.addEventListener('backbutton', handleHardwareBackButtonPages, false);
+  }
 
   function renderBerita(list) {
     const container = document.getElementById('listBeritaRealtime');
@@ -317,6 +336,14 @@
   }
 
   document.addEventListener('DOMContentLoaded', () => {
+    const btnBackHeader = document.getElementById('btnBackHeader');
+    if (btnBackHeader) {
+      btnBackHeader.addEventListener('click', (e) => {
+        e.preventDefault();
+        handleHardwareBackButtonPages(e);
+      });
+    }
+
     // KUOTA OPTIMIZATION: DIBATASI HANYA MEMUAT 10 BERITA TERBARU
     const qBerita = query(collection(db, "berita_rw05"), orderBy("createdAt", "desc"), limit(10));
 

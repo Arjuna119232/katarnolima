@@ -279,7 +279,7 @@ html, body {
 <div class="page-root">
   <!-- HEADER -->
   <div class="app-header">
-    <a href="profil.html" class="header-left">
+    <a href="profil.html" class="header-left" id="btnBackHeader">
       <div class="btn-back">←</div>
       <span>Ubah Profil</span>
     </a>
@@ -381,6 +381,7 @@ html, body {
   </div>
 </div>
 
+<script src="../assets/js/script.js?v=27"></script>
 <script type="module">
 // @ts-nocheck
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -590,6 +591,35 @@ if(btnSimpan){
       btnSimpan.textContent = 'Simpan';
       btnSimpan.disabled = false;
     }
+  });
+}
+</script>
+
+<script>
+// --- PENANGANAN NAVIGASI BACK SISTEM HP & CAPACITOR ANDROID ---
+const handleHardwareBackButtonPages = function(e) {
+  if (e && typeof e.preventDefault === 'function') e.preventDefault();
+
+  if (window.history.length > 1 && document.referrer && document.referrer.includes(window.location.host)) {
+    window.history.back();
+  } else {
+    window.location.href = 'profil.html';
+  }
+};
+
+if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
+  window.Capacitor.Plugins.App.removeAllListeners();
+  window.Capacitor.Plugins.App.addListener('backButton', handleHardwareBackButtonPages);
+} else {
+  document.removeEventListener('backbutton', handleHardwareBackButtonPages);
+  document.addEventListener('backbutton', handleHardwareBackButtonPages, false);
+}
+
+const btnBackHeader = document.getElementById('btnBackHeader');
+if (btnBackHeader) {
+  btnBackHeader.addEventListener('click', function(e) {
+    e.preventDefault();
+    handleHardwareBackButtonPages(e);
   });
 }
 </script>

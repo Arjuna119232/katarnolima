@@ -5,9 +5,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>KATARNOLIMA RW 05 - Lapor Aduan Warga</title>
-<link rel="icon" href="assets/img/logo-resmi-karang-taruna.jpg">
-<link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="assets/css/style.css?v=27">
+<link rel="icon" href="../assets/img/logo-resmi-karang-taruna.jpg">
+<link rel="manifest" href="../manifest.json">
+<link rel="stylesheet" href="../assets/css/style.css?v=27">
 <style>
   /* RESET & BASE SYSTEM */
   *, *::before, *::after {
@@ -40,7 +40,6 @@
   }
   .header-left-grp { display: flex; align-items: center; gap: 12px; }
   
-  /* DIUBAH MENJADI .btn-back-direct AGAR TIDAK DICEGAT OLEH SCRIPT.JS */
   .btn-back-direct {
     background: #f1f5f9;
     border: 1px solid #e2e8f0;
@@ -253,7 +252,7 @@
     transition: transform 0.15s ease;
   }
   .btn-submit:active { transform: scale(0.97); }
-  .badge-gps { display: inline-block; padding: 6px 12px; background: #e0f2fe; color: #0369a1; border-radius: 99px; font-size: 11px; font-weight: 800; }
+  .badge-gps { display: inline-block; padding: 6px 12px; background: #e0f2fe; color: #0369a1; border-radius: 12px; font-size: 11px; font-weight: 800; text-align: left; word-break: break-word; line-height: 1.4; }
 
   /* PRIVACY ANONIM TOGGLE BOX */
   .privacy-option-box {
@@ -326,6 +325,86 @@
     transition: transform 0.15s ease;
   }
   .btn-remove-media:active { transform: scale(0.9); }
+
+  /* POP-UP MODAL KUSTOM MODERN & PROFESIONAL */
+  .modern-dialog-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .modern-dialog-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .modern-dialog-card {
+    background: #ffffff;
+    width: 100%;
+    max-width: 330px;
+    border-radius: 28px;
+    padding: 24px 20px;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.2);
+    transform: scale(0.9);
+    transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 1px solid #f1f5f9;
+  }
+  .modern-dialog-overlay.show .modern-dialog-card {
+    transform: scale(1);
+  }
+  .modern-dialog-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 22px;
+    margin: 0 auto 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+  }
+  .modern-dialog-icon.warning { background: #fef3c7; color: #d97706; }
+  .modern-dialog-icon.success { background: #dcfce7; color: #16a34a; }
+  .modern-dialog-icon.error { background: #fee2e2; color: #dc2626; }
+  .modern-dialog-icon.info { background: #e0f2fe; color: #0284c7; }
+  
+  .modern-dialog-title {
+    font-size: 16px;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 8px;
+    letter-spacing: -0.2px;
+  }
+  .modern-dialog-msg {
+    font-size: 12.5px;
+    color: #475569;
+    font-weight: 600;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    white-space: pre-line;
+  }
+  .btn-dialog-primary {
+    width: 100%;
+    padding: 13px;
+    background: #0f172a;
+    color: #fbbf24;
+    border: none;
+    border-radius: 14px;
+    font-weight: 800;
+    font-size: 13px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+    transition: transform 0.15s ease;
+  }
+  .btn-dialog-primary:active { transform: scale(0.96); }
 </style>
 </head>
 <body>
@@ -334,8 +413,7 @@
   <!-- HEADER -->
   <div class="header-app">
     <div class="header-left-grp">
-      <!-- CLASS DIUBAH MENJADI btn-back-direct AGAR MENGARAH LANGSUNG KE INDEX.HTML -->
-      <a href="index.html" class="btn-back-direct">←</a>
+      <a href="../index.html" class="btn-back-direct">←</a>
       <h1 style="font-size:16px; font-weight:800; margin:0; letter-spacing:-0.2px;">Laporan Warga</h1>
     </div>
     <button class="btn-search-icon" id="btnToggleSearch">🔍</button>
@@ -466,7 +544,7 @@
       </div>
 
       <div id="gpsInfo" style="display:none; text-align:center; margin-bottom:16px;">
-        <span class="badge-gps">📍 Koordinat: <span id="coordsText">-</span></span>
+        <span class="badge-gps">📍 Lokasi: <span id="coordsText">-</span></span>
       </div>
 
       <button type="submit" id="btnKirimAduan" class="btn-submit">
@@ -502,7 +580,17 @@
   </div>
 </div>
 
-<script src="assets/js/script.js?v=27"></script>
+<!-- POP-UP DIALOG KUSTOM MODERN -->
+<div class="modern-dialog-overlay" id="modernDialog">
+  <div class="modern-dialog-card">
+    <div class="modern-dialog-icon warning" id="dialogIcon">⚠️</div>
+    <div class="modern-dialog-title" id="dialogTitle">Notifikasi</div>
+    <div class="modern-dialog-msg" id="dialogMsg">Pesan notifikasi...</div>
+    <button type="button" class="btn-dialog-primary" id="btnDialogClose">Mengerti</button>
+  </div>
+</div>
+
+<script src="../assets/js/script.js?v=27"></script>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -525,8 +613,38 @@
   let rawReportsArray = [];
   let currentActiveUserName = '';
 
-  // STATE TRACKING UNTUK MODAL AGAR NAVIGASI BACK HP HANYA MENUTUP MODAL
-  let activeModalType = null; // 'form' atau 'detail'
+  let activeModalType = null;
+
+  /* FUNGSI TAMPILKAN POP-UP MODAL KUSTOM MODERN */
+  window.showModernPopup = function({ title = 'Notifikasi', msg = '', type = 'warning', redirectUrl = null }) {
+    const dialog = document.getElementById('modernDialog');
+    const elTitle = document.getElementById('dialogTitle');
+    const elMsg = document.getElementById('dialogMsg');
+    const elIcon = document.getElementById('dialogIcon');
+    const btnClose = document.getElementById('btnDialogClose');
+
+    if (!dialog) return;
+
+    if (elTitle) elTitle.textContent = title;
+    if (elMsg) elMsg.textContent = msg;
+
+    if (elIcon) {
+      elIcon.className = `modern-dialog-icon ${type}`;
+      if (type === 'warning') elIcon.textContent = '⚠️';
+      else if (type === 'error') elIcon.textContent = '❌';
+      else if (type === 'success') elIcon.textContent = '✅';
+      else elIcon.textContent = 'ℹ️';
+    }
+
+    dialog.classList.add('show');
+
+    if (btnClose) {
+      btnClose.onclick = () => {
+        dialog.classList.remove('show');
+        if (redirectUrl) window.location.href = redirectUrl;
+      };
+    }
+  };
 
   function openModalWithHistory(type) {
     activeModalType = type;
@@ -540,11 +658,43 @@
     }
   }
 
-  // EVENT LISTENER TANGKAP GESTURE / TOMBOL BACK HP
+  const handleHardwareBackButtonPages = function(e) {
+    if (e && typeof e.preventDefault === 'function') e.preventDefault();
+
+    const modalForm = document.getElementById('modalFormAduan');
+    const modalDetail = document.getElementById('modalDetailAduan');
+    const dialog = document.getElementById('modernDialog');
+
+    if (dialog && dialog.classList.contains('show')) {
+      dialog.classList.remove('show');
+      return;
+    }
+    if (modalForm && modalForm.classList.contains('show')) {
+      modalForm.classList.remove('show');
+      activeModalType = null;
+      return;
+    }
+    if (modalDetail && modalDetail.classList.contains('show')) {
+      modalDetail.classList.remove('show');
+      activeModalType = null;
+      return;
+    }
+
+    if (window.history.length > 1 && document.referrer && document.referrer.includes(window.location.host)) {
+      window.history.back();
+    } else {
+      window.location.href = '../index.html';
+    }
+  };
+
   window.addEventListener('popstate', () => {
     const modalForm = document.getElementById('modalFormAduan');
     const modalDetail = document.getElementById('modalDetailAduan');
-    
+    const dialog = document.getElementById('modernDialog');
+
+    if (dialog && dialog.classList.contains('show')) {
+      dialog.classList.remove('show');
+    }
     if (modalForm && modalForm.classList.contains('show')) {
       modalForm.classList.remove('show');
       activeModalType = null;
@@ -555,52 +705,61 @@
     }
   });
 
+  if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
+    window.Capacitor.Plugins.App.removeAllListeners();
+    window.Capacitor.Plugins.App.addListener('backButton', handleHardwareBackButtonPages);
+  } else {
+    document.removeEventListener('backbutton', handleHardwareBackButtonPages);
+    document.addEventListener('backbutton', handleHardwareBackButtonPages, false);
+  }
+
   function checkAuthOrRedirect() {
     const userSession = localStorage.getItem('rw05_current_user') || localStorage.getItem('rw05_user_login');
     const firebaseUser = auth.currentUser;
     if (!userSession && !firebaseUser) {
-      showCustomAlert('⚠️ Silakan login/daftar akun terlebih dahulu untuk membuat laporan warga.', 'profil.html');
+      window.showModernPopup({
+        title: 'Autentikasi Diperlukan',
+        msg: 'Silakan login/daftar akun terlebih dahulu untuk membuat laporan aduan warga.',
+        type: 'warning',
+        redirectUrl: 'profil.html'
+      });
       return false;
     }
     return true;
-  }
-
-  function showCustomAlert(message, redirectUrl) {
-    let alertModal = document.getElementById('customAlertModal');
-    if (!alertModal) {
-      alertModal = document.createElement('div');
-      alertModal.id = 'customAlertModal';
-      alertModal.style.cssText = 'position:fixed; inset:0; background:rgba(15,23,42,0.6); backdrop-filter:blur(6px); z-index:2000; display:flex; align-items:center; justify-content:center; padding:20px;';
-      alertModal.innerHTML = `
-        <div style="background:#ffffff; width:100%; max-width:320px; border-radius:24px; padding:24px 20px; text-align:center; box-shadow:0 10px 30px rgba(0,0,0,0.15);">
-          <div style="font-size:36px; margin-bottom:12px;">🔒</div>
-          <h3 style="font-size:15px; font-weight:800; color:#0f172a; margin-bottom:8px;">Autentikasi Diperlukan</h3>
-          <p id="customAlertMsg" style="font-size:12px; color:#475569; font-weight:600; line-height:1.4; margin-bottom:20px;"></p>
-          <button type="button" id="customAlertBtn" style="width:100%; padding:12px; background:#0f172a; color:#fbbf24; border:none; border-radius:14px; font-weight:800; font-size:13px; cursor:pointer;">Masuk / Daftar</button>
-        </div>
-      `;
-      document.body.appendChild(alertModal);
-    }
-    document.getElementById('customAlertMsg').textContent = message;
-    alertModal.style.display = 'flex';
-
-    document.getElementById('customAlertBtn').onclick = () => {
-      alertModal.style.display = 'none';
-      if (redirectUrl) {
-        window.location.href = redirectUrl;
-      }
-    };
   }
 
   let compressedBase64 = null;
   let isVideoType = false;
   let latValue = null;
   let lngValue = null;
+  let lokasiGpsText = '';
 
   function escapeHtml(text = '') {
     return String(text).replace(/[&<>"']/g, function(m = '') {
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
     });
+  }
+
+  /* REVERSE GEOCODING NAMA TEMPAT */
+  async function fetchLocationName(lat, lng) {
+    try {
+      const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`, {
+        headers: { 'Accept-Language': 'id-ID,id' }
+      });
+      const data = await res.json();
+      if (data && data.address) {
+        const addr = data.address;
+        const road = addr.road || addr.pedestrian || addr.suburb || addr.neighbourhood || '';
+        const village = addr.village || addr.suburb || addr.city_district || '';
+        const city = addr.city || addr.town || addr.regency || '';
+        
+        let formattedName = [road, village, city].filter(Boolean).join(', ');
+        return formattedName || data.display_name;
+      }
+    } catch(e) {
+      console.warn('Gagal ambil nama lokasi:', e);
+    }
+    return `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
   }
 
   function renderReports(filterKeyword = '') {
@@ -700,7 +859,7 @@
 
         const statusVal = d.status || 'Menunggu Verifikasi';
         const statusClass = statusVal.replace(/\s+/g, '');
-        const foto = d.fotoBase64 || 'assets/img/logo-resmi-karang-taruna.jpg';
+        const foto = d.fotoBase64 || '../assets/img/logo-resmi-karang-taruna.jpg';
         const isVideo = d.isVideo === true;
         
         const isAnonim = d.isAnonim === true;
@@ -789,7 +948,6 @@
 
     syncUserReportsRealtime(currentActiveUserName);
 
-    // FITUR SEARCH BAR
     const btnToggleSearch = document.getElementById('btnToggleSearch');
     const searchBarContainer = document.getElementById('searchBarContainer');
     const inputSearchQuery = document.getElementById('inputSearchQuery');
@@ -847,7 +1005,6 @@
     const btnKirimAduan = document.getElementById('btnKirimAduan');
     const chkAnonim = document.getElementById('chkAnonim');
 
-    // LOGIKA HAPUS MEDIA SAAT TOMBOL (X) DIKLIK
     if (btnRemoveMedia) {
       btnRemoveMedia.addEventListener('click', () => {
         compressedBase64 = null;
@@ -859,7 +1016,6 @@
       });
     }
 
-    // AUTO-ATTACH & OPEN DARI INDEX (SESSIONSTORAGE)
     const urlParams = new URLSearchParams(window.location.search);
     const isAutoOpen = urlParams.get('autoOpen') === '1';
     const tempPhoto = sessionStorage.getItem('temp_aduan_photo');
@@ -953,7 +1109,11 @@
 
         if (file.type.startsWith('video/')) {
           if (file.size > 800 * 1024) {
-            alert('⚠️ Ukuran video terlalu besar! Maksimal ukuran file video adalah 800 KB (durasi singkat ~3-5 detik).');
+            window.showModernPopup({
+              title: 'Ukuran Video Terlalu Besar',
+              msg: 'Maksimal ukuran file video adalah 800 KB (durasi singkat ~3–5 detik).',
+              type: 'warning'
+            });
             inputFoto.value = '';
             return;
           }
@@ -989,25 +1149,63 @@
       });
     }
 
+    /* MEREKAM LOKASI GPS & POP-UP MODERN JIKA TERJADI ERROR */
     if (btnGPS) {
-      btnGPS.addEventListener('click', () => {
-        const win = window;
-        if (typeof win.requestGeoLocation === 'function') {
-          btnGPS.textContent = '📍 Merekam...';
-          win.requestGeoLocation(
-            (pos) => {
-              latValue = pos.lat;
-              lngValue = pos.lng;
-              if (coordsText) coordsText.textContent = `${latValue.toFixed(5)}, ${lngValue.toFixed(5)}`;
-              if (gpsInfo) gpsInfo.style.display = 'block';
-              btnGPS.textContent = '✅ GPS Terkunci';
-            },
-            () => {
-              btnGPS.textContent = '📍 Lock GPS';
-            }
+      btnGPS.addEventListener('click', (e) => {
+        if (e && e.preventDefault) e.preventDefault();
+        
+        btnGPS.textContent = '📍 Merekam...';
+
+        const successHandler = async (position) => {
+          const lat = position.coords ? position.coords.latitude : position.lat;
+          const lng = position.coords ? position.coords.longitude : position.lng;
+          
+          latValue = lat;
+          lngValue = lng;
+          btnGPS.textContent = '⏳ Mencari Tempat...';
+
+          lokasiGpsText = await fetchLocationName(latValue, lngValue);
+
+          if (coordsText) coordsText.textContent = `${lokasiGpsText} (${latValue.toFixed(5)}, ${lngValue.toFixed(5)})`;
+          if (gpsInfo) gpsInfo.style.display = 'block';
+          btnGPS.textContent = '✅ GPS Terkunci';
+        };
+
+        const errorHandler = (err) => {
+          console.warn('GPS Error:', err);
+          btnGPS.textContent = '📍 Lock GPS';
+          
+          window.showModernPopup({
+            title: 'Gagal Merekam GPS',
+            msg: 'Pastikan fitur lokasi/GPS di HP kamu sudah aktif dan diizinkan untuk aplikasi browser ini.',
+            type: 'error'
+          });
+        };
+
+        const geoOptions = {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0
+        };
+
+        if (window.requestGeoLocation && typeof window.requestGeoLocation === 'function') {
+          window.requestGeoLocation(
+            (pos) => successHandler({ lat: pos.lat, lng: pos.lng }),
+            errorHandler
+          );
+        } else if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            successHandler,
+            errorHandler,
+            geoOptions
           );
         } else {
-          alert('⚠️ Fitur GPS tidak tersedia.');
+          btnGPS.textContent = '📍 Lock GPS';
+          window.showModernPopup({
+            title: 'GPS Tidak Didukung',
+            msg: 'Fitur lokasi GPS tidak tersedia pada perangkat/browser kamu.',
+            type: 'warning'
+          });
         }
       });
     }
@@ -1017,7 +1215,11 @@
         e.preventDefault();
         if (!checkAuthOrRedirect()) return;
         if (!compressedBase64) {
-          alert('⚠️ Lampirkan foto/video bukti laporan terlebih dahulu.');
+          window.showModernPopup({
+            title: 'Lampiran Diperlukan',
+            msg: 'Silakan ambil/lampirkan foto atau video bukti laporan terlebih dahulu.',
+            type: 'warning'
+          });
           return;
         }
 
@@ -1041,8 +1243,11 @@
             deskripsi: payloadDesc,
             fotoBase64: compressedBase64,
             isVideo: isVideoType,
+            lat: latValue || null,
+            lng: lngValue || null,
             latitude: latValue || null,
             longitude: lngValue || null,
+            lokasiGps: lokasiGpsText || (latValue ? `${latValue}, ${lngValue}` : ''),
             status: "Menunggu Verifikasi",
             createdAt: serverTimestamp()
           });
@@ -1053,7 +1258,12 @@
             localStorage.setItem('rw05_user_report_ids', JSON.stringify(localIds));
           }
 
-          alert('✅ Laporan aduan warga berhasil dikirim ke pengurus RW 05!');
+          window.showModernPopup({
+            title: 'Berhasil Dikirim',
+            msg: 'Laporan aduan warga berhasil dikirim ke pengurus RW 05!',
+            type: 'success'
+          });
+
           formAduan.reset();
           if (currentUser && currentUser.nama && inputNama) inputNama.value = currentUser.nama;
           if (previewContainer) previewContainer.style.display = 'none';
@@ -1062,6 +1272,7 @@
           isVideoType = false;
           latValue = null;
           lngValue = null;
+          lokasiGpsText = '';
           btnGPS.textContent = '📍 Lock GPS';
           
           if (modalForm) {
@@ -1070,7 +1281,11 @@
           }
         } catch (err) {
           console.error('Firestore Error:', err);
-          alert('❌ Gagal mengirim laporan. Ukuran file terlalu besar atau periksa koneksi internet.');
+          window.showModernPopup({
+            title: 'Pengiriman Gagal',
+            msg: 'Gagal mengirim laporan. Ukuran file terlalu besar atau periksa koneksi internet.',
+            type: 'error'
+          });
         } finally {
           if (btnKirimAduan) {
             btnKirimAduan.disabled = false;

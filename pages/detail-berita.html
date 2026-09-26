@@ -196,6 +196,7 @@
     </div>
 </div>
 
+<script src="../assets/js/script.js?v=27"></script>
 <script type="module">
 // @ts-nocheck
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -290,18 +291,27 @@ document.addEventListener('DOMContentLoaded', loadArticleDetail);
 </script>
 
 <script>
-// --- PENANGANAN NAVIGASI BACK HP/SISTEM AGAR KE BERITA-RW.HTML ---
+// --- PENANGANAN NAVIGASI BACK HP & CAPACITOR ANDROID ---
 function goToBeritaRW() {
-    window.location.href = 'berita-rw.html';
+    if (window.history.length > 1 && document.referrer && document.referrer.includes(window.location.host)) {
+        window.history.back();
+    } else {
+        window.location.href = 'berita-rw.html';
+    }
 }
 
-// Menyiapkan history state saat halaman dibuka
-window.history.pushState({ page: 'detail-berita' }, '', window.location.href);
-
-// Menangkap gesture/tombol back HP
-window.addEventListener('popstate', function(e) {
+const handleHardwareBackButtonPages = function(e) {
+    if (e && typeof e.preventDefault === 'function') e.preventDefault();
     goToBeritaRW();
-});
+};
+
+if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
+    window.Capacitor.Plugins.App.removeAllListeners();
+    window.Capacitor.Plugins.App.addListener('backButton', handleHardwareBackButtonPages);
+} else {
+    document.removeEventListener('backbutton', handleHardwareBackButtonPages);
+    document.addEventListener('backbutton', handleHardwareBackButtonPages, false);
+}
 </script>
 
 </body>

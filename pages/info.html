@@ -448,16 +448,10 @@ body {
 </script>
 
 <script>
-// --- PENANGANAN NAVIGASI BACK SISTEM HP AGAR MENDORONG KE INDEX.HTML ---
-function goToIndex() {
-  window.location.href = '../index.html';
-}
+// --- PENANGANAN NAVIGASI BACK SISTEM HP & CAPACITOR ANDROID ---
+const handleHardwareBackButtonPages = function(e) {
+  if (e && typeof e.preventDefault === 'function') e.preventDefault();
 
-// Menyiapkan history state saat halaman pertama kali dibuka
-window.history.pushState({ page: 'info' }, '', window.location.href);
-
-// Menangkap event gesture/tombol back HP
-window.addEventListener('popstate', function(e) {
   const modal = document.getElementById('notif-detail-modal');
   
   // Jika modal detail sedang terbuka, tutup modalnya terlebih dahulu
@@ -465,9 +459,27 @@ window.addEventListener('popstate', function(e) {
     closeNotifDetailModal(false);
     return;
   }
-  
-  // Jika tidak ada modal terbuka, dorong halaman kembali ke Beranda (index.html)
-  goToIndex();
+
+  if (window.history.length > 1 && document.referrer && document.referrer.includes(window.location.host)) {
+    window.history.back();
+  } else {
+    window.location.href = '../index.html';
+  }
+};
+
+if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
+  window.Capacitor.Plugins.App.removeAllListeners();
+  window.Capacitor.Plugins.App.addListener('backButton', handleHardwareBackButtonPages);
+} else {
+  document.removeEventListener('backbutton', handleHardwareBackButtonPages);
+  document.addEventListener('backbutton', handleHardwareBackButtonPages, false);
+}
+
+window.addEventListener('popstate', function(e) {
+  const modal = document.getElementById('notif-detail-modal');
+  if (modal && modal.classList.contains('show')) {
+    closeNotifDetailModal(false);
+  }
 });
 </script>
 </body>
