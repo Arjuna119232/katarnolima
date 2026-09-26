@@ -2,16 +2,24 @@
   "appId": "com.katarnolima.rw05",
   "appName": "KATARNOLIMA RW05",
   "webDir": ".",
+  "bundledWebRuntime": false,
   "plugins": {
     "SplashScreen": {
       "launchShowDuration": 0
     },
     "PushNotifications": {
       "presentationOptions": ["badge", "sound", "alert"]
+    },
+    "Camera": {
+      "permissions": ["camera", "photos"]
+    },
+    "Geolocation": {
+      "permissions": ["location"]
     }
   },
   "android": {
     "allowMixedContent": true,
+    "androidScheme": "https",
     "icon": "assets/img/katar-app-icon.png"
   }
 }
