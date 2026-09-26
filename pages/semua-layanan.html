@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+<script>(function(){try{var m=localStorage.getItem('katar-theme')||'system';var d=m==='dark'||(m==='system'&&window.matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.setAttribute('data-theme',d?'dark':'light');document.documentElement.setAttribute('data-theme-pref',m);}catch(e){}})();</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f8fafc">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0f1a">
 <title>Semua Layanan - KATARNOLIMA RW 05</title>
 <link rel="icon" href="../assets/img/logo-resmi-karang-taruna.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/theme.css">
 <link rel="stylesheet" href="../assets/css/style.css?v=27">
 <style>
 /* RESET & SYSTEM BASE */
@@ -17,9 +22,9 @@
 }
 
 body {
-  background: #f8fafc !important;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  color: #0f172a;
+  background: var(--bg-page) !important;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: var(--ink-900);
   line-height: 1.5;
 }
 
@@ -27,7 +32,7 @@ body {
   width: 100%;
   max-width: 440px;
   margin: 0 auto;
-  background: #f8fafc !important;
+  background: var(--bg-page) !important;
   min-height: 100vh;
   padding-bottom: 40px;
   box-shadow: 0 0 30px rgba(15, 23, 42, 0.05);
@@ -45,25 +50,25 @@ body {
   position: sticky;
   top: 0;
   z-index: 20;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--surface-soft);
 }
 
 .btn-back-modern {
   width: 38px;
   height: 38px;
   border-radius: 12px;
-  background: #f1f5f9;
-  border: 1px solid #e2e8f0;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #0f172a;
+  color: var(--ink-900);
   cursor: pointer;
   transition: transform 0.15s ease;
 }
 .btn-back-modern:active {
   transform: scale(0.92);
-  background: #e2e8f0;
+  background: var(--border);
 }
 .btn-back-modern svg {
   width: 20px;
@@ -79,7 +84,7 @@ body {
   flex: 1;
   font-size: 16px;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--ink-900);
   text-align: center;
   margin-right: 38px;
   letter-spacing: -0.2px;
@@ -88,17 +93,17 @@ body {
 /* SEKSI KARTU GROUP */
 .section-layanan {
   margin: 16px 20px;
-  background: #ffffff;
+  background: var(--surface);
   border-radius: 20px;
   padding: 20px 16px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   box-shadow: 0 4px 16px rgba(15, 23, 42, 0.02);
 }
 
 .section-title {
   font-size: 12px;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--ink-900);
   margin-bottom: 16px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -152,19 +157,19 @@ body {
 .item-layanan p {
   font-size: 11px;
   font-weight: 700;
-  color: #334155;
+  color: var(--ink-700);
   line-height: 1.25;
 }
 
 /* KATEGORI WARNA SOFT IKON */
-.bg-blue { background: #eff6ff; }
-.bg-green { background: #f0fdf4; }
-.bg-amber { background: #fffbeb; }
-.bg-purple { background: #faf5ff; }
-.bg-rose { background: #fff1f2; }
-.bg-sky { background: #f0f9ff; }
-.bg-emerald { background: #ecfdf5; }
-.bg-indigo { background: #eef2ff; }
+.bg-blue { background: var(--tint-blue-50); }
+.bg-green { background: var(--tint-green-50); }
+.bg-amber { background: var(--tint-amber-50); }
+.bg-purple { background: var(--tint-purple-50); }
+.bg-rose { background: var(--tint-red-50); }
+.bg-sky { background: var(--tint-blue-50); }
+.bg-emerald { background: var(--tint-green-50); }
+.bg-indigo { background: var(--tint-blue-50); }
 
 /* STYLE FEATURE COMING SOON */
 .item-layanan.disabled {
@@ -181,13 +186,13 @@ body {
   top: -5px;
   right: -5px;
   background: #fbbf24;
-  color: #0f172a;
+  color: var(--ink-900);
   font-size: 8px;
   font-weight: 900;
   padding: 2px 6px;
   border-radius: 8px;
   letter-spacing: 0.5px;
-  border: 1.5px solid #ffffff;
+  border: 1.5px solid var(--surface);
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
@@ -209,11 +214,11 @@ body {
 .modal-overlay.show-overlay { opacity: 1; }
 
 .modal-box {
-  background: #ffffff;
+  background: var(--surface);
   width: 100%;
   max-width: 380px;
   border-radius: 24px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15);
   overflow: hidden;
   transform: scale(0.9);
@@ -300,7 +305,7 @@ body {
           🗺️
           <span class="badge-soon">SOON</span>
         </div>
-        <p style="color:#94a3b8;">Peta<br>Digital</p>
+        <p style="color:var(--ink-400);">Peta<br>Digital</p>
       </div>
     </div>
   </div>
@@ -308,15 +313,15 @@ body {
   <!-- UNIVERSAL MODAL POPUP -->
   <div id="universal-modal" class="modal-overlay">
     <div class="modal-box">
-      <div style="padding:16px 20px; border-bottom:1px solid #f1f5f9; display:flex; justify-content:space-between; align-items:center;">
+      <div style="padding:16px 20px; border-bottom:1px solid var(--surface-soft); display:flex; justify-content:space-between; align-items:center;">
         <div style="display:flex; align-items:center; gap:8px;">
           <span id="modal-icon-title" style="font-size:20px;">📢</span>
-          <h3 id="modal-title" style="font-size:15px; font-weight:800; color:#0f172a; margin:0;">Info RW 05</h3>
+          <h3 id="modal-title" style="font-size:15px; font-weight:800; color:var(--ink-900); margin:0;">Info RW 05</h3>
         </div>
-        <button type="button" id="modal-close" onclick="closeServiceModal(true)" style="background:#f1f5f9; border:none; width:32px; height:32px; border-radius:50%; font-size:16px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center;">✕</button>
+        <button type="button" id="modal-close" onclick="closeServiceModal(true)" style="background:var(--surface-soft); border:none; width:32px; height:32px; border-radius:50%; font-size:16px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center;">✕</button>
       </div>
-      <div id="modal-body" style="padding:20px; font-size:13px; color:#334155; line-height:1.6;">
-        <div style="text-align:center; font-size:12px; color:#94a3b8; padding:16px 0;">Memuat data...</div>
+      <div id="modal-body" style="padding:20px; font-size:13px; color:var(--ink-700); line-height:1.6;">
+        <div style="text-align:center; font-size:12px; color:var(--ink-400); padding:16px 0;">Memuat data...</div>
       </div>
     </div>
   </div>
@@ -342,10 +347,10 @@ let unsubscribeModal = null;
 
 function renderEmptyState(modalBody, titleMsg) {
   modalBody.innerHTML = `
-    <div style="text-align:center; padding:20px 12px; color:#64748b;">
+    <div style="text-align:center; padding:20px 12px; color:var(--ink-500);">
       <div style="font-size:40px; margin-bottom:10px;">📭</div>
-      <div style="font-size:14px; font-weight:800; color:#0f172a; margin-bottom:4px;">Belum Ada Data dari Admin</div>
-      <div style="font-size:12px; color:#64748b; line-height:1.5;">${titleMsg}</div>
+      <div style="font-size:14px; font-weight:800; color:var(--ink-900); margin-bottom:4px;">Belum Ada Data dari Admin</div>
+      <div style="font-size:12px; color:var(--ink-500); line-height:1.5;">${titleMsg}</div>
     </div>
   `;
 }
@@ -360,7 +365,7 @@ window.openServiceModal = function(type) {
   if(!modal || !box) return;
   if (unsubscribeModal) { unsubscribeModal(); unsubscribeModal = null; }
 
-  modalBody.innerHTML = '<div style="text-align:center; font-size:12px; color:#94a3b8; padding:20px 0;">Memuat data...</div>';
+  modalBody.innerHTML = '<div style="text-align:center; font-size:12px; color:var(--ink-400); padding:20px 0;">Memuat data...</div>';
   modal.style.display = 'flex';
   setTimeout(() => { 
     modal.classList.add('show-overlay'); 
@@ -371,16 +376,16 @@ window.openServiceModal = function(type) {
     modalIcon.textContent = '🛒'; modalTitle.textContent = 'Harga Sembako RW 05';
     unsubscribeModal = onSnapshot(query(collection(db, "sembako_rw05"), orderBy("createdAt", "desc"), limit(5)), (snap) => {
       if(snap.empty) { renderEmptyState(modalBody, 'Harga sembako belum diupdate oleh pengurus RW 05.'); return; }
-      let html = '<p style="font-size:12px; color:#64748b; margin-bottom:12px;">Patokan harga komoditas pasar setempat:</p>';
+      let html = '<p style="font-size:12px; color:var(--ink-500); margin-bottom:12px;">Patokan harga komoditas pasar setempat:</p>';
       let pasarLokasi = 'Warung Gotong Royong RW 05';
       snap.forEach((docItem) => {
         const d = docItem.data(); if(d.pasar) pasarLokasi = d.pasar;
-        html += `<div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:12px 14px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
-            <span style="font-size:13px; font-weight:800; color:#0f172a;">🌾 ${d.nama || 'Sembako'}</span>
+        html += `<div style="background:var(--bg-page); border:1px solid var(--border); border-radius:14px; padding:12px 14px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:13px; font-weight:800; color:var(--ink-900);">🌾 ${d.nama || 'Sembako'}</span>
             <span style="font-size:13px; font-weight:800; color:#2563eb;">Rp ${Number(d.harga||0).toLocaleString('id-ID')} /${d.satuan||'Kg'}</span>
           </div>`;
       });
-      html += `<div style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:12px; padding:10px 12px; font-size:11px; font-weight:700; color:#1e40af; margin-top:10px;">📍 Lokasi: ${pasarLokasi}</div>`;
+      html += `<div style="background:var(--tint-blue-50); border:1px solid var(--tint-blue-200); border-radius:12px; padding:10px 12px; font-size:11px; font-weight:700; color:#1e40af; margin-top:10px;">📍 Lokasi: ${pasarLokasi}</div>`;
       modalBody.innerHTML = html;
     });
   } else if (type === 'keamanan') {
@@ -393,16 +398,16 @@ window.openServiceModal = function(type) {
       snap.forEach((docItem) => {
         const d = docItem.data();
         modalBody.innerHTML = `
-          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:14px; margin-bottom:10px;">
-            <div style="font-size:10px; font-weight:800; color:#64748b; text-transform:uppercase; margin-bottom:4px;">Jam Jaga Pos</div>
-            <div style="font-size:13px; font-weight:800; color:#0f172a;">${d.jadwal || '-'}</div>
+          <div style="background:var(--bg-page); border:1px solid var(--border); border-radius:14px; padding:14px; margin-bottom:10px;">
+            <div style="font-size:10px; font-weight:800; color:var(--ink-500); text-transform:uppercase; margin-bottom:4px;">Jam Jaga Pos</div>
+            <div style="font-size:13px; font-weight:800; color:var(--ink-900);">${d.jadwal || '-'}</div>
           </div>
-          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:14px; margin-bottom:10px;">
-            <div style="font-size:10px; font-weight:800; color:#64748b; text-transform:uppercase; margin-bottom:4px;">Petugas Berjaga</div>
+          <div style="background:var(--bg-page); border:1px solid var(--border); border-radius:14px; padding:14px; margin-bottom:10px;">
+            <div style="font-size:10px; font-weight:800; color:var(--ink-500); text-transform:uppercase; margin-bottom:4px;">Petugas Berjaga</div>
             <div style="font-size:14px; font-weight:800; color:#2563eb;">${d.nama || '-'}</div>
             ${d.phone ? `<div style="font-size:11px; color:#16a34a; font-weight:800; margin-top:4px;">📞 Call/WA: ${d.phone}</div>` : ''}
           </div>
-          <div style="background:#fef2f2; border:1px solid #fecaca; border-radius:14px; padding:14px;">
+          <div style="background:var(--tint-red-50); border:1px solid var(--tint-red-100); border-radius:14px; padding:14px;">
             <div style="font-size:11px; font-weight:800; color:#b91c1c; margin-bottom:4px;">🚨 Himbauan Keamanan</div>
             <p style="font-size:12px; color:#991b1b; margin:0; line-height:1.5;">${d.himbauan || '-'}</p>
           </div>
@@ -415,7 +420,7 @@ window.openServiceModal = function(type) {
       if(snap.empty) { renderEmptyState(modalBody, 'Jadwal kerja bakti belum diupdate oleh pengurus RW 05.'); return; }
       snap.forEach((docItem) => {
         const d = docItem.data();
-        modalBody.innerHTML = `<div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:14px; padding:14px; margin-bottom:10px;"><div style="font-size:10px; font-weight:800; color:#166534; text-transform:uppercase; margin-bottom:4px;">🧹 ${d.judul || 'Jadwal Kerja Bakti'}:</div><div style="font-size:14px; font-weight:800; color:#15803d;">${d.tanggal || '-'}</div></div><div style="font-size:12px; color:#334155;">📍 <b>Titik Kumpul:</b> ${d.lokasi || '-'}</div>`;
+        modalBody.innerHTML = `<div style="background:var(--tint-green-50); border:1px solid var(--tint-green-200); border-radius:14px; padding:14px; margin-bottom:10px;"><div style="font-size:10px; font-weight:800; color:#166534; text-transform:uppercase; margin-bottom:4px;">🧹 ${d.judul || 'Jadwal Kerja Bakti'}:</div><div style="font-size:14px; font-weight:800; color:#15803d;">${d.tanggal || '-'}</div></div><div style="font-size:12px; color:var(--ink-700);">📍 <b>Titik Kumpul:</b> ${d.lokasi || '-'}</div>`;
       });
     });
   } else if (type === 'posyandu') {
@@ -424,7 +429,7 @@ window.openServiceModal = function(type) {
       if(snap.empty) { renderEmptyState(modalBody, 'Jadwal pelayanan posyandu belum diupdate oleh pengurus RW 05.'); return; }
       snap.forEach((docItem) => {
         const d = docItem.data();
-        modalBody.innerHTML = `<div style="background:#fdf2f8; border:1px solid #fbcfe8; border-radius:14px; padding:14px; margin-bottom:10px;"><div style="font-size:10px; font-weight:800; color:#9d174d; text-transform:uppercase; margin-bottom:4px;">🏥 ${d.judul || 'Jadwal Pelayanan'}:</div><div style="font-size:14px; font-weight:800; color:#be185d;">${d.jadwal || '-'}</div></div><div style="font-size:12px; color:#334155;">💉 <b>Layanan:</b> ${d.keterangan || '-'}</div>`;
+        modalBody.innerHTML = `<div style="background:var(--tint-red-50); border:1px solid var(--tint-red-50); border-radius:14px; padding:14px; margin-bottom:10px;"><div style="font-size:10px; font-weight:800; color:#9d174d; text-transform:uppercase; margin-bottom:4px;">🏥 ${d.judul || 'Jadwal Pelayanan'}:</div><div style="font-size:14px; font-weight:800; color:#be185d;">${d.jadwal || '-'}</div></div><div style="font-size:12px; color:var(--ink-700);">💉 <b>Layanan:</b> ${d.keterangan || '-'}</div>`;
       });
     });
   } else if (type === 'belajar') {
@@ -433,13 +438,13 @@ window.openServiceModal = function(type) {
       if(snap.empty) { renderEmptyState(modalBody, 'Jadwal belajar bersama belum diupdate oleh pengurus RW 05.'); return; }
       snap.forEach((docItem) => {
         const d = docItem.data();
-        modalBody.innerHTML = `<div style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:14px; padding:14px; margin-bottom:10px;"><div style="font-size:10px; font-weight:800; color:#1e40af; text-transform:uppercase; margin-bottom:4px;">🎓 ${d.judul || 'Bimbel'}:</div><div style="font-size:14px; font-weight:800; color:#1d4ed8;">${d.jadwal || '-'}</div></div><div style="font-size:12px; color:#334155;">✏️ <b>Detail:</b> ${d.isi || '-'}</div>`;
+        modalBody.innerHTML = `<div style="background:var(--tint-blue-50); border:1px solid var(--tint-blue-200); border-radius:14px; padding:14px; margin-bottom:10px;"><div style="font-size:10px; font-weight:800; color:#1e40af; text-transform:uppercase; margin-bottom:4px;">🎓 ${d.judul || 'Bimbel'}:</div><div style="font-size:14px; font-weight:800; color:#1d4ed8;">${d.jadwal || '-'}</div></div><div style="font-size:12px; color:var(--ink-700);">✏️ <b>Detail:</b> ${d.isi || '-'}</div>`;
       });
     });
   } else if (type === 'datawarga') {
     modalIcon.textContent = '📋'; modalTitle.textContent = 'Data Warga & Administrasi';
     modalBody.innerHTML = `
-      <p style="font-size:12.5px; color:#475569; line-height:1.6; margin-bottom:16px;">Pengurusan surat pengantar, lapor warga baru pendatang, atau perbaikan data KK/KTP dilakukan melalui Sekretaris RW 05.</p>
+      <p style="font-size:12.5px; color:var(--ink-600); line-height:1.6; margin-bottom:16px;">Pengurusan surat pengantar, lapor warga baru pendatang, atau perbaikan data KK/KTP dilakukan melalui Sekretaris RW 05.</p>
       <a href="https://wa.me/6289673580756?text=Halo%20Sekretaris%20RW05,%20saya%20ingin%20mengurus%20Data%20Warga" target="_blank" style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; background:#16a34a; color:#ffffff; font-weight:800; font-size:13px; padding:12px 0; border-radius:14px; text-decoration:none;">💬 Hubungi Sekretaris RW via WA</a>
     `;
   } else if (type === 'petaBalai') {
@@ -447,10 +452,10 @@ window.openServiceModal = function(type) {
     modalBody.innerHTML = `
       <div style="text-align:left">
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px">
-          <img src="../assets/img/balai-1.jpg" style="width:100%; height:105px; object-fit:cover; border-radius:12px; border:1px solid #e2e8f0" alt="Balai RW 05">
-          <img src="../assets/img/balai-2.jpg" style="width:100%; height:105px; object-fit:cover; border-radius:12px; border:1px solid #e2e8f0" alt="Dalam Balai RW 05">
+          <img src="../assets/img/balai-1.jpg" style="width:100%; height:105px; object-fit:cover; border-radius:12px; border:1px solid var(--border)" alt="Balai RW 05">
+          <img src="../assets/img/balai-2.jpg" style="width:100%; height:105px; object-fit:cover; border-radius:12px; border:1px solid var(--border)" alt="Dalam Balai RW 05">
         </div>
-        <p style="font-size:11.5px; color:#475569; line-height:1.5; margin-bottom:14px; background:#f8fafc; padding:10px 12px; border-radius:12px; border:1px solid #e2e8f0">
+        <p style="font-size:11.5px; color:var(--ink-600); line-height:1.5; margin-bottom:14px; background:var(--bg-page); padding:10px 12px; border-radius:12px; border:1px solid var(--border)">
           <b>📍 Alamat Lengkap:</b><br>
           Jl. Poncol Gg. XI No.15 8, RT.8/RW.5, Kuningan Barat, Mampang Prapatan, Jakarta Selatan 12710
         </p>
@@ -527,5 +532,6 @@ window.addEventListener('popstate', function(e) {
   }
 });
 </script>
+<script src="../assets/js/theme.js"></script>
 </body>
 </html>

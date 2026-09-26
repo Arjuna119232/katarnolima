@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+<script>(function(){try{var m=localStorage.getItem('katar-theme')||'system';var d=m==='dark'||(m==='system'&&window.matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.setAttribute('data-theme',d?'dark':'light');document.documentElement.setAttribute('data-theme-pref',m);}catch(e){}})();</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f8fafc">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0f1a">
 <title>Tentang Aplikasi - KATARNOLIMA RW 05</title>
 <link rel="icon" href="../assets/img/logo-resmi-karang-taruna.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/theme.css">
 <link rel="stylesheet" href="../assets/css/style.css?v=36">
 <style>
 /* RESET & SYSTEM BASE */
@@ -17,19 +22,19 @@
 }
 
 html, body {
-  background: #f8fafc !important;
+  background: var(--bg-page) !important;
   width: 100%;
   min-height: 100vh;
-  color: #0f172a;
+  color: var(--ink-900);
   line-height: 1.5;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
 .page-root {
   width: 100%;
   max-width: 440px;
   margin: 0 auto;
-  background: #ffffff;
+  background: var(--surface);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -43,7 +48,7 @@ html, body {
   align-items: center;
   gap: 12px;
   padding: 16px 20px;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--surface-soft);
   position: sticky;
   top: 0;
   background: rgba(255, 255, 255, 0.92);
@@ -57,9 +62,9 @@ html, body {
   width: 38px;
   height: 38px;
   border-radius: 12px;
-  background: #f1f5f9;
-  border: 1px solid #e2e8f0;
-  color: #0f172a;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  color: var(--ink-900);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -70,7 +75,7 @@ html, body {
 }
 .btn-back-link:active {
   transform: scale(0.92);
-  background: #e2e8f0;
+  background: var(--border);
 }
 .btn-back-link svg {
   width: 20px;
@@ -85,7 +90,7 @@ html, body {
 .header-title-text {
   font-size: 15px;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--ink-900);
   letter-spacing: -0.2px;
   white-space: nowrap;
   overflow: hidden;
@@ -113,7 +118,7 @@ html, body {
 .logo-5 {
   font-size: 32px;
   font-weight: 900;
-  color: #0f172a;
+  color: var(--ink-900);
   background: #fbbf24;
   padding: 8px 16px;
   border-radius: 18px;
@@ -124,7 +129,7 @@ html, body {
   font-size: 20px;
   font-weight: 900;
   display: block;
-  color: #0f172a;
+  color: var(--ink-900);
   line-height: 1.1;
   text-align: left;
   letter-spacing: -0.2px;
@@ -132,7 +137,7 @@ html, body {
 .brand-text span {
   font-size: 11px;
   font-weight: 700;
-  color: #64748b;
+  color: var(--ink-500);
   display: block;
   margin-top: 2px;
   text-align: left;
@@ -146,16 +151,16 @@ html, body {
   font-weight: 800;
   color: #2563eb;
   margin-bottom: 16px;
-  background: #eff6ff;
+  background: var(--tint-blue-50);
   padding: 6px 16px;
   border-radius: 99px;
-  border: 1px solid #bfdbfe;
+  border: 1px solid var(--tint-blue-200);
   letter-spacing: 0.2px;
 }
 
 .desc-text {
   font-size: 13px;
-  color: #475569;
+  color: var(--ink-600);
   line-height: 1.6;
   max-width: 360px;
   margin-bottom: 20px;
@@ -171,8 +176,8 @@ html, body {
 }
 
 .dev-card {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: var(--bg-page);
+  border: 1px solid var(--border);
   border-radius: 16px;
   padding: 14px 16px;
   text-align: left;
@@ -190,8 +195,8 @@ html, body {
   width: 38px;
   height: 38px;
   border-radius: 12px;
-  background: #ffffff;
-  border: 1px solid #cbd5e1;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -201,7 +206,7 @@ html, body {
 
 .dev-card-info span {
   font-size: 10px;
-  color: #64748b;
+  color: var(--ink-500);
   font-weight: 800;
   display: block;
   text-transform: uppercase;
@@ -209,7 +214,7 @@ html, body {
 }
 .dev-card-info b {
   font-size: 13.5px;
-  color: #0f172a;
+  color: var(--ink-900);
   display: block;
   margin-top: 1px;
   font-weight: 800;
@@ -222,7 +227,7 @@ html, body {
   gap: 8px;
   margin-top: 8px;
   padding-top: 8px;
-  border-top: 1px dashed #e2e8f0;
+  border-top: 1px dashed var(--border);
 }
 
 .btn-sosmed {
@@ -240,12 +245,12 @@ html, body {
 }
 .btn-sosmed:active { transform: scale(0.95); }
 
-.btn-ig { background: #fdf2f8; color: #db2777; border: 1px solid #fbcfe8; }
-.btn-coffee { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+.btn-ig { background: var(--tint-red-50); color: #db2777; border: 1px solid var(--tint-red-50); }
+.btn-coffee { background: var(--tint-amber-50); color: #b45309; border: 1px solid var(--tint-amber-100); }
 
 .sub-person {
   font-size: 12px;
-  color: #334155;
+  color: var(--ink-700);
   font-weight: 700;
   margin-top: 8px;
   display: flex;
@@ -257,7 +262,7 @@ html, body {
   margin-top: 28px;
   font-size: 11px;
   font-weight: 600;
-  color: #94a3b8;
+  color: var(--ink-400);
 }
 
 /* MODERN POPUP MODAL STYLING */
@@ -278,13 +283,13 @@ html, body {
 .modal-overlay.show-overlay { opacity: 1; }
 
 .modal-box {
-  background: #ffffff;
+  background: var(--surface);
   width: 100%;
   max-width: 320px;
   border-radius: 20px;
   padding: 22px 20px;
   text-align: center;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15);
   transform: scale(0.9);
   transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -300,13 +305,13 @@ html, body {
 .modal-title {
   font-size: 15px;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--ink-900);
   margin-bottom: 4px;
 }
 
 .modal-desc {
   font-size: 12px;
-  color: #64748b;
+  color: var(--ink-500);
   line-height: 1.5;
   margin-bottom: 18px;
 }
@@ -406,7 +411,7 @@ html, body {
           </a>
         </div>
 
-        <div class="sub-person" style="border-top:1px dashed #e2e8f0; padding-top:8px;">
+        <div class="sub-person" style="border-top:1px dashed var(--border); padding-top:8px;">
           <span>Raka Jovanka</span>
           <a href="https://www.instagram.com/raka_jvnka_22?stkn=MXUyb2V1czhuZXk4MA==" target="_blank" class="btn-sosmed btn-ig">
             📸 Instagram
@@ -526,5 +531,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
+<script src="../assets/js/theme.js"></script>
 </body>
 </html>

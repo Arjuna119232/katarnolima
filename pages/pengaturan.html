@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<script>(function(){try{var m=localStorage.getItem('katar-theme')||'system';var d=m==='dark'||(m==='system'&&window.matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.setAttribute('data-theme',d?'dark':'light');document.documentElement.setAttribute('data-theme-pref',m);}catch(e){}})();</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f8fafc">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0f1a">
+<title>Pengaturan - KATARNOLIMA RW 05</title>
+<link rel="icon" href="../assets/img/logo-resmi-karang-taruna.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/theme.css">
+<link rel="stylesheet" href="../assets/css/style.css?v=40">
+<style>
+html,body{background:var(--bg-page)!important}
+.page-root{width:100%;max-width:440px;margin:0 auto;background:var(--bg-page);min-height:100vh;padding-bottom:48px;position:relative}
+</style>
+</head>
+<body>
+<div class="page-root">
+
+  <div class="settings-header">
+    <div class="back" id="backBtn">←</div>
+    <h1>Pengaturan</h1>
+  </div>
+
+  <!-- KARTU AKUN SINGKAT -->
+  <div class="settings-user-card">
+    <div class="avatar" id="setAvatarInit">WG</div>
+    <div class="info">
+      <b id="setNama">Warga RW 05</b>
+      <span id="setSub">Kelola akun &amp; preferensi aplikasi kamu</span>
+    </div>
+  </div>
+
+  <!-- TAMPILAN -->
+  <div class="settings-section">
+    <div class="settings-section-title">Tampilan Aplikasi</div>
+    <div class="settings-card" style="padding:16px">
+      <div class="theme-picker" id="themePicker">
+        <div class="theme-opt" data-pref="light">
+          <div class="t-icon">☀️</div>
+          <div class="t-label">Terang</div>
+        </div>
+        <div class="theme-opt" data-pref="dark">
+          <div class="t-icon">🌙</div>
+          <div class="t-label">Gelap</div>
+        </div>
+        <div class="theme-opt" data-pref="system">
+          <div class="t-icon">🔄</div>
+          <div class="t-label">Otomatis</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AKUN -->
+  <div class="settings-section">
+    <div class="settings-section-title">Akun</div>
+    <div class="settings-card">
+      <div class="settings-row" onclick="window.location.href='ubah-profil.html'">
+        <div class="row-icon">👤</div>
+        <div class="row-body">
+          <div class="row-title">Ubah Profil</div>
+          <div class="row-sub">Nama, foto, nomor HP, dan data warga</div>
+        </div>
+        <div class="row-arrow">➔</div>
+      </div>
+      <div class="settings-row" onclick="window.location.href='iuran-warga.html'">
+        <div class="row-icon amber">💳</div>
+        <div class="row-body">
+          <div class="row-title">Riwayat Iuran &amp; Pembayaran</div>
+          <div class="row-sub">Lihat status dan bukti iuran warga</div>
+        </div>
+        <div class="row-arrow">➔</div>
+      </div>
+      <div class="settings-row" onclick="window.location.href='admin.html'">
+        <div class="row-icon purple">🔒</div>
+        <div class="row-body">
+          <div class="row-title">Akses Pengurus / Admin RW</div>
+          <div class="row-sub">Khusus pengurus RT/RW yang berwenang</div>
+        </div>
+        <div class="row-arrow">➔</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOTIFIKASI -->
+  <div class="settings-section">
+    <div class="settings-section-title">Notifikasi</div>
+    <div class="settings-card">
+      <div class="settings-row" style="cursor:default">
+        <div class="row-icon">📢</div>
+        <div class="row-body">
+          <div class="row-title">Info &amp; Berita RW</div>
+          <div class="row-sub">Pengumuman resmi dan berita warga</div>
+        </div>
+        <label class="switch"><input type="checkbox" data-pref="notif_info" checked><span class="slider"></span></label>
+      </div>
+      <div class="settings-row" style="cursor:default">
+        <div class="row-icon amber">📥</div>
+        <div class="row-body">
+          <div class="row-title">Status Aduan Saya</div>
+          <div class="row-sub">Update progres laporan yang kamu buat</div>
+        </div>
+        <label class="switch"><input type="checkbox" data-pref="notif_aduan" checked><span class="slider"></span></label>
+      </div>
+      <div class="settings-row" style="cursor:default">
+        <div class="row-icon green">💰</div>
+        <div class="row-body">
+          <div class="row-title">Kas &amp; Iuran</div>
+          <div class="row-sub">Pengingat jatuh tempo dan mutasi kas</div>
+        </div>
+        <label class="switch"><input type="checkbox" data-pref="notif_kas" checked><span class="slider"></span></label>
+      </div>
+      <div class="settings-row" style="cursor:default">
+        <div class="row-icon purple">💬</div>
+        <div class="row-body">
+          <div class="row-title">Diskusi RW</div>
+          <div class="row-sub">Balasan dan komentar baru di forum</div>
+        </div>
+        <label class="switch"><input type="checkbox" data-pref="notif_diskusi" checked><span class="slider"></span></label>
+      </div>
+    </div>
+  </div>
+
+  <!-- PREFERENSI -->
+  <div class="settings-section">
+    <div class="settings-section-title">Preferensi</div>
+    <div class="settings-card">
+      <div class="settings-row" style="cursor:default">
+        <div class="row-icon">📳</div>
+        <div class="row-body">
+          <div class="row-title">Getaran saat Menyentuh</div>
+          <div class="row-sub">Efek haptic ringan pada tombol &amp; menu</div>
+        </div>
+        <label class="switch"><input type="checkbox" data-pref="haptic" checked><span class="slider"></span></label>
+      </div>
+      <div class="settings-row" onclick="window.showModal({ title:'Bahasa Aplikasi', desc:'Saat ini KATARNOLIMA hanya tersedia dalam Bahasa Indonesia. Dukungan bahasa lain akan ditambahkan pada pembaruan berikutnya.', icon:'🌐' })">
+        <div class="row-icon">🌐</div>
+        <div class="row-body">
+          <div class="row-title">Bahasa Aplikasi</div>
+          <div class="row-sub">Bahasa yang digunakan pada aplikasi</div>
+        </div>
+        <div class="row-value">Indonesia</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRIVASI & KEAMANAN -->
+  <div class="settings-section">
+    <div class="settings-section-title">Privasi &amp; Keamanan</div>
+    <div class="settings-card">
+      <div class="settings-row" onclick="window.showModal({ title: 'Kebijakan Privasi', desc: 'Kebijakan Privasi data pengguna RW 05. Data pribadi disimpan aman dan terenkripsi, serta tidak dibagikan ke pihak ketiga tanpa izin.', icon: '🛡️' })">
+        <div class="row-icon">🛡️</div>
+        <div class="row-body">
+          <div class="row-title">Kebijakan Privasi</div>
+          <div class="row-sub">Cara kami menjaga data kamu</div>
+        </div>
+        <div class="row-arrow">➔</div>
+      </div>
+      <div class="settings-row" onclick="window.showModal({ title: 'Syarat dan Ketentuan', desc: 'Syarat dan Ketentuan layanan warga RW 05 Poncol Jaya. Seluruh data laporan dijaga kerahasiaannya.', icon: '📄' })">
+        <div class="row-icon">📄</div>
+        <div class="row-body">
+          <div class="row-title">Syarat &amp; Ketentuan</div>
+          <div class="row-sub">Ketentuan penggunaan layanan</div>
+        </div>
+        <div class="row-arrow">➔</div>
+      </div>
+      <div class="settings-row" id="btnClearCache">
+        <div class="row-icon red">🧹</div>
+        <div class="row-body">
+          <div class="row-title">Bersihkan Data Lokal</div>
+          <div class="row-sub">Hapus cache tampilan &amp; preferensi di perangkat ini</div>
+        </div>
+        <div class="row-arrow">➔</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BANTUAN & TENTANG -->
+  <div class="settings-section">
+    <div class="settings-section-title">Bantuan &amp; Tentang</div>
+    <div class="settings-card">
+      <div class="settings-row" onclick="window.showModal({ title:'Pusat Bantuan', desc:'Butuh bantuan seputar aplikasi? Hubungi pengurus RW 05 melalui menu Aduan Warga atau WhatsApp Sekretariat RW.', icon:'❓' })">
+        <div class="row-icon">❓</div>
+        <div class="row-body">
+          <div class="row-title">Pusat Bantuan</div>
+          <div class="row-sub">Pertanyaan umum &amp; panduan pemakaian</div>
+        </div>
+        <div class="row-arrow">➔</div>
+      </div>
+      <div class="settings-row" onclick="window.location.href='aduan-warga.html'">
+        <div class="row-icon amber">✉️</div>
+        <div class="row-body">
+          <div class="row-title">Hubungi Pengurus RW</div>
+          <div class="row-sub">Sampaikan masukan atau kendala</div>
+        </div>
+        <div class="row-arrow">➔</div>
+      </div>
+      <div class="settings-row" onclick="window.location.href='tentang.html'">
+        <div class="row-icon">ℹ️</div>
+        <div class="row-body">
+          <div class="row-title">Tentang Aplikasi KATARNOLIMA</div>
+          <div class="row-sub">Versi, tim pengembang, dan info lainnya</div>
+        </div>
+        <div class="row-arrow">➔</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KELUAR -->
+  <div class="settings-section">
+    <div class="settings-card">
+      <div class="settings-row danger" id="btnKeluarSet">
+        <div class="row-icon red">🚪</div>
+        <div class="row-body">
+          <div class="row-title">Keluar Akun</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-version-tag">KATARNOLIMA RW 05 &bull; v2.1.242</div>
+</div>
+
+<!-- MODAL POPUP UNIVERSAL (konsisten dengan halaman lain) -->
+<div class="overlay" id="appCustomModal">
+  <div class="modal-box">
+    <button id="modalCloseX" style="position:absolute; top:16px; right:18px; background:none; border:none; font-size:18px; font-weight:800; color:var(--ink-400); cursor:pointer; padding:4px;">✕</button>
+    <div id="modalIcon" style="font-size:32px; margin-bottom:8px;">ℹ️</div>
+    <h3 id="modalTitle" style="font-size:16px; font-weight:800; color:var(--ink-900); margin-bottom:6px;">Info</h3>
+    <p id="modalDesc" style="font-size:12px; color:var(--ink-600); line-height:1.5; margin-bottom:20px;"></p>
+    <div id="modalButtons" style="display:flex; gap:10px;"></div>
+  </div>
+</div>
+
+<style>
+.overlay{position:fixed;inset:0;background:rgba(15,23,42,.55);backdrop-filter:blur(8px);display:flex;align-items:flex-end;justify-content:center;z-index:9999;opacity:0;pointer-events:none;transition:opacity .2s ease}
+.overlay.show{opacity:1;pointer-events:auto}
+.overlay .modal-box{background:var(--surface);width:100%;max-width:420px;border-radius:24px 24px 0 0;padding:26px 22px 28px;position:relative;transform:translateY(30px);transition:transform .25s cubic-bezier(.34,1.56,.64,1)}
+.overlay.show .modal-box{transform:translateY(0)}
+.btn{border:none;border-radius:14px;padding:12px 16px;font-weight:800;font-size:13px;cursor:pointer}
+.btn-primary{background:var(--ink-900);color:#fff}
+.btn-outline{background:var(--surface-soft);color:var(--ink-800)}
+</style>
+
+<script src="../assets/js/script.js?v=27"></script>
+<script>
+// --- Kembali ---
+document.getElementById('backBtn').addEventListener('click', function(){
+  if (window.history.length > 1) window.history.back();
+  else window.location.href = 'profil.html';
+});
+
+// --- Modal universal (pola sama dengan profil.html & admin.html) ---
+window.showModal = function({ title = 'Info', desc = '', icon = 'ℹ️', type = 'alert', onYes = null }) {
+  var modal = document.getElementById('appCustomModal');
+  document.getElementById('modalIcon').textContent = icon;
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalDesc').textContent = desc;
+  var btns = document.getElementById('modalButtons');
+  btns.innerHTML = '';
+  if (type === 'confirm') {
+    var no = document.createElement('button'); no.className = 'btn btn-outline'; no.style.flex = '1'; no.textContent = 'Batal';
+    var yes = document.createElement('button'); yes.className = 'btn btn-primary'; yes.style.flex = '1'; yes.textContent = 'Ya, Lanjutkan';
+    no.onclick = function(){ closeCustomModal(); };
+    yes.onclick = function(){ closeCustomModal(); if (typeof onYes === 'function') onYes(); };
+    btns.appendChild(no); btns.appendChild(yes);
+  } else {
+    var ok = document.createElement('button'); ok.className = 'btn btn-primary'; ok.style.width = '100%'; ok.textContent = 'Mengerti';
+    ok.onclick = function(){ closeCustomModal(); };
+    btns.appendChild(ok);
+  }
+  modal.classList.add('show');
+};
+function closeCustomModal(){ document.getElementById('appCustomModal').classList.remove('show'); }
+document.getElementById('modalCloseX').addEventListener('click', closeCustomModal);
+document.getElementById('appCustomModal').addEventListener('click', function(e){ if (e.target === this) closeCustomModal(); });
+
+// --- Kartu akun singkat dari cache lokal (tanpa perlu memanggil ulang server) ---
+(function(){
+  try {
+    var cached = JSON.parse(localStorage.getItem('rw05_current_user') || 'null');
+    if (cached && cached.nama) {
+      document.getElementById('setNama').textContent = cached.nama;
+      document.getElementById('setSub').textContent = (cached.rt ? cached.rt + ' / RW 05' : 'Kelola akun & preferensi aplikasi kamu');
+      var parts = cached.nama.trim().split(/\s+/);
+      var initials = (parts[0][0] || 'W') + (parts[1] ? parts[1][0] : (parts[0][1]||'G'));
+      document.getElementById('setAvatarInit').textContent = initials.toUpperCase();
+    }
+  } catch(e) {}
+})();
+
+// --- Pemilih Mode Tampilan (Terang/Gelap/Otomatis) ---
+(function(){
+  var STORAGE_KEY = 'katar-theme';
+  var picker = document.getElementById('themePicker');
+  var opts = picker.querySelectorAll('.theme-opt');
+
+  function getPref(){ try { return localStorage.getItem(STORAGE_KEY) || 'system'; } catch(e){ return 'system'; } }
+
+  function applyPref(pref){
+    var mql = window.matchMedia('(prefers-color-scheme: dark)');
+    var resolved = pref === 'dark' ? 'dark' : pref === 'light' ? 'light' : (mql.matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', resolved);
+    document.documentElement.setAttribute('data-theme-pref', pref);
+    try { localStorage.setItem(STORAGE_KEY, pref); } catch(e){}
+  }
+
+  function refreshSelection(){
+    var pref = getPref();
+    opts.forEach(function(el){ el.classList.toggle('selected', el.getAttribute('data-pref') === pref); });
+  }
+
+  opts.forEach(function(el){
+    el.addEventListener('click', function(){
+      applyPref(el.getAttribute('data-pref'));
+      refreshSelection();
+    });
+  });
+
+  refreshSelection();
+})();
+
+// --- Toggle notifikasi & preferensi tersimpan di perangkat ---
+(function(){
+  document.querySelectorAll('input[type="checkbox"][data-pref]').forEach(function(chk){
+    var key = 'katar_pref_' + chk.getAttribute('data-pref');
+    try {
+      var saved = localStorage.getItem(key);
+      if (saved !== null) chk.checked = saved === '1';
+    } catch(e){}
+    chk.addEventListener('change', function(){
+      try { localStorage.setItem(key, chk.checked ? '1' : '0'); } catch(e){}
+      if (typeof window.katarVibrate === 'function') window.katarVibrate(8);
+    });
+  });
+})();
+
+// --- Bersihkan data lokal (preferensi & cache tampilan, TIDAK menghapus sesi login) ---
+document.getElementById('btnClearCache').addEventListener('click', function(){
+  window.showModal({
+    title: 'Bersihkan Data Lokal?',
+    desc: 'Preferensi tampilan, notifikasi, dan cache lokal di perangkat ini akan dihapus. Akun kamu tidak akan terpengaruh.',
+    icon: '🧹',
+    type: 'confirm',
+    onYes: function(){
+      Object.keys(localStorage).forEach(function(k){
+        if (k.indexOf('katar_pref_') === 0) localStorage.removeItem(k);
+      });
+      window.showModal({ title: 'Selesai', desc: 'Data lokal berhasil dibersihkan.', icon: '✅' });
+    }
+  });
+});
+
+// --- Keluar Akun (konsisten dengan profil.html) ---
+document.getElementById('btnKeluarSet').addEventListener('click', function(){
+  window.showModal({
+    title: 'Keluar Akun?',
+    desc: 'Kamu perlu masuk kembali untuk mengakses layanan warga RW 05.',
+    icon: '🚪',
+    type: 'confirm',
+    onYes: async function(){
+      try {
+        var { getAuth, signOut } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js');
+        var { initializeApp, getApps } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js');
+        var firebaseConfig = {
+          apiKey: "AIzaSyCZtvImbyZmqoEoY1hYZcuCbUpIl3R1fhE",
+          authDomain: "katarnolima-rw05.firebaseapp.com",
+          projectId: "katarnolima-rw05",
+          storageBucket: "katarnolima-rw05.firebasestorage.app",
+          messagingSenderId: "965647612835",
+          appId: "1:965647612835:web:b712367f0d8beb7c5bf816"
+        };
+        var app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+        await signOut(getAuth(app));
+      } catch(e) { console.warn('Sign out dilewati:', e); }
+      localStorage.removeItem('rw05_current_user');
+      window.location.href = 'profil.html';
+    }
+  });
+});
+</script>
+<script src="../assets/js/theme.js"></script>
+</body>
+</html>

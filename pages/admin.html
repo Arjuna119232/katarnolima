@@ -1,24 +1,29 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+<script>(function(){try{var m=localStorage.getItem('katar-theme')||'system';var d=m==='dark'||(m==='system'&&window.matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.setAttribute('data-theme',d?'dark':'light');document.documentElement.setAttribute('data-theme-pref',m);}catch(e){}})();</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f8fafc">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0f1a">
 <title>Admin Pro - KATARNOLIMA RW 05</title>
 <link rel="icon" href="../assets/img/logo-resmi-karang-taruna.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/theme.css">
 <style>
 /* RESET & VARIABLE ROOT */
 *, *::before, *::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   -webkit-tap-highlight-color: transparent !important;
   outline: none !important;
 }
 
 body {
-  background: #f8fafc;
-  color: #0f172a;
+  background: var(--bg-page);
+  color: var(--ink-900);
 }
 
 /* LAYOUT UTAMA */
@@ -55,7 +60,7 @@ body {
   width: 42px;
   height: 42px;
   background: #fbbf24;
-  color: #0f172a;
+  color: var(--ink-900);
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -69,7 +74,7 @@ body {
 .menu-label {
   font-size: 10px;
   font-weight: 800;
-  color: #64748b;
+  color: var(--ink-500);
   letter-spacing: 1px;
   padding: 16px 12px 8px;
   text-transform: uppercase;
@@ -83,7 +88,7 @@ body {
   border-radius: 12px;
   font-size: 13px;
   font-weight: 600;
-  color: #94a3b8;
+  color: var(--ink-400);
   background: none;
   border: none;
   cursor: pointer;
@@ -96,10 +101,10 @@ body {
   color: #ffffff;
 }
 .menu-item.active {
-  background: #ffffff;
-  color: #0f172a;
+  background: linear-gradient(135deg,#2563eb 0%,#1d4ed8 100%);
+  color: #ffffff;
   font-weight: 800;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 6px 16px rgba(37,99,235,0.35);
 }
 .menu-item .icon { font-size: 16px; width: 22px; text-align: center; }
 
@@ -113,8 +118,10 @@ body {
 
 .topbar {
   height: 68px;
-  background: #ffffff;
-  border-bottom: 1px solid #e2e8f0;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -126,8 +133,8 @@ body {
 }
 .hamburger {
   display: none;
-  background: #f1f5f9;
-  border: 1px solid #e2e8f0;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
   border-radius: 10px;
   padding: 8px;
   font-size: 18px;
@@ -146,16 +153,25 @@ body {
   margin-bottom: 24px;
 }
 .stat-card {
-  background: #ffffff;
+  background: var(--surface);
   border-radius: 20px;
   padding: 20px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   position: relative;
   box-shadow: 0 4px 16px rgba(15,23,42,0.03);
+  overflow: hidden;
+  transition: transform .18s ease, box-shadow .18s ease;
 }
+.stat-card::before{
+  content:'';
+  position:absolute; top:0; left:0; right:0; height:3px;
+  background:linear-gradient(90deg,#2563eb,#fbbf24);
+  opacity:.85;
+}
+.stat-card:hover{ transform: translateY(-2px); box-shadow: 0 10px 28px rgba(15,23,42,0.09); }
 .stat-card .label {
   font-size: 11px;
-  color: #64748b;
+  color: var(--ink-500);
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -164,7 +180,7 @@ body {
   font-size: 26px;
   font-weight: 900;
   margin-top: 6px;
-  color: #0f172a;
+  color: var(--ink-900);
 }
 .stat-card .sub {
   font-size: 11px;
@@ -173,11 +189,26 @@ body {
   margin-top: 4px;
 }
 
+/* PENGATURAN ADMIN — theme picker & switch */
+.admin-theme-picker{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+.admin-theme-opt{ border:1.5px solid var(--border); border-radius:14px; padding:14px 8px; text-align:center; cursor:pointer; transition:transform .12s ease,border-color .2s ease,background-color .2s ease; }
+.admin-theme-opt:active{ transform:scale(.95); }
+.admin-theme-opt span{ display:block; font-size:20px; margin-bottom:6px; }
+.admin-theme-opt b{ font-size:12px; font-weight:700; color:var(--ink-800); }
+.admin-theme-opt.selected{ border-color:#2563eb; background:var(--tint-blue-50); }
+.admin-switch-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; font-size:13px; font-weight:600; color:var(--ink-800); cursor:pointer; }
+.switch{position:relative;display:inline-block;width:44px;height:26px;flex-shrink:0}
+.switch input{opacity:0;width:0;height:0}
+.switch .slider{position:absolute;cursor:pointer;inset:0;background:var(--border-strong);border-radius:999px;transition:background-color .2s ease}
+.switch .slider:before{content:'';position:absolute;width:20px;height:20px;left:3px;top:3px;background:#fff;border-radius:50%;transition:transform .2s ease;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.switch input:checked + .slider{background:#2563eb}
+.switch input:checked + .slider:before{transform:translateX(18px)}
+
 .btn-reset-saldo {
   position: absolute;
   top: 16px;
   right: 16px;
-  background: #fff1f2;
+  background: var(--tint-red-50);
   border: 1px solid #fecdd3;
   color: #e11d48;
   border-radius: 10px;
@@ -201,17 +232,17 @@ body {
 .tab-content.active { display: block; }
 
 .card {
-  background: #ffffff;
+  background: var(--surface);
   border-radius: 20px;
   padding: 24px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   margin-bottom: 20px;
   box-shadow: 0 4px 16px rgba(15,23,42,0.03);
 }
 .card-title {
   font-size: 15px;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--ink-900);
   margin-bottom: 18px;
   display: flex;
   align-items: center;
@@ -228,7 +259,7 @@ body {
 .form-group label {
   font-size: 11px;
   font-weight: 800;
-  color: #475569;
+  color: var(--ink-600);
   display: block;
   margin-bottom: 6px;
   text-transform: uppercase;
@@ -237,17 +268,17 @@ body {
 .form-control {
   width: 100%;
   padding: 12px 14px;
-  border: 1.5px solid #cbd5e1;
+  border: 1.5px solid var(--border-strong);
   border-radius: 12px;
   font-size: 13px;
   outline: none;
-  background: #f8fafc;
-  color: #0f172a;
+  background: var(--bg-page);
+  color: var(--ink-900);
   transition: all 0.2s ease;
 }
 .form-control:focus {
-  border-color: #0f172a;
-  background: #ffffff;
+  border-color: var(--ink-900);
+  background: var(--surface);
   box-shadow: 0 0 0 4px rgba(15,23,42,0.06);
 }
 textarea.form-control {
@@ -266,8 +297,8 @@ textarea.form-control {
   font-size: 20px;
   padding: 6px 12px;
   border-radius: 10px;
-  background: #f8fafc;
-  border: 1.5px solid #cbd5e1;
+  background: var(--bg-page);
+  border: 1.5px solid var(--border-strong);
   cursor: pointer;
   transition: all 0.15s ease;
   user-select: none;
@@ -275,14 +306,14 @@ textarea.form-control {
 .icon-opt:hover, .icon-opt.selected {
   background: #0f172a;
   color: #ffffff;
-  border-color: #0f172a;
+  border-color: var(--ink-900);
 }
 .btn-reset-icon {
   width: 36px;
   height: 36px;
   border-radius: 10px;
-  background: #fee2e2;
-  border: 1px solid #fca5a5;
+  background: var(--tint-red-50);
+  border: 1px solid var(--tint-red-100);
   color: #ef4444;
   font-weight: 900;
   font-size: 14px;
@@ -317,14 +348,14 @@ textarea.form-control {
 .btn-blue:hover { background: #1d4ed8; }
 .btn-green { background: #16a34a; color: #ffffff; }
 .btn-green:hover { background: #15803d; }
-.btn-outline { background: #f8fafc; border: 1px solid #cbd5e1; color: #334155; }
+.btn-outline { background: var(--bg-page); border: 1px solid var(--border-strong); color: var(--ink-700); }
 .btn-sm { padding: 8px 12px; font-size: 11px; border-radius: 8px; }
 
 /* TABLE STYLING */
 .table-wrap {
   overflow: auto;
   border-radius: 14px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
 }
 table {
   width: 100%;
@@ -332,23 +363,23 @@ table {
   font-size: 12px;
 }
 th {
-  background: #f8fafc;
+  background: var(--bg-page);
   padding: 12px 16px;
   text-align: left;
   font-size: 11px;
   font-weight: 800;
-  color: #475569;
+  color: var(--ink-600);
   white-space: nowrap;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--border);
   text-transform: uppercase;
 }
 td {
   padding: 12px 16px;
-  border-top: 1px solid #f1f5f9;
+  border-top: 1px solid var(--surface-soft);
   vertical-align: middle;
-  color: #334155;
+  color: var(--ink-700);
 }
-tr:hover td { background: #fcfbf7; }
+tr:hover td { background: var(--surface-warm); }
 
 /* LIVE DOT */
 .live-dot {
@@ -375,7 +406,7 @@ tr:hover td { background: #fcfbf7; }
 }
 .overlay.show { display: flex; }
 .modal-box {
-  background: #ffffff;
+  background: var(--surface);
   border-radius: 24px;
   max-width: 400px;
   width: 100%;
@@ -395,7 +426,7 @@ tr:hover td { background: #fcfbf7; }
   padding: 20px;
 }
 .admin-gate-box {
-  background: #ffffff;
+  background: var(--surface);
   border-radius: 24px;
   width: 100%;
   max-width: 380px;
@@ -409,7 +440,7 @@ tr:hover td { background: #fcfbf7; }
   height: 52px;
   object-fit: cover;
   border-radius: 10px;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--border-strong);
   cursor: pointer;
   transition: transform 0.2s ease;
 }
@@ -417,8 +448,8 @@ tr:hover td { background: #fcfbf7; }
 
 /* GPS BOX STYLING ADUAN */
 .gps-card-box {
-  background: #f0fdf4;
-  border: 1px solid #bbf7d0;
+  background: var(--tint-green-50);
+  border: 1px solid var(--tint-green-200);
   border-radius: 12px;
   padding: 10px 12px;
   margin: 10px 0;
@@ -453,9 +484,9 @@ tr:hover td { background: #fcfbf7; }
 <!-- GATE LOGIN -->
 <div class="admin-gate-overlay" id="adminGate">
   <div class="admin-gate-box">
-    <div style="width:68px;height:68px;background:#fef3c7;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 16px">🔒</div>
-    <h2 style="font-size:20px;font-weight:900;color:#0f172a">Admin RW 05 Terkunci</h2>
-    <p style="font-size:12px;color:#64748b;margin-top:6px;line-height:1.5">Login admin Firebase untuk akses kontrol database warga.</p>
+    <div style="width:68px;height:68px;background:var(--tint-amber-50);border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 16px">🔒</div>
+    <h2 style="font-size:20px;font-weight:900;color:var(--ink-900)">Admin RW 05 Terkunci</h2>
+    <p style="font-size:12px;color:var(--ink-500);margin-top:6px;line-height:1.5">Login admin Firebase untuk akses kontrol database warga.</p>
     <input id="gateEmail" type="email" placeholder="Email admin" class="form-control" style="margin-top:16px;">
     <input id="gatePass" type="password" placeholder="Password admin" class="form-control" style="margin-top:10px;">
     <div id="gateError" style="font-size:11px;color:#ef4444;font-weight:700;margin-top:8px;display:none"></div>
@@ -472,7 +503,7 @@ tr:hover td { background: #fcfbf7; }
       <div class="logo-5">05</div>
       <div>
         <div style="font-weight:900;font-size:15px;line-height:1;color:#ffffff">KATARNOLIMA</div>
-        <div style="font-size:10px;color:#94a3b8;font-weight:700;margin-top:2px">RW 05 Poncol Jaya</div>
+        <div style="font-size:10px;color:var(--ink-400);font-weight:700;margin-top:2px">RW 05 Poncol Jaya</div>
       </div>
     </div>
     <div class="menu">
@@ -497,6 +528,7 @@ tr:hover td { background: #fcfbf7; }
       <button class="menu-item" data-tab="keuangan"><span class="icon">💰</span> Saldo Kas & Iuran</button>
 
       <div class="menu-label">Sistem</div>
+      <button class="menu-item" data-tab="pengaturan"><span class="icon">🎛️</span> Pengaturan</button>
       <button class="menu-item" id="btnLogout" style="color:#f87171"><span class="icon">🚪</span> Keluar Admin</button>
     </div>
   </aside>
@@ -506,10 +538,10 @@ tr:hover td { background: #fcfbf7; }
       <button class="hamburger" id="hamburger">☰</button>
       <div style="display:flex;align-items:center;gap:10px">
         <span class="live-dot"></span>
-        <span style="font-size:12px;font-weight:800;color:#0f172a">DATABASE VIEW MODE</span>
-        <span style="font-size:11px;background:#f1f5f9;padding:4px 10px;border-radius:8px;font-weight:700;color:#475569" id="adminEmailLabel">Admin</span>
+        <span style="font-size:12px;font-weight:800;color:var(--ink-900)">DATABASE VIEW MODE</span>
+        <span style="font-size:11px;background:var(--surface-soft);padding:4px 10px;border-radius:8px;font-weight:700;color:var(--ink-600)" id="adminEmailLabel">Admin</span>
       </div>
-      <div style="font-size:11px;color:#64748b;font-weight:600">Sinkronisasi Realtime Firestore</div>
+      <div style="font-size:11px;color:var(--ink-500);font-weight:600">Sinkronisasi Realtime Firestore</div>
     </div>
 
     <div class="content">
@@ -562,7 +594,7 @@ tr:hover td { background: #fcfbf7; }
           <div class="table-wrap">
             <table>
               <thead><tr><th>Komoditas</th><th>Harga</th><th>Pasar / Toko</th><th>Pembaruan</th><th>Aksi</th></tr></thead>
-              <tbody id="listSembakoAdmin"><tr><td colspan="5" style="text-align:center;color:#94a3b8">Memuat data...</td></tr></tbody>
+              <tbody id="listSembakoAdmin"><tr><td colspan="5" style="text-align:center;color:var(--ink-400)">Memuat data...</td></tr></tbody>
             </table>
           </div>
         </div>
@@ -728,7 +760,7 @@ tr:hover td { background: #fcfbf7; }
                 </tr>
               </thead>
               <tbody id="listRiwayatUpdateAdmin">
-                <tr><td colspan="6" style="text-align:center;color:#94a3b8">Memuat riwayat...</td></tr>
+                <tr><td colspan="6" style="text-align:center;color:var(--ink-400)">Memuat riwayat...</td></tr>
               </tbody>
             </table>
           </div>
@@ -757,12 +789,43 @@ tr:hover td { background: #fcfbf7; }
       <div class="tab-content" id="tab-warga">
         <div class="card">
           <div class="card-title">👥 Database Akun Warga Terdaftar (Pendaftaran Mandiri oleh Warga)</div>
-          <p style="font-size:12px;color:#64748b;margin-bottom:16px;">Warga mendaftar mandiri via halaman Profil. Admin mengelola data & menghapus akun jika diperlukan.</p>
+          <p style="font-size:12px;color:var(--ink-500);margin-bottom:16px;">Warga mendaftar mandiri via halaman Profil. Admin mengelola data & menghapus akun jika diperlukan.</p>
           <div class="table-wrap">
             <table>
               <thead><tr><th>Nama Lengkap</th><th>RT / Wilayah</th><th>Email Terdaftar</th><th>Aksi Kontrol</th></tr></thead>
-              <tbody id="listWargaAdmin"><tr><td colspan="4" style="text-align:center;color:#94a3b8">Memuat database...</td></tr></tbody>
+              <tbody id="listWargaAdmin"><tr><td colspan="4" style="text-align:center;color:var(--ink-400)">Memuat database...</td></tr></tbody>
             </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- PENGATURAN ADMIN -->
+      <div class="tab-content" id="tab-pengaturan">
+        <div class="card" style="max-width:520px">
+          <div class="card-title">🎛️ Tampilan Panel Admin</div>
+          <p style="font-size:12px;color:var(--ink-500);margin:-6px 0 14px">Pilih mode tampilan yang nyaman untuk kamu saat mengelola data RW.</p>
+          <div class="admin-theme-picker" id="adminThemePicker">
+            <div class="admin-theme-opt" data-pref="light"><span>☀️</span><b>Terang</b></div>
+            <div class="admin-theme-opt" data-pref="dark"><span>🌙</span><b>Gelap</b></div>
+            <div class="admin-theme-opt" data-pref="system"><span>🔄</span><b>Otomatis</b></div>
+          </div>
+        </div>
+
+        <div class="card" style="max-width:520px">
+          <div class="card-title">🔔 Notifikasi Aduan Masuk</div>
+          <p style="font-size:12px;color:var(--ink-500);margin:-6px 0 14px">Tampilkan badge peringatan saat ada aduan warga baru yang belum diproses.</p>
+          <label class="admin-switch-row">
+            <span>Aktifkan badge notifikasi aduan</span>
+            <label class="switch"><input type="checkbox" id="chkBadgeAduan" checked><span class="slider"></span></label>
+          </label>
+        </div>
+
+        <div class="card" style="max-width:520px">
+          <div class="card-title">ℹ️ Info Aplikasi</div>
+          <div style="display:grid;gap:8px;font-size:12.5px;color:var(--ink-600)">
+            <div style="display:flex;justify-content:space-between"><span>Versi Aplikasi</span><b style="color:var(--ink-900)">v2.1.242</b></div>
+            <div style="display:flex;justify-content:space-between"><span>Basis Data</span><b style="color:var(--ink-900)">Firebase Firestore</b></div>
+            <div style="display:flex;justify-content:space-between"><span>Wilayah</span><b style="color:var(--ink-900)">RW 05 Poncol Jaya</b></div>
           </div>
         </div>
       </div>
@@ -814,7 +877,7 @@ tr:hover td { background: #fcfbf7; }
           <div class="table-wrap">
             <table>
               <thead><tr><th>Jenis</th><th>Nominal</th><th>Keterangan</th><th>Tanggal & Waktu Detail</th><th>Aksi</th></tr></thead>
-              <tbody id="listTransaksiKas"><tr><td colspan="5" style="text-align:center;color:#94a3b8">Memuat riwayat...</td></tr></tbody>
+              <tbody id="listTransaksiKas"><tr><td colspan="5" style="text-align:center;color:var(--ink-400)">Memuat riwayat...</td></tr></tbody>
             </table>
           </div>
         </div>
@@ -822,11 +885,11 @@ tr:hover td { background: #fcfbf7; }
         <!-- TABEL BUKTI PEMBAYARAN IURAN WARGA -->
         <div class="card">
           <div class="card-title">📥 Bukti Pembayaran Iuran Warga (Masuk Real-time)</div>
-          <p style="font-size:12px;color:#64748b;margin-bottom:16px;">Hapus data bukti pembayaran iuran yang sudah tidak diperlukan agar kuota penyimpanan Firebase tidak penuh.</p>
+          <p style="font-size:12px;color:var(--ink-500);margin-bottom:16px;">Hapus data bukti pembayaran iuran yang sudah tidak diperlukan agar kuota penyimpanan Firebase tidak penuh.</p>
           <div class="table-wrap">
             <table>
               <thead><tr><th>NIK (16 Digit)</th><th>Bulan</th><th>Nominal</th><th>RT</th><th>Bukti Transfer</th><th>Tanggal Kirim</th><th>Aksi Kontrol</th></tr></thead>
-              <tbody id="listIuranWargaAdmin"><tr><td colspan="7" style="text-align:center;color:#94a3b8">Memuat bukti iuran...</td></tr></tbody>
+              <tbody id="listIuranWargaAdmin"><tr><td colspan="7" style="text-align:center;color:var(--ink-400)">Memuat bukti iuran...</td></tr></tbody>
             </table>
           </div>
         </div>
@@ -839,10 +902,10 @@ tr:hover td { background: #fcfbf7; }
 <!-- CUSTOM MODAL POPUP UNIVERSAL -->
 <div class="overlay" id="appCustomModal">
   <div class="modal-box">
-    <button id="modalCloseX" style="position:absolute; top:16px; right:18px; background:none; border:none; font-size:18px; font-weight:800; color:#94a3b8; cursor:pointer; padding:4px;">✕</button>
+    <button id="modalCloseX" style="position:absolute; top:16px; right:18px; background:none; border:none; font-size:18px; font-weight:800; color:var(--ink-400); cursor:pointer; padding:4px;">✕</button>
     <div id="modalIcon" style="font-size:32px; margin-bottom:10px;">📢</div>
-    <h3 id="modalTitle" style="font-size:16px; font-weight:900; color:#0f172a; margin-bottom:6px;">Notifikasi</h3>
-    <p id="modalDesc" style="font-size:12px; color:#475569; line-height:1.5; margin-bottom:20px;"></p>
+    <h3 id="modalTitle" style="font-size:16px; font-weight:900; color:var(--ink-900); margin-bottom:6px;">Notifikasi</h3>
+    <p id="modalDesc" style="font-size:12px; color:var(--ink-600); line-height:1.5; margin-bottom:20px;"></p>
     <div id="modalButtons" style="display:flex; gap:10px;"></div>
   </div>
 </div>
@@ -850,16 +913,16 @@ tr:hover td { background: #fcfbf7; }
 <!-- MODAL PREVIEW FOTO BUKTI TRANSFER -->
 <div class="overlay" id="modalPreviewBukti">
   <div class="modal-box" style="max-width:500px;text-align:center;">
-    <button onclick="window.closeModal('modalPreviewBukti')" style="position:absolute; top:16px; right:18px; background:none; border:none; font-size:18px; font-weight:800; color:#94a3b8; cursor:pointer; padding:4px;">✕</button>
-    <h3 style="font-weight:900;margin-bottom:14px;color:#0f172a">Bukti Transfer / QRIS</h3>
-    <img id="imgFullBukti" src="" style="width:100%;max-height:400px;object-fit:contain;border-radius:14px;border:1px solid #cbd5e1;" alt="Bukti Transfer">
+    <button onclick="window.closeModal('modalPreviewBukti')" style="position:absolute; top:16px; right:18px; background:none; border:none; font-size:18px; font-weight:800; color:var(--ink-400); cursor:pointer; padding:4px;">✕</button>
+    <h3 style="font-weight:900;margin-bottom:14px;color:var(--ink-900)">Bukti Transfer / QRIS</h3>
+    <img id="imgFullBukti" src="" style="width:100%;max-height:400px;object-fit:contain;border-radius:14px;border:1px solid var(--border-strong);" alt="Bukti Transfer">
   </div>
 </div>
 
 <!-- MODAL EDIT BERITA -->
 <div class="overlay" id="modalEditBerita">
   <div class="modal-box">
-    <h3 style="font-weight:900;color:#0f172a">Edit Berita</h3>
+    <h3 style="font-weight:900;color:var(--ink-900)">Edit Berita</h3>
     <input id="editBeritaId" type="hidden">
     <div class="form-group" style="margin-top:14px"><label>Judul</label><input id="editBeritaJudul" class="form-control"></div>
     <div class="form-group"><label>Isi</label><textarea id="editBeritaIsi" class="form-control"></textarea></div>
@@ -1016,6 +1079,41 @@ if(btnLogout) btnLogout.addEventListener('click', ()=>{
     }
   });
 });
+
+// --- Pengaturan: Mode Tampilan Panel Admin ---
+(function(){
+  var STORAGE_KEY = 'katar-theme';
+  var picker = document.getElementById('adminThemePicker');
+  if(!picker) return;
+  var opts = picker.querySelectorAll('.admin-theme-opt');
+  function getPref(){ try { return localStorage.getItem(STORAGE_KEY) || 'system'; } catch(e){ return 'system'; } }
+  function applyPref(pref){
+    var mql = window.matchMedia('(prefers-color-scheme: dark)');
+    var resolved = pref === 'dark' ? 'dark' : pref === 'light' ? 'light' : (mql.matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', resolved);
+    document.documentElement.setAttribute('data-theme-pref', pref);
+    try { localStorage.setItem(STORAGE_KEY, pref); } catch(e){}
+  }
+  function refresh(){ var p=getPref(); opts.forEach(function(el){ el.classList.toggle('selected', el.getAttribute('data-pref')===p); }); }
+  opts.forEach(function(el){ el.addEventListener('click', function(){ applyPref(el.getAttribute('data-pref')); refresh(); }); });
+  refresh();
+})();
+
+// --- Pengaturan: Toggle badge notifikasi aduan ---
+(function(){
+  var chk = document.getElementById('chkBadgeAduan');
+  if(!chk) return;
+  var KEY = 'katar_admin_badge_aduan';
+  try { var saved = localStorage.getItem(KEY); if (saved !== null) chk.checked = saved === '1'; } catch(e){}
+  function apply(){
+    var badge = document.getElementById('badgeAduan');
+    if(!badge) return;
+    if(!chk.checked){ badge.dataset.forceHidden = '1'; badge.style.display = 'none'; }
+    else { delete badge.dataset.forceHidden; }
+  }
+  chk.addEventListener('change', function(){ try { localStorage.setItem(KEY, chk.checked?'1':'0'); } catch(e){} apply(); });
+  apply();
+})();
 
 window.switchTab = function(tab){
   document.querySelectorAll('.menu-item').forEach(b=>b.classList.remove('active'));
@@ -1181,8 +1279,8 @@ function initAdmin(){
         const d = docItem.data();
         const timeStr = formatDateTimeDetailed(d.createdAt);
         const statusBadge = d.isAktif 
-          ? '<span style="color:#16a34a;font-weight:800;font-size:10px;background:#dcfce7;padding:2px 6px;border-radius:4px;">AKTIF</span>' 
-          : '<span style="color:#64748b;font-weight:700;font-size:10px;background:#f1f5f9;padding:2px 6px;border-radius:4px;">NONAKTIF</span>';
+          ? '<span style="color:#16a34a;font-weight:800;font-size:10px;background:var(--tint-green-100);padding:2px 6px;border-radius:4px;">AKTIF</span>' 
+          : '<span style="color:var(--ink-500);font-weight:700;font-size:10px;background:var(--surface-soft);padding:2px 6px;border-radius:4px;">NONAKTIF</span>';
 
         const safeData = JSON.stringify({
           versi: d.versi || '',
@@ -1191,10 +1289,10 @@ function initAdmin(){
         }).replace(/"/g, '&quot;');
 
         html += `<tr>
-          <td style="font-weight:800;color:#0f172a;">${d.versi || '-'}</td>
+          <td style="font-weight:800;color:var(--ink-900);">${d.versi || '-'}</td>
           <td style="white-space:pre-line;font-size:11px;max-width:200px;">${d.catatan || '-'}</td>
           <td><a href="${d.linkDownload || '#'}" target="_blank" style="color:#2563eb;font-size:11px;">Buka Link</a></td>
-          <td style="font-size:11px;color:#64748b;">${timeStr}</td>
+          <td style="font-size:11px;color:var(--ink-500);">${timeStr}</td>
           <td>${statusBadge}</td>
           <td>
             <div style="display:flex;gap:4px;flex-wrap:nowrap;">
@@ -1204,7 +1302,7 @@ function initAdmin(){
           </td>
         </tr>`;
       });
-      listRiwayatUpdateAdmin.innerHTML = html || '<tr><td colspan="6" style="text-align:center;color:#94a3b8">Belum ada riwayat update.</td></tr>';
+      listRiwayatUpdateAdmin.innerHTML = html || '<tr><td colspan="6" style="text-align:center;color:var(--ink-400)">Belum ada riwayat update.</td></tr>';
     });
   }
 
@@ -1291,11 +1389,11 @@ function initAdmin(){
           <td><b>${d.nama||'-'}</b></td>
           <td style="color:#2563eb;font-weight:800">Rp ${Number(d.harga||0).toLocaleString('id-ID')} / ${d.satuan||'Kg'}</td>
           <td>${d.pasar||'-'}</td>
-          <td><span style="font-size:10px;color:#64748b">${d.tanggalFormatted||'-'}</span></td>
+          <td><span style="font-size:10px;color:var(--ink-500)">${d.tanggalFormatted||'-'}</span></td>
           <td><button class="btn btn-red btn-sm" onclick="window.hapusSembako('${docItem.id}')">Hapus</button></td>
         </tr>`;
       });
-      listSembakoAdmin.innerHTML = html || '<tr><td colspan="5" style="text-align:center;color:#94a3b8">Belum ada data sembako.</td></tr>';
+      listSembakoAdmin.innerHTML = html || '<tr><td colspan="5" style="text-align:center;color:var(--ink-400)">Belum ada data sembako.</td></tr>';
     });
   }
 
@@ -1336,16 +1434,16 @@ function initAdmin(){
       let html = '';
       snap.forEach(docItem => {
         const d = docItem.data();
-        html += `<div style="padding:12px;background:#f8fafc;border-radius:12px;border:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        html += `<div style="padding:12px;background:var(--bg-page);border-radius:12px;border:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
           <div>
-            <div style="font-size:13px;font-weight:800;color:#0f172a">${d.nama||'-'}</div>
-            <div style="font-size:11px;color:#64748b;margin-top:2px">Shift/Jam Jaga: ${d.jadwal||'-'} • HP: ${d.phone||'-'}</div>
+            <div style="font-size:13px;font-weight:800;color:var(--ink-900)">${d.nama||'-'}</div>
+            <div style="font-size:11px;color:var(--ink-500);margin-top:2px">Shift/Jam Jaga: ${d.jadwal||'-'} • HP: ${d.phone||'-'}</div>
             <div style="font-size:11px;color:#be123c;margin-top:4px"><b>Himbauan:</b> ${d.himbauan||'-'}</div>
           </div>
           <button class="btn btn-red btn-sm" onclick="window.hapusKeamanan('${docItem.id}')">Hapus</button>
         </div>`;
       });
-      listKeamananAdmin.innerHTML = html || '<div style="font-size:11px;color:#94a3b8">Belum ada data keamanan.</div>';
+      listKeamananAdmin.innerHTML = html || '<div style="font-size:11px;color:var(--ink-400)">Belum ada data keamanan.</div>';
     });
   }
 
@@ -1386,18 +1484,18 @@ function initAdmin(){
       let html = '';
       snap.forEach(docItem => {
         const d = docItem.data();
-        html += `<div style="padding:14px;background:#f8fafc;border-radius:12px;border:1px solid #e2e8f0;margin-bottom:10px">
+        html += `<div style="padding:14px;background:var(--bg-page);border-radius:12px;border:1px solid var(--border);margin-bottom:10px">
           <div style="display:flex;justify-content:space-between;align-items:flex-start">
             <div>
-              <div style="font-size:13px;font-weight:800;color:#0f172a">${d.judul||'-'}</div>
+              <div style="font-size:13px;font-weight:800;color:var(--ink-900)">${d.judul||'-'}</div>
               <div style="font-size:11px;color:#2563eb;font-weight:700;margin-top:2px">📅 ${d.tanggal||'-'} • 📍 ${d.lokasi||'-'}</div>
             </div>
             <button class="btn btn-red btn-sm" onclick="window.hapusLingkungan('${docItem.id}')">Hapus</button>
           </div>
-          <div style="font-size:12px;color:#475569;margin-top:6px">${d.isi||'-'}</div>
+          <div style="font-size:12px;color:var(--ink-600);margin-top:6px">${d.isi||'-'}</div>
         </div>`;
       });
-      listLingkunganAdmin.innerHTML = html || '<div style="font-size:11px;color:#94a3b8">Belum ada agenda kebersihan.</div>';
+      listLingkunganAdmin.innerHTML = html || '<div style="font-size:11px;color:var(--ink-400)">Belum ada agenda kebersihan.</div>';
     });
   }
 
@@ -1438,18 +1536,18 @@ function initAdmin(){
       let html = '';
       snap.forEach(docItem => {
         const d = docItem.data();
-        html += `<div style="padding:14px;background:#f8fafc;border-radius:12px;border:1px solid #e2e8f0;margin-bottom:10px">
+        html += `<div style="padding:14px;background:var(--bg-page);border-radius:12px;border:1px solid var(--border);margin-bottom:10px">
           <div style="display:flex;justify-content:space-between;align-items:flex-start">
             <div>
-              <div style="font-size:13px;font-weight:800;color:#0f172a">${d.judul||'-'}</div>
+              <div style="font-size:13px;font-weight:800;color:var(--ink-900)">${d.judul||'-'}</div>
               <div style="font-size:11px;color:#16a34a;font-weight:700;margin-top:2px">📅 ${d.jadwal||'-'} • 📍 ${d.lokasi||'-'}</div>
             </div>
             <button class="btn btn-red btn-sm" onclick="window.hapusPosyandu('${docItem.id}')">Hapus</button>
           </div>
-          <div style="font-size:12px;color:#475569;margin-top:6px">${d.keterangan||'-'}</div>
+          <div style="font-size:12px;color:var(--ink-600);margin-top:6px">${d.keterangan||'-'}</div>
         </div>`;
       });
-      listPosyanduAdmin.innerHTML = html || '<div style="font-size:11px;color:#94a3b8">Belum ada jadwal Posyandu.</div>';
+      listPosyanduAdmin.innerHTML = html || '<div style="font-size:11px;color:var(--ink-400)">Belum ada jadwal Posyandu.</div>';
     });
   }
 
@@ -1490,18 +1588,18 @@ function initAdmin(){
       let html = '';
       snap.forEach(docItem => {
         const d = docItem.data();
-        html += `<div style="padding:14px;background:#f8fafc;border-radius:12px;border:1px solid #e2e8f0;margin-bottom:10px">
+        html += `<div style="padding:14px;background:var(--bg-page);border-radius:12px;border:1px solid var(--border);margin-bottom:10px">
           <div style="display:flex;justify-content:space-between;align-items:flex-start">
             <div>
-              <div style="font-size:13px;font-weight:800;color:#0f172a">${d.judul||'-'}</div>
+              <div style="font-size:13px;font-weight:800;color:var(--ink-900)">${d.judul||'-'}</div>
               <div style="font-size:11px;color:#2563eb;font-weight:700;margin-top:2px">⏰ ${d.jadwal||'-'} • 👤 PJ: ${d.pj||'-'}</div>
             </div>
             <button class="btn btn-red btn-sm" onclick="window.hapusKegiatan('${docItem.id}')">Hapus</button>
           </div>
-          <div style="font-size:12px;color:#475569;margin-top:6px">${d.isi||'-'}</div>
+          <div style="font-size:12px;color:var(--ink-600);margin-top:6px">${d.isi||'-'}</div>
         </div>`;
       });
-      listKegiatanAdmin.innerHTML = html || '<div style="font-size:11px;color:#94a3b8">Belum ada program belajar/kegiatan.</div>';
+      listKegiatanAdmin.innerHTML = html || '<div style="font-size:11px;color:var(--ink-400)">Belum ada program belajar/kegiatan.</div>';
     });
   }
 
@@ -1577,11 +1675,11 @@ function initAdmin(){
           <td><span style="color:${badgeColor};font-weight:800">${d.jenis === 'masuk' ? 'MASUK' : 'KELUAR'}</span></td>
           <td style="color:${badgeColor};font-weight:700">${sign}Rp ${Number(d.jumlah||0).toLocaleString('id-ID')}</td>
           <td>${d.keterangan||'-'}</td>
-          <td style="font-size:11px;color:#334155;font-weight:600">${detailTime}</td>
+          <td style="font-size:11px;color:var(--ink-700);font-weight:600">${detailTime}</td>
           <td><button class="btn btn-red btn-sm" onclick="window.hapusTransaksiKas('${docItem.id}', '${d.jenis}', ${d.jumlah})">Hapus</button></td>
         </tr>`;
       });
-      listTransaksiKas.innerHTML = html || '<tr><td colspan="5" style="text-align:center;color:#94a3b8">Belum ada transaksi.</td></tr>';
+      listTransaksiKas.innerHTML = html || '<tr><td colspan="5" style="text-align:center;color:var(--ink-400)">Belum ada transaksi.</td></tr>';
     });
   }
 
@@ -1618,19 +1716,19 @@ function initAdmin(){
       snap.forEach((docItem) => {
         const d = docItem.data();
         const detailTime = formatDateTimeDetailed(d.createdAt);
-        const imgThumb = d.buktiUrl ? `<img src="${d.buktiUrl}" class="bukti-thumb" onclick="window.previewBuktiIuran('${d.buktiUrl}')" title="Klik untuk memperbesar" />` : '<span style="font-size:10px;color:#94a3b8">Tanpa Bukti</span>';
+        const imgThumb = d.buktiUrl ? `<img src="${d.buktiUrl}" class="bukti-thumb" onclick="window.previewBuktiIuran('${d.buktiUrl}')" title="Klik untuk memperbesar" />` : '<span style="font-size:10px;color:var(--ink-400)">Tanpa Bukti</span>';
         
         html += `<tr>
           <td style="font-family:monospace;font-weight:700;">${d.nik || '-'}</td>
-          <td style="font-weight:700;color:#0f172a;">${d.bulan || '-'}</td>
+          <td style="font-weight:700;color:var(--ink-900);">${d.bulan || '-'}</td>
           <td style="color:#16a34a;font-weight:800;">Rp ${Number(d.nominal||0).toLocaleString('id-ID')}</td>
-          <td><span style="background:#e2e8f0;padding:2px 6px;border-radius:4px;font-weight:700;font-size:10px;">${d.rt || '-'}</span></td>
+          <td><span style="background:var(--border);padding:2px 6px;border-radius:4px;font-weight:700;font-size:10px;">${d.rt || '-'}</span></td>
           <td style="text-align:center;">${imgThumb}</td>
-          <td style="font-size:11px;color:#64748b;">${detailTime}</td>
+          <td style="font-size:11px;color:var(--ink-500);">${detailTime}</td>
           <td><button class="btn btn-red btn-sm" onclick="window.hapusIuranWarga('${docItem.id}')">Hapus Data & Bukti</button></td>
         </tr>`;
       });
-      listIuranWargaAdmin.innerHTML = html || '<tr><td colspan="7" style="text-align:center;color:#94a3b8">Belum ada bukti iuran masuk.</td></tr>';
+      listIuranWargaAdmin.innerHTML = html || '<tr><td colspan="7" style="text-align:center;color:var(--ink-400)">Belum ada bukti iuran masuk.</td></tr>';
     });
   }
 
@@ -1667,18 +1765,18 @@ function initAdmin(){
       snap.forEach((docItem) => {
         const d = docItem.data();
         const timeStr = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleString('id-ID') : '-';
-        html += `<div style="padding:14px;background:#f8fafc;border-radius:12px;border:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;gap:12px;">
+        html += `<div style="padding:14px;background:var(--bg-page);border-radius:12px;border:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;gap:12px;">
           <div style="flex:1;">
             <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
-              <span style="font-weight:800;font-size:12px;color:#0f172a;">${d.userName || 'Warga'}</span>
-              <span style="font-size:10px;color:#64748b;">• ${timeStr}</span>
+              <span style="font-weight:800;font-size:12px;color:var(--ink-900);">${d.userName || 'Warga'}</span>
+              <span style="font-size:10px;color:var(--ink-500);">• ${timeStr}</span>
             </div>
-            <div style="font-size:12px;color:#334155;line-height:1.4;">${d.text || ''}</div>
+            <div style="font-size:12px;color:var(--ink-700);line-height:1.4;">${d.text || ''}</div>
           </div>
           <button class="btn btn-red btn-sm" onclick="window.hapusDiskusiAdmin('${docItem.id}')" style="flex-shrink:0;">Hapus</button>
         </div>`;
       });
-      listDiskusiAdmin.innerHTML = html || '<div style="font-size:12px;color:#94a3b8">Belum ada komentar diskusi.</div>';
+      listDiskusiAdmin.innerHTML = html || '<div style="font-size:12px;color:var(--ink-400)">Belum ada komentar diskusi.</div>';
     });
   }
 
@@ -1740,12 +1838,12 @@ function initAdmin(){
       let html='';
       snap.forEach((docItem)=>{
         const d=docItem.data()||{};
-        html+=`<div style="padding:12px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-          <div><div style="font-size:12px;font-weight:800">${d.ikon||'🔔'} ${d.judul||''}</div><div style="font-size:10px;color:#64748b">${d.tanggal||'-'}</div></div>
+        html+=`<div style="padding:12px;background:var(--bg-page);border-radius:10px;border:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <div><div style="font-size:12px;font-weight:800">${d.ikon||'🔔'} ${d.judul||''}</div><div style="font-size:10px;color:var(--ink-500)">${d.tanggal||'-'}</div></div>
           <button class="btn btn-red btn-sm" onclick="window.hapusInfoSingkat('${docItem.id}')">Hapus</button>
         </div>`;
       });
-      listInfoSingkatAdmin.innerHTML=html||'<div style="font-size:11px;color:#94a3b8">Belum ada info singkat.</div>';
+      listInfoSingkatAdmin.innerHTML=html||'<div style="font-size:11px;color:var(--ink-400)">Belum ada info singkat.</div>';
     });
   }
 
@@ -1788,12 +1886,12 @@ function initAdmin(){
       let html='';
       snap.forEach((docItem)=>{
         const d=docItem.data()||{};
-        html+=`<div style="padding:12px;background:#f8fafc;border-radius:12px;border:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-          <div><div style="font-size:12px;font-weight:800">${d.ikon||'📰'} ${d.judul||''}</div><div style="font-size:10px;color:#64748b">${d.tanggal||'-'}</div></div>
+        html+=`<div style="padding:12px;background:var(--bg-page);border-radius:12px;border:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <div><div style="font-size:12px;font-weight:800">${d.ikon||'📰'} ${d.judul||''}</div><div style="font-size:10px;color:var(--ink-500)">${d.tanggal||'-'}</div></div>
           <div style="display:flex;gap:6px"><button class="btn btn-outline btn-sm" onclick="window.editBerita('${docItem.id}')">Edit</button><button class="btn btn-red btn-sm" onclick="window.hapusBerita('${docItem.id}')">Hapus</button></div>
         </div>`;
       });
-      listBeritaAdmin.innerHTML=html||'<div style="font-size:11px;color:#94a3b8">Belum ada berita.</div>';
+      listBeritaAdmin.innerHTML=html||'<div style="font-size:11px;color:var(--ink-400)">Belum ada berita.</div>';
     });
   }
 
@@ -1841,7 +1939,7 @@ function initAdmin(){
 
   onSnapshot(query(collection(db,"aduan_warga05"), orderBy("createdAt", "desc"), limit(30)), (snap)=>{
     if(statAduan) statAduan.textContent=snap.size;
-    if(badgeAduan){ badgeAduan.textContent=snap.size; badgeAduan.style.display=snap.size>0?'inline-block':'none'; }
+    if(badgeAduan){ badgeAduan.textContent=snap.size; badgeAduan.style.display=(snap.size>0 && badgeAduan.dataset.forceHidden!=='1')?'inline-block':'none'; }
     if(listAduanAdmin){
       let html='';
       snap.forEach(docItem=>{
@@ -1853,9 +1951,9 @@ function initAdmin(){
         let mediaPreview = '';
         if (mediaUrl) {
           if (isVideo) {
-            mediaPreview = `<video src="${mediaUrl}" controls style="width:120px;height:80px;border-radius:10px;object-fit:cover;margin-bottom:8px;border:1px solid #cbd5e1;"></video>`;
+            mediaPreview = `<video src="${mediaUrl}" controls style="width:120px;height:80px;border-radius:10px;object-fit:cover;margin-bottom:8px;border:1px solid var(--border-strong);"></video>`;
           } else {
-            mediaPreview = `<img src="${mediaUrl}" style="width:70px;height:70px;border-radius:10px;object-fit:cover;margin-bottom:8px;border:1px solid #cbd5e1;" />`;
+            mediaPreview = `<img src="${mediaUrl}" style="width:70px;height:70px;border-radius:10px;object-fit:cover;margin-bottom:8px;border:1px solid var(--border-strong);" />`;
           }
         }
 
@@ -1903,15 +2001,15 @@ function initAdmin(){
           `;
         }
 
-        html+=`<div style="padding:14px;background:#f8fafc;border-radius:12px;border:1px solid #e2e8f0;margin-bottom:12px">
+        html+=`<div style="padding:14px;background:var(--bg-page);border-radius:12px;border:1px solid var(--border);margin-bottom:12px">
           <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
             <div>
-              <div style="font-weight:800;font-size:13px;color:#0f172a;">${d.judul || 'Aduan'} - ${d.rt||'-'}</div>
-              <div style="font-size:11px;color:#64748b;margin-top:2px;">Pelapor: ${d.nama||'-'} • ${d.tanggal||''}</div>
+              <div style="font-weight:800;font-size:13px;color:var(--ink-900);">${d.judul || 'Aduan'} - ${d.rt||'-'}</div>
+              <div style="font-size:11px;color:var(--ink-500);margin-top:2px;">Pelapor: ${d.nama||'-'} • ${d.tanggal||''}</div>
             </div>
-            <span style="font-size:10px;font-weight:800;padding:3px 8px;border-radius:6px;background:#e2e8f0;color:#334155;">${currentStatus}</span>
+            <span style="font-size:10px;font-weight:800;padding:3px 8px;border-radius:6px;background:var(--border);color:var(--ink-700);">${currentStatus}</span>
           </div>
-          <div style="font-size:12px;margin:8px 0;color:#334155;line-height:1.4;">${d.deskripsi||'-'}</div>
+          <div style="font-size:12px;margin:8px 0;color:var(--ink-700);line-height:1.4;">${d.deskripsi||'-'}</div>
           ${gpsHtml}
           ${mediaPreview}
           <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">
@@ -1921,7 +2019,7 @@ function initAdmin(){
           </div>
         </div>`;
       });
-      listAduanAdmin.innerHTML=html||'<div style="font-size:11px;color:#94a3b8">Belum ada aduan.</div>';
+      listAduanAdmin.innerHTML=html||'<div style="font-size:11px;color:var(--ink-400)">Belum ada aduan.</div>';
     }
   });
 
@@ -1981,7 +2079,7 @@ function initAdmin(){
           <td><button class="btn btn-red btn-sm" onclick="window.hapusWarga('${docItem.id}')">Hapus Akun</button></td>
         </tr>`;
       });
-      listWargaAdmin.innerHTML=html||'<tr><td colspan="4" style="text-align:center;color:#94a3b8">Belum ada akun warga mendaftar.</td></tr>';
+      listWargaAdmin.innerHTML=html||'<tr><td colspan="4" style="text-align:center;color:var(--ink-400)">Belum ada akun warga mendaftar.</td></tr>';
     });
   }
 
@@ -1999,5 +2097,6 @@ function initAdmin(){
   };
 }
 </script>
+<script src="../assets/js/theme.js"></script>
 </body>
 </html>

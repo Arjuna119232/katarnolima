@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+<script>(function(){try{var m=localStorage.getItem('katar-theme')||'system';var d=m==='dark'||(m==='system'&&window.matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.setAttribute('data-theme',d?'dark':'light');document.documentElement.setAttribute('data-theme-pref',m);}catch(e){}})();</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f8fafc">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0f1a">
 <title>Iuran Warga - KATARNOLIMA RW 05</title>
 <link rel="icon" href="../assets/img/logo-resmi-karang-taruna.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/theme.css">
 <link rel="stylesheet" href="../assets/css/style.css?v=26">
 <style>
 /* RESET & SYSTEM BASE */
@@ -17,9 +22,9 @@
 }
 
 body {
-  background: #f8fafc !important;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  color: #0f172a;
+  background: var(--bg-page) !important;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: var(--ink-900);
   line-height: 1.5;
 }
 
@@ -27,7 +32,7 @@ body {
   width: 100%;
   max-width: 440px;
   margin: 0 auto;
-  background: #ffffff;
+  background: var(--surface);
   min-height: 100vh;
   padding: 16px 20px 40px;
   box-shadow: 0 0 30px rgba(15, 23, 42, 0.05);
@@ -41,16 +46,16 @@ body {
   gap: 12px;
   margin-bottom: 20px;
   padding-bottom: 12px;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--surface-soft);
 }
 
 .btn-back {
   width: 38px;
   height: 38px;
   border-radius: 12px;
-  background: #f1f5f9;
-  border: 1px solid #e2e8f0;
-  color: #0f172a;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  color: var(--ink-900);
   font-size: 18px;
   font-weight: 800;
   display: flex;
@@ -102,8 +107,8 @@ body {
 
 /* CARDS COMMON */
 .card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 20px;
   padding: 18px;
   margin-bottom: 20px;
@@ -112,15 +117,15 @@ body {
 .card-subtitle {
   font-size: 14px;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--ink-900);
   margin-bottom: 14px;
   letter-spacing: -0.2px;
 }
 
 /* REKENING & QRIS BOX */
 .qris-box {
-  background: #f8fafc;
-  border: 1.5px dashed #cbd5e1;
+  background: var(--bg-page);
+  border: 1.5px dashed var(--border-strong);
   border-radius: 16px;
   padding: 16px;
   text-align: center;
@@ -131,21 +136,21 @@ body {
   object-fit: contain;
   border-radius: 12px;
   margin: 10px 0;
-  border: 1px solid #e2e8f0;
-  background: #ffffff;
+  border: 1px solid var(--border);
+  background: var(--surface);
 }
 .rekening-info {
   font-size: 12px;
-  color: #334155;
+  color: var(--ink-700);
   line-height: 1.5;
   font-weight: 600;
 }
 .btn-copy {
   margin-top: 8px;
   padding: 6px 14px;
-  background: #eff6ff;
+  background: var(--tint-blue-50);
   color: #2563eb;
-  border: 1px solid #bfdbfe;
+  border: 1px solid var(--tint-blue-200);
   border-radius: 8px;
   font-size: 11px;
   font-weight: 800;
@@ -158,7 +163,7 @@ body {
   display: block;
   font-size: 11px;
   font-weight: 800;
-  color: #475569;
+  color: var(--ink-600);
   margin-bottom: 6px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -166,17 +171,17 @@ body {
 .input-custom {
   width: 100%;
   padding: 12px 14px;
-  border: 1.5px solid #cbd5e1;
+  border: 1.5px solid var(--border-strong);
   border-radius: 14px;
   font-size: 13px;
   outline: none;
-  background: #f8fafc;
-  color: #0f172a;
+  background: var(--bg-page);
+  color: var(--ink-900);
   transition: all 0.2s ease;
 }
 .input-custom:focus {
-  border-color: #0f172a;
-  background: #ffffff;
+  border-color: var(--ink-900);
+  background: var(--surface);
   box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.05);
 }
 
@@ -188,7 +193,7 @@ body {
   position: relative;
   border-radius: 14px;
   overflow: hidden;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--border-strong);
   background: #0f172a;
   text-align: center;
 }
@@ -203,7 +208,7 @@ body {
   right: 8px;
   background: #ef4444;
   color: #ffffff;
-  border: 2px solid #ffffff;
+  border: 2px solid var(--surface);
   width: 28px;
   height: 28px;
   border-radius: 50%;
@@ -240,7 +245,7 @@ body {
   <!-- HEADER -->
   <div class="header">
     <a href="../index.html" class="btn-back" id="btnBackHeader">←</a>
-    <h1 style="font-size:16px; font-weight:800; color:#0f172a; letter-spacing:-0.2px;">Iuran Warga RW 05</h1>
+    <h1 style="font-size:16px; font-weight:800; color:var(--ink-900); letter-spacing:-0.2px;">Iuran Warga RW 05</h1>
   </div>
 
   <!-- SALDO KAS CARD -->
@@ -518,5 +523,6 @@ if (btnBackHeader) {
   });
 }
 </script>
+<script src="../assets/js/theme.js"></script>
 </body>
 </html>

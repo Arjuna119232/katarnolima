@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+<script>(function(){try{var m=localStorage.getItem('katar-theme')||'system';var d=m==='dark'||(m==='system'&&window.matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.setAttribute('data-theme',d?'dark':'light');document.documentElement.setAttribute('data-theme-pref',m);}catch(e){}})();</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f8fafc">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0f1a">
 <title>Rincian Transaksi Kas RW 05 - KATARNOLIMA</title>
 <link rel="icon" href="../assets/img/logo-resmi-karang-taruna.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/theme.css">
 <link rel="stylesheet" href="../assets/css/style.css?v=26">
 <style>
 /* RESET & SYSTEM BASE */
@@ -17,9 +22,9 @@
 }
 
 body {
-  background: #f8fafc !important;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  color: #0f172a;
+  background: var(--bg-page) !important;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: var(--ink-900);
   line-height: 1.5;
   padding-bottom: 40px;
 }
@@ -27,7 +32,7 @@ body {
 .container {
   max-width: 440px;
   margin: 0 auto;
-  background: #ffffff;
+  background: var(--surface);
   min-height: 100vh;
   padding: 16px 20px 40px;
   box-shadow: 0 0 30px rgba(15, 23, 42, 0.05);
@@ -41,16 +46,16 @@ body {
   gap: 12px;
   margin-bottom: 20px;
   padding-bottom: 12px;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--surface-soft);
 }
 
 .btn-back {
   width: 38px;
   height: 38px;
   border-radius: 12px;
-  background: #f1f5f9;
-  border: 1px solid #e2e8f0;
-  color: #0f172a;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  color: var(--ink-900);
   font-size: 18px;
   font-weight: 800;
   display: flex;
@@ -104,9 +109,9 @@ body {
 
 /* CARD LIST RIWAYAT */
 .card-list {
-  background: #ffffff;
+  background: var(--surface);
   border-radius: 20px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   overflow: hidden;
   box-shadow: 0 4px 16px rgba(15, 23, 42, 0.02);
 }
@@ -115,9 +120,9 @@ body {
   padding: 14px 18px;
   font-weight: 800;
   font-size: 13px;
-  border-bottom: 1px solid #f1f5f9;
-  background: #f8fafc;
-  color: #0f172a;
+  border-bottom: 1px solid var(--surface-soft);
+  background: var(--bg-page);
+  color: var(--ink-900);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -125,7 +130,7 @@ body {
 
 .trans-item {
   padding: 14px 18px;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--surface-soft);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -133,7 +138,7 @@ body {
   transition: background 0.15s ease;
 }
 .trans-item:last-child { border-bottom: none; }
-.trans-item:active { background: #f8fafc; }
+.trans-item:active { background: var(--bg-page); }
 
 .trans-left-group {
   display: flex;
@@ -153,20 +158,20 @@ body {
   font-size: 16px;
   flex-shrink: 0;
 }
-.trans-icon.masuk { background: #dcfce7; color: #16a34a; }
-.trans-icon.keluar { background: #fee2e2; color: #dc2626; }
+.trans-icon.masuk { background: var(--tint-green-100); color: #16a34a; }
+.trans-icon.keluar { background: var(--tint-red-50); color: #dc2626; }
 
 .trans-info b {
   font-size: 13px;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--ink-900);
   display: block;
   line-height: 1.3;
   margin-bottom: 2px;
 }
 .trans-info span {
   font-size: 11px;
-  color: #64748b;
+  color: var(--ink-500);
   font-weight: 500;
 }
 
@@ -183,7 +188,7 @@ body {
 .state-box {
   text-align: center;
   padding: 40px 20px;
-  color: #64748b;
+  color: var(--ink-500);
   font-size: 12px;
   font-weight: 600;
 }
@@ -196,7 +201,7 @@ body {
   <!-- HEADER -->
   <div class="header">
     <a href="../index.html" class="btn-back" id="btnBackHeader" title="Kembali ke Beranda">←</a>
-    <h1 style="font-size:16px; font-weight:800; color:#0f172a; letter-spacing:-0.2px;">Rincian Transaksi Kas</h1>
+    <h1 style="font-size:16px; font-weight:800; color:var(--ink-900); letter-spacing:-0.2px;">Rincian Transaksi Kas</h1>
   </div>
 
   <!-- SALDO BANNER -->
@@ -209,7 +214,7 @@ body {
   <div class="card-list">
     <div class="card-header-title">
       <span>Riwayat Transaksi Masuk & Keluar</span>
-      <span style="font-size:10px; font-weight:700; color:#64748b; background:#e2e8f0; padding:2px 8px; border-radius:6px;">Realtime</span>
+      <span style="font-size:10px; font-weight:700; color:var(--ink-500); background:var(--border); padding:2px 8px; border-radius:6px;">Realtime</span>
     </div>
     <div id="listDetailTransaksi">
       <div class="state-box">
@@ -328,5 +333,6 @@ if (btnBackHeader) {
   });
 }
 </script>
+<script src="../assets/js/theme.js"></script>
 </body>
 </html>
