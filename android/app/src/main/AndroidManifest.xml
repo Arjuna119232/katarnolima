@@ -1,60 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.katarnolima.rw05"
-    android:versionCode="1"
-    android:versionName="1.0">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-sdk
-        android:minSdkVersion="15"
-        android:targetSdkVersion="33" />
-
-    <!-- DAFTAR IZIN (PERMISSIONS) -->
+    <!-- WAJIB ANTI FC -->
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-
-    <uses-feature
-        android:name="android.hardware.camera"
-        android:required="false" />
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="KATARNOLIMA"
+        android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:appComponentFactory="androidx.core.app.CoreComponentFactory">
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"
+        android:requestLegacyExternalStorage="true">
 
-        <!-- META-DATA GOOGLE ADMOB (Unit App ID Anda) -->
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-209615581034089~4852943754" />
-
-        <!-- MAIN ACTIVITY -->
         <activity
-            android:name="com.katarnolima.rw05.MainActivity"
-            android:exported="true"
-            android:label="KATARNOLIMA"
+            android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode"
+            android:exported="true"
+            android:label="@string/title_activity_main"
             android:launchMode="singleTask"
-            android:theme="@style/AppTheme.NoActionBar">
-            
+            android:theme="@style/AppTheme.NoActionBarLaunch">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
 
-        <!-- FILE PROVIDER (Untuk Akses Kamera/Galeri) -->
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.katarnolima.rw05.fileprovider"
+            android:authorities="${applicationId}.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
@@ -62,20 +45,6 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <!-- FIREBASE & CAPACITOR PUSH NOTIFICATION SERVICES -->
-        <service
-            android:name="com.capacitorjs.plugins.pushnotifications.MessagingService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
-
-        <provider
-            android:name="com.google.firebase.provider.FirebaseInitProvider"
-            android:authorities="com.katarnolima.rw05.firebaseinitprovider"
-            android:exported="false"
-            android:directBootAware="true" />
-
     </application>
+
 </manifest>
