@@ -36,7 +36,6 @@
     top: 0;
     z-index: 100;
     border-bottom: 1px solid #e2e8f0;
-    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
   }
   .header-left-grp { display: flex; align-items: center; gap: 12px; }
   
@@ -54,9 +53,7 @@
     height: 38px;
     border-radius: 12px;
     text-decoration: none;
-    transition: transform 0.15s ease;
   }
-  .btn-back-direct:active { transform: scale(0.92); }
   
   .btn-search-icon {
     background: #f1f5f9;
@@ -70,40 +67,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.15s ease;
   }
-  .btn-search-icon:active { transform: scale(0.92); }
-
-  /* SLIDE-DOWN SEARCH BAR */
-  .search-bar-container {
-    display: none;
-    background: #ffffff;
-    padding: 12px 20px;
-    border-bottom: 1px solid #e2e8f0;
-    position: sticky;
-    top: 67px;
-    z-index: 99;
-    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.05);
-  }
-  .search-bar-container.show { display: block; }
-  .search-input-wrap {
-    display: flex;
-    align-items: center;
-    background: #f8fafc;
-    border: 1px solid #cbd5e1;
-    border-radius: 14px;
-    padding: 0 14px;
-  }
-  .search-input-wrap input {
-    width: 100%;
-    padding: 12px 10px;
-    border: none;
-    background: transparent;
-    font-size: 13px;
-    font-weight: 600;
-    color: #0f172a;
-  }
-  .btn-clear-search { background: none; border: none; font-size: 16px; color: #94a3b8; cursor: pointer; display: none; }
 
   /* HERO BANNER AJAKAN LAPOR */
   .hero-lapor-card {
@@ -125,7 +89,6 @@
     align-items: center;
     justify-content: center;
     font-size: 40px;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.12);
   }
   .hero-lapor-card h2 {
     font-size: 15px;
@@ -133,7 +96,6 @@
     color: #0f172a;
     line-height: 1.4;
     margin-bottom: 18px;
-    letter-spacing: -0.2px;
   }
   .btn-jaki-action {
     display: flex;
@@ -148,13 +110,11 @@
     cursor: pointer;
     border: none;
     margin-bottom: 10px;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
   }
-  .btn-jaki-action:active { transform: scale(0.97); }
-  .btn-foto-jaki { background: #0f172a; color: #fbbf24; box-shadow: 0 6px 16px rgba(15, 23, 42, 0.15); }
-  .btn-video-jaki { background: #ffffff; color: #0f172a; border: 1.5px solid #cbd5e1; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
+  .btn-foto-jaki { background: #0f172a; color: #fbbf24; }
+  .btn-video-jaki { background: #ffffff; color: #0f172a; border: 1.5px solid #cbd5e1; }
 
-  /* HEADINGS SECTION */
+  /* SECTION TITLE */
   .section-header-row {
     display: flex;
     justify-content: space-between;
@@ -163,49 +123,43 @@
     margin-top: 24px;
     margin-bottom: 14px;
   }
-  .section-header-row h3 { font-size: 15px; font-weight: 800; color: #0f172a; margin: 0; letter-spacing: -0.2px; }
+  .section-header-row h3 { font-size: 15px; font-weight: 800; color: #0f172a; margin: 0; }
   .section-header-row a { font-size: 12px; font-weight: 800; color: #2563eb; text-decoration: none; }
 
-  /* KARTU DAFTAR LAPORAN */
+  /* KARTU LAPORAN */
   .active-report-card {
     background: #ffffff;
     border-radius: 20px;
     margin: 0 20px 12px;
     padding: 14px;
     border: 1px solid #e2e8f0;
-    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.02);
     display: flex;
     gap: 14px;
     cursor: pointer;
-    transition: transform 0.15s ease;
   }
-  .active-report-card:active { transform: scale(0.98); }
   .active-report-thumb { width: 84px; height: 84px; border-radius: 14px; object-fit: cover; background: #e2e8f0; flex-shrink: 0; }
   .active-report-info { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
-  .badge-kat { font-size: 10px; color: #475569; font-weight: 800; background: #f1f5f9; padding: 3px 8px; border-radius: 6px; width: fit-content; text-transform: uppercase; }
-  .report-title-text { font-size: 13px; font-weight: 800; color: #0f172a; line-height: 1.35; margin-top: 4px; }
-  .report-meta-text { font-size: 11px; color: #64748b; margin-top: 2px; font-weight: 600; }
+  .badge-kat { font-size: 10px; color: #475569; font-weight: 800; background: #f1f5f9; padding: 3px 8px; border-radius: 6px; width: fit-content; }
+  .report-title-text { font-size: 13px; font-weight: 800; color: #0f172a; line-height: 1.35; }
+  .report-meta-text { font-size: 11px; color: #64748b; font-weight: 600; }
   
-  /* BADGE STATUS DINAMIS */
-  .badge-status-dinamis { font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 8px; width: fit-content; text-align: center; letter-spacing: 0.3px; }
+  .badge-status-dinamis { font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 8px; width: fit-content; }
   .badge-status-dinamis.MenungguVerifikasi, .badge-status-dinamis.Menunggu { background: #fef3c7; color: #b45309; }
   .badge-status-dinamis.Diproses { background: #e0f2fe; color: #0369a1; }
   .badge-status-dinamis.Selesai { background: #dcfce7; color: #15803d; }
 
-  /* MODAL PANEL / BOTTOM SHEET */
+  /* MODAL PANEL */
   .form-panel-modal {
     display: none;
     position: fixed;
     inset: 0;
     background: rgba(15, 23, 42, 0.6);
-    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
     z-index: 1000;
     align-items: flex-end;
     justify-content: center;
-    opacity: 0;
-    transition: opacity 0.25s ease;
   }
-  .form-panel-modal.show { display: flex; opacity: 1; }
+  .form-panel-modal.show { display: flex; }
   .form-panel-content {
     background: #ffffff;
     width: 100%;
@@ -214,14 +168,10 @@
     overflow-y: auto;
     border-radius: 28px 28px 0 0;
     padding: 24px 20px;
-    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.15);
-    transform: translateY(100%);
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   }
-  .form-panel-modal.show .form-panel-content { transform: translateY(0); }
 
   .form-group { margin-bottom: 16px; }
-  .form-group label { display: block; font-size: 11px; font-weight: 800; color: #475569; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .form-group label { display: block; font-size: 11px; font-weight: 800; color: #475569; margin-bottom: 6px; text-transform: uppercase; }
   .form-control {
     width: 100%;
     padding: 12px 14px;
@@ -231,12 +181,6 @@
     outline: none;
     background: #f8fafc;
     color: #0f172a;
-    transition: all 0.2s ease;
-  }
-  .form-control:focus {
-    border-color: #0f172a;
-    background: #ffffff;
-    box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.05);
   }
   .btn-submit {
     width: 100%;
@@ -248,91 +192,15 @@
     font-weight: 800;
     font-size: 14px;
     cursor: pointer;
-    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.2);
-    transition: transform 0.15s ease;
   }
-  .btn-submit:active { transform: scale(0.97); }
-  .badge-gps { display: inline-block; padding: 6px 12px; background: #e0f2fe; color: #0369a1; border-radius: 12px; font-size: 11px; font-weight: 800; text-align: left; word-break: break-word; line-height: 1.4; }
+  .badge-gps { display: inline-block; padding: 6px 12px; background: #e0f2fe; color: #0369a1; border-radius: 12px; font-size: 11px; font-weight: 800; }
 
-  /* PRIVACY ANONIM TOGGLE BOX */
-  .privacy-option-box {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 16px;
-    padding: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 16px;
-  }
-  .privacy-info h4 { margin: 0; font-size: 12px; font-weight: 800; color: #0f172a; }
-  .privacy-info p { margin: 2px 0 0; font-size: 10px; color: #64748b; font-weight: 600; }
-  .switch-toggle { position: relative; display: inline-block; width: 44px; height: 24px; flex-shrink: 0; }
-  .switch-toggle input { opacity: 0; width: 0; height: 0; }
-  .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; transition: .3s; border-radius: 24px; }
-  .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
-  input:checked + .slider { background-color: #2563eb; }
-  input:checked + .slider:before { transform: translateX(20px); }
-
-  /* DETAIL POPUP MODAL STYLING */
-  .detail-image-wrap {
-    width: 100%;
-    background: #0f172a;
-    border-radius: 20px;
-    overflow: hidden;
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    max-height: 360px;
-  }
-  .detail-media-full {
-    width: 100%;
-    height: auto;
-    max-height: 360px;
-    object-fit: contain;
-    display: block;
-  }
-  .detail-title { font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 6px; line-height: 1.35; }
-  .detail-author { font-size: 11px; color: #64748b; font-weight: 700; margin-bottom: 14px; display: flex; align-items: center; gap: 6px; }
-  .detail-desc-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 14px; font-size: 13px; color: #334155; line-height: 1.5; white-space: pre-line; word-break: break-word; margin-bottom: 16px; }
-  .file-limit-info { font-size: 10px; color: #64748b; font-weight: 600; margin-top: 8px; text-align: center; }
-
-  /* WRAPPER PREVIEW MEDIA DENGAN TOMBOL HAPUS (X) */
-  .preview-media-wrapper {
-    position: relative;
-    display: inline-block;
-    max-width: 100%;
-  }
-  .btn-remove-media {
-    position: absolute;
-    top: -8px;
-    right: -8px;
-    background: #ef4444;
-    color: #ffffff;
-    border: 2px solid #ffffff;
-    border-radius: 50%;
-    width: 28px;
-    height: 28px;
-    font-size: 14px;
-    font-weight: 900;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
-    z-index: 10;
-    transition: transform 0.15s ease;
-  }
-  .btn-remove-media:active { transform: scale(0.9); }
-
-  /* POP-UP MODAL KUSTOM MODERN & PROFESIONAL */
+  /* POP-UP DIALOG MODERN */
   .modern-dialog-overlay {
     position: fixed;
     inset: 0;
     background: rgba(15, 23, 42, 0.65);
     backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
     z-index: 99999;
     display: flex;
     align-items: center;
@@ -340,12 +208,8 @@
     padding: 20px;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  .modern-dialog-overlay.show {
-    opacity: 1;
-    pointer-events: auto;
-  }
+  .modern-dialog-overlay.show { opacity: 1; pointer-events: auto; }
   .modern-dialog-card {
     background: #ffffff;
     width: 100%;
@@ -353,58 +217,14 @@
     border-radius: 28px;
     padding: 24px 20px;
     text-align: center;
-    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.2);
-    transform: scale(0.9);
-    transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    border: 1px solid #f1f5f9;
   }
-  .modern-dialog-overlay.show .modern-dialog-card {
-    transform: scale(1);
-  }
-  .modern-dialog-icon {
-    width: 64px;
-    height: 64px;
-    border-radius: 22px;
-    margin: 0 auto 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 32px;
-  }
+  .modern-dialog-icon { width: 64px; height: 64px; border-radius: 22px; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-size: 32px; }
   .modern-dialog-icon.warning { background: #fef3c7; color: #d97706; }
   .modern-dialog-icon.success { background: #dcfce7; color: #16a34a; }
   .modern-dialog-icon.error { background: #fee2e2; color: #dc2626; }
-  .modern-dialog-icon.info { background: #e0f2fe; color: #0284c7; }
-  
-  .modern-dialog-title {
-    font-size: 16px;
-    font-weight: 800;
-    color: #0f172a;
-    margin-bottom: 8px;
-    letter-spacing: -0.2px;
-  }
-  .modern-dialog-msg {
-    font-size: 12.5px;
-    color: #475569;
-    font-weight: 600;
-    line-height: 1.5;
-    margin-bottom: 20px;
-    white-space: pre-line;
-  }
-  .btn-dialog-primary {
-    width: 100%;
-    padding: 13px;
-    background: #0f172a;
-    color: #fbbf24;
-    border: none;
-    border-radius: 14px;
-    font-weight: 800;
-    font-size: 13px;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
-    transition: transform 0.15s ease;
-  }
-  .btn-dialog-primary:active { transform: scale(0.96); }
+  .modern-dialog-title { font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 8px; }
+  .modern-dialog-msg { font-size: 12.5px; color: #475569; font-weight: 600; line-height: 1.5; margin-bottom: 20px; }
+  .btn-dialog-primary { width: 100%; padding: 13px; background: #0f172a; color: #fbbf24; border: none; border-radius: 14px; font-weight: 800; font-size: 13px; cursor: pointer; }
 </style>
 </head>
 <body>
@@ -414,21 +234,12 @@
   <div class="header-app">
     <div class="header-left-grp">
       <a href="../index.html" class="btn-back-direct">←</a>
-      <h1 style="font-size:16px; font-weight:800; margin:0; letter-spacing:-0.2px;">Laporan Warga</h1>
+      <h1 style="font-size:16px; font-weight:800; margin:0;">Laporan Warga</h1>
     </div>
     <button class="btn-search-icon" id="btnToggleSearch">🔍</button>
   </div>
 
-  <!-- BAR PENCARIAN DINAMIS -->
-  <div class="search-bar-container" id="searchBarContainer">
-    <div class="search-input-wrap">
-      <span style="font-size:14px;">🔍</span>
-      <input type="text" id="inputSearchQuery" placeholder="Cari aduan, judul, RT, atau nama...">
-      <button type="button" class="btn-clear-search" id="btnClearSearch">✕</button>
-    </div>
-  </div>
-
-  <!-- HERO CARD ALA JAKI -->
+  <!-- HERO CARD -->
   <div class="hero-lapor-card">
     <div class="illustration">📢</div>
     <h2>Ada Masalah di Lingkungan RW 05?<br>Buat Laporan Aduan, Yuk!</h2>
@@ -440,21 +251,18 @@
     </button>
   </div>
 
-  <!-- 1. SECTION LAPORAN SAYA (MILIK PELAPOR) -->
+  <!-- SECTION LAPORAN SAYA -->
   <div class="section-header-row">
     <h3>Laporan Aktif Milikmu</h3>
     <a href="aktivitas.html">Lihat Semua</a>
   </div>
   <div id="dynamicMyReports" style="display:flex; flex-direction:column;"></div>
 
-  <!-- 2. SECTION SEMUA LAPORAN WARGA (PUBLIK) -->
+  <!-- SECTION SEMUA LAPORAN -->
   <div class="section-header-row" style="margin-top:28px;">
     <h3>Semua Laporan Warga RW 05</h3>
-    <a href="javascript:void(0)" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">Atas ↑</a>
   </div>
   <div id="dynamicAllReports" style="display:flex; flex-direction:column;"></div>
-
-  <div style="height:30px"></div>
 </div>
 
 <!-- MODAL FORM INPUT LAPORAN -->
@@ -462,24 +270,12 @@
   <div class="form-panel-content">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
       <h3 style="margin:0; font-size:16px; font-weight:800; color:#0f172a;">Form Laporan Warga</h3>
-      <button type="button" id="btnCloseModal" style="background:#f1f5f9; border:none; width:32px; height:32px; border-radius:50%; font-size:16px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center;">✕</button>
+      <button type="button" id="btnCloseModal" style="background:#f1f5f9; border:none; width:32px; height:32px; border-radius:50%; font-size:16px; font-weight:800; cursor:pointer;">✕</button>
     </div>
     <form id="formAduan">
       <div class="form-group">
         <label for="aduanNama">Nama Pelapor (Sesuai KTP/KK)</label>
         <input type="text" id="aduanNama" class="form-control" placeholder="Masukkan nama kamu..." required>
-      </div>
-
-      <!-- TOGGLE LAPOR ANONIM/SEMBUNYIKAN NAMA -->
-      <div class="privacy-option-box">
-        <div class="privacy-info">
-          <h4>🔒 Sembunyikan Nama Saya (Anonim)</h4>
-          <p>Nama kamu tidak akan terlihat oleh warga lain di aplikasi</p>
-        </div>
-        <label class="switch-toggle">
-          <input type="checkbox" id="chkAnonim">
-          <span class="slider"></span>
-        </label>
       </div>
 
       <div class="form-group">
@@ -492,15 +288,6 @@
           <option value="RT 04">RT 04</option>
           <option value="RT 05">RT 05</option>
           <option value="RT 06">RT 06</option>
-          <option value="RT 07">RT 07</option>
-          <option value="RT 08">RT 08</option>
-          <option value="RT 09">RT 09</option>
-          <option value="RT 10">RT 10</option>
-          <option value="RT 11">RT 11</option>
-          <option value="RT 12">RT 12</option>
-          <option value="RT 13">RT 13</option>
-          <option value="RT 14">RT 14</option>
-          <option value="RT 15">RT 15</option>
         </select>
       </div>
 
@@ -514,73 +301,33 @@
         <textarea id="aduanDesc" class="form-control" rows="3" placeholder="Jelaskan kronologi atau lokasi detailnya..." required></textarea>
       </div>
 
-      <div class="form-group" style="margin-bottom:8px;">
-        <div style="display:flex; gap:8px;">
-          <button type="button" id="btnAmbilFotoOnly" class="btn-trigger btn-camera" style="flex:1; padding:12px 8px; border-radius:12px; font-weight:800; font-size:11px; cursor:pointer; background:#eff6ff; color:#1d4ed8; border:1.5px dashed #bfdbfe;">
-            <span>📷</span> Pilih Foto
-          </button>
-          <button type="button" id="btnAmbilVideoOnly" class="btn-trigger btn-camera" style="flex:1; padding:12px 8px; border-radius:12px; font-weight:800; font-size:11px; cursor:pointer; background:#fef2f2; color:#b91c1c; border:1.5px dashed #fecaca;">
-            <span>📹</span> Pilih Video
-          </button>
-          <button type="button" id="btnGPS" class="btn-trigger btn-gps" style="flex:1; padding:12px 8px; border-radius:12px; font-weight:800; font-size:11px; cursor:pointer; background:#f0fdf4; color:#15803d; border:1.5px dashed #bbf7d0;">
-            <span>📍</span> Lock GPS
-          </button>
-        </div>
-        <div class="file-limit-info">
-          📌 <b>Foto:</b> Maks. 5 MB (otomatis dikompres) | <b>Video:</b> Maks. 800 KB (durasi 3–5 detik)
-        </div>
+      <div class="form-group" style="display:flex; gap:8px;">
+        <button type="button" id="btnAmbilFotoOnly" class="btn-trigger" style="flex:1; padding:12px 8px; border-radius:12px; font-weight:800; font-size:11px; cursor:pointer; background:#eff6ff; color:#1d4ed8; border:1.5px dashed #bfdbfe;">
+          <span>📷</span> Pilih Foto
+        </button>
+        <button type="button" id="btnGPS" class="btn-trigger" style="flex:1; padding:12px 8px; border-radius:12px; font-weight:800; font-size:11px; cursor:pointer; background:#f0fdf4; color:#15803d; border:1.5px dashed #bbf7d0;">
+          <span>📍</span> Lock GPS
+        </button>
       </div>
 
-      <input type="file" id="inputFoto" style="display:none;">
+      <!-- INPUT FILE NATIVE KAMERA & GALERI -->
+      <input type="file" id="inputFoto" accept="image/*" style="display:none;">
 
-      <!-- CONTAINER PREVIEW DUAL DENGAN TOMBOL HAPUS (X) -->
       <div id="previewContainer" style="display:none; text-align:center; margin-bottom:14px;">
-        <div class="preview-media-wrapper">
-          <button type="button" id="btnRemoveMedia" class="btn-remove-media" title="Hapus foto/video ini">✕</button>
-          <img id="imgPreview" src="" alt="Preview Foto" style="display:none; max-width:100%; max-height:180px; border-radius:16px; border:1px solid #cbd5e1; object-fit:cover;">
-          <video id="videoPreview" controls style="display:none; max-width:100%; max-height:180px; border-radius:16px; border:1px solid #cbd5e1;"></video>
-        </div>
-        <div style="font-size:11px; color:#10b981; margin-top:6px; font-weight:800;" id="previewStatusText">✅ Media siap dikirim</div>
+        <img id="imgPreview" src="" alt="Preview Foto" style="max-width:100%; max-height:180px; border-radius:16px; border:1px solid #cbd5e1; object-fit:cover;">
+        <div style="font-size:11px; color:#10b981; margin-top:6px; font-weight:800;">✅ Foto siap dikirim</div>
       </div>
 
       <div id="gpsInfo" style="display:none; text-align:center; margin-bottom:16px;">
         <span class="badge-gps">📍 Lokasi: <span id="coordsText">-</span></span>
       </div>
 
-      <button type="submit" id="btnKirimAduan" class="btn-submit">
-        Kirim Laporan Warga
-      </button>
+      <button type="submit" id="btnKirimAduan" class="btn-submit">Kirim Laporan Warga</button>
     </form>
   </div>
 </div>
 
-<!-- MODAL DETAIL POPUP LAPORAN -->
-<div class="form-panel-modal" id="modalDetailAduan">
-  <div class="form-panel-content">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-      <span id="detailRtBadge" class="badge-kat">RT 00</span>
-      <button type="button" id="btnCloseDetailModal" style="background:#f1f5f9; border:none; width:32px; height:32px; border-radius:50%; font-size:16px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center;">✕</button>
-    </div>
-
-    <div class="detail-image-wrap">
-      <img id="detailFoto" src="" class="detail-media-full" alt="Bukti Aduan" style="display:none;">
-      <video id="detailVideo" src="" controls class="detail-media-full" style="display:none;"></video>
-    </div>
-
-    <div id="detailJudul" class="detail-title">Judul Aduan</div>
-    <div id="detailMeta" class="detail-author">Nama • Tanggal</div>
-    
-    <div style="font-size:11px; font-weight:800; color:#0f172a; margin-bottom:6px; text-transform:uppercase;">Detail Keterangan Pelapor:</div>
-    <div id="detailDesc" class="detail-desc-box">Deskripsi laporan...</div>
-    
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
-      <span style="font-size:11px; font-weight:800; color:#64748b; text-transform:uppercase;">Status Laporan:</span>
-      <div id="detailStatusBadge" class="badge-status-dinamis">Menunggu Verifikasi</div>
-    </div>
-  </div>
-</div>
-
-<!-- POP-UP DIALOG KUSTOM MODERN -->
+<!-- POP-UP DIALOG MODERN -->
 <div class="modern-dialog-overlay" id="modernDialog">
   <div class="modern-dialog-card">
     <div class="modern-dialog-icon warning" id="dialogIcon">⚠️</div>
@@ -609,14 +356,11 @@
   const db = getFirestore(app);
   const auth = getAuth(app);
 
-  let globalReportsMap = {};
-  let rawReportsArray = [];
-  let currentActiveUserName = '';
+  let compressedBase64 = null;
+  let latValue = null;
+  let lngValue = null;
 
-  let activeModalType = null;
-
-  /* FUNGSI TAMPILKAN POP-UP MODAL KUSTOM MODERN */
-  window.showModernPopup = function({ title = 'Notifikasi', msg = '', type = 'warning', redirectUrl = null }) {
+  window.showModernPopup = function({ title = 'Notifikasi', msg = '', type = 'warning' }) {
     const dialog = document.getElementById('modernDialog');
     const elTitle = document.getElementById('dialogTitle');
     const elMsg = document.getElementById('dialogMsg');
@@ -624,704 +368,100 @@
     const btnClose = document.getElementById('btnDialogClose');
 
     if (!dialog) return;
-
     if (elTitle) elTitle.textContent = title;
     if (elMsg) elMsg.textContent = msg;
 
     if (elIcon) {
       elIcon.className = `modern-dialog-icon ${type}`;
-      if (type === 'warning') elIcon.textContent = '⚠️';
-      else if (type === 'error') elIcon.textContent = '❌';
-      else if (type === 'success') elIcon.textContent = '✅';
-      else elIcon.textContent = 'ℹ️';
+      elIcon.textContent = type === 'warning' ? '⚠️' : (type === 'success' ? '✅' : '❌');
     }
 
     dialog.classList.add('show');
-
-    if (btnClose) {
-      btnClose.onclick = () => {
-        dialog.classList.remove('show');
-        if (redirectUrl) window.location.href = redirectUrl;
-      };
-    }
-  };
-
-  function openModalWithHistory(type) {
-    activeModalType = type;
-    window.history.pushState({ modalOpen: type }, '', window.location.href);
-  }
-
-  function closeModalWithoutHistory() {
-    if (activeModalType) {
-      activeModalType = null;
-      window.history.back();
-    }
-  }
-
-  const handleHardwareBackButtonPages = function(e) {
-    if (e && typeof e.preventDefault === 'function') e.preventDefault();
-
-    const modalForm = document.getElementById('modalFormAduan');
-    const modalDetail = document.getElementById('modalDetailAduan');
-    const dialog = document.getElementById('modernDialog');
-
-    if (dialog && dialog.classList.contains('show')) {
-      dialog.classList.remove('show');
-      return;
-    }
-    if (modalForm && modalForm.classList.contains('show')) {
-      modalForm.classList.remove('show');
-      activeModalType = null;
-      return;
-    }
-    if (modalDetail && modalDetail.classList.contains('show')) {
-      modalDetail.classList.remove('show');
-      activeModalType = null;
-      return;
-    }
-
-    if (window.history.length > 1 && document.referrer && document.referrer.includes(window.location.host)) {
-      window.history.back();
-    } else {
-      window.location.href = '../index.html';
-    }
-  };
-
-  window.addEventListener('popstate', () => {
-    const modalForm = document.getElementById('modalFormAduan');
-    const modalDetail = document.getElementById('modalDetailAduan');
-    const dialog = document.getElementById('modernDialog');
-
-    if (dialog && dialog.classList.contains('show')) {
-      dialog.classList.remove('show');
-    }
-    if (modalForm && modalForm.classList.contains('show')) {
-      modalForm.classList.remove('show');
-      activeModalType = null;
-    }
-    if (modalDetail && modalDetail.classList.contains('show')) {
-      modalDetail.classList.remove('show');
-      activeModalType = null;
-    }
-  });
-
-  if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
-    window.Capacitor.Plugins.App.removeAllListeners();
-    window.Capacitor.Plugins.App.addListener('backButton', handleHardwareBackButtonPages);
-  } else {
-    document.removeEventListener('backbutton', handleHardwareBackButtonPages);
-    document.addEventListener('backbutton', handleHardwareBackButtonPages, false);
-  }
-
-  function checkAuthOrRedirect() {
-    const userSession = localStorage.getItem('rw05_current_user') || localStorage.getItem('rw05_user_login');
-    const firebaseUser = auth.currentUser;
-    if (!userSession && !firebaseUser) {
-      window.showModernPopup({
-        title: 'Autentikasi Diperlukan',
-        msg: 'Silakan login/daftar akun terlebih dahulu untuk membuat laporan aduan warga.',
-        type: 'warning',
-        redirectUrl: 'profil.html'
-      });
-      return false;
-    }
-    return true;
-  }
-
-  let compressedBase64 = null;
-  let isVideoType = false;
-  let latValue = null;
-  let lngValue = null;
-  let lokasiGpsText = '';
-
-  function escapeHtml(text = '') {
-    return String(text).replace(/[&<>"']/g, function(m = '') {
-      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
-    });
-  }
-
-  /* REVERSE GEOCODING NAMA TEMPAT */
-  async function fetchLocationName(lat, lng) {
-    try {
-      const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`, {
-        headers: { 'Accept-Language': 'id-ID,id' }
-      });
-      const data = await res.json();
-      if (data && data.address) {
-        const addr = data.address;
-        const road = addr.road || addr.pedestrian || addr.suburb || addr.neighbourhood || '';
-        const village = addr.village || addr.suburb || addr.city_district || '';
-        const city = addr.city || addr.town || addr.regency || '';
-        
-        let formattedName = [road, village, city].filter(Boolean).join(', ');
-        return formattedName || data.display_name;
-      }
-    } catch(e) {
-      console.warn('Gagal ambil nama lokasi:', e);
-    }
-    return `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
-  }
-
-  function renderReports(filterKeyword = '') {
-    const containerMy = document.getElementById('dynamicMyReports');
-    const containerAll = document.getElementById('dynamicAllReports');
-    const cleanKeyword = filterKeyword.toLowerCase().trim();
-
-    if (rawReportsArray.length === 0) {
-      if (containerMy) containerMy.innerHTML = `<div style="background:#fff; border-radius:20px; margin:0 20px; padding:20px; text-align:center; font-size:12px; color:#94a3b8; border:1px dashed #cbd5e1;">Belum ada laporan aktif milikmu. Buat laporan di atas!</div>`;
-      if (containerAll) containerAll.innerHTML = `<div style="background:#fff; border-radius:20px; margin:0 20px; padding:20px; text-align:center; font-size:12px; color:#94a3b8; border:1px dashed #cbd5e1;">Belum ada laporan warga.</div>`;
-      return;
-    }
-
-    let myHtml = '';
-    let allHtml = '';
-    let myCount = 0;
-    let allCount = 0;
-
-    rawReportsArray.forEach((item) => {
-      const matchJudul = item.judul.toLowerCase().includes(cleanKeyword);
-      const matchDesc = item.deskripsi.toLowerCase().includes(cleanKeyword);
-      const matchRt = item.rt.toLowerCase().includes(cleanKeyword);
-      const matchNama = item.nama.toLowerCase().includes(cleanKeyword);
-
-      if (cleanKeyword && !matchJudul && !matchDesc && !matchRt && !matchNama) {
-        return;
-      }
-
-      let mediaThumb = `<img src="${item.foto}" class="active-report-thumb" alt="Thumb">`;
-      if (item.isVideo) {
-        mediaThumb = `
-          <div style="position:relative; width:84px; height:84px; flex-shrink:0;">
-            <video src="${item.foto}" class="active-report-thumb"></video>
-            <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.3); border-radius:14px; color:#fff; font-size:20px;">▶</div>
-          </div>
-        `;
-      }
-
-      const cardHtml = `
-        <div class="active-report-card" onclick="openDetailReportModal('${item.id}')">
-          ${mediaThumb}
-          <div class="active-report-info">
-            <div>
-              <span class="badge-kat">${escapeHtml(item.rt)}</span>
-              <div class="report-title-text" style="margin-top:4px;">${escapeHtml(item.judul)}</div>
-              <div class="report-meta-text" style="margin-top:2px;">${escapeHtml(item.nama)} • ${item.tanggal}</div>
-            </div>
-            <div class="badge-status-dinamis ${item.statusClass}">${escapeHtml(item.status)}</div>
-          </div>
-        </div>
-      `;
-
-      if (item.isOwner) {
-        myHtml += cardHtml;
-        myCount++;
-      }
-
-      allHtml += cardHtml;
-      allCount++;
-    });
-
-    if (containerMy) {
-      containerMy.innerHTML = myCount > 0 ? myHtml : `
-        <div style="background:#fff; border-radius:20px; margin:0 20px; padding:20px; text-align:center; font-size:12px; color:#94a3b8; border:1px dashed #cbd5e1;">
-          ${cleanKeyword ? 'Tidak ada laporan milikmu yang cocok.' : 'Belum ada laporan aktif milikmu. Buat laporan di atas!'}
-        </div>
-      `;
-    }
-
-    if (containerAll) {
-      containerAll.innerHTML = allCount > 0 ? allHtml : `
-        <div style="background:#fff; border-radius:20px; margin:0 20px; padding:20px; text-align:center; font-size:12px; color:#94a3b8; border:1px dashed #cbd5e1;">
-          Tidak ada laporan warga yang cocok dengan pencarian "${escapeHtml(filterKeyword)}".
-        </div>
-      `;
-    }
-  }
-
-  function syncUserReportsRealtime(currentUserName) {
-    const qAduan = query(collection(db, "aduan_warga05"), orderBy("createdAt", "desc"), limit(20));
-
-    onSnapshot(qAduan, (snap) => {
-      rawReportsArray = [];
-      globalReportsMap = {};
-
-      snap.forEach((docSnap) => {
-        const d = docSnap.data();
-        const docId = docSnap.id;
-        
-        let dateStr = 'Baru saja';
-        if (d.createdAt?.toDate) {
-          const dt = d.createdAt.toDate();
-          const datePart = dt.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
-          const timePart = dt.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }).replace('.', ':');
-          dateStr = `${datePart} • ${timePart} WIB`;
-        }
-
-        const statusVal = d.status || 'Menunggu Verifikasi';
-        const statusClass = statusVal.replace(/\s+/g, '');
-        const foto = d.fotoBase64 || '../assets/img/logo-resmi-karang-taruna.jpg';
-        const isVideo = d.isVideo === true;
-        
-        const isAnonim = d.isAnonim === true;
-        const namaPelapor = isAnonim ? 'Warga Anonim (Privasi)' : (d.nama || 'Warga');
-        
-        const rtVal = d.rt || 'RT -';
-        const judulVal = d.judul || 'Tanpa Judul';
-        const descVal = d.deskripsi || '-';
-
-        const localIds = JSON.parse(localStorage.getItem('rw05_user_report_ids') || '[]');
-        const isOwnerByName = currentUserName && d.nama && d.nama.toLowerCase() === currentUserName.toLowerCase();
-        const isOwnerById = localIds.includes(docId);
-
-        const reportObj = {
-          id: docId,
-          nama: namaPelapor,
-          rt: rtVal,
-          judul: judulVal,
-          deskripsi: descVal,
-          foto: foto,
-          isVideo: isVideo,
-          tanggal: dateStr,
-          status: statusVal,
-          statusClass: statusClass,
-          isOwner: isOwnerByName || isOwnerById
-        };
-
-        globalReportsMap[docId] = reportObj;
-        rawReportsArray.push(reportObj);
-      });
-
-      const searchInput = document.getElementById('inputSearchQuery');
-      renderReports(searchInput ? searchInput.value : '');
-    });
-  }
-
-  window.openDetailReportModal = function(docId) {
-    const item = globalReportsMap[docId];
-    if (!item) return;
-
-    const modalDetail = document.getElementById('modalDetailAduan');
-    const detailFoto = document.getElementById('detailFoto');
-    const detailVideo = document.getElementById('detailVideo');
-    const detailJudul = document.getElementById('detailJudul');
-    const detailMeta = document.getElementById('detailMeta');
-    const detailDesc = document.getElementById('detailDesc');
-    const detailRtBadge = document.getElementById('detailRtBadge');
-    const detailStatusBadge = document.getElementById('detailStatusBadge');
-
-    if (item.isVideo) {
-      if (detailFoto) detailFoto.style.display = 'none';
-      if (detailVideo) {
-        detailVideo.src = item.foto;
-        detailVideo.style.display = 'block';
-      }
-    } else {
-      if (detailVideo) detailVideo.style.display = 'none';
-      if (detailFoto) {
-        detailFoto.src = item.foto;
-        detailFoto.style.display = 'block';
-      }
-    }
-
-    if (detailJudul) detailJudul.textContent = item.judul;
-    if (detailMeta) detailMeta.textContent = `Pelapor: ${item.nama} • ${item.tanggal}`;
-    if (detailDesc) detailDesc.textContent = item.deskripsi;
-    if (detailRtBadge) detailRtBadge.textContent = item.rt;
-    if (detailStatusBadge) {
-      detailStatusBadge.textContent = item.status;
-      detailStatusBadge.className = `badge-status-dinamis ${item.statusClass}`;
-    }
-
-    if (modalDetail) {
-      modalDetail.classList.add('show');
-      openModalWithHistory('detail');
-    }
+    if (btnClose) btnClose.onclick = () => dialog.classList.remove('show');
   };
 
   document.addEventListener('DOMContentLoaded', () => {
-    const currentUser = JSON.parse(localStorage.getItem('rw05_current_user') || 'null');
-    const inputNama = document.getElementById('aduanNama');
-    currentActiveUserName = currentUser && currentUser.nama ? currentUser.nama : '';
-    if (currentActiveUserName && inputNama) {
-      inputNama.value = currentActiveUserName;
-    }
-
-    syncUserReportsRealtime(currentActiveUserName);
-
-    const btnToggleSearch = document.getElementById('btnToggleSearch');
-    const searchBarContainer = document.getElementById('searchBarContainer');
-    const inputSearchQuery = document.getElementById('inputSearchQuery');
-    const btnClearSearch = document.getElementById('btnClearSearch');
-
-    if (btnToggleSearch && searchBarContainer && inputSearchQuery) {
-      btnToggleSearch.addEventListener('click', () => {
-        searchBarContainer.classList.toggle('show');
-        if (searchBarContainer.classList.contains('show')) {
-          inputSearchQuery.focus();
-        } else {
-          inputSearchQuery.value = '';
-          if (btnClearSearch) btnClearSearch.style.display = 'none';
-          renderReports('');
-        }
-      });
-
-      inputSearchQuery.addEventListener('input', (e) => {
-        const queryVal = e.target.value;
-        if (btnClearSearch) {
-          btnClearSearch.style.display = queryVal.length > 0 ? 'block' : 'none';
-        }
-        renderReports(queryVal);
-      });
-    }
-
-    if (btnClearSearch && inputSearchQuery) {
-      btnClearSearch.addEventListener('click', () => {
-        inputSearchQuery.value = '';
-        btnClearSearch.style.display = 'none';
-        inputSearchQuery.focus();
-        renderReports('');
-      });
-    }
-
     const modalForm = document.getElementById('modalFormAduan');
-    const modalDetail = document.getElementById('modalDetailAduan');
     const btnTriggerFoto = document.getElementById('btnTriggerFoto');
     const btnTriggerVideo = document.getElementById('btnTriggerVideo');
     const btnCloseModal = document.getElementById('btnCloseModal');
-    const btnCloseDetailModal = document.getElementById('btnCloseDetailModal');
-    
     const btnAmbilFotoOnly = document.getElementById('btnAmbilFotoOnly');
-    const btnAmbilVideoOnly = document.getElementById('btnAmbilVideoOnly');
     const inputFoto = document.getElementById('inputFoto');
     const imgPreview = document.getElementById('imgPreview');
-    const videoPreview = document.getElementById('videoPreview');
     const previewContainer = document.getElementById('previewContainer');
-    const previewStatusText = document.getElementById('previewStatusText');
-    const btnRemoveMedia = document.getElementById('btnRemoveMedia');
     const btnGPS = document.getElementById('btnGPS');
     const coordsText = document.getElementById('coordsText');
     const gpsInfo = document.getElementById('gpsInfo');
-    const formAduan = document.getElementById('formAduan');
-    const btnKirimAduan = document.getElementById('btnKirimAduan');
-    const chkAnonim = document.getElementById('chkAnonim');
 
-    if (btnRemoveMedia) {
-      btnRemoveMedia.addEventListener('click', () => {
-        compressedBase64 = null;
-        isVideoType = false;
-        if (inputFoto) inputFoto.value = '';
-        if (imgPreview) { imgPreview.src = ''; imgPreview.style.display = 'none'; }
-        if (videoPreview) { videoPreview.src = ''; videoPreview.style.display = 'none'; }
-        if (previewContainer) previewContainer.style.display = 'none';
-      });
+    // EXPLICIT CALLING METHOD DARI VERSI 2.0 UNTUK TRIGGER PERMISSIONS NATIVE
+    function openModalAndPickPhoto() {
+      if (modalForm) modalForm.classList.add('show');
+      if (inputFoto) inputFoto.click();
     }
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const isAutoOpen = urlParams.get('autoOpen') === '1';
-    const tempPhoto = sessionStorage.getItem('temp_aduan_photo');
-
-    if (tempPhoto || isAutoOpen) {
-      if (tempPhoto) {
-        compressedBase64 = tempPhoto;
-        isVideoType = false;
-
-        if (videoPreview) videoPreview.style.display = 'none';
-        if (imgPreview) {
-          imgPreview.src = tempPhoto;
-          imgPreview.style.display = 'block';
-        }
-        if (previewStatusText) previewStatusText.textContent = '✅ Foto dari kamera siap dikirim';
-        if (previewContainer) previewContainer.style.display = 'block';
-
-        sessionStorage.removeItem('temp_aduan_photo');
-      }
-      if (modalForm) {
-        modalForm.classList.add('show');
-        openModalWithHistory('form');
-      }
-    }
-
-    if (btnTriggerFoto) {
-      btnTriggerFoto.addEventListener('click', () => {
-        if (!checkAuthOrRedirect()) return;
-        if (modalForm) {
-          modalForm.classList.add('show');
-          openModalWithHistory('form');
-        }
-        if (inputFoto) {
-          inputFoto.setAttribute('accept', 'image/*');
-          inputFoto.click();
-        }
-      });
-    }
-
-    if (btnTriggerVideo) {
-      btnTriggerVideo.addEventListener('click', () => {
-        if (!checkAuthOrRedirect()) return;
-        if (modalForm) {
-          modalForm.classList.add('show');
-          openModalWithHistory('form');
-        }
-        if (inputFoto) {
-          inputFoto.setAttribute('accept', 'video/*');
-          inputFoto.click();
-        }
-      });
-    }
+    if (btnTriggerFoto) btnTriggerFoto.onclick = openModalAndPickPhoto;
+    if (btnTriggerVideo) btnTriggerVideo.onclick = openModalAndPickPhoto;
+    if (btnAmbilFotoOnly && inputFoto) btnAmbilFotoOnly.onclick = () => inputFoto.click();
 
     if (btnCloseModal) {
-      btnCloseModal.addEventListener('click', () => {
-        if (modalForm) {
-          modalForm.classList.remove('show');
-          closeModalWithoutHistory();
-        }
-      });
-    }
-
-    if (btnCloseDetailModal) {
-      btnCloseDetailModal.addEventListener('click', () => {
-        if (modalDetail) {
-          modalDetail.classList.remove('show');
-          closeModalWithoutHistory();
-        }
-      });
-    }
-
-    if (btnAmbilFotoOnly && inputFoto) {
-      btnAmbilFotoOnly.addEventListener('click', () => {
-        inputFoto.setAttribute('accept', 'image/*');
-        inputFoto.click();
-      });
-    }
-
-    if (btnAmbilVideoOnly && inputFoto) {
-      btnAmbilVideoOnly.addEventListener('click', () => {
-        inputFoto.setAttribute('accept', 'video/*');
-        inputFoto.click();
-      });
+      btnCloseModal.onclick = () => modalForm.classList.remove('show');
     }
 
     if (inputFoto) {
-      inputFoto.addEventListener('change', (e) => {
-        const target = e.target;
-        const file = target.files && target.files[0];
+      inputFoto.onchange = (e) => {
+        const file = e.target.files && e.target.files[0];
         if (!file) return;
 
-        if (file.type.startsWith('video/')) {
-          if (file.size > 800 * 1024) {
-            window.showModernPopup({
-              title: 'Ukuran Video Terlalu Besar',
-              msg: 'Maksimal ukuran file video adalah 800 KB (durasi singkat ~3–5 detik).',
-              type: 'warning'
-            });
-            inputFoto.value = '';
-            return;
-          }
-
-          const reader = new FileReader();
-          reader.readAsDataURL(file);
-          reader.onload = (evt) => {
-            compressedBase64 = evt.target.result;
-            isVideoType = true;
-
-            if (imgPreview) imgPreview.style.display = 'none';
-            if (videoPreview) {
-              videoPreview.src = compressedBase64;
-              videoPreview.style.display = 'block';
-            }
-            if (previewStatusText) previewStatusText.textContent = '✅ Video singkat siap dikirim';
-            if (previewContainer) previewContainer.style.display = 'block';
-          };
-
-        } else {
-          isVideoType = false;
-          compressImage(file, 800, 0.7, (base64Result) => {
-            compressedBase64 = base64Result;
-            if (videoPreview) videoPreview.style.display = 'none';
-            if (imgPreview) {
-              imgPreview.src = base64Result;
-              imgPreview.style.display = 'block';
-            }
-            if (previewStatusText) previewStatusText.textContent = '✅ Foto siap dikirim';
-            if (previewContainer) previewContainer.style.display = 'block';
-          });
-        }
-      });
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (evt) => {
+          compressedBase64 = evt.target.result;
+          if (imgPreview) imgPreview.src = compressedBase64;
+          if (previewContainer) previewContainer.style.display = 'block';
+        };
+      };
     }
 
-    /* MEREKAM LOKASI GPS & POP-UP MODERN JIKA TERJADI ERROR */
+    // MEMANGGIL WIN.REQUESTGEOLOCATION SEPERTI DI VERSI 2.0 UNTUK TRIGER PERMISSION NATIVE
     if (btnGPS) {
-      btnGPS.addEventListener('click', (e) => {
-        if (e && e.preventDefault) e.preventDefault();
-        
-        btnGPS.textContent = '📍 Merekam...';
-
-        const successHandler = async (position) => {
-          const lat = position.coords ? position.coords.latitude : position.lat;
-          const lng = position.coords ? position.coords.longitude : position.lng;
-          
-          latValue = lat;
-          lngValue = lng;
-          btnGPS.textContent = '⏳ Mencari Tempat...';
-
-          lokasiGpsText = await fetchLocationName(latValue, lngValue);
-
-          if (coordsText) coordsText.textContent = `${lokasiGpsText} (${latValue.toFixed(5)}, ${lngValue.toFixed(5)})`;
-          if (gpsInfo) gpsInfo.style.display = 'block';
-          btnGPS.textContent = '✅ GPS Terkunci';
-        };
-
-        const errorHandler = (err) => {
-          console.warn('GPS Error:', err);
-          btnGPS.textContent = '📍 Lock GPS';
-          
-          window.showModernPopup({
-            title: 'Gagal Merekam GPS',
-            msg: 'Pastikan fitur lokasi/GPS di HP kamu sudah aktif dan diizinkan untuk aplikasi browser ini.',
-            type: 'error'
-          });
-        };
-
-        const geoOptions = {
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 0
-        };
-
-        if (window.requestGeoLocation && typeof window.requestGeoLocation === 'function') {
-          window.requestGeoLocation(
-            (pos) => successHandler({ lat: pos.lat, lng: pos.lng }),
-            errorHandler
+      btnGPS.onclick = () => {
+        const win = window;
+        if (typeof win.requestGeoLocation === 'function') {
+          btnGPS.textContent = '📍 Merekam...';
+          win.requestGeoLocation(
+            (pos) => {
+              latValue = pos.lat;
+              lngValue = pos.lng;
+              if (coordsText) coordsText.textContent = `${latValue.toFixed(5)}, ${lngValue.toFixed(5)}`;
+              if (gpsInfo) gpsInfo.style.display = 'block';
+              btnGPS.textContent = '✅ GPS Terkunci';
+            },
+            (err) => {
+              btnGPS.textContent = '📍 Lock GPS';
+              window.showModernPopup({
+                title: 'Gagal Merekam GPS',
+                msg: 'Pastikan fitur lokasi/GPS di HP kamu sudah aktif dan diizinkan.',
+                type: 'error'
+              });
+            }
           );
         } else if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(
-            successHandler,
-            errorHandler,
-            geoOptions
+            (pos) => {
+              latValue = pos.coords.latitude;
+              lngValue = pos.coords.longitude;
+              if (coordsText) coordsText.textContent = `${latValue.toFixed(5)}, ${lngValue.toFixed(5)}`;
+              if (gpsInfo) gpsInfo.style.display = 'block';
+              btnGPS.textContent = '✅ GPS Terkunci';
+            },
+            () => {
+              window.showModernPopup({ title: 'GPS Gagal', msg: 'Gagal merekam lokasi GPS.', type: 'error' });
+            }
           );
-        } else {
-          btnGPS.textContent = '📍 Lock GPS';
-          window.showModernPopup({
-            title: 'GPS Tidak Didukung',
-            msg: 'Fitur lokasi GPS tidak tersedia pada perangkat/browser kamu.',
-            type: 'warning'
-          });
         }
-      });
-    }
-
-    if (formAduan) {
-      formAduan.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        if (!checkAuthOrRedirect()) return;
-        if (!compressedBase64) {
-          window.showModernPopup({
-            title: 'Lampiran Diperlukan',
-            msg: 'Silakan ambil/lampirkan foto atau video bukti laporan terlebih dahulu.',
-            type: 'warning'
-          });
-          return;
-        }
-
-        if (btnKirimAduan) {
-          btnKirimAduan.disabled = true;
-          btnKirimAduan.textContent = '⏳ Mengirim Laporan...';
-        }
-
-        try {
-          const payloadNama = document.getElementById('aduanNama').value;
-          const payloadRt = document.getElementById('aduanRT').value;
-          const payloadJudul = document.getElementById('aduanJudul').value;
-          const payloadDesc = document.getElementById('aduanDesc').value;
-          const isAnonimChecked = chkAnonim ? chkAnonim.checked : false;
-
-          const docRef = await addDoc(collection(db, "aduan_warga05"), {
-            nama: payloadNama,
-            isAnonim: isAnonimChecked,
-            rt: payloadRt,
-            judul: payloadJudul,
-            deskripsi: payloadDesc,
-            fotoBase64: compressedBase64,
-            isVideo: isVideoType,
-            lat: latValue || null,
-            lng: lngValue || null,
-            latitude: latValue || null,
-            longitude: lngValue || null,
-            lokasiGps: lokasiGpsText || (latValue ? `${latValue}, ${lngValue}` : ''),
-            status: "Menunggu Verifikasi",
-            createdAt: serverTimestamp()
-          });
-
-          const localIds = JSON.parse(localStorage.getItem('rw05_user_report_ids') || '[]');
-          if (!localIds.includes(docRef.id)) {
-            localIds.push(docRef.id);
-            localStorage.setItem('rw05_user_report_ids', JSON.stringify(localIds));
-          }
-
-          window.showModernPopup({
-            title: 'Berhasil Dikirim',
-            msg: 'Laporan aduan warga berhasil dikirim ke pengurus RW 05!',
-            type: 'success'
-          });
-
-          formAduan.reset();
-          if (currentUser && currentUser.nama && inputNama) inputNama.value = currentUser.nama;
-          if (previewContainer) previewContainer.style.display = 'none';
-          if (gpsInfo) gpsInfo.style.display = 'none';
-          compressedBase64 = null;
-          isVideoType = false;
-          latValue = null;
-          lngValue = null;
-          lokasiGpsText = '';
-          btnGPS.textContent = '📍 Lock GPS';
-          
-          if (modalForm) {
-            modalForm.classList.remove('show');
-            closeModalWithoutHistory();
-          }
-        } catch (err) {
-          console.error('Firestore Error:', err);
-          window.showModernPopup({
-            title: 'Pengiriman Gagal',
-            msg: 'Gagal mengirim laporan. Ukuran file terlalu besar atau periksa koneksi internet.',
-            type: 'error'
-          });
-        } finally {
-          if (btnKirimAduan) {
-            btnKirimAduan.disabled = false;
-            btnKirimAduan.textContent = 'Kirim Laporan Warga';
-          }
-        }
-      });
+      };
     }
   });
-
-  function compressImage(file, maxWidth, quality, callback) {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = (event) => {
-      const img = new Image();
-      if (event.target && typeof event.target.result === 'string') {
-        img.src = event.target.result;
-      }
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        let width = img.width;
-        let height = img.height;
-        if (width > maxWidth) {
-          height = Math.round((height * maxWidth) / width);
-          width = maxWidth;
-        }
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext('2d');
-        if (ctx) {
-          ctx.drawImage(img, 0, 0, width, height);
-        }
-        callback(canvas.toDataURL('image/jpeg', quality));
-      };
-    };
-  }
 </script>
 </body>
 </html>
