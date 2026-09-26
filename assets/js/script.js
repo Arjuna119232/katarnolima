@@ -4,6 +4,16 @@
  * KATARNOLIMA RW 05 - Core Script (Pure Online Mode)
  */
 
+// Helper getar global — menghormati preferensi "Getaran saat Menyentuh" di halaman Pengaturan.
+// Default aktif jika belum pernah diatur pengguna.
+window.katarVibrate = function(ms) {
+  try {
+    var pref = localStorage.getItem('katar_pref_haptic');
+    if (pref === '0') return;
+    if (navigator.vibrate) navigator.vibrate(ms || 10);
+  } catch (e) {}
+};
+
 document.addEventListener('DOMContentLoaded', function(){
   // 1. DYNAMIC ISLAND (SAPAAN WARGA)
   function initDynamicIslandAfterSplash() {
@@ -380,7 +390,7 @@ document.addEventListener('DOMContentLoaded', function(){
   // 9. EFEK RIPPLE
   function addRippleEffect(e){
     var el = this;
-    if(navigator.vibrate) navigator.vibrate(10);
+    window.katarVibrate(10);
     var rect = el.getBoundingClientRect();
     var ripple = document.createElement('span');
     ripple.className = 'ripple';
