@@ -246,9 +246,9 @@ document.addEventListener('DOMContentLoaded', function(){
   if(modalClose) modalClose.addEventListener('click', closeModal);
   if(modal) modal.addEventListener('click', function(e){ if(e.target===modal) closeModal(); });
 
-  // 8. LOGIKA NAVIGASI BACK HP & KELUAR APLIKASI
+  // 8. LOGIKA NAVIGASI BACK HP & KELUAR APLIKASI (FIXED)
   function goBackSafe(){ 
-    if (window.history.length > 1 && document.referrer && document.referrer.indexOf(window.location.host) !== -1) {
+    if (window.history.length > 1) {
       window.history.back();
     } else {
       var pathNow = window.location.pathname;
@@ -305,17 +305,15 @@ document.addEventListener('DOMContentLoaded', function(){
     var path = window.location.pathname.toLowerCase();
     var fileName = path.substring(path.lastIndexOf('/') + 1);
     
+    // Anggap Halaman Utama jika berada di index.html atau root path tanpa subfolder /pages/
     var isMainPage = (fileName === '' || fileName === 'index.html' || path.endsWith('/')) && !path.includes('/pages/');
-    
-    if (isMainPage && window.history.length <= 1) {
-      return true;
-    }
-    return false;
+    return isMainPage;
   }
 
   var onHardwareBackButton = function(e){
     if (e && typeof e.preventDefault === 'function') e.preventDefault();
 
+    // 1. Cek Pop-up / Overlay
     if(fabContainer && fabContainer.classList.contains('active')){ 
       if (typeof window.closeFabDarurat === 'function') {
         window.closeFabDarurat(false);
@@ -363,6 +361,7 @@ document.addEventListener('DOMContentLoaded', function(){
       return;
     }
 
+    // 2. Jika di Beranda Utama -> Minta Double Tap Exit. Jika di Sub-halaman -> Mundur Halaman (History Back)
     if (checkIsMainTab()) {
       handleExitApp();
     } else {
@@ -371,8 +370,10 @@ document.addEventListener('DOMContentLoaded', function(){
   };
 
   if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) { 
+    window.Capacitor.Plugins.App.removeAllListeners();
     window.Capacitor.Plugins.App.addListener('backButton', onHardwareBackButton); 
   } else { 
+    document.removeEventListener('backbutton', onHardwareBackButton);
     document.addEventListener('backbutton', onHardwareBackButton, false); 
   }
 
@@ -406,7 +407,7 @@ document.addEventListener('DOMContentLoaded', function(){
         const adCard = document.getElementById('admob-native-card');
         if (adCard) {
           await AdMob.showBanner({
-            adId: 'ca-app-pub-209615581034089/7642672909',
+            adId: 'ca-app-pub-3940256099942544/6300978111', // Sample Banner ID
             adSize: 'MEDIUM_RECTANGLE',
             position: 'CENTER',
             margin: 0
