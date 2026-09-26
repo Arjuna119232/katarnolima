@@ -2,25 +2,16 @@
   "appId": "com.katarnolima.rw05",
   "appName": "KATARNOLIMA RW05",
   "webDir": ".",
-  "server": {
-    "androidScheme": "https",
-    "cleartext": true
-  },
   "plugins": {
     "SplashScreen": {
-      "launchShowDuration": 2000,
-      "launchAutoHide": true,
-      "backgroundColor": "#ffffff"
+      "launchShowDuration": 0
     },
     "PushNotifications": {
-      "presentationOptions": [
-        "badge",
-        "sound",
-        "alert"
-      ]
+      "presentationOptions": ["badge", "sound", "alert"]
     }
   },
   "android": {
-    "allowMixedContent": true
+    "allowMixedContent": true,
+    "icon": "assets/img/katar-app-icon.png"
   }
 }
