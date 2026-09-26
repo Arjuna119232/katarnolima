@@ -229,7 +229,7 @@ body {
   margin-top: 4px;
 }
 
-/* SLIDER BANNER BANNER MITIGASI */
+/* SLIDER BANNER MITIGASI */
 .slider-container { width: 100%; position: relative; overflow: hidden; padding: 0 20px; box-sizing: border-box; }
 .slider-track {
   display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth;
@@ -444,7 +444,7 @@ body {
     </div>
   </div>
 
-  <!-- CARD NATIVE ADMOB / IKLAN (DIPASANG DI ATAS CARD KAS) -->
+  <!-- CARD NATIVE ADMOB / IKLAN -->
   <div class="rekom-card" id="admob-native-card" style="margin: 0 20px 20px; position: relative; border: 1px dashed #cbd5e1; background: #ffffff;">
     <div style="position: absolute; top: 12px; right: 12px; background: #e2e8f0; color: #475569; font-size: 8px; font-weight: 900; padding: 2px 6px; border-radius: 4px; letter-spacing: 0.5px;">IKLAN</div>
     <div class="rekom-img" style="background:#f1f5f9">
@@ -525,7 +525,6 @@ body {
       <a href="pages/semua-layanan.html" style="color:#2563eb; font-size:13px; font-weight:700; text-decoration:none">Lihat Semua</a>
     </div>
 
-    <!-- FITUR KHUSUS RW 05 (DISAMAKAN DENGAN PETA DIGITAL: ABU-ABU & COMING SOON) -->
     <div class="rekom-card" style="opacity: 0.7; filter: grayscale(80%); pointer-events: none; position: relative;">
       <div style="position: absolute; top: 12px; right: 12px; background: #0f172a; color: #fbbf24; font-size: 9px; font-weight: 900; padding: 3px 8px; border-radius: 6px; text-transform: uppercase;">Coming Soon</div>
       <div class="rekom-img" style="background:#f1f5f9"><div style="font-size:36px">🏝️</div></div>
@@ -536,7 +535,6 @@ body {
       </div>
     </div>
 
-    <!-- PETA DIGITAL (COMING SOON) -->
     <div class="rekom-card" style="opacity: 0.7; filter: grayscale(80%); pointer-events: none; position: relative;">
       <div style="position: absolute; top: 12px; right: 12px; background: #0f172a; color: #fbbf24; font-size: 9px; font-weight: 900; padding: 3px 8px; border-radius: 6px; text-transform: uppercase;">Coming Soon</div>
       <div class="rekom-img" style="background:#f1f5f9"><div style="font-size:36px">🗺️</div></div>
@@ -565,7 +563,7 @@ body {
   </nav>
 </div>
 
-<!-- OVERLAY KAMERA CUSTOM DENGAN TOMBOL FLASH -->
+<!-- OVERLAY KAMERA CUSTOM -->
 <div class="camera-overlay" id="cameraOverlay">
   <div class="camera-header">
     <button onclick="closeCustomCamera()">← Ambil foto laporan</button>
@@ -591,22 +589,17 @@ body {
   <input type="file" id="fallbackFileInput" accept="image/*" style="display:none;">
 </div>
 
-<!-- FAB CONTAINER DENGAN DUA OPSI UTAMA DAN NATNIAI -->
+<!-- FAB CONTAINER -->
 <div class="fab-container" id="fabContainer">
   <div class="fab-options" id="fabOptions">
-    <!-- PANGGILAN DARURAT 110 -->
     <div class="fab-option" onclick="window.open('tel:110','_self')">
       <span class="fab-label">Panggilan Darurat 110</span>
       <div class="fab-icon">📞<small>110</small></div>
     </div>
-
-    <!-- OPSI AMBULANS MEMANGGIL POPUP MODAL -->
     <div class="fab-option" onclick="openAmbulansModal()">
       <span class="fab-label">Ambulans Gawat Darurat</span>
       <div class="fab-icon">🚑</div>
     </div>
-    
-    <!-- OPSIONAL NATNIAI (DISABLED / COMING SOON HITAM) -->
     <div class="fab-option disabled-soon" style="pointer-events: none; opacity: 0.65; cursor: not-allowed;">
       <span class="fab-label" style="background: #0f172a; color: #ffffff; border: 1px solid #334155;">
         NatniAi <small style="background:#fbbf24; color:#0f172a; font-size:8px; font-weight:900; padding:1px 4px; border-radius:4px; margin-left:4px;">SOON</small>
@@ -618,7 +611,7 @@ body {
   <div class="fab-close" id="fabClose">✕</div>
 </div>
 
-<!-- MODAL PILIHAN KONTAK AMBULANS -->
+<!-- MODAL AMBULANS -->
 <div id="ambulans-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; z-index:1000000; align-items:center; justify-content:center; padding:16px;">
   <div class="ambulans-box" style="background:#fff; width:100%; max-width:360px; border-radius:24px; border:2px solid #10131a; box-shadow:4px 4px 0 #10131a; overflow:hidden;">
     <div style="padding:16px 20px; border-bottom:2px solid #10131a; display:flex; justify-content:space-between; align-items:center; background:#fcfbf7;">
@@ -632,17 +625,12 @@ body {
       <p style="font-size:12px; color:#475569; margin-bottom:16px; line-height:1.5;">
         Layanan Ambulans Gawat Darurat (AGD) Pemprov DKI Jakarta terintegrasi 24 jam. Pilih metode kontak:
       </p>
-      
-      <!-- OPSI TELEPON 112 -->
       <a href="tel:112" style="display:flex; align-items:center; justify-content:center; gap:10px; width:100%; background:#2563eb; color:#ffffff; font-weight:800; font-size:13px; padding:14px; border-radius:14px; text-decoration:none; margin-bottom:10px; border:2px solid #10131a; box-shadow:2px 2px 0 #10131a;">
         <span>📞</span> Panggil Telepon (112)
       </a>
-
-      <!-- OPSI WHATSAPP AGD DKI -->
       <a href="https://wa.me/6281112119119?text=Halo%20AGD%20Dinas%20Kesehatan%20DKI%20Jakarta,%20saya%20membutuhkan%20bantuan%20ambulans%20darurat." target="_blank" style="display:flex; align-items:center; justify-content:center; gap:10px; width:100%; background:#16a34a; color:#ffffff; font-weight:800; font-size:13px; padding:14px; border-radius:14px; text-decoration:none; border:2px solid #10131a; box-shadow:2px 2px 0 #10131a;">
         <span>💬</span> Chat WhatsApp (0811-1211-9119)
       </a>
-
       <div style="margin-top:14px; font-size:10px; color:#64748b; font-weight:700;">
         🆓 Gratis bagi warga DKI Jakarta dalam kondisi darurat.
       </div>
@@ -720,6 +708,7 @@ body {
   </div>
 </div>
 
+<!-- FIRESTORE MODULE HANYA UNTUK DATA REALTIME (TANPA FIREBASE MESSAGING WEB) -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, doc, collection, onSnapshot, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -851,7 +840,7 @@ window.openUniversalModalIndex = function(type) {
           <span style="font-size:13px; font-weight:800; color:#2563eb;">Rp ${Number(d.harga||0).toLocaleString('id-ID')} /${d.satuan||'Kg'}</span>
         </div>`;
       });
-      html += `<div style="background:#eff6ff; border:1.5px solid #2563eb; border-radius:10px; padding:10px; font-size:11px; font-weight:800; color:#1e40af; margin-top:8px;">📍 Lokasi: ${pasarLokasi}</div>`;
+      html += `<div style="background:#eff6ff; border:1.5px solid #2563eb; border-radius:12px; padding:10px; font-size:11px; font-weight:800; color:#1e40af; margin-top:8px;">📍 Lokasi: ${pasarLokasi}</div>`;
       bodyEl.innerHTML = html;
     });
   } else if (type === 'lingkungan') {
