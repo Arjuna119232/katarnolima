@@ -4,6 +4,7 @@
     android:versionCode="1"
     android:versionName="1.0">
 
+    <!-- DIREVISI: MIN SDK DINAIKKAN DARI 15 KE 21 AGAR FITUR PERMISSION MODERN AKTIF -->
     <uses-sdk
         android:minSdkVersion="21"
         android:targetSdkVersion="33" />
@@ -15,12 +16,18 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" stroke="false" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
+    <!-- HARDWARE FEATURES (AGAR DIKATEGORIKAN DENGAN BENAR OLEH SYSTEM ANDROID) -->
     <uses-feature
         android:name="android.hardware.camera"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.location.gps"
         android:required="false" />
 
     <application
@@ -28,17 +35,13 @@
         android:icon="@mipmap/ic_launcher"
         android:label="KATARNOLIMA"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true">
+        android:supportsRtl="true"
+        android:appComponentFactory="androidx.core.app.CoreComponentFactory">
 
-        <!-- DEFAULT NOTIFICATION CHANNEL ID UNTUK FCM -->
-        <meta-data
-            android:name="com.google.firebase.messaging.default_notification_channel_id"
-            android:value="default" />
-
-        <!-- SAMPLE ADMOB APP ID (Aman digunakan selama akun masih ditinjau) -->
+        <!-- META-DATA GOOGLE ADMOB -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713" />
+            android:value="ca-app-pub-209615581034089~4852943754" />
 
         <!-- MAIN ACTIVITY -->
         <activity
@@ -65,6 +68,21 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
+        <!-- FIREBASE & CAPACITOR PUSH NOTIFICATION SERVICES -->
+        <service
+            android:name="com.capacitorjs.plugins.pushnotifications.MessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <provider
+            android:name="com.google.firebase.provider.FirebaseInitProvider"
+            android:authorities="com.katarnolima.rw05.firebaseinitprovider"
+            android:exported="false"
+            android:directBootAware="true" />
 
     </application>
 </manifest>
