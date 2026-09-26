@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "965647612835",
+    "project_id": "katarnolima-rw05",
+    "storage_bucket": "katarnolima-rw05.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:965647612835:android:a584acebf21edf005bf816",
+        "android_client_info": {
+          "package_name": "com.katarnolima.rw05"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "965647612835-vgurb45cvpjopebt9rsr5v1nte7maplt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2FGzxkbwhgNgbzwrpUWbYBdrMkTOuKT4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "965647612835-vgurb45cvpjopebt9rsr5v1nte7maplt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
