@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.2.0] — Update Notifikasi & Perbaikan
+
+### Fitur
+- **Notifikasi push (FCM)**: token perangkat kini otomatis disimpan ke Firestore di `users_profile/{uid}/fcmTokens` setelah izin diberikan, sehingga admin dapat mengirim notifikasi ke perangkat warga melalui Firebase Console.
+- **Keamanan**: `google-services.json` dikeluarkan dari repositori dan disimpan di GitHub Secrets; CI otomatis me-restore-nya saat build APK.
+
+### Perbaikan
+- Hapus tautan "Lihat Semua" di `aduan-warga.html` yang mengarah ke `aktivitas.html` (halaman tidak ada).
+- Sembunyikan blok QRIS di `iuran-warga.html` karena gambar `qris-rw05.jpg` belum tersedia; metode transfer bank tetap tampil.
+
+### Catatan
+- API Key Firebase dan VAPID Key telah melalui audit; API Key perlu dibatasi di Google Cloud Console (lihat `docs/KEAMANAN.md`).
+- Folder `assets-source/media-belum-dipakai/` dikecualikan dari Git untuk menjaga ukuran repositori (tetap tersimpan lokal).
+
+
 ## [Restrukturisasi tahap 2]
 
 ### Struktur
