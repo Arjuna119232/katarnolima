@@ -4,9 +4,11 @@
  */
 
 import { app } from "../services/firebase.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, onSnapshot, setDoc, getDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const db = getFirestore(app);
+const auth = getAuth(app);
 
 // FALLBACK QRIS IMAGE
 const imgEl = document.getElementById('qrisImg');
@@ -89,11 +91,85 @@ onSnapshot(saldoRef, (snap) => {
   }
 });
 
+// ============================================
+// POPUP SUKSES — Modern
+// ============================================
+function showSuccessModal(message, redirectUrl) {
+  let modal = document.getElementById('successModal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'successModal';
+    modal.style.cssText = 'position:fixed; inset:0; background:rgba(15,23,42,0.6); backdrop-filter:blur(6px); z-index:2000; display:flex; align-items:center; justify-content:center; padding:20px;';
+    modal.innerHTML = `
+      <div style="background:var(--surface); width:100%; max-width:320px; border-radius:24px; padding:24px 20px; text-align:center; box-shadow:0 10px 30px rgba(0,0,0,0.15);">
+        <div style="font-size:48px; margin-bottom:12px;">✅</div>
+        <h3 style="font-size:16px; font-weight:800; color:var(--ink-900); margin-bottom:8px;">Berhasil!</h3>
+        <p id="successMsg" style="font-size:12px; color:var(--ink-600); font-weight:600; line-height:1.4; margin-bottom:20px;"></p>
+        <button type="button" id="successBtn" style="width:100%; padding:12px; background:#16a34a; color:#fff; border:none; border-radius:14px; font-weight:800; font-size:13px; cursor:pointer;">Oke, Mengerti</button>
+      </div>
+    `;
+    document.body.appendChild(modal);
+  }
+  document.getElementById('successMsg').textContent = message;
+  modal.style.display = 'flex';
+
+  document.getElementById('successBtn').onclick = () => {
+    modal.style.display = 'none';
+    if (redirectUrl) window.location.href = redirectUrl;
+  };
+}
+
+// ============================================
+// POPUP MODERN — Pengganti alert() bawaan
+// ============================================
+function showCustomAlert(message, redirectUrl) {
+  let alertModal = document.getElementById('customAlertModal');
+  if (!alertModal) {
+    alertModal = document.createElement('div');
+    alertModal.id = 'customAlertModal';
+    alertModal.style.cssText = 'position:fixed; inset:0; background:rgba(15,23,42,0.6); backdrop-filter:blur(6px); z-index:2000; display:flex; align-items:center; justify-content:center; padding:20px;';
+    alertModal.innerHTML = `
+      <div style="background:var(--surface); width:100%; max-width:320px; border-radius:24px; padding:24px 20px; text-align:center; box-shadow:0 10px 30px rgba(0,0,0,0.15);">
+        <div style="font-size:36px; margin-bottom:12px;">🔒</div>
+        <h3 style="font-size:15px; font-weight:800; color:var(--ink-900); margin-bottom:8px;">Autentikasi Diperlukan</h3>
+        <p id="customAlertMsg" style="font-size:12px; color:var(--ink-600); font-weight:600; line-height:1.4; margin-bottom:20px;"></p>
+        <button type="button" id="customAlertBtn" style="width:100%; padding:12px; background:#0f172a; color:#fbbf24; border:none; border-radius:14px; font-weight:800; font-size:13px; cursor:pointer;">Masuk / Daftar</button>
+      </div>
+    `;
+    document.body.appendChild(alertModal);
+  }
+  document.getElementById('customAlertMsg').textContent = message;
+  alertModal.style.display = 'flex';
+
+  document.getElementById('customAlertBtn').onclick = () => {
+    alertModal.style.display = 'none';
+    if (redirectUrl) {
+      window.location.href = redirectUrl;
+    }
+  };
+}
+
+// ============================================
+// CEK LOGIN — Wajib login untuk kirim iuran
+// ============================================
+function checkAuthOrRedirect() {
+  const userSession = localStorage.getItem('rw05_current_user') || localStorage.getItem('rw05_user_login');
+  const firebaseUser = auth.currentUser;
+  if (!userSession && !firebaseUser) {
+    showCustomAlert('Silakan login/daftar akun terlebih dahulu untuk mengirim bukti pembayaran iuran.', 'profil.html');
+    return false;
+  }
+  return true;
+}
+
 // SUBMIT FORM PEMBAYARAN
 const form = document.getElementById('formIuran');
 if (form) {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+
+    // WAJIB LOGIN — cek sebelum submit
+    if (!checkAuthOrRedirect()) return;
 
     const nikEl = document.getElementById('nik');
     const bulanEl = document.getElementById('bulan');
@@ -143,7 +219,7 @@ if (form) {
         createdAt: serverTimestamp()
       });
 
-      alert("✅ Pembayaran iuran berhasil dikirim! Data sudah terverifikasi.");
+      showSuccessModal("Pembayaran iuran berhasil dikirim! Data sudah terverifikasi.", "iuran-warga.html");
       form.reset();
       window.hapusBuktiTransfer();
 

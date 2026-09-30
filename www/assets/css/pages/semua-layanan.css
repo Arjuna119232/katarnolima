@@ -33,7 +33,7 @@ body {
   padding: 16px 20px;
   display: flex;
   align-items: center;
-  background: rgba(255, 255, 255, 0.92);
+  background: var(--header-bg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   position: sticky;

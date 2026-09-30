@@ -30,7 +30,7 @@ body {
 
 /* STICKY HEADER */
 .header-app {
-  background: rgba(255, 255, 255, 0.92);
+  background: var(--header-bg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   padding: 12px 16px;

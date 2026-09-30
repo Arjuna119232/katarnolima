@@ -11,7 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/css/base/theme.css">
 <link rel="stylesheet" href="../assets/css/base/global.css?v=39">
-<link rel="stylesheet" href="../assets/css/pages/profil.css">
+<link rel="stylesheet" href="../assets/css/pages/profil.css?v=2">
 </head>
 <body>
 
@@ -115,6 +115,42 @@
           <span>Pengaturan Aplikasi</span>
         </div>
         <div class="menu-arrow">➔</div>
+      </div>
+      <div class="menu-item" onclick="window.location.href='pengaturan-akun.html'">
+        <div class="menu-item-left">
+          <div class="menu-icon">🎨</div>
+          <span>Tampilan Mode</span>
+        </div>
+        <div class="menu-arrow">➔</div>
+      </div>
+      <div class="menu-item" onclick="window.location.href='tentang.html'">
+        <div class="menu-item-left">
+          <div class="menu-icon">ℹ️</div>
+          <span>Tentang Aplikasi</span>
+        </div>
+        <div class="menu-arrow">➔</div>
+      </div>
+      <div class="menu-item" onclick="window.showModal({ title: 'Syarat & Ketentuan', desc: 'Dengan menggunakan aplikasi ini, Anda setuju untuk:\n\n1. Memberikan data yang benar & valid\n2. Tidak menyebarkan hoaks\n3. Menjaga kerukunan warga\n4. Menggunakan layanan sesuai peruntukan', icon: '📄' })">
+        <div class="menu-item-left">
+          <div class="menu-icon">📄</div>
+          <span>Syarat & Ketentuan</span>
+        </div>
+        <div class="menu-arrow">➔</div>
+      </div>
+      <div class="menu-item" onclick="window.showModal({ title: 'Kebijakan Privasi', desc: 'Data pribadi Anda (nama, email, RT) disimpan aman di server Firebase dan hanya digunakan untuk keperluan layanan RW 05. Kami tidak membagikan data ke pihak ketiga tanpa izin.', icon: '🛡️' })">
+        <div class="menu-item-left">
+          <div class="menu-icon">🛡️</div>
+          <span>Kebijakan Privasi</span>
+        </div>
+        <div class="menu-arrow">➔</div>
+      </div>
+      <div class="menu-item danger" id="menuKeluarProfil" style="cursor:pointer">
+        <div class="menu-item-left">
+          <div class="menu-icon">🚪</div>
+          <span style="color:#dc2626">Keluar Akun</span>
+        </div>
+        <div class="menu-arrow" style="color:#dc2626">➔</div>
+      </div>
       </div>
     </div>
   </div>

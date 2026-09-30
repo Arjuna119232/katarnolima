@@ -37,6 +37,7 @@
 
   --shadow-soft:0 8px 24px rgba(15,23,42,0.08);
   --shadow-strong:0 12px 32px rgba(15,23,42,0.16);
+  --header-bg:rgba(248,250,252,0.92);
 }
 
 html[data-theme="dark"]{
@@ -74,6 +75,7 @@ html[data-theme="dark"]{
 
   --shadow-soft:0 8px 24px rgba(0,0,0,0.35);
   --shadow-strong:0 14px 36px rgba(0,0,0,0.5);
+  --header-bg:rgba(10,15,26,0.92);
 }
 
 /* Smooth, professional cross-fade whenever the theme changes */

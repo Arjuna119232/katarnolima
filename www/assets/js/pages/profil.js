@@ -211,8 +211,7 @@ if(btnDaftar){
   });
 }
 
-// Catatan: aksi "Keluar Akun" kini dikelola terpusat di pages/pengaturan.html
-// (tidak diduplikasi lagi di halaman Profil).
+// Catatan: aksi "Keluar Akun" juga tersedia di halaman ini (menuKeluarProfil).
 
 const linkDaftar = document.getElementById('linkDaftar');
 const textBawah = document.getElementById('textBawah');

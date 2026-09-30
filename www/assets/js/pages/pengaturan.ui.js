@@ -110,21 +110,3 @@ document.getElementById('btnClearCache').addEventListener('click', function(){
   });
 });
 
-// --- Keluar Akun (konsisten dengan profil.html) ---
-document.getElementById('btnKeluarSet').addEventListener('click', function(){
-  window.showModal({
-    title: 'Keluar Akun?',
-    desc: 'Kamu perlu masuk kembali untuk mengakses layanan warga RW 05.',
-    icon: '🚪',
-    type: 'confirm',
-    onYes: async function(){
-      try {
-        var { getAuth, signOut } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js');
-        var { app } = await import('../services/firebase.js');
-        await signOut(getAuth(app));
-      } catch(e) { console.warn('Sign out dilewati:', e); }
-      localStorage.removeItem('rw05_current_user');
-      window.location.href = 'profil.html';
-    }
-  });
-});

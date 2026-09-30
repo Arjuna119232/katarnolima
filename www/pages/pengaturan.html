@@ -11,7 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/css/base/theme.css">
 <link rel="stylesheet" href="../assets/css/base/global.css?v=40">
-<link rel="stylesheet" href="../assets/css/pages/pengaturan.css">
+<link rel="stylesheet" href="../assets/css/pages/pengaturan.css?v=2">
 </head>
 <body>
 <div class="page-root">
@@ -27,27 +27,6 @@
     <div class="info">
       <b id="setNama">Warga RW 05</b>
       <span id="setSub">Kelola akun &amp; preferensi aplikasi kamu</span>
-    </div>
-  </div>
-
-  <!-- TAMPILAN -->
-  <div class="settings-section">
-    <div class="settings-section-title">Tampilan Aplikasi</div>
-    <div class="settings-card" style="padding:16px">
-      <div class="theme-picker" id="themePicker">
-        <div class="theme-opt" data-pref="light">
-          <div class="t-icon">☀️</div>
-          <div class="t-label">Terang</div>
-        </div>
-        <div class="theme-opt" data-pref="dark">
-          <div class="t-icon">🌙</div>
-          <div class="t-label">Gelap</div>
-        </div>
-        <div class="theme-opt" data-pref="system">
-          <div class="t-icon">🔄</div>
-          <div class="t-label">Otomatis</div>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -76,6 +55,14 @@
         <div class="row-body">
           <div class="row-title">Akses Pengurus / Admin RW</div>
           <div class="row-sub">Khusus pengurus RT/RW yang berwenang</div>
+        </div>
+        <div class="row-arrow">➔</div>
+      </div>
+      <div class="settings-row" onclick="window.location.href='pengaturan-akun.html'">
+        <div class="row-icon">⚙️</div>
+        <div class="row-body">
+          <div class="row-title">Pengaturan Akun</div>
+          <div class="row-sub">Keamanan, kata sandi, dan tampilan mode</div>
         </div>
         <div class="row-arrow">➔</div>
       </div>
@@ -144,81 +131,7 @@
     </div>
   </div>
 
-  <!-- PRIVASI & KEAMANAN -->
-  <div class="settings-section">
-    <div class="settings-section-title">Privasi &amp; Keamanan</div>
-    <div class="settings-card">
-      <div class="settings-row" onclick="window.showModal({ title: 'Kebijakan Privasi', desc: 'Kebijakan Privasi data pengguna RW 05. Data pribadi disimpan aman dan terenkripsi, serta tidak dibagikan ke pihak ketiga tanpa izin.', icon: '🛡️' })">
-        <div class="row-icon">🛡️</div>
-        <div class="row-body">
-          <div class="row-title">Kebijakan Privasi</div>
-          <div class="row-sub">Cara kami menjaga data kamu</div>
-        </div>
-        <div class="row-arrow">➔</div>
-      </div>
-      <div class="settings-row" onclick="window.showModal({ title: 'Syarat dan Ketentuan', desc: 'Syarat dan Ketentuan layanan warga RW 05 Poncol Jaya. Seluruh data laporan dijaga kerahasiaannya.', icon: '📄' })">
-        <div class="row-icon">📄</div>
-        <div class="row-body">
-          <div class="row-title">Syarat &amp; Ketentuan</div>
-          <div class="row-sub">Ketentuan penggunaan layanan</div>
-        </div>
-        <div class="row-arrow">➔</div>
-      </div>
-      <div class="settings-row" id="btnClearCache">
-        <div class="row-icon red">🧹</div>
-        <div class="row-body">
-          <div class="row-title">Bersihkan Data Lokal</div>
-          <div class="row-sub">Hapus cache tampilan &amp; preferensi di perangkat ini</div>
-        </div>
-        <div class="row-arrow">➔</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- BANTUAN & TENTANG -->
-  <div class="settings-section">
-    <div class="settings-section-title">Bantuan &amp; Tentang</div>
-    <div class="settings-card">
-      <div class="settings-row" onclick="window.showModal({ title:'Pusat Bantuan', desc:'Butuh bantuan seputar aplikasi? Hubungi pengurus RW 05 melalui menu Aduan Warga atau WhatsApp Sekretariat RW.', icon:'❓' })">
-        <div class="row-icon">❓</div>
-        <div class="row-body">
-          <div class="row-title">Pusat Bantuan</div>
-          <div class="row-sub">Pertanyaan umum &amp; panduan pemakaian</div>
-        </div>
-        <div class="row-arrow">➔</div>
-      </div>
-      <div class="settings-row" onclick="window.location.href='aduan-warga.html'">
-        <div class="row-icon amber">✉️</div>
-        <div class="row-body">
-          <div class="row-title">Hubungi Pengurus RW</div>
-          <div class="row-sub">Sampaikan masukan atau kendala</div>
-        </div>
-        <div class="row-arrow">➔</div>
-      </div>
-      <div class="settings-row" onclick="window.location.href='tentang.html'">
-        <div class="row-icon">ℹ️</div>
-        <div class="row-body">
-          <div class="row-title">Tentang Aplikasi KATARNOLIMA</div>
-          <div class="row-sub">Versi, tim pengembang, dan info lainnya</div>
-        </div>
-        <div class="row-arrow">➔</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- KELUAR -->
-  <div class="settings-section">
-    <div class="settings-card">
-      <div class="settings-row danger" id="btnKeluarSet">
-        <div class="row-icon red">🚪</div>
-        <div class="row-body">
-          <div class="row-title">Keluar Akun</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="app-version-tag">KATARNOLIMA RW 05 &bull; v2.1.242</div>
+  <div class="app-version-tag">KATARNOLIMA RW 05 &bull; v2.2.0</div>
 </div>
 
 <!-- MODAL POPUP UNIVERSAL (konsisten dengan halaman lain) -->

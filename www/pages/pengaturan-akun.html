@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<script src="../assets/js/core/theme-init.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f8fafc">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0f1a">
+<title>Pengaturan Akun - KATARNOLIMA RW 05</title>
+<link rel="icon" href="../assets/img/logo-resmi-karang-taruna.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/base/theme.css">
+<link rel="stylesheet" href="../assets/css/base/global.css?v=40">
+<link rel="stylesheet" href="../assets/css/pages/pengaturan.css?v=2">
+</head>
+<body>
+<div class="page-root">
+
+  <div class="settings-header">
+    <div class="back" id="backBtn">←</div>
+    <h1>Pengaturan Akun</h1>
+  </div>
+
+  <!-- TAMPILAN -->
+  <div class="settings-section">
+    <div class="settings-section-title">Tampilan</div>
+    <div class="settings-card">
+      <div class="settings-row" id="rowTampilan">
+        <div class="row-icon">🎨</div>
+        <div class="row-body">
+          <div class="row-title">Tampilan Mode</div>
+          <div class="row-sub" id="themeStatus">Terang / Gelap / Otomatis</div>
+        </div>
+        <div class="row-arrow">➔</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KEAMANAN -->
+  <div class="settings-section">
+    <div class="settings-section-title">Keamanan</div>
+    <div class="settings-card">
+      <div class="settings-row" id="rowUbahPassword">
+        <div class="row-icon">🔐</div>
+        <div class="row-body">
+          <div class="row-title">Ubah Password</div>
+          <div class="row-sub">Ganti kata sandi akun Anda</div>
+        </div>
+        <div class="row-arrow">➔</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- MODAL: PILIH TEMA -->
+<div class="overlay" id="themeOverlay">
+  <div class="modal-box">
+    <h3 style="font-size:16px;font-weight:800;color:var(--ink-900);margin-bottom:16px">Tampilan Mode</h3>
+    <div class="theme-picker">
+      <div class="theme-opt" data-pref="light">
+        <div class="t-icon">☀️</div>
+        <div class="t-label">Terang</div>
+      </div>
+      <div class="theme-opt" data-pref="dark">
+        <div class="t-icon">🌙</div>
+        <div class="t-label">Gelap</div>
+      </div>
+      <div class="theme-opt" data-pref="system">
+        <div class="t-icon">🔄</div>
+        <div class="t-label">Otomatis</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="../assets/js/pages/pengaturan-akun.js"></script>
+<script src="../assets/js/core/theme.js"></script>
+</body>
+</html>
