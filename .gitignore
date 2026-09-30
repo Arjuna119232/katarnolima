@@ -1,0 +1,51 @@
+# OS / Editor
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.vscode/
+.idea/
+
+# Backup & temp
+*.bak
+*.tmp
+*.log
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# Build artifacts (dibuat ulang oleh CI)
+android/
+dist/
+build/
+
+# Keystore & signing (JANGAN pernah di-commit!)
+*.keystore
+*.jks
+*.p12
+release.p12
+keystore.properties
+
+# File sensitif — google-services.json dikelola via CI/GitHub Secrets
+# JANGAN commit file ini ke repo publik
+# google-services.json
+
+# Python
+__pycache__/
+*.pyc
+
+# Env
+.env
+.env.local
+
+# Test artifacts
+coverage/
+
+# Firebase config — disimpan di GitHub Secrets, bukan di repo
+native/google-services.json
+google-services.json
+
+# Arsip media yang belum dipakai — tidak ikut ke GitHub
+assets-source/media-belum-dipakai/

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<!-- @ts-nocheck -->
+<html lang="id">
+<head>
+<script src="../assets/js/core/theme-init.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f8fafc">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0f1a">
+<title>KATARNOLIMA RW 05 - Lapor Aduan Warga</title>
+<link rel="icon" href="../assets/img/logo-resmi-karang-taruna.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/base/theme.css">
+<link rel="manifest" href="../manifest.json">
+<link rel="stylesheet" href="../assets/css/base/global.css">
+<link rel="stylesheet" href="../assets/css/pages/aduan-warga.css">
+</head>
+<body>
+
+<div class="app-jaki" style="max-width:440px; margin:0 auto; min-height:100vh; position:relative; padding-bottom:30px;">
+  <!-- HEADER -->
+  <div class="header-app">
+    <div class="header-left-grp">
+      <a href="../index.html" class="btn-back-direct">←</a>
+      <h1 style="font-size:16px; font-weight:800; margin:0; letter-spacing:-0.2px;">Laporan Warga</h1>
+    </div>
+    <button class="btn-search-icon" id="btnToggleSearch">🔍</button>
+  </div>
+
+  <!-- BAR PENCARIAN DINAMIS -->
+  <div class="search-bar-container" id="searchBarContainer">
+    <div class="search-input-wrap">
+      <span style="font-size:14px;">🔍</span>
+      <input type="text" id="inputSearchQuery" placeholder="Cari aduan, judul, RT, atau nama...">
+      <button type="button" class="btn-clear-search" id="btnClearSearch">✕</button>
+    </div>
+  </div>
+
+  <!-- HERO CARD ALA JAKI -->
+  <div class="hero-lapor-card">
+    <div class="illustration">📢</div>
+    <h2>Ada Masalah di Lingkungan RW 05?<br>Buat Laporan Aduan, Yuk!</h2>
+    <button type="button" id="btnTriggerFoto" class="btn-jaki-action btn-foto-jaki">
+      <span>📷</span> Buat Laporan Foto
+    </button>
+    <button type="button" id="btnTriggerVideo" class="btn-jaki-action btn-video-jaki">
+      <span>📹</span> Buat Laporan Video
+    </button>
+  </div>
+
+  <!-- 1. SECTION LAPORAN SAYA (MILIK PELAPOR) -->
+  <div class="section-header-row">
+    <h3>Laporan Aktif Milikmu</h3>
+  </div>
+  <div id="dynamicMyReports" style="display:flex; flex-direction:column;"></div>
+
+  <!-- 2. SECTION SEMUA LAPORAN WARGA (PUBLIK) -->
+  <div class="section-header-row" style="margin-top:28px;">
+    <h3>Semua Laporan Warga RW 05</h3>
+    <a href="javascript:void(0)" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">Atas ↑</a>
+  </div>
+  <div id="dynamicAllReports" style="display:flex; flex-direction:column;"></div>
+
+  <div style="height:30px"></div>
+</div>
+
+<!-- MODAL FORM INPUT LAPORAN -->
+<div class="form-panel-modal" id="modalFormAduan">
+  <div class="form-panel-content">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
+      <h3 style="margin:0; font-size:16px; font-weight:800; color:var(--ink-900);">Form Laporan Warga</h3>
+      <button type="button" id="btnCloseModal" style="background:var(--surface-soft); border:none; width:32px; height:32px; border-radius:50%; font-size:16px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center;">✕</button>
+    </div>
+    <form id="formAduan">
+      <div class="form-group">
+        <label for="aduanNama">Nama Pelapor (Sesuai KTP/KK)</label>
+        <input type="text" id="aduanNama" class="form-control" placeholder="Masukkan nama kamu..." required>
+      </div>
+
+      <!-- TOGGLE LAPOR ANONIM/SEMBUNYIKAN NAMA -->
+      <div class="privacy-option-box">
+        <div class="privacy-info">
+          <h4>🔒 Sembunyikan Nama Saya (Anonim)</h4>
+          <p>Nama kamu tidak akan terlihat oleh warga lain di aplikasi</p>
+        </div>
+        <label class="switch-toggle">
+          <input type="checkbox" id="chkAnonim">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label for="aduanRT">RT Tempat Kejadian</label>
+        <select id="aduanRT" class="form-control" required>
+          <option value="">-- Pilih RT --</option>
+          <option value="RT 01">RT 01</option>
+          <option value="RT 02">RT 02</option>
+          <option value="RT 03">RT 03</option>
+          <option value="RT 04">RT 04</option>
+          <option value="RT 05">RT 05</option>
+          <option value="RT 06">RT 06</option>
+          <option value="RT 07">RT 07</option>
+          <option value="RT 08">RT 08</option>
+          <option value="RT 09">RT 09</option>
+          <option value="RT 10">RT 10</option>
+          <option value="RT 11">RT 11</option>
+          <option value="RT 12">RT 12</option>
+          <option value="RT 13">RT 13</option>
+          <option value="RT 14">RT 14</option>
+          <option value="RT 15">RT 15</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="aduanJudul">Judul Laporan / Kejadian</label>
+        <input type="text" id="aduanJudul" class="form-control" placeholder="Contoh: Lampu jalan mati / Saluran tersumbat" required>
+      </div>
+
+      <div class="form-group">
+        <label for="aduanDesc">Detail Keterangan</label>
+        <textarea id="aduanDesc" class="form-control" rows="3" placeholder="Jelaskan kronologi atau lokasi detailnya..." required></textarea>
+      </div>
+
+      <div class="form-group" style="margin-bottom:8px;">
+        <div style="display:flex; gap:8px;">
+          <button type="button" id="btnAmbilFotoOnly" class="btn-trigger btn-camera" style="flex:1; padding:12px 8px; border-radius:12px; font-weight:800; font-size:11px; cursor:pointer; background:var(--tint-blue-50); color:#1d4ed8; border:1.5px dashed var(--tint-blue-200);">
+            <span>📷</span> Pilih Foto
+          </button>
+          <button type="button" id="btnAmbilVideoOnly" class="btn-trigger btn-camera" style="flex:1; padding:12px 8px; border-radius:12px; font-weight:800; font-size:11px; cursor:pointer; background:var(--tint-red-50); color:#b91c1c; border:1.5px dashed var(--tint-red-100);">
+            <span>📹</span> Pilih Video
+          </button>
+          <button type="button" id="btnGPS" class="btn-trigger btn-gps" style="flex:1; padding:12px 8px; border-radius:12px; font-weight:800; font-size:11px; cursor:pointer; background:var(--tint-green-50); color:#15803d; border:1.5px dashed var(--tint-green-200);">
+            <span>📍</span> Lock GPS
+          </button>
+        </div>
+        <div class="file-limit-info">
+          📌 <b>Foto:</b> Maks. 5 MB (otomatis dikompres) | <b>Video:</b> Maks. 800 KB (durasi 3–5 detik)
+        </div>
+      </div>
+
+      <input type="file" id="inputFoto" style="display:none;">
+
+      <!-- CONTAINER PREVIEW DUAL DENGAN TOMBOL HAPUS (X) -->
+      <div id="previewContainer" style="display:none; text-align:center; margin-bottom:14px;">
+        <div class="preview-media-wrapper">
+          <button type="button" id="btnRemoveMedia" class="btn-remove-media" title="Hapus foto/video ini">✕</button>
+          <img id="imgPreview" src="" alt="Preview Foto" style="display:none; max-width:100%; max-height:180px; border-radius:16px; border:1px solid var(--border-strong); object-fit:cover;">
+          <video id="videoPreview" controls style="display:none; max-width:100%; max-height:180px; border-radius:16px; border:1px solid var(--border-strong);"></video>
+        </div>
+        <div style="font-size:11px; color:#10b981; margin-top:6px; font-weight:800;" id="previewStatusText">✅ Media siap dikirim</div>
+      </div>
+
+      <div id="gpsInfo" style="display:none; text-align:center; margin-bottom:16px;">
+        <span class="badge-gps">📍 Lokasi: <span id="coordsText">-</span></span>
+      </div>
+
+      <button type="submit" id="btnKirimAduan" class="btn-submit">
+        Kirim Laporan Warga
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL DETAIL POPUP LAPORAN -->
+<div class="form-panel-modal" id="modalDetailAduan">
+  <div class="form-panel-content">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+      <span id="detailRtBadge" class="badge-kat">RT 00</span>
+      <button type="button" id="btnCloseDetailModal" style="background:var(--surface-soft); border:none; width:32px; height:32px; border-radius:50%; font-size:16px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center;">✕</button>
+    </div>
+
+    <div class="detail-image-wrap">
+      <img id="detailFoto" src="" class="detail-media-full" alt="Bukti Aduan" style="display:none;">
+      <video id="detailVideo" src="" controls class="detail-media-full" style="display:none;"></video>
+    </div>
+
+    <div id="detailJudul" class="detail-title">Judul Aduan</div>
+    <div id="detailMeta" class="detail-author">Nama • Tanggal</div>
+    
+    <div style="font-size:11px; font-weight:800; color:var(--ink-900); margin-bottom:6px; text-transform:uppercase;">Detail Keterangan Pelapor:</div>
+    <div id="detailDesc" class="detail-desc-box">Deskripsi laporan...</div>
+    
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
+      <span style="font-size:11px; font-weight:800; color:var(--ink-500); text-transform:uppercase;">Status Laporan:</span>
+      <div id="detailStatusBadge" class="badge-status-dinamis">Menunggu Verifikasi</div>
+    </div>
+  </div>
+</div>
+
+<!-- POP-UP DIALOG KUSTOM MODERN -->
+<div class="modern-dialog-overlay" id="modernDialog">
+  <div class="modern-dialog-card">
+    <div class="modern-dialog-icon warning" id="dialogIcon">⚠️</div>
+    <div class="modern-dialog-title" id="dialogTitle">Notifikasi</div>
+    <div class="modern-dialog-msg" id="dialogMsg">Pesan notifikasi...</div>
+    <button type="button" class="btn-dialog-primary" id="btnDialogClose">Mengerti</button>
+  </div>
+</div>
+
+<script src="../assets/js/core/haptics.js"></script>
+<script src="../assets/js/core/device.js"></script>
+<script src="../assets/js/core/splash.js"></script>
+<script src="../assets/js/core/push-notifications.js"></script>
+<script src="../assets/js/core/network-status.js"></script>
+<script src="../assets/js/core/app.js"></script>
+<script src="../assets/js/core/admob.js"></script>
+<script type="module" src="../assets/js/pages/aduan-warga.js"></script>
+<script src="../assets/js/core/theme.js"></script>
+</body>
+</html>

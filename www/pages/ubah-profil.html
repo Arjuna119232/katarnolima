@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<script src="../assets/js/core/theme-init.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f8fafc">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0f1a">
+<title>Ubah Profil - KATARNOLIMA RW 05</title>
+<link rel="icon" href="../assets/img/logo-resmi-karang-taruna.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/base/theme.css">
+<link rel="stylesheet" href="../assets/css/base/global.css?v=36">
+<link rel="stylesheet" href="../assets/css/pages/ubah-profil.css">
+</head>
+<body>
+
+<div class="page-root">
+  <!-- HEADER -->
+  <div class="app-header">
+    <a href="profil.html" class="header-left" id="btnBackHeader">
+      <div class="btn-back">←</div>
+      <span>Ubah Profil</span>
+    </a>
+    <button class="btn-simpan" id="btnSimpanProfil">Simpan</button>
+  </div>
+
+  <!-- AVATAR SECTION -->
+  <div class="photo-section">
+    <div class="avatar-big" id="editAvatarInit">WG</div>
+    <div class="avatar-info-text">Pilih Karakter Emoji atau Gunakan Inisial Nama</div>
+    
+    <!-- DAFTAR EMOJI MANUSIA LENGKAP -->
+    <div class="emoji-picker-wrap">
+      <div style="width:100%"><div class="emoji-category-title">Tokoh & Umum</div></div>
+      <span class="emoji-item" onclick="pickEmoji('👨')">👨</span>
+      <span class="emoji-item" onclick="pickEmoji('👩')">👩</span>
+      <span class="emoji-item" onclick="pickEmoji('🧕')">🧕</span>
+      <span class="emoji-item" onclick="pickEmoji('🧔')">🧔</span>
+      <span class="emoji-item" onclick="pickEmoji('👨‍🦰')">👨‍🦰</span>
+      <span class="emoji-item" onclick="pickEmoji('👩‍🦱')">👩‍🦱</span>
+      <span class="emoji-item" onclick="pickEmoji('👨‍🦳')">👨‍🦳</span>
+      <span class="emoji-item" onclick="pickEmoji('👩‍🦳')">👩‍🦳</span>
+
+      <div style="width:100%"><div class="emoji-category-title">Lansia & Pemuda</div></div>
+      <span class="emoji-item" onclick="pickEmoji('👴')">👴</span>
+      <span class="emoji-item" onclick="pickEmoji('👵')">👵</span>
+      <span class="emoji-item" onclick="pickEmoji('👦')">👦</span>
+      <span class="emoji-item" onclick="pickEmoji('👧')">👧</span>
+      <span class="emoji-item" onclick="pickEmoji('👶')">👶</span>
+      <span class="emoji-item" onclick="pickEmoji('🧑‍🎓')">🧑‍🎓</span>
+
+      <div style="width:100%"><div class="emoji-category-title">Profesi & Peran</div></div>
+      <span class="emoji-item" onclick="pickEmoji('🤴')">🤴</span>
+      <span class="emoji-item" onclick="pickEmoji('👸')">👸</span>
+      <span class="emoji-item" onclick="pickEmoji('👮‍♂️')">👮‍♂️</span>
+      <span class="emoji-item" onclick="pickEmoji('👮‍♀️')">👮‍♀️</span>
+      <span class="emoji-item" onclick="pickEmoji('🕵️‍♂️')">🕵️‍♂️</span>
+      <span class="emoji-item" onclick="pickEmoji('👨‍⚕️')">👨‍⚕️</span>
+      <span class="emoji-item" onclick="pickEmoji('👩‍⚕️')">👩‍⚕️</span>
+      <span class="emoji-item" onclick="pickEmoji('👨‍🏫')">👨‍🏫</span>
+      <span class="emoji-item" onclick="pickEmoji('👩‍🏫')">👩‍🏫</span>
+      <span class="emoji-item" onclick="pickEmoji('👨‍🌾')">👨‍🌾</span>
+      <span class="emoji-item" onclick="pickEmoji('👨‍🍳')">👨‍🍳</span>
+      <span class="emoji-item" onclick="pickEmoji('👨‍🔧')">👨‍🔧</span>
+      <span class="emoji-item" onclick="pickEmoji('👨‍💼')">👨‍💼</span>
+      <span class="emoji-item" onclick="pickEmoji('👩‍💼')">👩‍💼</span>
+      <span class="emoji-item" onclick="pickEmoji('👨‍💻')">👨‍💻</span>
+      <span class="emoji-item" onclick="pickEmoji('👩‍💻')">👩‍💻</span>
+      <span class="emoji-item" onclick="pickEmoji('👨‍🎨')">👨‍🎨</span>
+      <span class="emoji-item" onclick="pickEmoji('👨‍🚒')">👨‍🚒</span>
+      <span class="emoji-item" onclick="pickEmoji('🦸‍♂️')">🦸‍♂️</span>
+      <span class="emoji-item" onclick="pickEmoji('🦸‍♀️')">🦸‍♀️</span>
+
+      <div style="width:100%"><div class="emoji-category-title">Gaya Hidup & Olahraga</div></div>
+      <span class="emoji-item" onclick="pickEmoji('🧘‍♂️')">🧘‍♂️</span>
+      <span class="emoji-item" onclick="pickEmoji('🧘‍♀️')">🧘‍♀️</span>
+      <span class="emoji-item" onclick="pickEmoji('🏃‍♂️')">🏃‍♂️</span>
+      <span class="emoji-item" onclick="pickEmoji('🚴‍♂️')">🚴‍♂️</span>
+      <span class="emoji-item" onclick="pickEmoji('🧗‍♂️')">🧗‍♂️</span>
+      <span class="emoji-item" onclick="pickEmoji('🤾‍♂️')">🤾‍♂️</span>
+    </div>
+
+    <div class="btn-reset-init" onclick="pickEmoji('')">🔄 Gunakan 2 Huruf Inisial Nama</div>
+  </div>
+
+  <!-- INFORMASI DIRI -->
+  <div class="form-section">
+    <div class="form-group">
+      <label class="form-label">Nama Lengkap Sesuai KTP</label>
+      <input type="text" class="form-input" id="inputNamaUbah" placeholder="Masukkan nama lengkap">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Username</label>
+      <div class="input-wrap">
+        <input type="text" class="form-input locked" id="inputUsername" value="Warga_RW05" readonly>
+        <span class="input-icon-right">🔒</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">E-mail Terdaftar</label>
+      <div class="input-wrap">
+        <input type="text" class="form-input locked" id="inputEmail" value="" readonly>
+        <span class="input-icon-right">🔒</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="phone-sub">
+        <span class="phone-label">No. Handphone (WhatsApp)</span>
+        <span class="status-unverified" id="phoneStatusText">Belum Terverifikasi</span>
+      </div>
+      <div class="input-wrap" style="gap: 8px;">
+        <input type="tel" class="form-input" id="inputPhone" value="" placeholder="Contoh: 08123456789">
+        <button type="button" class="btn-verify-action" id="btnVerifyPhone" style="display:none;">Verifikasi</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/core/haptics.js"></script>
+<script src="../assets/js/core/device.js"></script>
+<script src="../assets/js/core/splash.js"></script>
+<script src="../assets/js/core/push-notifications.js"></script>
+<script src="../assets/js/core/network-status.js"></script>
+<script src="../assets/js/core/app.js"></script>
+<script src="../assets/js/core/admob.js"></script>
+<script type="module" src="../assets/js/pages/ubah-profil.js"></script>
+
+<script src="../assets/js/pages/ubah-profil.ui.js"></script>
+<script src="../assets/js/core/theme.js"></script>
+</body>
+</html>

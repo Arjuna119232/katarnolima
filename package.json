@@ -1,0 +1,15 @@
+{
+  "name": "katarnolima-rw05",
+  "version": "2.1.0",
+  "private": true,
+  "description": "Aplikasi warga RW 05 — Karang Taruna KATARNOLIMA (Capacitor + Firebase)",
+  "scripts": {
+    "serve": "python3 -m http.server 8080 --directory www",
+    "validate": "python3 scripts/validate.py",
+    "test": "node --import ./tests/helpers/register.mjs --test",
+    "check": "npm run validate && npm test"
+  },
+  "engines": {
+    "node": ">=20.6"
+  }
+}

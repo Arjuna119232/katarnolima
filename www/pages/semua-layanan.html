@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<script src="../assets/js/core/theme-init.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f8fafc">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0f1a">
+<title>Semua Layanan - KATARNOLIMA RW 05</title>
+<link rel="icon" href="../assets/img/logo-resmi-karang-taruna.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/base/theme.css">
+<link rel="stylesheet" href="../assets/css/base/global.css?v=27">
+<link rel="stylesheet" href="../assets/css/pages/semua-layanan.css">
+</head>
+<body>
+
+<div class="layanan-container">
+  <!-- HEADER -->
+  <div class="light-header">
+    <button class="btn-back-modern" id="backBtn" aria-label="Kembali">
+      <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </button>
+    <h1>Semua Layanan RW 05</h1>
+  </div>
+
+  <!-- SEKSI 1: LAYANAN PUBLIK & LAPORAN -->
+  <div class="section-layanan">
+    <div class="section-title">Layanan Publik & Laporan</div>
+    <div class="grid-layanan">
+      <a class="item-layanan" href="aduan-warga.html">
+        <div class="icon-box bg-rose">📢</div>
+        <p>Aduan<br>Warga</p>
+      </a>
+      <a class="item-layanan" href="berita-rw.html">
+        <div class="icon-box bg-sky">📰</div>
+        <p>Berita<br>RW</p>
+      </a>
+      <a class="item-layanan" href="iuran-warga.html">
+        <div class="icon-box bg-amber">💰</div>
+        <p>Iuran<br>Warga</p>
+      </a>
+      <div class="item-layanan" onclick="openServiceModal('petaBalai')">
+        <div class="icon-box bg-blue">📍</div>
+        <p>Peta<br>Balai</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEKSI 2: INFORMASI & LINGKUNGAN -->
+  <div class="section-layanan">
+    <div class="section-title">Informasi & Lingkungan</div>
+    <div class="grid-layanan">
+      <div class="item-layanan" onclick="openServiceModal('sembako')">
+        <div class="icon-box bg-emerald">🛒</div>
+        <p>Harga<br>Sembako</p>
+      </div>
+      <div class="item-layanan" onclick="openServiceModal('keamanan')">
+        <div class="icon-box bg-indigo">🛡️</div>
+        <p>Keamanan<br>Satpam</p>
+      </div>
+      <div class="item-layanan" onclick="openServiceModal('lingkungan')">
+        <div class="icon-box bg-green">🧹</div>
+        <p>Lingkungan<br>Bersih</p>
+      </div>
+      <div class="item-layanan" onclick="openServiceModal('posyandu')">
+        <div class="icon-box bg-rose">👶</div>
+        <p>Posyandu</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEKSI 3: KEMASYARAKATAN -->
+  <div class="section-layanan">
+    <div class="section-title">Kemasyarakatan</div>
+    <div class="grid-layanan">
+      <div class="item-layanan" onclick="openServiceModal('datawarga')">
+        <div class="icon-box bg-purple">📋</div>
+        <p>Data<br>Warga</p>
+      </div>
+      <div class="item-layanan" onclick="openServiceModal('belajar')">
+        <div class="icon-box bg-sky">📚</div>
+        <p>Belajar<br>Bersama</p>
+      </div>
+      <a class="item-layanan" href="profil.html">
+        <div class="icon-box bg-blue">👤</div>
+        <p>Profil<br>Warga</p>
+      </a>
+      <div class="item-layanan disabled">
+        <div class="icon-box">
+          🗺️
+          <span class="badge-soon">SOON</span>
+        </div>
+        <p style="color:var(--ink-400);">Peta<br>Digital</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- UNIVERSAL MODAL POPUP -->
+  <div id="universal-modal" class="modal-overlay">
+    <div class="modal-box">
+      <div style="padding:16px 20px; border-bottom:1px solid var(--surface-soft); display:flex; justify-content:space-between; align-items:center;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span id="modal-icon-title" style="font-size:20px;">📢</span>
+          <h3 id="modal-title" style="font-size:15px; font-weight:800; color:var(--ink-900); margin:0;">Info RW 05</h3>
+        </div>
+        <button type="button" id="modal-close" onclick="closeServiceModal(true)" style="background:var(--surface-soft); border:none; width:32px; height:32px; border-radius:50%; font-size:16px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center;">✕</button>
+      </div>
+      <div id="modal-body" style="padding:20px; font-size:13px; color:var(--ink-700); line-height:1.6;">
+        <div style="text-align:center; font-size:12px; color:var(--ink-400); padding:16px 0;">Memuat data...</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/core/haptics.js"></script>
+<script src="../assets/js/core/device.js"></script>
+<script src="../assets/js/core/splash.js"></script>
+<script src="../assets/js/core/push-notifications.js"></script>
+<script src="../assets/js/core/network-status.js"></script>
+<script src="../assets/js/core/app.js"></script>
+<script src="../assets/js/core/admob.js"></script>
+<script type="module" src="../assets/js/pages/semua-layanan.js"></script>
+
+<script src="../assets/js/pages/semua-layanan.ui.js"></script>
+<script src="../assets/js/core/theme.js"></script>
+</body>
+</html>

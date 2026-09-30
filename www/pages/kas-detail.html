@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<script src="../assets/js/core/theme-init.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f8fafc">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0f1a">
+<title>Rincian Transaksi Kas RW 05 - KATARNOLIMA</title>
+<link rel="icon" href="../assets/img/logo-resmi-karang-taruna.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/base/theme.css">
+<link rel="stylesheet" href="../assets/css/base/global.css?v=26">
+<link rel="stylesheet" href="../assets/css/pages/kas-detail.css">
+</head>
+<body>
+
+<div class="container">
+  <!-- HEADER -->
+  <div class="header">
+    <a href="../index.html" class="btn-back" id="btnBackHeader" title="Kembali ke Beranda">←</a>
+    <h1 style="font-size:16px; font-weight:800; color:var(--ink-900); letter-spacing:-0.2px;">Rincian Transaksi Kas</h1>
+  </div>
+
+  <!-- SALDO BANNER -->
+  <div class="saldo-banner">
+    <div class="lbl"><span>🔴</span> TOTAL SALDO KAS RW 05 (LIVE)</div>
+    <div class="val" id="detailTotalSaldo">Rp 0</div>
+  </div>
+
+  <!-- RIWAYAT TRANSAKSI -->
+  <div class="card-list">
+    <div class="card-header-title">
+      <span>Riwayat Transaksi Masuk & Keluar</span>
+      <span style="font-size:10px; font-weight:700; color:var(--ink-500); background:var(--border); padding:2px 8px; border-radius:6px;">Realtime</span>
+    </div>
+    <div id="listDetailTransaksi">
+      <div class="state-box">
+        <span class="state-icon">🔄</span>
+        Memuat rincian transaksi kas...
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/core/haptics.js"></script>
+<script src="../assets/js/core/device.js"></script>
+<script src="../assets/js/core/splash.js"></script>
+<script src="../assets/js/core/push-notifications.js"></script>
+<script src="../assets/js/core/network-status.js"></script>
+<script src="../assets/js/core/app.js"></script>
+<script src="../assets/js/core/admob.js"></script>
+<script type="module" src="../assets/js/pages/kas-detail.js"></script>
+
+<script src="../assets/js/pages/kas-detail.ui.js"></script>
+<script src="../assets/js/core/theme.js"></script>
+</body>
+</html>

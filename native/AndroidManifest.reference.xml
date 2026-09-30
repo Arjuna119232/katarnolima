@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  REFERENSI SAJA — TIDAK dipakai langsung oleh CI.
+  CI membuat folder android/ baru via `npx cap add android`, lalu izin ditambahkan oleh
+  scripts/patch_android.py (daftar di native/permissions.xml). File ini disimpan sebagai
+  dokumentasi konfigurasi manifest versi lama. Perbaikan: atribut tidak valid `stroke`
+  diganti android:maxSdkVersion="32".
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.katarnolima.rw05"
+    android:versionCode="1"
+    android:versionName="1.0">
+
+    <!-- DIREVISI: MIN SDK DINAIKKAN DARI 15 KE 21 AGAR FITUR PERMISSION MODERN AKTIF -->
+    <uses-sdk
+        android:minSdkVersion="21"
+        android:targetSdkVersion="33" />
+
+    <!-- DAFTAR IZIN (PERMISSIONS) -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <!-- HARDWARE FEATURES (AGAR DIKATEGORIKAN DENGAN BENAR OLEH SYSTEM ANDROID) -->
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.location.gps"
+        android:required="false" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="KATARNOLIMA"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:appComponentFactory="androidx.core.app.CoreComponentFactory">
+
+        <!-- META-DATA GOOGLE ADMOB -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-209615581034089~4852943754" />
+
+        <!-- MAIN ACTIVITY -->
+        <activity
+            android:name="com.katarnolima.rw05.MainActivity"
+            android:exported="true"
+            android:label="KATARNOLIMA"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode"
+            android:launchMode="singleTask"
+            android:theme="@style/AppTheme.NoActionBar">
+            
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- FILE PROVIDER (Untuk Akses Kamera/Galeri) -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.katarnolima.rw05.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+        <!-- FIREBASE & CAPACITOR PUSH NOTIFICATION SERVICES -->
+        <service
+            android:name="com.capacitorjs.plugins.pushnotifications.MessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <provider
+            android:name="com.google.firebase.provider.FirebaseInitProvider"
+            android:authorities="com.katarnolima.rw05.firebaseinitprovider"
+            android:exported="false"
+            android:directBootAware="true" />
+
+    </application>
+</manifest>

@@ -1,0 +1,16 @@
+{
+  "appId": "com.katarnolima.rw05",
+  "appName": "KATARNOLIMA RW05",
+  "webDir": "www",
+  "plugins": {
+    "PushNotifications": {
+      "presentationOptions": ["badge", "sound", "alert"]
+    },
+    "Camera": {
+      "permissions": ["camera", "photos"]
+    },
+    "Geolocation": {
+      "permissions": ["location"]
+    }
+  }
+}

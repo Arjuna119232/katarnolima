@@ -1,0 +1,114 @@
+name: Build Signed Android APK
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  # versionCode Android = VERSION_CODE_BASE + nomor run. Naikkan BASE bila Play Store
+  # menolak karena versionCode lebih kecil dari yang pernah diunggah.
+  VERSION_CODE_BASE: 100
+
+jobs:
+  validate:
+    name: Validasi struktur & sintaks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: python3 scripts/validate.py
+      - run: npm test
+
+  build:
+    name: Build APK rilis
+    needs: validate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Baca versi aplikasi
+        run: |
+          echo "APP_VERSION=$(node -p "require('./package.json').version")" >> "$GITHUB_ENV"
+          echo "VERSION_CODE=$((VERSION_CODE_BASE + GITHUB_RUN_NUMBER))" >> "$GITHUB_ENV"
+
+      - name: Pasang dependensi
+        run: |
+          npm install --save-dev \
+            @capacitor/core @capacitor/cli @capacitor/android @capacitor/app \
+            @capacitor/push-notifications @capacitor/camera @capacitor/geolocation
+          pip install pillow -q
+
+      - name: Restore google-services.json dari GitHub Secrets
+        run: |
+          mkdir -p native
+          echo "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 -d > native/google-services.json
+          echo "✅ google-services.json berhasil direstore dari Secrets"
+          wc -c native/google-services.json
+
+      - name: Buat platform Android (bersih)
+        run: |
+          rm -rf android
+          npx cap add android
+          python3 scripts/patch_android.py firebase
+          npx cap sync android
+
+      - name: Terapkan kustomisasi native (folder native/)
+        run: |
+          python3 scripts/patch_android.py activity
+          python3 scripts/patch_android.py permissions
+          python3 scripts/generate_icons.py
+          python3 scripts/generate_splash.py
+          python3 scripts/patch_android.py version "$APP_VERSION" "$VERSION_CODE"
+
+      - name: Siapkan keystore
+        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/release.p12
+
+      - name: Build APK rilis (signed)
+        working-directory: android
+        run: |
+          python3 ../scripts/patch_android.py signing
+          chmod +x gradlew
+          ./gradlew assembleRelease
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+
+      - name: Kumpulkan APK
+        run: |
+          mkdir -p dist
+          APK="android/app/build/outputs/apk/release/app-release.apk"
+          [ -f "$APK" ] || APK="$(find android -name '*.apk' | head -n 1)"
+          cp "$APK" "dist/katarnolima-rw05-v${APP_VERSION}.apk"
+
+      - name: Unggah artefak
+        uses: actions/upload-artifact@v4
+        with:
+          name: katarnolima-rw05-v${{ env.APP_VERSION }}
+          path: dist/katarnolima-rw05-v${{ env.APP_VERSION }}.apk
+
+      - name: Buat GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ env.APP_VERSION }}.${{ github.run_number }}
+          name: KATARNOLIMA RW05 v${{ env.APP_VERSION }} (build ${{ github.run_number }})
+          files: dist/katarnolima-rw05-v${{ env.APP_VERSION }}.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

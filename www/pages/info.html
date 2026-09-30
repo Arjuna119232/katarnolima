@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<script src="../assets/js/core/theme-init.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f8fafc">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0f1a">
+<title>Notifikasi RW 05 - KATARNOLIMA</title>
+<link rel="icon" href="../assets/img/logo-resmi-karang-taruna.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/base/theme.css">
+<link rel="stylesheet" href="../assets/css/base/global.css?v=33">
+<link rel="stylesheet" href="../assets/css/pages/info.css">
+</head>
+<body>
+
+<div class="info-container">
+  <!-- HEADER NOTIFIKASI -->
+  <div class="light-header">
+    <h1>Notifikasi</h1>
+    <div class="header-actions">
+      <button class="btn-menu-dot" id="btnMenuDot" aria-label="Menu Opsi">⋮</button>
+      <div class="popover-menu" id="popoverMenu">
+        <button class="popover-item" id="btnMarkAllRead">
+          <span>✓</span> Tandai semua telah dibaca
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTAINER LIST NOTIFIKASI -->
+  <div id="loadingNotif" class="state-box">
+    <span class="state-icon">🔄</span>
+    Memuat pemberitahuan admin...
+  </div>
+  <div class="notif-list" id="notifList"></div>
+
+  <!-- BOTTOM NAVIGATION BAR -->
+  <nav class="jaki-nav">
+    <a href="../index.html">🏠<span>Beranda</span></a>
+    <a href="diskusi-rw.html">💬<span>Diskusi</span></a>
+    <a class="center" href="aduan-warga.html?autoOpen=1"><div class="cam">📷</div><span>Lapor</span></a>
+    <a class="active" href="info.html">🔔<span>Notifikasi</span></a>
+    <a href="profil.html">👤<span>Profil</span></a>
+  </nav>
+</div>
+
+<!-- MODAL DETAIL POPUP NOTIFIKASI -->
+<div id="notif-detail-modal">
+  <div class="modal-notif-box">
+    <div style="padding:16px 20px; border-bottom:1px solid var(--surface-soft); display:flex; justify-content:space-between; align-items:center;">
+      <h3 id="modalDetailTitle" style="font-size:15px; font-weight:800; color:var(--ink-900);">Detail Notifikasi</h3>
+      <button onclick="closeNotifDetailModal()" style="background:var(--surface-soft); border:none; width:32px; height:32px; border-radius:50%; font-size:16px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center;">✕</button>
+    </div>
+    <div id="modalDetailBody" style="padding:20px; font-size:13px; color:var(--ink-700); line-height:1.6; white-space:pre-line; max-height:60vh; overflow-y:auto;"></div>
+  </div>
+</div>
+
+<script src="../assets/js/core/haptics.js"></script>
+<script src="../assets/js/core/device.js"></script>
+<script src="../assets/js/core/splash.js"></script>
+<script src="../assets/js/core/push-notifications.js"></script>
+<script src="../assets/js/core/network-status.js"></script>
+<script src="../assets/js/core/app.js"></script>
+<script src="../assets/js/core/admob.js"></script>
+<script type="module" src="../assets/js/pages/info.js"></script>
+
+<script src="../assets/js/pages/info.ui.js"></script>
+<script src="../assets/js/core/theme.js"></script>
+</body>
+</html>

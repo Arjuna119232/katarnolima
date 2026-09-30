@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<script src="assets/js/core/theme-init.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f8fafc">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0f1a">
+<title>KATARNOLIMA RW 05 - Beranda</title>
+<link rel="icon" href="assets/img/logo-resmi-karang-taruna.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/base/theme.css">
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="assets/css/base/global.css">
+<link rel="stylesheet" href="assets/css/pages/home.css">
+</head>
+<body>
+
+<!-- SPLASH SCREEN -->
+<div id="splash-screen">
+  <img src="assets/img/logo-resmi-karang-taruna.jpg" alt="KATARNOLIMA Logo" class="splash-logo">
+  <div class="splash-text">KATARNOLIMA RW 05</div>
+</div>
+
+<div id="dynamic-island-greeting">
+  <span id="di-icon">☀️</span>
+  <span id="di-text">Selamat pagi, Warga!</span>
+</div>
+
+<div id="exit-toast">Ketuk sekali lagi untuk keluar aplikasi</div>
+
+<div class="app-jaki">
+  <!-- HEADER BANNER -->
+  <div class="jaki-banner-abad">
+    <div class="banner-top-row">
+      <div class="banner-left">
+        <div class="logo-5">05</div>
+        <div class="abad-text"><b>KATAR NOLIMA</b><span>RW 05 Poncol Jaya</span></div>
+      </div>
+      <div class="jaki-logo">RW 05</div>
+    </div>
+    <div class="banner-blue-cut">
+      <h2>Mengabdi dengan<br>Aksi Nyata</h2>
+    </div>
+  </div>
+
+  <!-- SEARCH WRAPPER -->
+  <div class="jaki-search-wrap" id="goCari" onclick="location.href='pages/cari-warga.html'">
+    <div class="jaki-search">
+      <span style="font-size:16px;">🔍</span>
+      <input type="text" placeholder="Cari Layanan di RW 05..." readonly style="pointer-events:none">
+    </div>
+  </div>
+
+  <!-- GRID 8 MENU UTAMA -->
+  <div class="grid-8-container">
+    <div class="grid-8">
+      <a class="g8-item" href="pages/aduan-warga.html">
+        <div class="g8-icon" style="background:var(--tint-red-50); color:#e11d48;">📢</div>
+        <p>Aduan<br>Warga</p>
+      </a>
+      <a class="g8-item" href="pages/berita-rw.html">
+        <div class="g8-icon" style="background:var(--tint-blue-50); color:#0284c7;">📰</div>
+        <p>Berita<br>RW</p>
+      </a>
+      <a class="g8-item" href="pages/iuran-warga.html">
+        <div class="g8-icon" style="background:var(--tint-amber-50); color:#d97706;">💰</div>
+        <p>Iuran<br>Warga</p>
+      </a>
+      <div class="g8-item" data-modal="sembako">
+        <div class="g8-icon" style="background:var(--tint-green-50); color:#059669;">🛒</div>
+        <p>Harga<br>Sembako</p>
+      </div>
+      <a class="g8-item" onclick="openSatpamModal()">
+        <div class="g8-icon" style="background:var(--tint-blue-50); color:#4f46e5;">🛡️</div>
+        <p>Keamanan<br>Satpam</p>
+      </a>
+      <div class="g8-item" data-modal="lingkungan">
+        <div class="g8-icon" style="background:var(--tint-green-50); color:#16a34a;">🧹</div>
+        <p>Lingkungan<br>Bersih</p>
+      </div>
+      <div class="g8-item" data-modal="petaBalai">
+        <div class="g8-icon" style="background:var(--tint-blue-50); color:#2563eb;">📍</div>
+        <p>Peta<br>Balai</p>
+      </div>
+      <a class="g8-item" href="pages/semua-layanan.html">
+        <div class="g8-icon" style="background:var(--tint-purple-50); color:#9333ea;">⊞</div>
+        <p>Semua<br>Layanan</p>
+      </a>
+    </div>
+  </div>
+
+  <!-- CARD NATIVE ADMOB / IKLAN (DIPASANG DI ATAS CARD KAS) -->
+  <div class="rekom-card" id="admob-native-card" style="margin: 0 20px 20px; position: relative; border: 1px dashed var(--border-strong); background: var(--surface);">
+    <div style="position: absolute; top: 12px; right: 12px; background: var(--border); color: var(--ink-600); font-size: 8px; font-weight: 900; padding: 2px 6px; border-radius: 4px; letter-spacing: 0.5px;">IKLAN</div>
+    <div class="rekom-img" style="background:var(--surface-soft)">
+      <div style="font-size:30px">📢</div>
+    </div>
+    <div class="rekom-text">
+      <span class="rekom-label" style="color:#d97706;">Sponsor Lokal</span>
+      <h3 style="color:var(--ink-900);">Ruang Iklan / AdMob</h3>
+      <p style="color:var(--ink-500);">Dukung operasional aplikasi warga RW 05.</p>
+    </div>
+  </div>
+
+  <!-- KARTU KAS RW 05 -->
+  <div class="kas-card" onclick="window.location.href='pages/kas-detail.html'">
+    <div class="kas-top">
+      <span>Kas RW 05</span>
+      <span class="saldo" id="manualSaldoKas" style="color:#fbbf24; font-weight:900;">Rp 0</span>
+    </div>
+    <div class="kas-bot">
+      <span id="manualInfoKas">Di Update Oleh Admin katarnolima</span>
+      <span style="font-size:11px; color:#38bdf8; font-weight:800;">Lihat Rincian ›</span>
+    </div>
+  </div>
+
+  <!-- SLIDER BANNER -->
+  <div class="slider-container">
+    <div class="slider-track" id="sliderTrack">
+      <div class="slider-slide">
+        <div class="mitigasi-card" style="background:#fbbf24; color:#171308;">
+          <div>
+            <h3>Yuk Ikut Kerja Bakti<br>Minggu Ini!</h3>
+            <button style="background:#0f172a; color:#fbbf24;" onclick="window.open('https://wa.me/6289673580756?text=Halo%20Admin%20KATARNOLIMA,%20saya%20ingin%20daftar%20hadir%20kerja%20bakti%20minggu%20ini.','_blank')">Daftar Hadir</button>
+          </div>
+          <div class="mit-icon">🚜</div>
+        </div>
+      </div>
+      <div class="slider-slide">
+        <div class="mitigasi-card" style="background:#2563eb; color:#ffffff;">
+          <div>
+            <h3 style="color:#ffffff;">Gabung Pemuda RW 05<br>Daftar Katarnolima!</h3>
+            <button style="background:#0f172a; color:#fbbf24;" onclick="window.open('https://wa.me/6289673580756?text=Halo%20Admin%20KATARNOLIMA,%20saya%20tertarik%20untuk%20mendaftar%20menjadi%20anggota%20Karang%20Taruna%20KATARNOLIMA.','_blank')">Gabung Anggota</button>
+          </div>
+          <div class="mit-icon">🤝</div>
+        </div>
+      </div>
+      <div class="slider-slide">
+        <div class="mitigasi-card" style="background:#0284c7; color:#ffffff;">
+          <div>
+            <h3 style="color:#ffffff;">Kritik, Saran &<br>Lapor Error Aplikasi</h3>
+            <button style="background:var(--surface); color:#0284c7;" onclick="window.open('https://wa.me/6289673580756?text=Halo%20Admin%20KATARNOLIMA,%20saya%20ingin%20menyampaikan%20saran/laporan%20bug%20aplikasi.','_blank')">Kirim Pesan</button>
+          </div>
+          <div class="mit-icon">💡</div>
+        </div>
+      </div>
+    </div>
+    <div class="slider-dots">
+      <div class="dot active"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+  </div>
+
+  <!-- SEKSI JELAJAHI LAYANAN -->
+  <div id="kategori" class="section-jaki">
+    <h2 class="h2-jaki">Jelajahi Layanan RW 05</h2>
+    <div class="kategori-grid">
+      <div class="kat-card" data-modal="posyandu"><span>👶</span><p>Posyandu</p></div>
+      <div class="kat-card" data-modal="datawarga"><span>📋</span><p>Data Warga</p></div>
+      <div class="kat-card" onclick="openSatpamModal()"><span>🛡️</span><p>Keamanan Satpam</p></div>
+      <div class="kat-card" data-modal="belajar"><span>📚</span><p>Belajar Bersama</p></div>
+    </div>
+  </div>
+
+  <!-- SEKSI REKOMENDASI -->
+  <div class="section-jaki">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px">
+      <h2 class="h2-jaki">Rekomendasi Buat Kamu</h2>
+      <a href="pages/semua-layanan.html" style="color:#2563eb; font-size:13px; font-weight:700; text-decoration:none">Lihat Semua</a>
+    </div>
+
+    <!-- FITUR KHUSUS RW 05 -->
+    <div class="rekom-card" style="opacity: 0.7; filter: grayscale(80%); pointer-events: none; position: relative;">
+      <div style="position: absolute; top: 12px; right: 12px; background: #0f172a; color: #fbbf24; font-size: 9px; font-weight: 900; padding: 3px 8px; border-radius: 6px; text-transform: uppercase;">Coming Soon</div>
+      <div class="rekom-img" style="background:var(--surface-soft)"><div style="font-size:36px">🏝️</div></div>
+      <div class="rekom-text">
+        <span class="rekom-label" style="color:var(--ink-500);">Fitur Khusus RW 05</span>
+        <h3 style="color:var(--ink-600);">Balai Warga & Rumah Singgah</h3>
+        <p style="color:var(--ink-500);">Pakai fitur <b>Pinjam Balai dan Rumah Singgah.</b></p>
+      </div>
+    </div>
+
+    <!-- PETA DIGITAL -->
+    <div class="rekom-card" style="opacity: 0.7; filter: grayscale(80%); pointer-events: none; position: relative;">
+      <div style="position: absolute; top: 12px; right: 12px; background: #0f172a; color: #fbbf24; font-size: 9px; font-weight: 900; padding: 3px 8px; border-radius: 6px; text-transform: uppercase;">Coming Soon</div>
+      <div class="rekom-img" style="background:var(--surface-soft)"><div style="font-size:36px">🗺️</div></div>
+      <div class="rekom-text">
+        <span class="rekom-label" style="color:var(--ink-500);">Peta Digital</span>
+        <h3 style="color:var(--ink-600);">Keliling RW 05 dengan Peta</h3>
+        <p style="color:var(--ink-500);">Lihat <b>Peta Wilayah & Titik Lokasi RW 05.</b></p>
+      </div>
+    </div>
+
+    <div style="text-align:center; padding:28px 16px 0; color:var(--ink-500); font-size:12px; line-height:1.5">
+      Kamu sudah sampai di akhir halaman.<br>
+      <a href="https://wa.me/6289673580756?text=Saran%20Fitur%20RW05" style="color:#2563eb; font-weight:700; text-decoration:none">Yuk kirim saranmu!</a>
+    </div>
+  </div>
+
+  <div style="height:120px"></div>
+
+  <!-- BOTTOM NAV -->
+  <nav class="jaki-nav">
+    <a class="active" href="index.html">🏠<span>Beranda</span></a>
+    <a href="pages/diskusi-rw.html">💬<span>Diskusi</span></a>
+    <a class="center" href="javascript:void(0)" onclick="openCustomCamera()"><div class="cam">📷</div><span>Lapor</span></a>
+    <a href="pages/info.html">🔔<span>Notifikasi</span></a>
+    <a href="pages/profil.html">👤<span>Profil</span></a>
+  </nav>
+</div>
+
+<!-- OVERLAY KAMERA CUSTOM DENGAN TOMBOL FLASH -->
+<div class="camera-overlay" id="cameraOverlay">
+  <div class="camera-header">
+    <button onclick="closeCustomCamera()">← Ambil foto laporan</button>
+    <div style="display:flex; align-items:center; gap:12px;">
+      <button class="btn-flash-toggle" id="btnToggleFlash" onclick="toggleCameraFlash()" title="Senter / Flash">⚡</button>
+      <span class="camera-step-title">Langkah 1/5</span>
+    </div>
+  </div>
+
+  <div class="camera-viewport-wrap">
+    <video id="cameraStream" class="camera-video-stream" autoplay playsinline></video>
+    <canvas id="cameraCanvas" style="display:none;"></canvas>
+  </div>
+
+  <div class="camera-controls-bar">
+    <button class="btn-cam-side" onclick="triggerFileInputFallback()" title="Pilih dari Galeri">🖼️</button>
+    <button class="btn-shutter-outer" onclick="capturePhotoFromCamera()">
+      <div class="btn-shutter-inner"></div>
+    </button>
+    <button class="btn-cam-side" id="btnToggleCamFacing" onclick="toggleCameraFacing()" title="Ganti Kamera">🔄</button>
+  </div>
+
+  <input type="file" id="fallbackFileInput" accept="image/*" style="display:none;">
+</div>
+
+<!-- FAB CONTAINER DENGAN DUA OPSI UTAMA DAN NATNIAI -->
+<div class="fab-container" id="fabContainer">
+  <div class="fab-options" id="fabOptions">
+    <!-- PANGGILAN DARURAT 110 -->
+    <div class="fab-option" onclick="window.open('tel:110','_self')">
+      <span class="fab-label">Panggilan Darurat 110</span>
+      <div class="fab-icon">📞<small>110</small></div>
+    </div>
+
+    <!-- OPSI AMBULANS MEMANGGIL POPUP MODAL -->
+    <div class="fab-option" onclick="openAmbulansModal()">
+      <span class="fab-label">Ambulans Gawat Darurat</span>
+      <div class="fab-icon">🚑</div>
+    </div>
+    
+    <!-- OPSIONAL NATNIAI -->
+    <div class="fab-option disabled-soon" style="pointer-events: none; opacity: 0.65; cursor: not-allowed;">
+      <span class="fab-label" style="background: #0f172a; color: #ffffff; border: 1px solid #334155;">
+        NatniAi <small style="background:#fbbf24; color:#171308; font-size:8px; font-weight:900; padding:1px 4px; border-radius:4px; margin-left:4px;">SOON</small>
+      </span>
+      <div class="fab-icon" style="background: #0f172a; color: #fbbf24; border: 1px solid #334155;">🤖</div>
+    </div>
+  </div>
+  <div class="fab-darurat" id="fabMain">🚨</div>
+  <div class="fab-close" id="fabClose">✕</div>
+</div>
+
+<!-- MODAL PILIHAN KONTAK AMBULANS -->
+<div id="ambulans-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; z-index:1000000; align-items:center; justify-content:center; padding:16px;">
+  <div class="ambulans-box" style="background:var(--surface); width:100%; max-width:360px; border-radius:24px; border:2px solid var(--ink-900); box-shadow:4px 4px 0 var(--ink-900); overflow:hidden;">
+    <div style="padding:16px 20px; border-bottom:2px solid var(--ink-900); display:flex; justify-content:space-between; align-items:center; background:var(--surface-warm);">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span style="font-size:22px;">🚑</span>
+        <h3 style="font-size:16px; font-weight:900; color:var(--ink-900); margin:0;">Ambulans Darurat</h3>
+      </div>
+      <button onclick="closeAmbulansModal()" style="background:none; border:2px solid var(--ink-900); border-radius:8px; width:32px; height:32px; font-weight:800; cursor:pointer;">✕</button>
+    </div>
+    <div style="padding:20px; text-align:center;">
+      <p style="font-size:12px; color:var(--ink-600); margin-bottom:16px; line-height:1.5;">
+        Layanan Ambulans Gawat Darurat (AGD) Pemprov DKI Jakarta terintegrasi 24 jam. Pilih metode kontak:
+      </p>
+      
+      <!-- OPSI TELEPON 112 -->
+      <a href="tel:112" style="display:flex; align-items:center; justify-content:center; gap:10px; width:100%; background:#2563eb; color:#ffffff; font-weight:800; font-size:13px; padding:14px; border-radius:14px; text-decoration:none; margin-bottom:10px; border:2px solid var(--ink-900); box-shadow:2px 2px 0 var(--ink-900);">
+        <span>📞</span> Panggil Telepon (112)
+      </a>
+
+      <!-- OPSI WHATSAPP AGD DKI -->
+      <a href="https://wa.me/6281112119119?text=Halo%20AGD%20Dinas%20Kesehatan%20DKI%20Jakarta,%20saya%20membutuhkan%20bantuan%20ambulans%20darurat." target="_blank" style="display:flex; align-items:center; justify-content:center; gap:10px; width:100%; background:#16a34a; color:#ffffff; font-weight:800; font-size:13px; padding:14px; border-radius:14px; text-decoration:none; border:2px solid var(--ink-900); box-shadow:2px 2px 0 var(--ink-900);">
+        <span>💬</span> Chat WhatsApp (0811-1211-9119)
+      </a>
+
+      <div style="margin-top:14px; font-size:10px; color:var(--ink-500); font-weight:700;">
+        🆓 Gratis bagi warga DKI Jakarta dalam kondisi darurat.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- UNIVERSAL MODAL -->
+<div id="universal-modal" class="modal-overlay" style="position:fixed; top:0; left:0; width:100%; height:100%; z-index:1000000; display:none; align-items:center; justify-content:center; padding:16px;">
+  <div class="modal-box" style="background:var(--surface); width:100%; max-width:400px; border-radius:24px; border:2px solid var(--ink-900); box-shadow:4px 4px 0 var(--ink-900); overflow:hidden;">
+    <div class="modal-header" style="padding:16px 20px; border-bottom:2px solid var(--ink-900); display:flex; justify-content:space-between; align-items:center; background:var(--surface-warm);">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span id="modal-icon-title" style="font-size:20px;">📢</span>
+        <h3 id="modal-title" style="font-size:16px; font-weight:800; color:var(--ink-900); margin:0;">Info RW 05</h3>
+      </div>
+      <div id="modal-close" class="modal-close" onclick="closeUniversalModal()" style="background:none; border:2px solid var(--ink-900); border-radius:8px; width:32px; height:32px; display:flex; align-items:center; justify-content:center; font-weight:800; cursor:pointer;">✕</div>
+    </div>
+    <div id="modal-body" class="modal-body" style="padding:28px 20px;">
+      <div style="text-align:center; font-size:12px; color:var(--ink-400);">Memuat data...</div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL SATPAM -->
+<div id="satpam-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; z-index:1000000; align-items:center; justify-content:center; padding:16px;">
+    <div class="satpam-box" style="background:var(--surface); width:100%; max-width:400px; border-radius:20px; border:2px solid var(--ink-900); box-shadow:4px 4px 0 var(--ink-900); overflow:hidden;">
+        <div style="padding:16px 20px; border-bottom:2px solid var(--ink-900); display:flex; justify-content:space-between; align-items:center; background:var(--surface-warm);">
+            <div style="display:flex; align-items:center; gap:8px;">
+                <span style="font-size:20px;">🛡️</span>
+                <h3 style="font-size:18px; font-weight:800; color:var(--ink-900); margin:0;">Info Keamanan Satpam</h3>
+            </div>
+            <button onclick="closeSatpamModal()" style="background:none; border:2px solid var(--ink-900); border-radius:8px; width:32px; height:32px; font-weight:800; cursor:pointer;">✕</button>
+        </div>
+        <div style="padding:20px;">
+            <div style="background:var(--surface-warm); border:1.5px solid var(--ink-900); border-radius:12px; padding:14px; margin-bottom:14px;">
+                <div style="font-size:11px; font-weight:800; color:#173d1f; text-transform:uppercase; margin-bottom:4px;">Jam Operasional Jaga</div>
+                <div id="info-jam-jaga" style="font-size:14px; font-weight:800; color:var(--ink-900);">Belum diatur admin</div>
+            </div>
+            <div style="background:var(--surface-warm); border:1.5px solid var(--ink-900); border-radius:12px; padding:14px; margin-bottom:14px;">
+                <div style="font-size:11px; font-weight:800; color:#173d1f; text-transform:uppercase; margin-bottom:4px;">Petugas yang Berjaga</div>
+                <div id="info-nama-petugas" style="font-size:15px; font-weight:800; color:#2563eb;">Belum diatur admin</div>
+            </div>
+            <div style="background:var(--tint-red-50); border:1.5px solid #e11d48; border-radius:12px; padding:14px;">
+                <div style="font-size:12px; font-weight:800; color:#be123c; margin-bottom:6px;">🚨 Himbauan Keamanan</div>
+                <p id="info-himbauan-keamanan" style="font-size:12px; color:#881337; margin:0; line-height:1.5;">Belum diatur admin</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL PUSH UPDATE -->
+<div id="modalPushUpdateApp" class="modal-overlay" style="position:fixed; top:0; left:0; width:100%; height:100%; z-index:1000001; display:none; align-items:center; justify-content:center; padding:16px;">
+  <div class="modal-box" style="background:var(--surface); width:100%; max-width:380px; border-radius:24px; border:2px solid var(--ink-900); box-shadow:0 10px 25px rgba(0,0,0,0.2); overflow:hidden; text-align:center; padding:24px;">
+    <div style="width:64px; height:64px; background:var(--tint-amber-50); border-radius:20px; display:flex; align-items:center; justify-content:center; font-size:32px; margin:0 auto 12px;">🚀</div>
+    <div style="font-size:10px; font-weight:800; color:#2563eb; letter-spacing:1px; text-transform:uppercase; margin-bottom:4px;">Pembaruan Aplikasi Tersedia</div>
+    <h3 id="appUpdateVersi" style="font-size:20px; font-weight:900; color:var(--ink-900); margin-bottom:12px;">Versi Baru</h3>
+    <div style="background:var(--bg-page); border:1px solid var(--border); border-radius:14px; padding:12px; text-align:left; margin-bottom:18px;">
+      <div style="font-size:11px; font-weight:800; color:var(--ink-500); margin-bottom:6px;">Catatan Perubahan:</div>
+      <p id="appUpdateCatatan" style="font-size:12px; color:var(--ink-700); line-height:1.5; white-space:pre-line; margin:0;"></p>
+    </div>
+    <div style="display:flex; gap:10px;">
+      <button onclick="closePushUpdateModal()" style="flex:1; padding:12px; border-radius:12px; border:1px solid var(--border-strong); background:var(--surface-soft); color:var(--ink-600); font-weight:800; font-size:13px; cursor:pointer;">Nanti Saja</button>
+      <a id="appUpdateLinkBtn" href="#" target="_blank" style="flex:1; padding:12px; border-radius:12px; background:#0f172a; color:#fbbf24; font-weight:800; font-size:13px; text-decoration:none; display:flex; align-items:center; justify-content:center; gap:6px;">Unduh Update</a>
+    </div>
+  </div>
+</div>
+
+<!-- CUSTOM ALERT MODAL -->
+<div id="custom-alert-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; z-index:1000005; align-items:center; justify-content:center; padding:16px;">
+  <div class="custom-alert-box" style="background:var(--surface); width:100%; max-width:340px; border-radius:24px; border:2px solid var(--ink-900); box-shadow:4px 4px 0 var(--ink-900); overflow:hidden; text-align:center; padding:24px 20px;">
+    <div id="custom-alert-icon" style="font-size:38px; margin-bottom:8px;">⚠️</div>
+    <h3 id="custom-alert-title" style="font-size:16px; font-weight:900; color:var(--ink-900); margin-bottom:8px;">Pemberitahuan</h3>
+    <p id="custom-alert-msg" style="font-size:12px; color:var(--ink-600); line-height:1.5; margin-bottom:20px; white-space:pre-line;"></p>
+    <button onclick="closeCustomAlert()" style="width:100%; padding:12px; border-radius:14px; border:2px solid var(--ink-900); background:#2563eb; color:#ffffff; font-weight:800; font-size:13px; cursor:pointer; box-shadow:2px 2px 0 var(--ink-900); outline:none;">Siap, Mengerti</button>
+  </div>
+</div>
+
+<script type="module" src="assets/js/pages/home.js"></script>
+
+<!-- MEMANGGIL CORE SCRIPT -->
+<script src="assets/js/core/haptics.js"></script>
+<script src="assets/js/core/device.js"></script>
+<script src="assets/js/core/splash.js"></script>
+<script src="assets/js/core/push-notifications.js"></script>
+<script src="assets/js/core/network-status.js"></script>
+<script src="assets/js/core/app.js"></script>
+<script src="assets/js/core/admob.js"></script>
+
+<script src="assets/js/pages/home.ui.js"></script>
+<script src="assets/js/core/theme.js"></script>
+</body>
+</html>

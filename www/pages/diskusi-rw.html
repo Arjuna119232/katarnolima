@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<script src="../assets/js/core/theme-init.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f8fafc">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0f1a">
+<title>Forum Diskusi Warga - KATARNOLIMA RW 05</title>
+<link rel="icon" href="../assets/img/logo-resmi-karang-taruna.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/base/theme.css">
+<link rel="stylesheet" href="../assets/css/base/global.css?v=27">
+<link rel="stylesheet" href="../assets/css/pages/diskusi-rw.css">
+</head>
+<body>
+
+<div class="app-container">
+  <!-- HEADER -->
+  <div class="header-app">
+    <div class="header-left">
+      <a href="../index.html" class="btn-back" id="btnBackHeader" title="Kembali">←</a>
+      <div class="header-title">
+        <h1>💬 Diskusi Warga</h1>
+        <p>RW 05 Poncol Jaya</p>
+      </div>
+    </div>
+
+    <!-- TAMPILAN ADMIN: SWITCH MODE -->
+    <div class="admin-switch-wrap" id="adminSwitchWrap">
+      <span id="roleLabel">MODE: WARGA</span>
+      <label class="switch-toggle">
+        <input type="checkbox" id="chkAdminMode">
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <!-- TAMPILAN WARGA: BADGE LIMIT -->
+    <div class="limit-badge-warga" id="wargaLimitBadge">
+      ⚡ 30 Pesan Terbaru
+    </div>
+  </div>
+
+  <!-- CHAT MESSAGES AREA -->
+  <div class="chat-area" id="chatArea">
+    <div class="empty-chat" id="emptyChat">Memuat obrolan diskusi warga...</div>
+  </div>
+
+  <!-- INPUT BAR -->
+  <form class="input-bar" id="formDiskusi">
+    <input type="text" id="inputPesan" class="input-control" placeholder="Tulis komentar warga..." required autocomplete="off">
+    <button type="submit" class="btn-send" id="btnKirim">🚀</button>
+  </form>
+</div>
+
+<script src="../assets/js/core/haptics.js"></script>
+<script src="../assets/js/core/device.js"></script>
+<script src="../assets/js/core/splash.js"></script>
+<script src="../assets/js/core/push-notifications.js"></script>
+<script src="../assets/js/core/network-status.js"></script>
+<script src="../assets/js/core/app.js"></script>
+<script src="../assets/js/core/admob.js"></script>
+<script type="module" src="../assets/js/pages/diskusi-rw.js"></script>
+
+<script src="../assets/js/pages/diskusi-rw.ui.js"></script>
+<script src="../assets/js/core/theme.js"></script>
+</body>
+</html>

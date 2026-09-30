@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<script src="../assets/js/core/theme-init.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f8fafc">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0f1a">
+<title>Profil Warga - KATARNOLIMA RW 05</title>
+<link rel="icon" href="../assets/img/logo-resmi-karang-taruna.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/base/theme.css">
+<link rel="stylesheet" href="../assets/css/base/global.css?v=39">
+<link rel="stylesheet" href="../assets/css/pages/profil.css">
+</head>
+<body>
+
+<div class="profil-root">
+  <!-- 1. FORM LOGIN / REGISTRASI -->
+  <div id="loginView" class="login-view">
+    <div class="katarnolima-logo">
+      <div class="logo-5">05</div>
+      <div class="logo-text"><b>KATAR<br>NOLIMA</b><span>RW 05 Poncol Jaya</span></div>
+    </div>
+    
+    <div class="welcome">
+      <h1 id="judulForm">Masuk Warga RW 05 👋</h1>
+      <p id="descForm">Masuk menggunakan email dan password terdaftar.</p>
+    </div>
+
+    <div class="info-box">
+      <div>🔒</div>
+      <div>
+        <b>Akses Warga RW 05</b>
+        <span>Sistem menjaga validitas akun dan mengunci akses jika kredensial tidak cocok.</span>
+      </div>
+    </div>
+    
+    <!-- FORM MASUK -->
+    <div id="formLogin" style="margin-top:18px">
+      <span class="label-kecil">EMAIL</span>
+      <input id="inputEmailLogin" type="email" class="input-jaki" placeholder="nama@email.com">
+      <span class="label-kecil">PASSWORD</span>
+      <div class="password-wrap">
+        <input id="inputPassLogin" type="password" class="input-jaki" placeholder="••••••••">
+        <button type="button" class="btn-toggle-eye" onclick="togglePasswordVisibility('inputPassLogin', this)">👁️</button>
+      </div>
+      <button id="btnMasuk" class="btn-masuk">Masuk Akun</button>
+    </div>
+
+    <!-- FORM DAFTAR -->
+    <div id="formDaftar" style="display:none; margin-top:18px">
+      <span class="label-kecil">NAMA LENGKAP</span>
+      <input id="inputNamaDaftar" class="input-jaki" placeholder="Contoh: Budi Santoso">
+      <span class="label-kecil">RT / WILAYAH</span>
+      <input id="inputRT" class="input-jaki" placeholder="Contoh: RT 03 / RW 05">
+      <span class="label-kecil">EMAIL</span>
+      <input id="inputEmailDaftar" type="email" class="input-jaki" placeholder="nama@email.com">
+      <span class="label-kecil">PASSWORD (MIN. 6 KARAKTER)</span>
+      <div class="password-wrap">
+        <input id="inputPassDaftar" type="password" class="input-jaki" placeholder="••••••••">
+        <button type="button" class="btn-toggle-eye" onclick="togglePasswordVisibility('inputPassDaftar', this)">👁️</button>
+      </div>
+      <button id="btnDaftar" class="btn-masuk">Daftar Akun Baru</button>
+    </div>
+
+    <div class="register-area">
+      <span id="textBawah">Belum punya akun?</span> <a href="#" id="linkDaftar">Daftar di sini</a>
+    </div>
+
+    <div style="margin-top:20px; margin-bottom:20px; text-align:center;">
+      <a href="admin.html" class="btn-admin-link">🔒 Akses Pengurus / Admin RW</a>
+    </div>
+  </div>
+
+  <!-- 2. DASHBOARD PROFIL SUDAH LOGIN -->
+  <div id="loggedView" class="logged-view">
+    <div class="top-area">
+      <div class="greet-row">
+        <div class="greet">
+          <h1 id="displayHai">Hai, <span id="displayNama">Warga</span></h1>
+          <div class="verify">
+            <span>Akun Terverifikasi</span>
+            <div style="width:14px; height:14px; background:#16a34a; color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:9px;">✓</div>
+          </div>
+        </div>
+        <div class="avatar-wrap">
+          <div class="avatar-jaki" id="avatarInit">WG</div>
+          <div class="edit-pen" onclick="window.location.href='ubah-profil.html'" title="Ubah Profil">✏️</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARDS PERINGKAT / LAPORAN -->
+    <div class="cards-row">
+      <div class="card-jaki" onclick="window.showModal({ title: 'Informasi Wilayah', desc: 'Detail Wilayah Terdaftar: ' + (document.getElementById('rtFull').textContent || 'RT 03 / RW 05'), icon: '📍' })">
+        <div class="card-jaki-head">
+          <span style="color:#2563eb">★</span> Akun Warga
+        </div>
+        <div class="card-jaki-sub" id="rtFull">RT 03 / RW 05</div>
+      </div>
+      <div class="card-jaki" onclick="window.location.href='aduan-warga.html'">
+        <div class="card-jaki-head">
+          <span style="color:#2563eb">📈</span> Laporan Saya
+        </div>
+        <div class="card-jaki-sub">Lihat ringkasan aduan</div>
+      </div>
+    </div>
+
+    <!-- MENU DAFTAR — satu pintu masuk ke semua pengaturan, tanpa duplikasi -->
+    <div class="menu-jaki">
+      <div class="menu-item" onclick="window.location.href='pengaturan.html'">
+        <div class="menu-item-left">
+          <div class="menu-icon">🎛️</div>
+          <span>Pengaturan Aplikasi</span>
+        </div>
+        <div class="menu-arrow">➔</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL POPUP UNIVERSAL -->
+<div class="overlay" id="appCustomModal">
+  <div class="modal-box">
+    <button id="modalCloseX" style="position:absolute; top:16px; right:18px; background:none; border:none; font-size:18px; font-weight:800; color:var(--ink-400); cursor:pointer; padding:4px;">✕</button>
+    <div id="modalIcon" style="font-size:32px; margin-bottom:8px;">🚪</div>
+    <h3 id="modalTitle" style="font-size:16px; font-weight:800; color:var(--ink-900); margin-bottom:6px;">Keluar Akun</h3>
+    <p id="modalDesc" style="font-size:12px; color:var(--ink-600); line-height:1.5; margin-bottom:20px;"></p>
+    <div id="modalButtons" style="display:flex; gap:10px;"></div>
+  </div>
+</div>
+
+<!-- BOTTOM NAVIGATION BAR -->
+<nav class="jaki-nav">
+  <a href="../index.html">🏠<span>Beranda</span></a>
+  <a href="diskusi-rw.html">💬<span>Diskusi</span></a>
+  <a class="center" href="aduan-warga.html?autoOpen=1"><div class="cam">📷</div><span>Lapor</span></a>
+  <a href="info.html">🔔<span>Notifikasi</span></a>
+  <a class="active" href="profil.html">👤<span>Profil</span></a>
+</nav>
+
+<script src="../assets/js/core/haptics.js"></script>
+<script src="../assets/js/core/device.js"></script>
+<script src="../assets/js/core/splash.js"></script>
+<script src="../assets/js/core/push-notifications.js"></script>
+<script src="../assets/js/core/network-status.js"></script>
+<script src="../assets/js/core/app.js"></script>
+<script src="../assets/js/core/admob.js"></script>
+<script type="module" src="../assets/js/pages/profil.js"></script>
+
+<script src="../assets/js/pages/profil.ui.js"></script>
+<script src="../assets/js/core/theme.js"></script>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<script src="../assets/js/core/theme-init.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f8fafc">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0f1a">
+<title>Iuran Warga - KATARNOLIMA RW 05</title>
+<link rel="icon" href="../assets/img/logo-resmi-karang-taruna.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/base/theme.css">
+<link rel="stylesheet" href="../assets/css/base/global.css?v=26">
+<link rel="stylesheet" href="../assets/css/pages/iuran-warga.css">
+</head>
+<body>
+
+<div class="container">
+  <!-- HEADER -->
+  <div class="header">
+    <a href="../index.html" class="btn-back" id="btnBackHeader">←</a>
+    <h1 style="font-size:16px; font-weight:800; color:var(--ink-900); letter-spacing:-0.2px;">Iuran Warga RW 05</h1>
+  </div>
+
+  <!-- SALDO KAS CARD -->
+  <div class="card-saldo">
+    <div class="saldo-title"><span>🔴</span> SALDO KAS RW 05 (LIVE)</div>
+    <div class="saldo-val" id="saldoVal">Rp 0</div>
+  </div>
+
+  <!-- METODE PEMBAYARAN -->
+  <div class="card">
+    <div class="card-subtitle">💳 Metode Pembayaran Transfer Bank</div>
+    <div class="qris-box">
+      <div class="rekening-info">
+        <b>Bank BCA / DKI:</b> <span id="rekNum">1234-5678-90</span><br>
+        a.n. <b>Kas Karang Taruna RW 05</b>
+      </div>
+      <button type="button" class="btn-copy" onclick="salinRekening()">📋 Salin No. Rekening</button>
+    </div>
+  </div>
+
+  <!-- FORM PEMBAYARAN -->
+  <div class="card">
+    <div class="card-subtitle">📝 Form Pengiriman Bukti Iuran</div>
+    <form id="formIuran">
+      <div class="form-group">
+        <label>NIK (16 Digit Sesuai KTP)</label>
+        <input type="text" id="nik" class="input-custom" maxlength="16" placeholder="Masukkan 16 digit NIK" required oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+      </div>
+
+      <div class="form-group">
+        <label>Bulan Pembayaran</label>
+        <input type="text" id="bulan" class="input-custom" placeholder="Contoh: September 2026" required>
+      </div>
+
+      <div class="form-group">
+        <label>Nominal Pembayaran (Rp)</label>
+        <input type="number" id="nominal" class="input-custom" placeholder="Contoh: 50000" required>
+      </div>
+
+      <div class="form-group">
+        <label>Wilayah RT Tempat Tinggal</label>
+        <select id="rt" class="input-custom" required>
+          <option value="" disabled selected>-- Pilih RT --</option>
+          <option value="RT 01">RT 01</option>
+          <option value="RT 02">RT 02</option>
+          <option value="RT 03">RT 03</option>
+          <option value="RT 04">RT 04</option>
+          <option value="RT 05">RT 05</option>
+          <option value="RT 06">RT 06</option>
+          <option value="RT 07">RT 07</option>
+          <option value="RT 08">RT 08</option>
+          <option value="RT 09">RT 09</option>
+          <option value="RT 10">RT 10</option>
+          <option value="RT 11">RT 11</option>
+          <option value="RT 12">RT 12</option>
+          <option value="RT 13">RT 13</option>
+          <option value="RT 14">RT 14</option>
+          <option value="RT 15">RT 15</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Upload Bukti Transfer / QRIS</label>
+        <div class="upload-wrapper">
+          <input type="file" id="bukti" class="input-custom" accept="image/*" required>
+          <div class="preview-box" id="previewContainer">
+            <img id="previewImage" class="preview-img" alt="Bukti Transfer">
+            <button type="button" class="btn-remove-file" onclick="hapusBuktiTransfer()" title="Hapus foto">✕</button>
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" id="btnBayar" class="btn-submit">Kirim Bukti Pembayaran</button>
+    </form>
+  </div>
+</div>
+
+<script src="../assets/js/core/haptics.js"></script>
+<script src="../assets/js/core/device.js"></script>
+<script src="../assets/js/core/splash.js"></script>
+<script src="../assets/js/core/push-notifications.js"></script>
+<script src="../assets/js/core/network-status.js"></script>
+<script src="../assets/js/core/app.js"></script>
+<script src="../assets/js/core/admob.js"></script>
+
+<script type="module" src="../assets/js/pages/iuran-warga.js"></script>
+
+<script src="../assets/js/pages/iuran-warga.ui.js"></script>
+<script src="../assets/js/core/theme.js"></script>
+</body>
+</html>

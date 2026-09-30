@@ -1,0 +1,320 @@
+/* KATARNOLIMA — pages/tentang.css
+   Gaya khusus halaman tentang. Gaya bersama ada di base/theme.css & base/global.css. */
+
+/* RESET & SYSTEM BASE */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent !important;
+  outline: none !important;
+}
+
+html, body {
+  background: var(--bg-page) !important;
+  width: 100%;
+  min-height: 100vh;
+  color: var(--ink-900);
+  line-height: 1.5;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.page-root {
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto;
+  background: var(--surface);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 0 30px rgba(15, 23, 42, 0.05);
+  position: relative;
+}
+
+/* STICKY HEADER MODERN */
+.app-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--surface-soft);
+  position: sticky;
+  top: 0;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 50;
+}
+
+/* TOMBOL PANAH BACK MODERN (SVG DESIGN) */
+.btn-back-link {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  color: var(--ink-900);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+.btn-back-link:active {
+  transform: scale(0.92);
+  background: var(--border);
+}
+.btn-back-link svg {
+  width: 20px;
+  height: 20px;
+  stroke: #0f172a;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+
+.header-title-text {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--ink-900);
+  letter-spacing: -0.2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* CONTENT TENTANG APLIKASI */
+.tentang-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 20px 40px;
+  text-align: center;
+}
+
+.brand-box {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+
+.logo-5 {
+  font-size: 32px;
+  font-weight: 900;
+  color: var(--ink-900);
+  background: #fbbf24;
+  padding: 8px 16px;
+  border-radius: 18px;
+  box-shadow: 0 4px 16px rgba(251, 191, 36, 0.25);
+}
+
+.brand-text b {
+  font-size: 20px;
+  font-weight: 900;
+  display: block;
+  color: var(--ink-900);
+  line-height: 1.1;
+  text-align: left;
+  letter-spacing: -0.2px;
+}
+.brand-text span {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink-500);
+  display: block;
+  margin-top: 2px;
+  text-align: left;
+}
+
+.version-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 800;
+  color: #2563eb;
+  margin-bottom: 16px;
+  background: var(--tint-blue-50);
+  padding: 6px 16px;
+  border-radius: 99px;
+  border: 1px solid var(--tint-blue-200);
+  letter-spacing: 0.2px;
+}
+
+.desc-text {
+  font-size: 13px;
+  color: var(--ink-600);
+  line-height: 1.6;
+  max-width: 360px;
+  margin-bottom: 20px;
+}
+
+/* CARDS PENGEMBANG & KONTRIBUSI */
+.dev-card-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 360px;
+}
+
+.dev-card {
+  background: var(--bg-page);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 14px 16px;
+  text-align: left;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.02);
+}
+
+.dev-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.dev-card-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.dev-card-info span {
+  font-size: 10px;
+  color: var(--ink-500);
+  font-weight: 800;
+  display: block;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.dev-card-info b {
+  font-size: 13.5px;
+  color: var(--ink-900);
+  display: block;
+  margin-top: 1px;
+  font-weight: 800;
+}
+
+/* LINKS SOSMED & BANK BUTTONS */
+.social-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--border);
+}
+
+.btn-sosmed {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 6px 12px;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: transform 0.15s ease;
+  cursor: pointer;
+  border: none;
+}
+.btn-sosmed:active { transform: scale(0.95); }
+
+.btn-ig { background: var(--tint-red-50); color: #db2777; border: 1px solid var(--tint-red-50); }
+.btn-coffee { background: var(--tint-amber-50); color: #b45309; border: 1px solid var(--tint-amber-100); }
+
+.sub-person {
+  font-size: 12px;
+  color: var(--ink-700);
+  font-weight: 700;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.footer-copyright {
+  margin-top: 28px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink-400);
+}
+
+/* MODERN POPUP MODAL STYLING */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.modal-overlay.show-overlay { opacity: 1; }
+
+.modal-box {
+  background: var(--surface);
+  width: 100%;
+  max-width: 320px;
+  border-radius: 20px;
+  padding: 22px 20px;
+  text-align: center;
+  border: 1px solid var(--border);
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15);
+  transform: scale(0.9);
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.modal-overlay.show-overlay .modal-box { transform: scale(1); }
+
+.modal-icon {
+  font-size: 36px;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.modal-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--ink-900);
+  margin-bottom: 4px;
+}
+
+.modal-desc {
+  font-size: 12px;
+  color: var(--ink-500);
+  line-height: 1.5;
+  margin-bottom: 18px;
+}
+
+.btn-modal-close {
+  width: 100%;
+  padding: 12px;
+  background: #0f172a;
+  color: #fbbf24;
+  border: none;
+  border-radius: 12px;
+  font-weight: 800;
+  font-size: 13px;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+.btn-modal-close:active { transform: scale(0.96); }

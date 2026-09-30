@@ -1,0 +1,385 @@
+/* KATARNOLIMA — pages/profil.css
+   Gaya khusus halaman profil. Gaya bersama ada di base/theme.css & base/global.css. */
+
+/* RESET & BASE SYSTEM */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-tap-highlight-color: transparent !important;
+  outline: none !important;
+}
+
+html, body {
+  background: var(--bg-page) !important;
+  width: 100%;
+  min-height: 100vh;
+  color: var(--ink-900);
+  line-height: 1.5;
+}
+
+.profil-root {
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto;
+  background: var(--surface);
+  min-height: 100vh;
+  padding-bottom: 110px;
+  box-shadow: 0 0 30px rgba(15, 23, 42, 0.05);
+  position: relative;
+}
+
+/* TAMPILAN LOGIN / REGISTRASI */
+.login-view {
+  padding: 24px 20px 0;
+  display: none;
+}
+
+.katarnolima-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
+}
+.logo-5 {
+  font-size: 28px;
+  font-weight: 900;
+  color: var(--ink-900);
+  background: #fbbf24;
+  padding: 6px 14px;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(251, 191, 36, 0.25);
+}
+.logo-text b {
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 1.1;
+  display: block;
+  color: var(--ink-900);
+  letter-spacing: -0.2px;
+}
+.logo-text span {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink-500);
+}
+
+.welcome h1 {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--ink-900);
+  margin-top: 24px;
+  letter-spacing: -0.2px;
+}
+.welcome p {
+  font-size: 13px;
+  color: var(--ink-600);
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+.info-box {
+  background: var(--tint-amber-50);
+  border: 1px solid var(--tint-amber-100);
+  border-radius: 16px;
+  padding: 14px;
+  margin-top: 18px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.info-box div:first-child { font-size: 20px; }
+.info-box b { font-size: 12px; color: #b45309; display: block; }
+.info-box span { font-size: 11px; color: #78350f; line-height: 1.4; }
+
+.input-jaki {
+  width: 100%;
+  border: 1.5px solid var(--border-strong);
+  border-radius: 14px;
+  padding: 12px 14px;
+  font-size: 13.5px;
+  outline: none;
+  background: var(--bg-page);
+  color: var(--ink-900);
+  margin-bottom: 12px;
+  transition: all 0.2s ease;
+}
+.input-jaki:focus {
+  border-color: var(--ink-900);
+  background: var(--surface);
+  box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.05);
+}
+
+/* PASSWORD INPUT WRAPPER & TOGGLE EYE BUTTON */
+.password-wrap {
+  position: relative;
+  width: 100%;
+}
+.password-wrap .input-jaki {
+  padding-right: 44px;
+}
+.btn-toggle-eye {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: var(--ink-500);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+.label-kecil {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--ink-600);
+  margin: 0 0 6px 4px;
+  display: block;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn-masuk {
+  width: 100%;
+  background: #0f172a;
+  color: #fbbf24;
+  border: none;
+  border-radius: 14px;
+  padding: 14px;
+  font-size: 14px;
+  font-weight: 800;
+  margin-top: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.2);
+  transition: transform 0.15s ease;
+}
+.btn-masuk:active { transform: scale(0.97); }
+.btn-masuk:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.register-area {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--ink-500);
+  font-weight: 600;
+}
+.register-area a {
+  color: #2563eb;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+/* TAMPILAN PROFIL SUDAH LOGIN */
+.logged-view {
+  display: none;
+  background: var(--bg-page);
+  min-height: 100vh;
+}
+
+.top-area {
+  padding: 24px 20px 76px;
+  background: linear-gradient(180deg, var(--tint-blue-50) 0%, var(--bg-page) 100%);
+}
+
+.greet-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.greet h1 {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--ink-900);
+  letter-spacing: -0.2px;
+}
+.greet .verify {
+  margin-top: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #16a34a;
+  font-size: 12px;
+  font-weight: 700;
+  background: var(--tint-green-100);
+  padding: 3px 10px;
+  border-radius: 99px;
+}
+
+.avatar-wrap { position: relative; }
+.avatar-jaki {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 3px solid var(--surface);
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.12);
+  overflow: hidden;
+  background: #0f172a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fbbf24;
+  font-weight: 900;
+  font-size: 22px;
+}
+.edit-pen {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 26px;
+  height: 26px;
+  background: var(--surface);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  border: 1px solid var(--border);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.cards-row {
+  display: flex;
+  gap: 12px;
+  padding: 0 20px;
+  margin-top: -48px;
+  position: relative;
+  z-index: 5;
+}
+.card-jaki {
+  flex: 1;
+  background: var(--surface);
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.03);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.15s ease;
+}
+.card-jaki:active { transform: scale(0.97); }
+.card-jaki-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--ink-900);
+}
+.card-jaki-sub {
+  font-size: 11px;
+  color: var(--ink-500);
+  margin-top: 6px;
+  font-weight: 600;
+}
+
+.menu-jaki {
+  background: var(--surface);
+  margin-top: 20px;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--surface-soft);
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.15s ease;
+}
+.menu-item:last-child { border-bottom: none; }
+.menu-item:active { background: var(--bg-page); }
+.menu-item-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.menu-icon {
+  font-size: 18px;
+  width: 28px;
+  text-align: center;
+}
+.menu-item span {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink-900);
+}
+.menu-arrow {
+  color: var(--border-strong);
+  font-size: 16px;
+  font-weight: 800;
+}
+.menu-item.keluar span { color: #ef4444; }
+
+.btn-admin-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--ink-600);
+  text-decoration: none;
+  background: var(--surface);
+  padding: 12px 16px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.02);
+  transition: transform 0.15s ease;
+}
+.btn-admin-link:active { transform: scale(0.97); }
+
+/* UNIVERSAL MODAL POPUP */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.overlay.show { display: flex; opacity: 1; }
+
+.modal-box {
+  background: var(--surface);
+  border-radius: 24px;
+  max-width: 380px;
+  width: 100%;
+  padding: 24px;
+  position: relative;
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15);
+  transform: scale(0.9);
+  transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.overlay.show .modal-box { transform: scale(1); }
+
+.btn {
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 800;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+.btn:active { transform: scale(0.96); }
+.btn-primary { background: #0f172a; color: #fbbf24; width: 100%; }
+.btn-outline { background: var(--bg-page); border: 1px solid var(--border); color: var(--ink-700); }

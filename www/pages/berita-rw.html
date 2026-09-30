@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<script src="../assets/js/core/theme-init.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f8fafc">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0f1a">
+<title>KATARNOLIMA RW 05 - Berita & Informasi RW</title>
+<link rel="icon" href="../assets/img/logo-resmi-karang-taruna.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/base/theme.css">
+<link rel="manifest" href="../manifest.json">
+<link rel="stylesheet" href="../assets/css/base/global.css?v=27">
+<link rel="stylesheet" href="../assets/css/pages/berita-rw.css">
+</head>
+<body>
+
+<div class="app-jaki">
+  <!-- HEADER BLUE -->
+  <div class="berita-header-blue">
+    <div class="header-nav-top">
+      <!-- FIXED PATH KE ../index.html -->
+      <a href="../index.html" class="btn-back-berita" id="btnBackHeader">←</a>
+      <h1>Berita & Informasi</h1>
+    </div>
+    <div class="berita-greeting">Hai, Warga RW 05! 👋</div>
+    <div class="berita-desc">Dapatkan berita kegiatan, pengumuman resmi, dan informasi terkini RW 05 Poncol Jaya yang terpercaya dan bebas hoaks.</div>
+  </div>
+
+  <!-- INFORMASI TERKINI -->
+  <div class="section-container">
+    <div class="section-title">
+      <span>Informasi Terkini RW 05</span>
+      <span style="font-size:11px; font-weight:700; color:var(--ink-500); background:var(--surface-soft); padding:3px 8px; border-radius:6px;">Realtime</span>
+    </div>
+    <div id="listBeritaRealtime">
+      <div class="state-box">
+        <span class="state-icon">🔄</span>
+        Memuat informasi terbaru...
+      </div>
+    </div>
+  </div>
+
+  <div style="height:20px;"></div>
+</div>
+
+<script src="../assets/js/core/haptics.js"></script>
+<script src="../assets/js/core/device.js"></script>
+<script src="../assets/js/core/splash.js"></script>
+<script src="../assets/js/core/push-notifications.js"></script>
+<script src="../assets/js/core/network-status.js"></script>
+<script src="../assets/js/core/app.js"></script>
+<script src="../assets/js/core/admob.js"></script>
+<script type="module" src="../assets/js/pages/berita-rw.js"></script>
+<script src="../assets/js/core/theme.js"></script>
+</body>
+</html>
