@@ -63,9 +63,9 @@ def signing():
     APP_GRADLE.write_text(APP_GRADLE.read_text() + (NATIVE / 'signing.gradle').read_text())
     print('Konfigurasi signing ditambahkan.')
 def admob():
-    """Tambahkan meta-data App ID AdMob ke AndroidManifest.xml.
+    """Tambahkan meta-data App ID AdMob ke AndroidManifest.xml (DI DALAM <application>).
     App ID dibaca dari native/admob.config.json (satu sumber kebenaran)."""
-    import json
+    import json, re
     config_path = NATIVE / 'admob.config.json'
     if not config_path.exists():
         print('⚠️ native/admob.config.json tidak ditemukan, skip AdMob.')
@@ -76,13 +76,34 @@ def admob():
         print('⚠️ App ID AdMob belum diisi di native/admob.config.json, skip.')
         return
     manifest = MANIFEST.read_text()
-    meta = f'        <meta-data\n            android:name="com.google.android.gms.ads.APPLICATION_ID"\n            android:value="{app_id}"/>'
-    if 'com.google.android.gms.ads.APPLICATION_ID' not in manifest:
-        manifest = manifest.replace('<application', meta + '\n\n    <application', 1)
+
+    # 1. Hapus meta-data AdMob yang salah tempat (di luar <application>)
+    manifest = re.sub(
+        r'\s*<meta-data\s+android:name="com\.google\.android\.gms\.ads\.APPLICATION_ID"[^/]*/>\s*',
+        '\n',
+        manifest
+    )
+
+    # 2. Sisipkan meta-data DI DALAM <application> (setelah tag pembuka)
+    meta = f'\n        <meta-data\n            android:name="com.google.android.gms.ads.APPLICATION_ID"\n            android:value="{app_id}"/>'
+    
+    # Cari tag <application ...> (pembuka) dan sisipkan setelah >
+    pattern = r'(<application\b[^>]*>)'
+    if re.search(pattern, manifest):
+        manifest = re.sub(pattern, r'\1' + meta, manifest, count=1)
         MANIFEST.write_text(manifest)
-        print('✅ Meta-data AdMob ditambahkan ke AndroidManifest.xml.')
+        print('✅ Meta-data AdMob ditambahkan DI DALAM <application>.')
     else:
-        print('ℹ️ Meta-data AdMob sudah ada (skip).')
+        print('❌ Tag <application> tidak ditemukan di manifest.')
+
+    # 3. Verifikasi
+    if 'com.google.android.gms.ads.APPLICATION_ID' in manifest:
+        # Cek apakah di dalam application
+        app_match = re.search(r'<application\b[^>]*>.*?</application>', manifest, re.DOTALL)
+        if app_match and 'com.google.android.gms.ads.APPLICATION_ID' in app_match.group(0):
+            print('✅ Verifikasi: meta-data berada DI DALAM <application>.')
+        else:
+            print('⚠️ Verifikasi: meta-data mungkin masih di luar <application>.')
 
 
 if __name__ == '__main__':
