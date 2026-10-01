@@ -11,5 +11,8 @@
   },
   "engines": {
     "node": ">=20.6"
+  },
+  "devDependencies": {
+    "@capacitor-community/admob": "^7.0.0"
   }
 }

@@ -52,7 +52,8 @@ jobs:
         run: |
           npm install --save-dev \
             @capacitor/core @capacitor/cli @capacitor/android @capacitor/app \
-            @capacitor/push-notifications @capacitor/camera @capacitor/geolocation
+            @capacitor/push-notifications @capacitor/camera @capacitor/geolocation \
+            @capacitor-community/admob
           pip install pillow -q
 
       - name: Restore google-services.json dari GitHub Secrets
@@ -73,6 +74,7 @@ jobs:
         run: |
           python3 scripts/patch_android.py activity
           python3 scripts/patch_android.py permissions
+          python3 scripts/patch_android.py admob
           python3 scripts/generate_icons.py
           python3 scripts/generate_splash.py
           python3 scripts/patch_android.py version "$APP_VERSION" "$VERSION_CODE"
