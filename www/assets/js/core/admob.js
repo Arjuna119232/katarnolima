@@ -12,7 +12,7 @@
 document.addEventListener('DOMContentLoaded', function () {
 
   // Ad Unit ID (dari AdMob Console) — GANTI di sini jika perlu
-  const ADMOB_BANNER_ID = '__BANNER_ID_PLACEHOLDER__';
+  const ADMOB_BANNER_ID = 'ca-app-pub-2096155581034089/6715532215';
 
   async function initAdMobNative() {
     try {
@@ -38,8 +38,16 @@ document.addEventListener('DOMContentLoaded', function () {
         adCard.style.display = 'none';
       }
 
-      // 3. Banner dimatikan sementara untuk testing
-      // await AdMob.showBanner({ ... });
+      // 3. Tampilkan banner di BAWAH layar
+      await AdMob.showBanner({
+        adId: ADMOB_BANNER_ID,
+        adSize: 'ADAPTIVE_BANNER',
+        position: 'BOTTOM_CENTER',
+        margin: 0,
+        isTesting: false
+      });
+
+      console.log('✅ AdMob Banner berhasil dimuat!');
 
     } catch (err) {
       console.warn('⚠️ AdMob belum siap atau berjalan di Browser Web:', err);
