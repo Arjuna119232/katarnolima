@@ -37,16 +37,16 @@ document.addEventListener('DOMContentLoaded', function () {
         adCard.style.display = 'none';
       }
 
-      // 3. Tampilkan banner di BAWAH layar
-      await AdMob.showBanner({
-        adId: ADMOB_BANNER_ID,
-        adSize: BannerAdSize.ADAPTIVE_BANNER,
-        position: BannerAdPosition.BOTTOM_CENTER,
-        margin: 0,
-        isTesting: false
-      });
+      // 3. Tampilkan banner di BAWAH layar (DIMATIKAN SEMENTARA)
+      // await AdMob.showBanner({
+      //   adId: ADMOB_BANNER_ID,
+      //   adSize: 'ADAPTIVE_BANNER',
+      //   position: 'BOTTOM_CENTER',
+      //   margin: 0,
+      //   isTesting: false
+      // });
 
-      console.log('✅ AdMob Banner berhasil dimuat!');
+      console.log('ℹ️ AdMob init saja (banner dimatikan sementara).');
 
       // 4. Sembunyikan banner saat user masuk halaman tertentu (opsional)
       // await AdMob.hideBanner();
