@@ -21,12 +21,5 @@
         "location"
       ]
     }
-  },
-  "android": {
-    "zoomEnabled": false,
-    "webContentsDebuggingEnabled": false,
-    "backgroundColor": "#0a0f1a",
-    "allowMixedContent": false,
-    "captureInput": true
   }
 }
