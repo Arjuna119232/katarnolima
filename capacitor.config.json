@@ -4,13 +4,29 @@
   "webDir": "www",
   "plugins": {
     "PushNotifications": {
-      "presentationOptions": ["badge", "sound", "alert"]
+      "presentationOptions": [
+        "badge",
+        "sound",
+        "alert"
+      ]
     },
     "Camera": {
-      "permissions": ["camera", "photos"]
+      "permissions": [
+        "camera",
+        "photos"
+      ]
     },
     "Geolocation": {
-      "permissions": ["location"]
+      "permissions": [
+        "location"
+      ]
     }
+  },
+  "android": {
+    "zoomEnabled": false,
+    "webContentsDebuggingEnabled": false,
+    "backgroundColor": "#0a0f1a",
+    "allowMixedContent": false,
+    "captureInput": true
   }
 }
