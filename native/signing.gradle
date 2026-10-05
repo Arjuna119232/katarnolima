@@ -22,6 +22,22 @@ android {
     defaultConfig {
         minSdkVersion 24
     }
+
+    // Aset sisa dari AAR dependensi (junit, LICENSE-junit, *.proto, artefak debug)
+    // tidak dipakai aplikasi, tapi tetap ikut terbungkus di dalam APK. Menghapus
+    // file di folder src/main/assets tidak cukup karena asalnya ada di dalam AAR —
+    // harus lewat aturan packaging di sini.
+    packaging {
+        resources {
+            excludes += [
+                'LICENSE-junit.txt',
+                'junit/**',
+                'DebugProbesKt.bin',
+                '**/*.proto'
+            ]
+        }
+    }
+
     signingConfigs {
         release {
             storeFile file('release.p12')
