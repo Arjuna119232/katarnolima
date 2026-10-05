@@ -64,7 +64,7 @@ public class MainActivity extends BridgeActivity {
       @Override
       public void onPermissionRequest(final PermissionRequest request) {
         final Uri origin = request.getOrigin();
-        final List<String> requested = request.getResources();
+        final String[] requested = request.getResources();   // getResources() → String[]
 
         List<String> granted = new ArrayList<>();
         if (isOwnOrigin(origin == null ? null : origin.toString())) {
