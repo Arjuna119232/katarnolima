@@ -1,4 +1,13 @@
 // ---- Ditambahkan otomatis oleh CI (scripts/patch_android.py signing) ----
+
+// R8 dimatikan/dinyalakan dari luar lewat -PMINIFY=<true|false> di workflow.
+// Keduanya harus ikut berubah: shrinkResources HANYA boleh aktif kalau
+// minifyEnabled aktif, kalau tidak Gradle gagal dengan
+// "Removing unused resources requires unused code shrinking to be turned on".
+ext.katarnolimaMinify = project.hasProperty('MINIFY')
+        ? project.property('MINIFY').toString().toBoolean()
+        : true
+
 configurations.all {
     resolutionStrategy {
         force 'org.jetbrains.kotlin:kotlin-stdlib:1.8.22'
@@ -27,12 +36,14 @@ android {
             signingConfig signingConfigs.release
 
             // R8: memangkas & mengaburkan kode rilis.
-            // - stripping  = membuang kelas yang tidak pernah dipakai (APK lebih kecil,
-            //                detail internal tidak bocor ke pengguna).
-            // - obfuscation= nama kelas/metode diganti, sulit dibaca bila didekompilasi.
-            // Nonaktifkan (MINIFY=false di workflow) hanya bila ada plugin yang rusak.
-            minifyEnabled project.hasProperty('MINIFY') ? project.property('MINIFY').toString().toBoolean() : true
-            shrinkResources true
+            // - minifyEnabled = membuang kelas/metode yang tak terpakai, lalu mengganti
+            //   namanya sehingga kode sulit dibaca bila didekompilasi.
+            // - shrinkResources = membuang resource yang jadi tak terpakai.
+            //
+            // Diatur per-rilis lewat MINIFY di workflow, karena kerusakannya baru
+            // terlihat setelah APK terpasang di perangkat — bukan di log CI.
+            minifyEnabled katarnolimaMinify
+            shrinkResources katarnolimaMinify
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
