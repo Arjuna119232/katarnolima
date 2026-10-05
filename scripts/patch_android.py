@@ -100,24 +100,35 @@ JUNK_ASSETS = [
 ]
 
 def cleanup():
-    """Hapus aset sisa template yang tidak dipakai (junit, .proto, artefak debug)."""
-    assets = ANDROID / 'app/src/main/assets'
-    if not assets.is_dir():
-        print('⚠️ folder assets Android tidak ada, skip cleanup.')
+    """Hapus aset sisa template yang tidak dipakai (junit, .proto, artefak debug).
+
+    Aset-aset ini BUKAN di folder app, melainkan di dalam modul plugin yang dibuat
+    `npx cap add android` (capacitor-android, capacitor-community-admob, dll). Karena
+    itu semua folder src/main/assets di bawah android/ ikut diperiksa — bukan hanya
+    yang milik :app.
+    """
+    if not ANDROID.is_dir():
+        print('⚠️ folder android/ tidak ada, skip cleanup.')
         return
-    removed = []
-    for name in JUNK_ASSETS:
-        target = assets / name
-        if target.is_dir():
-            shutil.rmtree(target)
-            removed.append(name + '/')
-        elif target.exists():
-            target.unlink()
-            removed.append(name)
+    removed, diperiksa = [], 0
+    for assets in sorted(ANDROID.rglob('src/main/assets')):
+        if not assets.is_dir():
+            continue
+        diperiksa += 1
+        for name in JUNK_ASSETS:
+            target = assets / name
+            if target.is_dir():
+                shutil.rmtree(target)
+                removed.append(f'{rel_www(target)}/')
+            elif target.exists():
+                target.unlink()
+                removed.append(rel_www(target))
     if removed:
-        print('✅ Aset tak terpakai dihapus: ' + ', '.join(removed))
+        print('✅ Aset tak terpakai dihapus (' + str(len(removed)) + '):')
+        for r in removed:
+            print('   -', r)
     else:
-        print('ℹ️ Tidak ada aset tak terpakai untuk dihapus.')
+        print(f'ℹ️ Tidak ada aset tak terpakai untuk dihapus ({diperiksa} folder aset diperiksa).')
 
 
 def version(name, code):
