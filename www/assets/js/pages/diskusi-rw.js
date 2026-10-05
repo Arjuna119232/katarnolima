@@ -6,6 +6,7 @@
 import { app } from "../services/firebase.js";
 import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { escapeHtml } from "../core/safe.js";
 
 const db = getFirestore(app);
 const auth = getAuth(app);
@@ -95,10 +96,6 @@ function showCustomAlert(message, redirectUrl) {
   };
 }
 
-function escapeHtml(str = '') {
-  return String(str).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m]));
-}
-
 // FORMAT TANGGAL
 function formatDateLabel(dateObj) {
   if (!dateObj) return 'HARI INI';
@@ -185,7 +182,7 @@ onSnapshot(qDiskusi, (snap) => {
     } else {
       html += `
         <div class="chat-row-user">
-          <div class="chat-avatar">${m.userAvatar}</div>
+          <div class="chat-avatar">${escapeHtml(m.userAvatar)}</div>
           <div class="chat-bubble">
             <div class="chat-user">${escapeHtml(m.userName)}</div>
             <div class="chat-text">${escapeHtml(m.text)}</div>

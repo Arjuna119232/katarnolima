@@ -13,11 +13,12 @@ katarnolima-rw05/
 │   └── assets/
 │       ├── css/base/         theme.css (warna/tema), global.css (komponen bersama)
 │       ├── css/pages/        satu CSS per halaman
-│       ├── js/core/          fitur bersama semua halaman (tema, splash, back, notifikasi, …)
+│       ├── js/core/          fitur bersama semua halaman (tema, splash, back, notifikasi,
+│       │                     safe.js = escapeHtml/jsArg/safeUrl, admob.js, …)
 │       ├── js/services/      firebase.js (SATU-SATUNYA konfigurasi Firebase)
 │       ├── js/pages/         logika per halaman (admin/ = folder modul, lihat di bawah)
 │       └── img/
-├── native/                   kustomisasi Android (MainActivity, izin, signing, google-services)
+├── native/                   kustomisasi Android (MainActivity, izin, signing, R8, AdMob)
 ├── scripts/                  validate.py, patch_android.py, generate_icons.py, generate_splash.py
 ├── tests/                    uji otomatis (Node bawaan, tanpa dependensi)
 ├── assets-source/            berkas sumber/cadangan yang TIDAK ikut APK
@@ -26,7 +27,15 @@ katarnolima-rw05/
 ├── capacitor.config.json  package.json  CHANGELOG.md
 ```
 
-Aturan emas: **HTML hanya markup. CSS di `assets/css`, JS di `assets/js`.** Tidak ada `<style>`/`<script>` inline.
+Aturan emas:
+
+1. **HTML hanya markup. CSS di `assets/css`, JS di `assets/js`.** Tidak ada `<style>`/`<script>` inline.
+2. **Semua data Firestore yang masuk `innerHTML` wajib di-escape** memakai
+   `escapeHtml` / `jsArg` / `safeUrl` dari `assets/js/core/safe.js`. Ada tes
+   (`npm test`) dan `npm run validate` yang menolak pelanggaran ini.
+3. **ID AdMob hanya diubah di `native/admob.config.json`** — CI menyalinnya ke
+   `www/assets/js/admob.config.js` dan ke AndroidManifest.
+4. **Kustomisasi Android hanya lewat `native/`** — jangan mengedit workflow.
 
 ## Menjalankan di komputer
 
@@ -75,7 +84,7 @@ assets/js/pages/admin/
 | `pages/info.html` | Info singkat & pengumuman | `css/pages/info.css`, `js/pages/info.js`, `js/pages/info.ui.js` |
 | `pages/iuran-warga.html` | Pembayaran iuran (QRIS, unggah bukti) | `css/pages/iuran-warga.css`, `js/pages/iuran-warga.js`, `js/pages/iuran-warga.ui.js` |
 | `pages/kas-detail.html` | Rincian kas & transaksi | `css/pages/kas-detail.css`, `js/pages/kas-detail.js`, `js/pages/kas-detail.ui.js` |
-| `pages/pengaturan.html` | Tema, getaran, keluar akun | `css/pages/pengaturan.css`, `js/pages/pengaturan.ui.js` |
+| `pages/pengaturan.html` | Tema, getaran, keluar akun | `css/pages/pengaturan.css`, `js/pages/pengaturan.ui.js`, `js/pages/pengaturan-akun.js` |
 | `pages/profil.html` | Login / daftar / profil warga | `css/pages/profil.css`, `js/pages/profil.js`, `js/pages/profil.ui.js` |
 | `pages/semua-layanan.html` | Daftar seluruh layanan | `css/pages/semua-layanan.css`, `js/pages/semua-layanan.js`, `js/pages/semua-layanan.ui.js` |
 | `pages/tentang.html` | Tentang aplikasi & organisasi | `css/pages/tentang.css`, `js/pages/tentang.ui.js` |

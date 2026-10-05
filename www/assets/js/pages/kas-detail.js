@@ -6,12 +6,9 @@
 // @ts-nocheck
 import { app } from "../services/firebase.js";
 import { getFirestore, doc, collection, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { escapeHtml } from "../core/safe.js";
 
 const db = getFirestore(app);
-
-function escapeHtml(str = '') {
-  return String(str).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m]));
-}
 
 // LISTEN SALDO UTAMA REALTIME
 onSnapshot(doc(db, "kas_rw05", "saldo_utama"), (snap) => {

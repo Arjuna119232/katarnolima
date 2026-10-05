@@ -41,8 +41,10 @@ export async function load(url, context, next) {
   if (url.startsWith('stub:')) {
     return { format: 'module', source: STUBS[url.slice(5)], shortCircuit: true };
   }
-  if (url.startsWith('file:') && url.includes('/www/') && url.endsWith('.js')) {
-    return next(url, { ...context, format: 'module' });
+  if (url.startsWith('file:') && url.includes('/www/')) {
+    // Buang query/hash (?v=1) supaya berkas .js tetap dikenali sebagai ES Module.
+    const clean = url.replace(/[?#].*$/, '');
+    if (clean.endsWith('.js')) return next(url, { ...context, format: 'module' });
   }
   return next(url, context);
 }

@@ -6,6 +6,7 @@
 import { app } from "../services/firebase.js";
 import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { escapeHtml, jsArg, safeUrl } from "../core/safe.js";
 
 const db = getFirestore(app);
 const auth = getAuth(app);
@@ -156,12 +157,6 @@ let latValue = null;
 let lngValue = null;
 let lokasiGpsText = '';
 
-function escapeHtml(text = '') {
-  return String(text).replace(/[&<>"']/g, function(m = '') {
-    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
-  });
-}
-
 /* REVERSE GEOCODING NAMA TEMPAT */
 async function fetchLocationName(lat, lng) {
   try {
@@ -210,26 +205,27 @@ function renderReports(filterKeyword = '') {
       return;
     }
 
-    let mediaThumb = `<img src="${item.foto}" class="active-report-thumb" alt="Thumb">`;
-    if (item.isVideo) {
+    const fotoUrl = safeUrl(item.foto);
+    let mediaThumb = fotoUrl ? `<img src="${escapeHtml(fotoUrl)}" class="active-report-thumb" alt="Thumb">` : '';
+    if (fotoUrl && item.isVideo) {
       mediaThumb = `
         <div style="position:relative; width:84px; height:84px; flex-shrink:0;">
-          <video src="${item.foto}" class="active-report-thumb"></video>
+          <video src="${escapeHtml(fotoUrl)}" class="active-report-thumb"></video>
           <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.3); border-radius:14px; color:#fff; font-size:20px;">▶</div>
         </div>
       `;
     }
 
     const cardHtml = `
-      <div class="active-report-card" onclick="openDetailReportModal('${item.id}')">
+      <div class="active-report-card" onclick="openDetailReportModal(${jsArg(item.id)})">
         ${mediaThumb}
         <div class="active-report-info">
           <div>
             <span class="badge-kat">${escapeHtml(item.rt)}</span>
             <div class="report-title-text" style="margin-top:4px;">${escapeHtml(item.judul)}</div>
-            <div class="report-meta-text" style="margin-top:2px;">${escapeHtml(item.nama)} • ${item.tanggal}</div>
+            <div class="report-meta-text" style="margin-top:2px;">${escapeHtml(item.nama)} • ${escapeHtml(item.tanggal)}</div>
           </div>
-          <div class="badge-status-dinamis ${item.statusClass}">${escapeHtml(item.status)}</div>
+          <div class="badge-status-dinamis ${escapeHtml(item.statusClass)}">${escapeHtml(item.status)}</div>
         </div>
       </div>
     `;

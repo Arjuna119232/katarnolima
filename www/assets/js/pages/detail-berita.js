@@ -6,6 +6,7 @@
 // @ts-nocheck
 import { app } from "../services/firebase.js";
 import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { escapeHtml, safeUrl } from "../core/safe.js";
 
 const db = getFirestore(app);
 
@@ -43,17 +44,18 @@ async function loadArticleDetail() {
         const d = docSnap.data();
         document.title = `${d.judul || 'Detail Berita'} - KATARNOLIMA RW 05`;
 
-        const imageHtml = d.fotoBase64 
-            ? `<div class="article-image-wrap"><img src="${d.fotoBase64}" class="article-image" alt="Dokumentasi Berita"></div>` 
+        const foto = safeUrl(d.fotoBase64);
+        const imageHtml = foto
+            ? `<div class="article-image-wrap"><img src="${escapeHtml(foto)}" class="article-image" alt="Dokumentasi Berita"></div>`
             : '';
-        const ikonKat = d.ikon || '🌸';
-        const katLabel = d.kategoriLabel || 'Informasi Warga';
+        const ikonKat = escapeHtml(d.ikon || '🌸');
+        const katLabel = escapeHtml(d.kategoriLabel || 'Informasi Warga');
 
         container.innerHTML = `
             <div class="kicker"><span>${ikonKat}</span> <span>${katLabel}</span></div>
             <h1 class="title">${escapeHtml(d.judul || 'Tanpa Judul')}</h1>
             <div class="meta-info">
-                <span class="meta-item">📅 ${d.tanggal || '-'}</span>
+                <span class="meta-item">📅 ${escapeHtml(d.tanggal || '-')}</span>
                 ${d.lokasi ? `<span class="meta-item">📍 ${escapeHtml(d.lokasi)}</span>` : ''}
                 <span class="meta-item">✍️ ${escapeHtml(d.penulis || 'Pengurus RW 05')}</span>
             </div>
@@ -74,12 +76,6 @@ async function loadArticleDetail() {
                 <a href="javascript:void(0)" onclick="goToBeritaRW()" class="btn-return">Kembali ke Berita RW</a>
             </div>`;
     }
-}
-
-function escapeHtml(str) {
-    return String(str).replace(/[&<>"']/g, function(m) {
-        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
-    });
 }
 
 document.addEventListener('DOMContentLoaded', loadArticleDetail);

@@ -90,9 +90,10 @@
     </div>
   </div>
 
-  <!-- CARD NATIVE ADMOB / IKLAN (DIPASANG DI ATAS CARD KAS) -->
-  <div class="rekom-card" id="admob-native-card" style="margin: 0 20px 20px; position: relative; border: 1px dashed var(--border-strong); background: var(--surface);">
-    <div style="position: absolute; top: 12px; right: 12px; background: var(--border); color: var(--ink-600); font-size: 8px; font-weight: 900; padding: 2px 6px; border-radius: 4px; letter-spacing: 0.5px;">IKLAN</div>
+  <!-- CARD IKLAN (AdMob). Ukurannya disesuaikan core/admob.js supaya banner
+       duduk pas persis di dalam kartu ini. Jangan dihapus / dipindah. -->
+  <div class="rekom-card" id="admob-native-card" data-admob="idle" style="margin: 0; position: relative; border: 1px dashed var(--border-strong); background: var(--surface); border-radius: 0; min-height: 50px;">
+    <span id="admob-card-label" style="position: absolute; top: 4px; right: 6px; z-index: 2; background: var(--border); color: var(--ink-600); font-size: 8px; font-weight: 900; padding: 2px 6px; border-radius: 4px; letter-spacing: 0.5px;">IKLAN</span>
     <div class="rekom-img" style="background:var(--surface-soft)">
       <div style="font-size:30px">📢</div>
     </div>
@@ -375,6 +376,8 @@
 <script src="assets/js/core/push-notifications.js"></script>
 <script src="assets/js/core/network-status.js"></script>
 <script src="assets/js/core/app.js"></script>
+<!-- Iklan hanya di halaman beranda; di halaman lain slot ini memang tidak ada. -->
+<script src="assets/js/admob.config.js"></script>
 <script src="assets/js/core/admob.js"></script>
 
 <script src="assets/js/pages/home.ui.js"></script>

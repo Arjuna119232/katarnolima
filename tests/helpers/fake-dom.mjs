@@ -17,6 +17,7 @@ export function installFakeDom() {
   const els = new Map();
   const get = (id) => { if (!els.has(id)) els.set(id, new FakeEl(id)); return els.get(id); };
   const store = new Map();
+  const docListeners = {};
   globalThis.localStorage = { getItem: (k) => store.get(k) ?? null, setItem: (k, v) => store.set(k, String(v)), removeItem: (k) => store.delete(k) };
   globalThis.document = {
     getElementById: get,
@@ -24,9 +25,25 @@ export function installFakeDom() {
     querySelectorAll: () => [],
     documentElement: new FakeEl('html'),
     createElement: () => new FakeEl(),
+    addEventListener: (type, fn) => { (docListeners[type] ??= []).push(fn); },
+    removeEventListener: (type, fn) => {
+      const arr = docListeners[type];
+      if (arr) docListeners[type] = arr.filter(f => f !== fn);
+    },
+    // Jalankan semua listener yang terpasang (dipakai untuk mensimulasikan DOMContentLoaded).
+    dispatch: (type) => { (docListeners[type] ?? []).forEach(fn => fn({ preventDefault() {} })); },
   };
   globalThis.window = globalThis;
   globalThis.location = { href: '' };
+  globalThis.history = { length: 1, state: null, back() {}, pushState() {} };
   globalThis.matchMedia = () => ({ matches: false });
   return { els, get };
+}
+
+// Bangun objek snapshot tiruan untuk onSnapshot: snap.forEach(cb), snap.empty.
+export function fakeSnapshot(docs = []) {
+  return {
+    empty: docs.length === 0,
+    forEach: (cb) => docs.forEach(({ id, ...data }) => cb({ id, data: () => data })),
+  };
 }

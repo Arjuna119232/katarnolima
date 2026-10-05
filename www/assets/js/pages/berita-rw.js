@@ -6,6 +6,7 @@
 // @ts-nocheck
 import { app } from "../services/firebase.js";
 import { getFirestore, collection, onSnapshot, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { escapeHtml, safeUrl } from "../core/safe.js";
 
 const db = getFirestore(app);
 
@@ -44,11 +45,12 @@ function renderBerita(list) {
 
   container.innerHTML = list.map(item => {
     const isUrgent = item.prioritas === 'urgent';
-    const ikonKat = item.ikon || '🌸';
-    const katLabel = item.kategoriLabel || 'Kegiatan Warga';
-    const detailUrl = item.id ? `detail-berita.html?id=${item.id}` : 'detail-berita.html';
-    const thumbHtml = item.fotoBase64 
-      ? `<div class="news-thumb-wrap"><img src="${item.fotoBase64}" class="news-card-thumb" alt="Foto Berita" loading="lazy"></div>` 
+    const ikonKat = escapeHtml(item.ikon || '🌸');
+    const katLabel = escapeHtml(item.kategoriLabel || 'Kegiatan Warga');
+    const detailUrl = item.id ? `detail-berita.html?id=${encodeURIComponent(item.id)}` : 'detail-berita.html';
+    const foto = safeUrl(item.fotoBase64);
+    const thumbHtml = foto
+      ? `<div class="news-thumb-wrap"><img src="${escapeHtml(foto)}" class="news-card-thumb" alt="Foto Berita" loading="lazy"></div>`
       : '';
 
     return `
@@ -56,14 +58,14 @@ function renderBerita(list) {
         ${thumbHtml}
         <div class="news-card-content">
           <span class="news-card-badge">${ikonKat} ${katLabel} ${isUrgent ? '• MENDESAK' : ''}</span>
-          <div class="news-card-title">${item.judul || 'Tanpa Judul'}</div>
-          <div class="news-card-desc">${item.isi || ''}</div>
+          <div class="news-card-title">${escapeHtml(item.judul || 'Tanpa Judul')}</div>
+          <div class="news-card-desc">${escapeHtml(item.isi || '')}</div>
           <div class="news-card-meta">
-            <span>✍️ ${item.penulis || 'Pengurus RW 05'}</span>
-            <span>📅 ${item.tanggal || '-'}</span>
+            <span>✍️ ${escapeHtml(item.penulis || 'Pengurus RW 05')}</span>
+            <span>📅 ${escapeHtml(item.tanggal || '-')}</span>
           </div>
           <div style="margin-top: 14px; text-align: right;">
-            <a href="${detailUrl}" class="btn-read-more">Baca Selengkapnya →</a>
+            <a href="${escapeHtml(detailUrl)}" class="btn-read-more">Baca Selengkapnya →</a>
           </div>
         </div>
       </div>

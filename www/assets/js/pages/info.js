@@ -6,6 +6,7 @@
 // @ts-nocheck
 import { app } from "../services/firebase.js";
 import { getFirestore, collection, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { escapeHtml, jsArg } from "../core/safe.js";
 
 const db = getFirestore(app);
 
@@ -65,7 +66,7 @@ window.openNotifDetail = function(el, title, content, timeStr) {
   const titleEl = document.getElementById('modalDetailTitle');
   const bodyEl = document.getElementById('modalDetailBody');
   if (titleEl) titleEl.textContent = title || 'Detail Notifikasi';
-  if (bodyEl) bodyEl.innerHTML = `<div style="font-size:11px; font-weight:700; color:var(--ink-500); margin-bottom:12px;">🕒 ${timeStr}</div>${escapeHtml(content)}`;
+  if (bodyEl) bodyEl.innerHTML = `<div style="font-size:11px; font-weight:700; color:var(--ink-500); margin-bottom:12px;">🕒 ${escapeHtml(timeStr)}</div>${escapeHtml(content)}`;
   if (modal) {
     modal.classList.add('show');
     window.history.pushState({ modalOpen: true }, '', window.location.href);
@@ -81,10 +82,6 @@ window.closeNotifDetailModal = function(shouldPopHistory = true) {
     }
   }
 };
-
-function escapeHtml(str = '') {
-  return String(str).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m]));
-}
 
 onSnapshot(query(collection(db, "info_singkat"), orderBy("createdAt", "desc")), (snap) => {
   if (loadingNotif) loadingNotif.style.display = 'none';
@@ -113,20 +110,22 @@ onSnapshot(query(collection(db, "info_singkat"), orderBy("createdAt", "desc")), 
     const content = d.isi || '';
     const iconBadge = d.ikon || '05';
 
-    const safeTitle = JSON.stringify(title).replace(/"/g, '&quot;');
-    const safeContent = JSON.stringify(content).replace(/"/g, '&quot;');
-    const cleanContentInline = escapeHtml(content.replace(/\n/g, ' '));
+    const argTitle = jsArg(title);
+    const argContent = jsArg(content);
+    const argTime = jsArg(timeStr);
+    const cleanContentInline = escapeHtml(String(content).replace(/\n/g, ' '));
+    const badge = String(iconBadge).length <= 2 ? escapeHtml(iconBadge) : '🔔';
 
     html += `
-      <div class="notif-item ${isRead ? 'read' : ''}" data-id="${id}" onclick="openNotifDetail(this, ${safeTitle}, ${safeContent}, '${timeStr}')">
+      <div class="notif-item ${isRead ? 'read' : ''}" data-id="${escapeHtml(id)}" onclick="openNotifDetail(this, ${argTitle}, ${argContent}, ${argTime})">
         <div class="notif-avatar">
-          ${iconBadge.length <= 2 ? iconBadge : '🔔'}
+          ${badge}
           <div class="notif-dot"></div>
         </div>
         <div class="notif-main">
           <div class="notif-sender-row">
             <span class="notif-sender">KATARNOLIMA / Admin RW 05</span>
-            <span class="notif-time">${timeStr}</span>
+            <span class="notif-time">${escapeHtml(timeStr)}</span>
           </div>
           <div class="notif-text">
             <span class="notif-title-inline">${escapeHtml(title)} - </span><span>${cleanContentInline}</span>

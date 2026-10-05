@@ -4,6 +4,7 @@
  */
 
 import { app } from "../services/firebase.js";
+import { escapeHtml } from "../core/safe.js";
 import { getFirestore, collection, onSnapshot, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const db = getFirestore(app);
@@ -46,8 +47,8 @@ window.openServiceModal = function(type) {
       snap.forEach((docItem) => {
         const d = docItem.data(); if(d.pasar) pasarLokasi = d.pasar;
         html += `<div style="background:var(--bg-page); border:1px solid var(--border); border-radius:14px; padding:12px 14px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
-            <span style="font-size:13px; font-weight:800; color:var(--ink-900);">🌾 ${d.nama || 'Sembako'}</span>
-            <span style="font-size:13px; font-weight:800; color:#2563eb;">Rp ${Number(d.harga||0).toLocaleString('id-ID')} /${d.satuan||'Kg'}</span>
+            <span style="font-size:13px; font-weight:800; color:var(--ink-900);">🌾 ${escapeHtml(d.nama || 'Sembako')}</span>
+            <span style="font-size:13px; font-weight:800; color:#2563eb;">Rp ${Number(d.harga||0).toLocaleString('id-ID')} /${escapeHtml(d.satuan||'Kg')}</span>
           </div>`;
       });
       html += `<div style="background:var(--tint-blue-50); border:1px solid var(--tint-blue-200); border-radius:12px; padding:10px 12px; font-size:11px; font-weight:700; color:#1e40af; margin-top:10px;">📍 Lokasi: ${pasarLokasi}</div>`;
@@ -65,16 +66,16 @@ window.openServiceModal = function(type) {
         modalBody.innerHTML = `
           <div style="background:var(--bg-page); border:1px solid var(--border); border-radius:14px; padding:14px; margin-bottom:10px;">
             <div style="font-size:10px; font-weight:800; color:var(--ink-500); text-transform:uppercase; margin-bottom:4px;">Jam Jaga Pos</div>
-            <div style="font-size:13px; font-weight:800; color:var(--ink-900);">${d.jadwal || '-'}</div>
+            <div style="font-size:13px; font-weight:800; color:var(--ink-900);">${escapeHtml(d.jadwal || '-')}</div>
           </div>
           <div style="background:var(--bg-page); border:1px solid var(--border); border-radius:14px; padding:14px; margin-bottom:10px;">
             <div style="font-size:10px; font-weight:800; color:var(--ink-500); text-transform:uppercase; margin-bottom:4px;">Petugas Berjaga</div>
-            <div style="font-size:14px; font-weight:800; color:#2563eb;">${d.nama || '-'}</div>
-            ${d.phone ? `<div style="font-size:11px; color:#16a34a; font-weight:800; margin-top:4px;">📞 Call/WA: ${d.phone}</div>` : ''}
+            <div style="font-size:14px; font-weight:800; color:#2563eb;">${escapeHtml(d.nama || '-')}</div>
+            ${d.phone ? `<div style="font-size:11px; color:#16a34a; font-weight:800; margin-top:4px;">📞 Call/WA: ${escapeHtml(d.phone)}</div>` : ''}
           </div>
           <div style="background:var(--tint-red-50); border:1px solid var(--tint-red-100); border-radius:14px; padding:14px;">
             <div style="font-size:11px; font-weight:800; color:#b91c1c; margin-bottom:4px;">🚨 Himbauan Keamanan</div>
-            <p style="font-size:12px; color:#991b1b; margin:0; line-height:1.5;">${d.himbauan || '-'}</p>
+            <p style="font-size:12px; color:#991b1b; margin:0; line-height:1.5;">${escapeHtml(d.himbauan || '-')}</p>
           </div>
         `;
       });
@@ -85,7 +86,7 @@ window.openServiceModal = function(type) {
       if(snap.empty) { renderEmptyState(modalBody, 'Jadwal kerja bakti belum diupdate oleh pengurus RW 05.'); return; }
       snap.forEach((docItem) => {
         const d = docItem.data();
-        modalBody.innerHTML = `<div style="background:var(--tint-green-50); border:1px solid var(--tint-green-200); border-radius:14px; padding:14px; margin-bottom:10px;"><div style="font-size:10px; font-weight:800; color:#166534; text-transform:uppercase; margin-bottom:4px;">🧹 ${d.judul || 'Jadwal Kerja Bakti'}:</div><div style="font-size:14px; font-weight:800; color:#15803d;">${d.tanggal || '-'}</div></div><div style="font-size:12px; color:var(--ink-700);">📍 <b>Titik Kumpul:</b> ${d.lokasi || '-'}</div>`;
+        modalBody.innerHTML = `<div style="background:var(--tint-green-50); border:1px solid var(--tint-green-200); border-radius:14px; padding:14px; margin-bottom:10px;"><div style="font-size:10px; font-weight:800; color:#166534; text-transform:uppercase; margin-bottom:4px;">🧹 ${escapeHtml(d.judul || 'Jadwal Kerja Bakti')}:</div><div style="font-size:14px; font-weight:800; color:#15803d;">${escapeHtml(d.tanggal || '-')}</div></div><div style="font-size:12px; color:var(--ink-700);">📍 <b>Titik Kumpul:</b> ${escapeHtml(d.lokasi || '-')}</div>`;
       });
     });
   } else if (type === 'posyandu') {
@@ -94,7 +95,7 @@ window.openServiceModal = function(type) {
       if(snap.empty) { renderEmptyState(modalBody, 'Jadwal pelayanan posyandu belum diupdate oleh pengurus RW 05.'); return; }
       snap.forEach((docItem) => {
         const d = docItem.data();
-        modalBody.innerHTML = `<div style="background:var(--tint-red-50); border:1px solid var(--tint-red-50); border-radius:14px; padding:14px; margin-bottom:10px;"><div style="font-size:10px; font-weight:800; color:#9d174d; text-transform:uppercase; margin-bottom:4px;">🏥 ${d.judul || 'Jadwal Pelayanan'}:</div><div style="font-size:14px; font-weight:800; color:#be185d;">${d.jadwal || '-'}</div></div><div style="font-size:12px; color:var(--ink-700);">💉 <b>Layanan:</b> ${d.keterangan || '-'}</div>`;
+        modalBody.innerHTML = `<div style="background:var(--tint-red-50); border:1px solid var(--tint-red-50); border-radius:14px; padding:14px; margin-bottom:10px;"><div style="font-size:10px; font-weight:800; color:#9d174d; text-transform:uppercase; margin-bottom:4px;">🏥 ${escapeHtml(d.judul || 'Jadwal Pelayanan')}:</div><div style="font-size:14px; font-weight:800; color:#be185d;">${escapeHtml(d.jadwal || '-')}</div></div><div style="font-size:12px; color:var(--ink-700);">💉 <b>Layanan:</b> ${escapeHtml(d.keterangan || '-')}</div>`;
       });
     });
   } else if (type === 'belajar') {
@@ -103,7 +104,7 @@ window.openServiceModal = function(type) {
       if(snap.empty) { renderEmptyState(modalBody, 'Jadwal belajar bersama belum diupdate oleh pengurus RW 05.'); return; }
       snap.forEach((docItem) => {
         const d = docItem.data();
-        modalBody.innerHTML = `<div style="background:var(--tint-blue-50); border:1px solid var(--tint-blue-200); border-radius:14px; padding:14px; margin-bottom:10px;"><div style="font-size:10px; font-weight:800; color:#1e40af; text-transform:uppercase; margin-bottom:4px;">🎓 ${d.judul || 'Bimbel'}:</div><div style="font-size:14px; font-weight:800; color:#1d4ed8;">${d.jadwal || '-'}</div></div><div style="font-size:12px; color:var(--ink-700);">✏️ <b>Detail:</b> ${d.isi || '-'}</div>`;
+        modalBody.innerHTML = `<div style="background:var(--tint-blue-50); border:1px solid var(--tint-blue-200); border-radius:14px; padding:14px; margin-bottom:10px;"><div style="font-size:10px; font-weight:800; color:#1e40af; text-transform:uppercase; margin-bottom:4px;">🎓 ${escapeHtml(d.judul || 'Bimbel')}:</div><div style="font-size:14px; font-weight:800; color:#1d4ed8;">${escapeHtml(d.jadwal || '-')}</div></div><div style="font-size:12px; color:var(--ink-700);">✏️ <b>Detail:</b> ${escapeHtml(d.isi || '-')}</div>`;
       });
     });
   } else if (type === 'datawarga') {

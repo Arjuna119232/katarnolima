@@ -9,6 +9,7 @@ Yang diperiksa:
   2. Tidak ada <style>/<script> inline yang tertinggal di HTML
   3. Sintaks setiap file JS valid (butuh Node.js; dilewati bila tidak ada)
   4. Konfigurasi Firebase tidak diduplikasi di luar services/firebase.js
+  5. Halaman modul wajib mengimpor pembescape dari core/safe.js (anti injeksi HTML)
 Keluar dengan kode 1 bila ada masalah (cocok untuk CI).
 """
 import re, shutil, subprocess, sys, tempfile
@@ -17,12 +18,10 @@ from pathlib import Path
 WWW = Path(__file__).resolve().parent.parent / 'www'
 errors, warnings = [], []
 
-# Rujukan rusak yang SUDAH ADA sejak versi 2.1.247 dan belum diputuskan solusinya
-# (lihat docs/MASALAH-DIKETAHUI.md). Hapus baris dari sini setelah diperbaiki.
-KNOWN_BROKEN = {
-    ('pages/aduan-warga.html', 'aktivitas.html'),
-    ('pages/iuran-warga.html', '../assets/img/qris-rw05.jpg'),
-}
+# Catatan 2026-10-06: daftar KNOWN_BROKEN dihapus. Dua rujukan yang dulu rusak
+# (aktivitas.html di aduan-warga.html dan qris-rw05.jpg di iuran-warga.html)
+# sudah diperbaiki di 2.2.0, jadi validate sekarang 0 error / 0 peringatan.
+# Kalau salah satunya muncul lagi, itu error — bukan peringatan.
 
 def rel(p):
     return p.relative_to(WWW.parent)
@@ -36,10 +35,7 @@ for html in sorted(WWW.rglob('*.html')):
         if re.match(r'^(https?:|//|data:|mailto:|tel:|javascript:|\$\{|#)', ref) or '${' in ref or ref in ('', '#'):
             continue
         if not (html.parent / ref).resolve().exists():
-            if (html.relative_to(WWW).as_posix(), ref) in KNOWN_BROKEN:
-                warnings.append(f'{rel(html)}: rujukan rusak (sudah diketahui) → {ref}')
-            else:
-                errors.append(f'{rel(html)}: rujukan rusak → {ref}')
+            errors.append(f'{rel(html)}: rujukan rusak → {ref}')
     if re.search(r'<style[\s>]', text):
         warnings.append(f'{rel(html)}: masih ada <style> inline')
     if re.search(r'<script(?![^>]*\bsrc=)[^>]*>\s*\S', text):
@@ -55,6 +51,20 @@ for js in sorted(WWW.rglob('*.js')):
     # 4. konfigurasi Firebase ganda
     if 'apiKey:' in text and js.name != 'firebase.js':
         errors.append(f'{rel(js)}: konfigurasi Firebase terduplikasi (pakai services/firebase.js)')
+    # 5. halaman modul yang menempelkan data dinamis ke innerHTML wajib memakai
+    #    pembescape dari core/safe.js. Template yang sepenuhnya statis (tanpa
+    #    interpolasi ${...}) tidak wajib — isinya bukan data pengguna.
+    #    *.ui.js dikecualikan: skrip UI klasik dimuat sebagai <script> biasa sehingga
+    #    tidak bisa mengimpor modul ES; isinya juga bukan data Firestore.
+    is_ui = js.name.endswith('.ui.js')
+    if not is_ui and js.parent.name == 'pages' and 'innerHTML' in text and 'core/safe.js' not in text:
+        for pos in [m.end() for m in re.finditer(r'innerHTML', text)]:
+            chunk = text[pos:pos + 800]
+            if '${' in chunk.split(';')[0] or re.search(r'`[^`]*\$\{', chunk):
+                errors.append(
+                    f'{rel(js)}: menempel data dinamis ke innerHTML tanpa mengimpor '
+                    'core/safe.js — data Firestore bisa masuk apa adanya (lihat docs/KEAMANAN.md)')
+                break
 
 # 3. sintaks JS
 node = shutil.which('node')
