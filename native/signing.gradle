@@ -1,4 +1,3 @@
-
 // ---- Ditambahkan otomatis oleh CI (scripts/patch_android.py signing) ----
 configurations.all {
     resolutionStrategy {
@@ -26,7 +25,15 @@ android {
     buildTypes {
         release {
             signingConfig signingConfigs.release
-            minifyEnabled false
+
+            // R8: memangkas & mengaburkan kode rilis.
+            // - stripping  = membuang kelas yang tidak pernah dipakai (APK lebih kecil,
+            //                detail internal tidak bocor ke pengguna).
+            // - obfuscation= nama kelas/metode diganti, sulit dibaca bila didekompilasi.
+            // Nonaktifkan (MINIFY=false di workflow) hanya bila ada plugin yang rusak.
+            minifyEnabled project.hasProperty('MINIFY') ? project.property('MINIFY').toString().toBoolean() : true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 }

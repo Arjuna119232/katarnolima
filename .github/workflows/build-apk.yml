@@ -9,6 +9,14 @@ env:
   # versionCode Android = VERSION_CODE_BASE + nomor run. Naikkan BASE bila Play Store
   # menolak karena versionCode lebih kecil dari yang pernah diunggah.
   VERSION_CODE_BASE: 100
+  # R8 (minify + obfuscate) untuk build rilis.
+  #
+  # SAAT INI SENGJA false. R8 bisa merusak plugin yang lolos proses build (AdMob/FCM
+  # paling rawan) dan kerusakannya baru terlihat setelah APK terpasang di HP — bukan
+  # di log CI. Rilis 2.3.0 sengaja mengorbankan sedikit ukuran APK demi keamanan
+  # rollout. Nyalakan ke true di 2.3.1 setelah 2.3.0 terbukti stabil di perangkat.
+  # Cara mematikan R8 total: signing.gradle memakai `minifyEnabled false`.
+  MINIFY: false
 
 jobs:
   validate:
@@ -49,13 +57,16 @@ jobs:
           echo "VERSION_CODE=$((VERSION_CODE_BASE + GITHUB_RUN_NUMBER))" >> "$GITHUB_ENV"
 
       - name: Pasang dependensi
+        # Versi DIPATOK ke major 8. Tanpa patokan, `npm install` selalu mengambil
+        # versi terbaru — dan majors baru (Capacitor 9, admob 9) bisa merusak build
+        # atau diam-diam mengubah API plugin. Naikkan manual setelah diuji.
         run: |
           npm install --save-dev \
-            @capacitor/core @capacitor/cli @capacitor/android @capacitor/app \
-            @capacitor/core @capacitor/cli @capacitor/android @capacitor/app \
-            @capacitor/push-notifications @capacitor/camera @capacitor/geolocation \
-            @capacitor-community/admob
+            @capacitor/core@^8 @capacitor/cli@^8 @capacitor/android@^8 @capacitor/app@^8 \
+            @capacitor/push-notifications@^8 @capacitor/camera@^8 @capacitor/geolocation@^8 \
+            @capacitor-community/admob@^8
           pip install pillow -q
+          npm ls --depth=0 2>/dev/null | grep -E "capacitor|admob"
 
       - name: Restore google-services.json dari GitHub Secrets
         run: |
@@ -75,10 +86,16 @@ jobs:
         run: |
           python3 scripts/patch_android.py activity
           python3 scripts/patch_android.py permissions
+          python3 scripts/patch_android.py harden
           python3 scripts/patch_android.py admob
           python3 scripts/generate_icons.py
           python3 scripts/generate_splash.py
           python3 scripts/patch_android.py version "$APP_VERSION" "$VERSION_CODE"
+
+      - name: Salin ulang www/ ke Android & buang aset sisa template
+        run: |
+          npx cap copy android
+          python3 scripts/patch_android.py cleanup
 
       - name: Siapkan keystore
         run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/release.p12
@@ -88,7 +105,7 @@ jobs:
         run: |
           python3 ../scripts/patch_android.py signing
           chmod +x gradlew
-          ./gradlew assembleRelease
+          ./gradlew assembleRelease -PMINIFY=${MINIFY}
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}

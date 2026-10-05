@@ -5,6 +5,8 @@ Menyesuaikan proyek Android hasil `npx cap add android` (folder android/ tidak d
     python3 scripts/patch_android.py firebase
     python3 scripts/patch_android.py activity
     python3 scripts/patch_android.py permissions
+    python3 scripts/patch_android.py harden
+    python3 scripts/patch_android.py cleanup
     python3 scripts/patch_android.py version <versionName> <versionCode>
     python3 scripts/patch_android.py signing
 
@@ -20,6 +22,13 @@ MANIFEST = ANDROID / 'app/src/main/AndroidManifest.xml'
 APP_GRADLE = ANDROID / 'app/build.gradle'
 PROJECT_GRADLE = ANDROID / 'build.gradle'
 PACKAGE_DIR = ANDROID / 'app/src/main/java/com/katarnolima/rw05'
+
+def rel_www(p):
+    """Path relatif terhadap root proyek — untuk pesan log."""
+    try:
+        return p.relative_to(ROOT)
+    except ValueError:
+        return p
 
 def firebase():
     shutil.copy(NATIVE / 'google-services.json', ANDROID / 'app/google-services.json')
@@ -49,6 +58,68 @@ def permissions():
         MANIFEST.write_text(manifest)
     print(f'{len(missing)} izin/fitur ditambahkan ke manifest.')
 
+def harden():
+    """Keraskan <application> di AndroidManifest.xml.
+
+    - allowBackup=false          : data lokal (sesi, cache, berkas unggahan warga) tidak
+                                   ikut ter-backup ke Google/cloud device yang mem-pasang APK.
+    - usesCleartextTraffic=false:Izinkan hanya HTTPS. Menutup jalan data keluar lewat HTTP.
+    - fullBackupContent=false    : adb backup tidak menyalin folder data aplikasi.
+    Lihat docs/KEAMANAN.md.
+    """
+    manifest = MANIFEST.read_text()
+    attrs = {
+        'android:allowBackup': 'false',
+        'android:usesCleartextTraffic': 'false',
+        'android:fullBackupContent': 'false',
+    }
+    changed = []
+    for attr, value in attrs.items():
+        if re.search(rf'{re.escape(attr)}="[^"]*"', manifest):
+            manifest = re.sub(rf'{re.escape(attr)}="[^"]*"', f'{attr}="{value}"', manifest, count=1)
+            changed.append(f'{attr}={value}')
+        else:
+            manifest = re.sub(r'(<application\b)', rf'\1 {attr}="{value}"', manifest, count=1)
+            changed.append(f'{attr}={value} (baru)')
+
+    # Backup rules ditiadakan lewat flag di atas, jadi file XML tambahan tidak perlu.
+    MANIFEST.write_text(manifest)
+    print('✅ Manifest dikeraskan: ' + ', '.join(changed))
+
+
+# Berkas sisa template Capacitor/Cordova yang tidak dipakai aplikasi tapi tetap
+# ikut terkirim di dalam APK. Dihapus agar APK lebih ramping & tidak membocorkan
+# detail toolchain ke pengguna.
+JUNK_ASSETS = [
+    'LICENSE-junit.txt',
+    'junit',
+    'DebugProbesKt.bin',
+    'client_analytics.proto',
+    'messaging_event.proto',
+    'messaging_event_extension.proto',
+]
+
+def cleanup():
+    """Hapus aset sisa template yang tidak dipakai (junit, .proto, artefak debug)."""
+    assets = ANDROID / 'app/src/main/assets'
+    if not assets.is_dir():
+        print('⚠️ folder assets Android tidak ada, skip cleanup.')
+        return
+    removed = []
+    for name in JUNK_ASSETS:
+        target = assets / name
+        if target.is_dir():
+            shutil.rmtree(target)
+            removed.append(name + '/')
+        elif target.exists():
+            target.unlink()
+            removed.append(name)
+    if removed:
+        print('✅ Aset tak terpakai dihapus: ' + ', '.join(removed))
+    else:
+        print('ℹ️ Tidak ada aset tak terpakai untuk dihapus.')
+
+
 def version(name, code):
     gradle = APP_GRADLE.read_text()
     if 'versionCode' in gradle:
@@ -61,7 +132,8 @@ def version(name, code):
 
 def signing():
     APP_GRADLE.write_text(APP_GRADLE.read_text() + (NATIVE / 'signing.gradle').read_text())
-    print('Konfigurasi signing ditambahkan.')
+    shutil.copy(NATIVE / 'proguard-rules.pro', ANDROID / 'app/proguard-rules.pro')
+    print('Konfigurasi signing + aturan R8 ditambahkan.')
 def admob():
     """Tambahkan meta-data App ID AdMob ke AndroidManifest.xml (DI DALAM <application>).
     App ID dibaca dari native/admob.config.json (satu sumber kebenaran)."""
@@ -75,6 +147,24 @@ def admob():
     if not app_id or '3940256099942544' in app_id:
         print('⚠️ App ID AdMob belum diisi di native/admob.config.json, skip.')
         return
+    banner_id = config.get('bannerId', '')
+    is_testing = bool(config.get('isTesting', False))
+
+    # 0. Satu sumber kebenaran untuk ID banner: tulis ke www/ agar core/admob.js
+    #    tidak perlu menulis ID secara manual (dulunya ada 2 ID yang berbeda).
+    #    isTesting ikut ditulis supaya mode uji bisa dikendalikan dari satu tempat.
+    if banner_id:
+        www_admob = ROOT / 'www/assets/js/admob.config.js'
+        www_admob.write_text(
+            '/* DIHASILKAN OTOMATIS oleh scripts/patch_android.py admob — jangan diedit manual.\n'
+            ' * Sumber kebenaran: native/admob.config.json\n'
+            ' * isTesting = true memakai iklan DEMO Google (tidak menghasilkan uang).\n'
+            ' * Set false hanya setelah kamu yakin tidak akan klik iklanmu sendiri. */\n'
+            f'window.KATARNOLIMA_ADMOB_BANNER_ID = "{banner_id}";\n'
+            f'window.KATARNOLIMA_ADMOB_IS_TESTING = {"true" if is_testing else "false"};\n',
+            encoding='utf-8'
+        )
+        print(f'✅ Konfigurasi AdMob ditulis ke {rel_www(www_admob)} (isTesting={is_testing})')
     manifest = MANIFEST.read_text()
 
     # 1. Hapus meta-data AdMob yang salah tempat (di luar <application>)
@@ -109,6 +199,7 @@ def admob():
 if __name__ == '__main__':
     cmd, args = (sys.argv[1] if len(sys.argv) > 1 else ''), sys.argv[2:]
     actions = {'firebase': firebase, 'activity': activity, 'permissions': permissions,
+               'harden': harden, 'cleanup': cleanup,
                'version': lambda: version(*args), 'signing': signing, 'admob': admob}
     if cmd not in actions:
         raise SystemExit(__doc__)

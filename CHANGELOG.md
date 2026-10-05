@@ -1,5 +1,87 @@
 # Changelog
 
+## [2.3.0] — Audit Keamanan & Pembersihan
+
+Audit menyeluruh atas source, konfigurasi build, dan isi APK (2026-10-06).
+
+### Keamanan
+
+- **Injeksi HTML (XSS) ditutup di halaman warga.** `berita-rw.js`, `info.js`,
+  `diskusi-rw.js`, `detail-berita.js`, `home.js`, `aduan-warga.js`, `kas-detail.js`,
+  dan `semua-layanan.js` sekarang melewati `escapeHtml` / `jsArg` / `safeUrl` untuk
+  semua data dari Firestore. Sebelumnya `berita-rw.js` menempelkan judul, isi,
+  penulis, ikon, tanggal, dan URL foto **apa adanya**.
+- **Pembescape dipindah ke satu tempat:** `www/assets/js/core/safe.js`.
+  Empat salinan `escapeHtml` yang duplikat dihapus. `admin/shared/format.js`
+  meng-export ulang, jadi modul admin & tes lama tidak berubah.
+- **`MainActivity.java` tidak lagi memberi izin tanpa batas.** Dulu
+  `request.grant(request.getResources())` memberi kamera/mikrofon/lokasi ke origin
+  mana pun. Sekarang hanya origin aplikasi sendiri dan hanya kamera/mikrofon;
+  geolokasi hanya untuk origin sendiri. Konten campuran HTTP dan akses file-URL dimatikan.
+- **Manifest dikeraskan:** `allowBackup=false`, `usesCleartextTraffic=false`,
+  `fullBackupContent=false`. Data warga di perangkat tidak lagi ikut ter-backup,
+  dan app hanya boleh bicara lewat HTTPS.
+- **R8 aktif pada build rilis** (`minifyEnabled` + `shrinkResources`). Kode tak
+  terpakai dibuang dari APK dan nama kelas/metode diacak. Aturan R8 ada di
+  `native/proguard-rules.pro`. Matikan lewat `MINIFY=false` di workflow bila perlu.
+- **ID AdMob kini satu sumber kebenaran.** `native/admob.config.json` → ditulis CI ke
+  `www/assets/js/admob.config.js` dan ke AndroidManifest. Sebelumnya ada 3 ID berbeda.
+- Tes regresi baru: `tests/warga.xss.test.mjs` (4 tes). Total **17 tes, semua lulus**.
+- `scripts/validate.py` sekarang menolak halaman modul yang menempelkan data dinamis
+  ke `innerHTML` tanpa mengimpor `core/safe.js`.
+
+### Pembersihan
+
+- `junit/`, `LICENSE-junit.txt`, `DebugProbesKt.bin`, dan `*.proto` — sisa template
+  Capacitor yang ikut terkirim di APK — dibuang saat build (`patch_android.py cleanup`).
+- `www/test-viewport.html` (alat bantu dev, tidak dirujuk) dipindah ke `assets-source/`
+  sehingga tidak lagi ikut APK. Validate kini **0 error, 0 peringatan**.
+- Daftar rujukan rusak `KNOWN_BROKEN` di `validate.py` dihapus — rujukan yang dulu
+  rusak sudah diperbaiki, jadi sekarang jadi error kalau muncul lagi.
+- Duplikasi paket npm di workflow build dihapus.
+- Tag AdMob yang salah (ID lama) di `native/AndroidManifest.reference.xml` dihapus;
+  minSdk/targetSdk diselaraskan dengan `native/signing.gradle`.
+
+### Iklan AdMob
+
+- **Banner sekarang duduk DI DALAM card "Ruang Iklan"** (`#admob-native-card` di
+  beranda), bukan banner lepas di bawah layar. Posisi dihitung dari koordinat card,
+  dikoreksi lagi saat `bannerAdSizeChanged` memberi tinggi sebenarnya, lalu dikunci.
+- **Card ikut menyesuaikan diri**: tinggi, margin, dan radius-nya disamakan dengan
+  banner supaya tidak ada celah dan halaman tidak melompat. Label `IKLAN` tetap
+  tampak (AdMob mewajibkan iklan bisa dikenali), dan berubah jadi `IKLAN UJI` saat mode uji.
+- **Banner disembunyikan saat card di-scroll keluar layar** (`IntersectionObserver`),
+  supaya tidak melayang menutupi konten lain.
+- **Persetujuan UMP ditambahkan** — ini yang sebelumnya hilang total. Alurnya:
+  `requestTrackingAuthorization()` → `requestConsentInfo()` → `showConsentForm()`
+  bila `REQUIRED` → iklan hanya ditayangkan bila `canRequestAds`.
+  Tanpa ini, di wilayah EEA/Asia iklan ditolak dan akun bisa kena flag Google.
+- **Dua bug diperbaiki:** `initialize({ requestTrackingAuthorization: true })` —
+  properti itu tidak ada di `AdMobInitializationOptions` (harusnya method terpisah);
+  dan permintaan iklan nyata dikirim dari HP kamu sendiri, yang berisiko jadi
+  *invalid traffic* dan membuat akun kena flag.
+- **Mode uji dikendalikan dari `native/admob.config.json`** (`isTesting`, default `true`).
+  Selama `true`, yang muncul iklan DEMO Google — klik sendiri tidak dihitung sebagai
+  traffic invalid. Jangan diubah ke `false` sebelum kamu yakin tidak akan klik iklanmu.
+- **Iklan hanya di beranda.** Script AdMob dilepas dari 13 halaman lain karena slot
+  iklannya hanya ada di beranda. Tayangan jadi lebih sedikit — kalau pendapatan jadi
+  prioritas, tambahkan interstitial saat pindah halaman.
+- **Kenapa bukan "Native Advanced":** `@capacitor-community/admob` tidak mendukung
+  native ads sama sekali (API resminya hanya Banner, Interstitial, Rewarded,
+  Rewarded Interstitial, App Open). Secara teknis iklan native juga tidak bisa
+  diletakkan di dalam card HTML karena itu View Android di luar DOM WebView.
+
+### Catatan
+
+- APK yang ada sekarang **15,3 MB**. Menambah ukuran tanpa konten nyata hanya
+  memperlambat unduhan warga — lihat `docs/MASALAH-DIKETAHUI.md` #11 (ikon 2,3 MB)
+  dan `assets-source/media-belum-dipakai/` (± 6,9 MB) sebagai kandidat isi.
+- **Belum selesai dan perlu attention:** Firestore Security Rules (prioritas
+  tertinggi), pembatasan API key + App Check, persetujuan UMP untuk AdMob, dan
+  patokan Kotlin 1.8.22. Lihat `docs/KEAMANAN.md`.
+- **Penting:** APK dengan R8 baru **wajib diuji di perangkat** setelah build —
+  R8 bisa merusak fitur yang lolos proses build.
+
 ## [2.2.0] — Update Notifikasi & Perbaikan
 
 ### Fitur

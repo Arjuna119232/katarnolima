@@ -2,19 +2,23 @@
 <!--
   REFERENSI SAJA — TIDAK dipakai langsung oleh CI.
   CI membuat folder android/ baru via `npx cap add android`, lalu izin ditambahkan oleh
-  scripts/patch_android.py (daftar di native/permissions.xml). File ini disimpan sebagai
-  dokumentasi konfigurasi manifest versi lama. Perbaikan: atribut tidak valid `stroke`
-  diganti android:maxSdkVersion="32".
+  scripts/patch_android.py (daftar di native/permissions.xml) dan atribut keamanan
+  disuntikkan oleh `patch_android.py harden`:
+      android:allowBackup="false"
+      android:usesCleartextTraffic="false"
+      android:fullBackupContent="false"
+  ID AdMob TIDAK ditulis di sini — nilainya diambil dari native/admob.config.json oleh
+  `patch_android.py admob`. Jangan meng-hardcode ID apa pun di file ini.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.katarnolima.rw05"
     android:versionCode="1"
     android:versionName="1.0">
 
-    <!-- DIREVISI: MIN SDK DINAIKKAN DARI 15 KE 21 AGAR FITUR PERMISSION MODERN AKTIF -->
+    <!-- DIREVISI: MIN SDK DINAIKKAN DARI 15 KE 24 (lihat native/signing.gradle) -->
     <uses-sdk
-        android:minSdkVersion="21"
-        android:targetSdkVersion="33" />
+        android:minSdkVersion="24"
+        android:targetSdkVersion="35" />
 
     <!-- DAFTAR IZIN (PERMISSIONS) -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -22,7 +26,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
@@ -38,17 +42,18 @@
         android:required="false" />
 
     <application
-        android:allowBackup="true"
+        android:allowBackup="false"
+        android:fullBackupContent="false"
+        android:usesCleartextTraffic="false"
         android:icon="@mipmap/ic_launcher"
         android:label="KATARNOLIMA"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:appComponentFactory="androidx.core.app.CoreComponentFactory">
 
-        <!-- META-DATA GOOGLE ADMOB -->
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-209615581034089~4852943754" />
+        <!-- CATATAN: meta-data AdMob (com.google.android.gms.ads.APPLICATION_ID)
+             disuntikkan CI dari native/admob.config.json oleh `patch_android.py admob`.
+             ID lama yang pernah ada di sini sudah dihapus karena tidak sinkron. -->
 
         <!-- MAIN ACTIVITY -->
         <activity

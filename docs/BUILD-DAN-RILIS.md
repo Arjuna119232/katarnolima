@@ -29,11 +29,40 @@ Ubah file di `native/` — bukan di dalam workflow:
 
 | File | Fungsi |
 |---|---|
-| `native/MainActivity.java` | Jembatan izin kamera/lokasi WebView |
+| `native/MainActivity.java` | Jembatan izin kamera/lokasi WebView (hanya untuk origin app sendiri) |
 | `native/permissions.xml` | Izin & fitur yang disuntik ke manifest |
-| `native/signing.gradle` | Signing rilis + pin versi library |
-| `native/google-services.json` | Konfigurasi Firebase Android |
+| `native/signing.gradle` | Signing rilis + R8 (minify/obfuscate) + pin versi library |
+| `native/proguard-rules.pro` | Aturan R8 untuk kelas milik aplikasi sendiri |
+| `native/admob.config.json` | **Satu-satunya** sumber ID AdMob (appId + bannerId) |
+| `native/google-services.json` | Konfigurasi Firebase Android (dari GitHub Secrets) |
 | `native/AndroidManifest.reference.xml` | Referensi saja (tidak dipakai CI) |
+
+## Langkah `patch_android.py`
+
+| Perintah | Kapan | Hasil |
+|---|---|---|
+| `firebase` | sebelum `cap sync` | salin `google-services.json` + pasang plugin Gradle |
+| `activity` | setelah sync | salin `MainActivity.java` kustom |
+| `permissions` | setelah sync | suntikkan izin dari `native/permissions.xml` |
+| `harden` | setelah sync | `allowBackup=false`, `usesCleartextTraffic=false`, `fullBackupContent=false` |
+| `admob` | setelah sync | tulis `www/assets/js/admob.config.js` + suntik App ID ke manifest |
+| `cleanup` | **setelah** `npx cap copy` | buang `junit/`, `LICENSE-junit.txt`, `*.proto`, `DebugProbesKt.bin` dari assets |
+| `version` | setelah sync | set `versionCode` / `versionName` |
+| `signing` | sebelum `assembleRelease` | salin `signing.gradle` + `proguard-rules.pro` |
+
+## R8 (minify) dan cara mematikan
+
+Build rilis menjalankan R8 (`minifyEnabled` + `shrinkResources`). Kalau setelah
+mengpasang APK baru aplikasi force-close atau ada fitur yang hilang (biasanya plugin
+AdMob/FCM yang rusak oleh obfuscation), set di `.github/workflows/build-apk.yml`:
+
+```yaml
+env:
+  MINIFY: false
+```
+
+Lalu push lagi. APK tetap tertandatangani, hanya lebih besar dan kode tidak
+diringkas. **Selalu uji APK rilis di perangkat nyata** — R8 bisa merusak yang lolos build.
 
 ## Build lokal (opsional)
 
@@ -42,5 +71,7 @@ npm install --save-dev @capacitor/core @capacitor/cli @capacitor/android @capaci
   @capacitor/push-notifications @capacitor/camera @capacitor/geolocation
 npx cap add android && python3 scripts/patch_android.py firebase && npx cap sync android
 python3 scripts/patch_android.py activity && python3 scripts/patch_android.py permissions
+python3 scripts/patch_android.py harden && python3 scripts/patch_android.py admob
+npx cap copy android && python3 scripts/patch_android.py cleanup
 python3 scripts/generate_icons.py && python3 scripts/generate_splash.py
 ```
