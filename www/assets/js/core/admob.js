@@ -1,77 +1,85 @@
 /**
  * KATARNOLIMA — core/admob.js
- * Menampilkan iklan Google AdMob di dalam CARD IKLAN yang sudah disiapkan di
- * halaman beranda (`#admob-native-card`), bukan banner lepas di bawah layar.
+ * Menampilkan iklan Google AdMob di dalam CARD IKLAN beranda (`#admob-native-card`).
  *
- * Plugin : @capacitor-community/admob (v8.2.0)
- * Hanya jalan di APK Android. Di browser dilewati diam-diam.
+ * Plugin : @capacitor-community/admob (v8.2.0) — hanya jalan di APK Android.
  *
- * Alur (WAJIB ikut urutan di bawah — lihat docs/KEAMANAN.md):
- *   1. minta izin pelacakan (iOS; di Android no-op)
- *   2. UMP: requestConsentInfo() → showConsentForm() bila REQUIRED
+ * ⚠️ Kenapa tidak bisa sesederhana "taruh sekali lalu diam":
+ * banner AdMob adalah View Android yang melayang DI ATAS WebView pada koordinat
+ * layar tertentu (BOTTOM_CENTER + margin bawah). Card-nya ikut ter-scroll bersama
+ * halaman. Jadi margin harus dihitung ulang setiap kali card berubah posisi.
+ * Kalau tidak, banner akan nyangkut di layar bawah — bukan di dalam card.
+ *
+ * Alur yang dipakai:
+ *   1. izin pelacakan (no-op di Android)
+ *   2. UMP consent → hanya lanjut bila canRequestAds
  *   3. initialize()
- *   4. showBanner() dengan margin dihitung agar banner duduk PERSIS di dalam card
+ *   4. pasang banner tepat di posisi card; pindah lagi setelah user berhenti scroll
+ *   5. sembunyikan saat card keluar layar, agar tidak menutupi konten lain
  *
- * ID iklan & mode uji TIDAK ditulis di sini — semuanya dibaca dari
- * www/assets/js/admob.config.js yang ditulis CI dari native/admob.config.json.
+ * ID iklan & mode uji dibaca dari www/assets/js/admob.config.js (dihasilkan CI dari
+ * native/admob.config.json). Tidak ada ID yang ditulis manual di file ini.
  */
 
 (function () {
   'use strict';
 
-  var BANNER_ESTIMASI_DP = 50;   // tinggi ADAPTIVE_BANNER saat potret (sebelum SizeChanged)
-  var MULAI_OTOMATIS_MS = 4000;   // jeda maksimal sebelum consent tetap diminta
+  var ESTIMASI_TINGGI_DP = 50;   // tinggi ADAPTIVE_BANNER potret, sebelum SizeChanged
+  var JEDA_MULAI_MS = 1500;
+  var JEDA_REPASANG_MS = 350;    // tunggu user berhenti scroll
+  var JEDA_LAGI_MS = 5000;       // jeda sebelum mencoba ulang kalau gagal
   var LOG = '[AdMob]';
 
-  var sudahMulai = false;
-  var bannerTampil = false;
-  var tinggiBannerDp = BANNER_ESTIMASI_DP;
   var kartu = null;
+  var tinggiDp = ESTIMASI_TINGGI_DP;
+  var marginTerpasang = null;    // margin banner yang sedang aktif
+  var tampil = false;
+  var sudahMulai = false;
+  var dalamPemasangan = false;
+  var sudahGagalSatuKali = false;
+  var jedaPasang = null;
+  var alasan = '';
 
-  function $(id) { return document.getElementById(id); }
+  function log(pesan) { console.log(LOG + ' ' + pesan); }
+  function notif(alas) {
+    alasan = alas || '';
+    if (!kartu) return;
+    kartu.setAttribute('data-admob', tampil ? 'shown' : 'idle');
+    var ket = kartu.querySelector('.admob-note');
+    if (ket) ket.textContent = alasan;
+  }
 
   function plugin() {
     return window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.AdMob
-      ? window.Capacitor.Plugins.AdMob
-      : null;
+      ? window.Capacitor.Plugins.AdMob : null;
   }
 
-  /** Hitung margin bawah (dp) agar banner persis berada di dalam kartu. */
-  function marginUntukKartu() {
-    if (!kartu) return 0;
-    var kotak = kartu.getBoundingClientRect();
-    var jarakDariBawah = window.innerHeight - kotak.top - tinggiBannerDp;
-    return Math.max(0, Math.round(jarakDariBawah));
+  /**
+   * Banner diposisikan dengan margin bawah. Margin = jarak dari tepi bawah layar ke
+   * ATAS card, dikurangi tinggi banner. Hasilnya: banner duduk tepat di dalam card.
+   */
+  function marginButuh() {
+    var r = kartu.getBoundingClientRect();
+    return Math.max(0, Math.round(window.innerHeight - r.top - tinggiDp));
   }
 
-  function setLabelIkan(tampil, ket) {
-    // Label "IKLAN" tetap dipertahankan walau iklan gagal — House Rules AdMob
-    // mewajibkan iklan bisa dikenali oleh pengguna.
-    var label = $('admob-card-label');
-    if (label) label.textContent = ket || 'IKLAN';
-    kartu.setAttribute('data-admob', tampil ? 'shown' : 'idle');
+  function setLabel(modeUji) {
+    var l = document.getElementById('admob-card-label');
+    if (l) l.textContent = modeUji ? 'IKLAN UJI' : 'IKLAN';
   }
 
-  /** Samakan tinggi & lebar kartu dengan banner supaya tidak ada celah. */
-  function samakanKartu() {
-    if (!kartu) return;
+  /** Samakan tinggi/lebar card dengan banner supaya tidak ada celah. */
+  function rapatkanCard() {
     kartu.style.margin = '0';
     kartu.style.padding = '0';
-    kartu.style.height = tinggiBannerDp + 'px';
+    kartu.style.height = tinggiDp + 'px';
     kartu.style.overflow = 'hidden';
     kartu.style.borderRadius = '0';
-    // Isi placeholder disembunyikan, tapi kartu tetap punya tinggi supaya
-    // halaman tidak melompat. Label IKLAN tetap terlihat.
     var isi = kartu.querySelector('.rekom-img, .rekom-text');
     if (isi) isi.style.display = 'none';
   }
 
-  function sembunyikanBanner(Alas) {
-    var AdMob = plugin();
-    if (!AdMob || !bannerTampil) return;
-    bannerTampil = false;
-    AdMob.hideBanner().catch(function () { /* banner sudah hilang */ });
-    setLabelIkan(false, Alas || 'IKLAN');
+  function longgarkanCard() {
     kartu.style.height = '';
     kartu.style.padding = '';
     kartu.style.margin = '';
@@ -80,130 +88,137 @@
     if (isi) isi.style.display = '';
   }
 
-  async function tampilkanBanner() {
+  async function pasang() {
     var AdMob = plugin();
-    var adId = window.KATARNOLIMA_ADMOB_BANNER_ID;
-    var modeUji = window.KATARNOLIMA_ADMOB_IS_TESTING === true;
-
-    if (!adId) {
-      console.log(LOG + 'ID banner belum diisi (native/admob.config.json) — iklan dilewati.');
-      return;
-    }
-
-    samakanKartu();
-
+    if (!AdMob || dalamPemasangan) return;
+    dalamPemasangan = true;
     try {
+      var modeUji = window.KATARNOLIMA_ADMOB_IS_TESTING === true;
+      var adId = window.KATARNOLIMA_ADMOB_BANNER_ID;
+      if (!adId) { notif('ID iklan belum diisi'); return; }
+
+      rapatkanCard();
+      var m = marginButuh();
+      // Sudah benar posisinya → tidak perlu request ulang.
+      if (tampil && marginTerpasang !== null && Math.abs(m - marginTerpasang) < 6) return;
+
+      if (tampil) await AdMob.removeBanner().catch(function () {});
+      tampil = false;
+
       await AdMob.showBanner({
         adId: adId,
         adSize: 'ADAPTIVE_BANNER',
         position: 'BOTTOM_CENTER',
-        margin: marginUntukKartu(),
-        // Mode uji = true memakai ID demo Google. WAJIB true saat kamu sendiri
-        // memakai HP-nya, supaya klikmu tidak dihitung sebagai invalid traffic
-        // (yang bisa membuat akun AdMob kena flag).
+        margin: m,
         isTesting: modeUji
       });
-      bannerTampil = true;
-      setLabelIkan(true, modeUji ? 'IKLAN UJI' : 'IKLAN');
-      console.log(LOG + (modeUji ? 'Banner UJI (tidak menghasilkan uang).' : 'Banner produksi dimuat.'));
+      tampil = true;
+      marginTerpasang = m;
+      setLabel(modeUji);
+      notif('');
+      log('banner terpasang di margin ' + m + 'dp (mode ' + (modeUji ? 'uji' : 'produksi') + ')');
     } catch (err) {
-      console.warn(LOG + 'Banner gagal dimuat:', err);
-      sembunyikanBanner('IKLAN');
+      tampil = false;
+      log('gagal memasang banner: ' + err);
+      notif('iklan gagal dimuat');
+    } finally {
+      dalamPemasangan = false;
     }
   }
 
-  /** Dengarkan perubahan ukuran banner lalu kunci posisinya persis di kartu. */
-  function dengarkanUkuran(AdMob) {
-    AdMob.addListener('bannerAdSizeChanged', function (size) {
-      if (!size || !size.height) return;              // 0 = banner tersembunyi/gagal
-      if (size.height === tinggiBannerDp) return;     // sudah pas
-      tinggiBannerDp = size.height;
-      samakanKartu();
-      // Banner yang sudah tampil digeser ke posisi baru.
-      AdMob.removeBanner()
-        .then(function () { bannerTampil = false; return tampilkanBanner(); })
-        .catch(function () { /* biarkan banner tetap di posisi lama */ });
-    });
-
-    AdMob.addListener('bannerAdFailedToLoad', function (err) {
-      console.warn(LOG + 'Iklan gagal dimuat:', err);
-      sembunyikanBanner('IKLAN');
-    });
-
-    AdMob.addListener('bannerAdLoaded', function () {
-      setLabelIkan(true, window.KATARNOLIMA_ADMOB_IS_TESTING === true ? 'IKLAN UJI' : 'IKLAN');
-    });
+  function jedaPasang() {
+    if (jedaPasang) clearTimeout(jedaPasang);
+    jedaPasang = setTimeout(function () {
+      jedaPasang = null;
+      var r = kartu.getBoundingClientRect();
+      var diLayar = r.bottom > 0 && r.top < window.innerHeight;
+      if (diLayar) pasang();
+    }, JEDA_REPASANG_MS);
   }
 
-  /** Jangan biarkan banner melayang di tengah layar saat halaman di-scroll. */
-  function dantingaiScroll(AdMob) {
-    if (!kartu || typeof IntersectionObserver === 'undefined') return;
-    var pengamat = new IntersectionObserver(function (entri) {
-      var terlihat = entri[0].isIntersecting;
-      if (!bannerTampil) return;
-      if (terlihat) {
-        AdMob.resumeBanner().catch(function () {});
-      } else {
-        AdMob.hideBanner().catch(function () {});
-      }
-    }, { threshold: 0.05 });
-    pengamat.observe(kartu);
+  async function sembunyikan() {
+    var AdMob = plugin();
+    if (!AdMob || !tampil) return;
+    tampil = false;
+    marginTerpasang = null;
+    await AdMob.hideBanner().catch(function () {});
+    longgarkanCard();
+    notif('');
+  }
+
+  function pantauPosisi() {
+    if (!kartu) return;
+    ['scroll', 'resize', 'orientationchange'].forEach(function (evt) {
+      window.addEventListener(evt, jedaPasang, { passive: true });
+    });
+    if (typeof IntersectionObserver === 'undefined') return;
+    var obs = new IntersectionObserver(function (entri) {
+      if (entri[0].isIntersecting) jedaPasang();
+      else sembunyikan();
+    }, { threshold: 0.02 });
+    obs.observe(kartu);
   }
 
   async function mulai() {
     if (sudahMulai) return;
     sudahMulai = true;
-
     var AdMob = plugin();
-    if (!AdMob) {
-      console.log(LOG + 'Plugin AdMob tidak ada — dilewati (browser).');
-      return;
-    }
-    if (!kartu) return;  // hanya di halaman beranda
+    if (!AdMob) { log('plugin tidak ada (browser) — dilewati'); return; }
+    if (!kartu) return;
 
     try {
-      // 1. Izin pelacakan (di Android fungsi no-op; tetap dipanggil agar iOS aman)
       if (typeof AdMob.requestTrackingAuthorization === 'function') {
         await AdMob.requestTrackingAuthorization();
       }
 
-      // 2. UMP — ini yang bikin iklan BOLEH tayang. Tanpa langkah ini,
-      //    `canRequestAds` = false dan akun bisa kena flag oleh Google.
       var info = await AdMob.requestConsentInfo();
+      log('consent: status=' + info.status + ' form=' + info.isConsentFormAvailable);
       if (info.isConsentFormAvailable && info.status === 'REQUIRED') {
         info = await AdMob.showConsentForm();
+        log('consent form ditutup: status=' + info.status);
       }
       if (!info.canRequestAds) {
-        console.log(LOG + 'Persetujuan belum diberikan — iklan tidak ditayangkan.');
-        setLabelIkan(false, 'IKLAN');
+        notif('menunggu persetujuan iklan');
         return;
       }
 
-      // 3. Inisialisasi SDK
       await AdMob.initialize({ initializeForTesting: false, testingDevices: [] });
 
-      // 4. Tampilkan
-      dengarkanUkuran(AdMob);
-      await tampilkanBanner();
-      dantingaiScroll(AdMob);
+      AdMob.addListener('bannerAdLoaded', function () { notif(''); });
+      AdMob.addListener('bannerAdFailedToLoad', function (e) {
+        tampil = false;
+        marginTerpasang = null;
+        longgarkanCard();
+        notif('iklan gagal dimuat');
+        log('FailedToLoad: ' + JSON.stringify(e));
+        if (!sudahGagalSatuKali) {
+          sudahGagalSatuKali = true;
+          setTimeout(function () { sudahGagalSatuKali = false; pasang(); }, JEDA_LAGI_MS);
+        }
+      });
+      AdMob.addListener('bannerAdSizeChanged', function (size) {
+        if (!size || !size.height) return;
+        if (size.height === tinggiDp) return;
+        tinggiDp = size.height;
+        rapatkanCard();
+        jedaPasang();   // tinggi berubah → margin ikut berubah
+      });
+
+      await pasang();
+      pantauPosisi();
     } catch (err) {
-      console.warn(LOG + 'Gagal menyiapkan iklan:', err);
-      setLabelIkan(false, 'IKLAN');
+      log('gagal menyiapkan: ' + err);
+      notif('iklan tidak tersedia');
     }
   }
 
   document.addEventListener('DOMContentLoaded', function () {
-    kartu = $('admob-native-card');
-    if (!kartu) return;                 // bukan beranda → tidak ada iklan
-    var label = $('admob-card-label');
-    if (label) label.id = 'admob-card-label';
+    kartu = document.getElementById('admob-native-card');
+    if (!kartu) return;
 
-    // Iklan sebaiknya diminta setelah pengguna berinteraksi (anjuran Google),
-    // tapi tetap dijalankan lewat jeda agar tidak menggantung.
-    var jalankanSekali = function () { mulai(); };
     ['pointerdown', 'touchstart', 'scroll'].forEach(function (evt) {
-      window.addEventListener(evt, jalankanSekali, { once: true, passive: true });
+      window.addEventListener(evt, function () { setTimeout(mulai, 0); }, { once: true, passive: true });
     });
-    setTimeout(jalankanSekali, MULAI_OTOMATIS_MS);
+    setTimeout(mulai, JEDA_MULAI_MS);
   });
 })();

@@ -90,10 +90,12 @@
     </div>
   </div>
 
-  <!-- CARD IKLAN (AdMob). Ukurannya disesuaikan core/admob.js supaya banner
-       duduk pas persis di dalam kartu ini. Jangan dihapus / dipindah. -->
+  <!-- CARD IKLAN (AdMob). core/admob.js menyesuaikan tinggi/lebar card supaya banner
+       duduk pas persis di dalam kartu ini, dan memindahkannya lagi setiap kali posisi
+       card berubah. Jangan dihapus / dipindah. -->
   <div class="rekom-card" id="admob-native-card" data-admob="idle" style="margin: 0; position: relative; border: 1px dashed var(--border-strong); background: var(--surface); border-radius: 0; min-height: 50px;">
     <span id="admob-card-label" style="position: absolute; top: 4px; right: 6px; z-index: 2; background: var(--border); color: var(--ink-600); font-size: 8px; font-weight: 900; padding: 2px 6px; border-radius: 4px; letter-spacing: 0.5px;">IKLAN</span>
+    <span class="admob-note" style="position: absolute; top: 4px; left: 8px; z-index: 2; color: var(--ink-500); font-size: 9px; font-weight: 700;"></span>
     <div class="rekom-img" style="background:var(--surface-soft)">
       <div style="font-size:30px">📢</div>
     </div>

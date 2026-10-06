@@ -359,3 +359,10 @@ body {
   width: 56px; height: 56px; border-radius: 50%; background: #2563eb; transition: transform 0.1s ease;
 }
 .btn-shutter-outer:active .btn-shutter-inner { transform: scale(0.88); }
+
+/* ===== SLOT IKLAN ADMOB (#admob-native-card) =====
+   core/admob.js mengubah tinggi/lebar card ini mengikuti banner yang terpasang.
+   .admob-note menampilkan alasan kalau iklan belum tampil (mis. menunggu persetujuan),
+   supaya masalahnya terlihat tanpa harus melihat log. */
+#admob-native-card .admob-note { display: block; }
+#admob-native-card[data-admob="shown"] .admob-note { display: none; }
