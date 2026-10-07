@@ -51,12 +51,49 @@
     </div>
   </div>
 
+  <!-- PRIVASI & DATA -->
+  <div class="settings-section">
+    <div class="settings-section-title">Privasi &amp; Data</div>
+    <div class="settings-card">
+      <a class="settings-row" href="kebijakan-privasi.html">
+        <div class="row-icon">🛡️</div>
+        <div class="row-body">
+          <div class="row-title">Kebijakan Privasi</div>
+          <div class="row-sub">Data apa yang kami simpan dan untuk apa</div>
+        </div>
+        <div class="row-arrow">➔</div>
+      </a>
+      <div class="settings-row" id="rowHapusAkun">
+        <div class="row-icon">🗑️</div>
+        <div class="row-body">
+          <div class="row-title danger-text">Hapus Akun Saya</div>
+          <div class="row-sub">Hapus akun &amp; data profil secara permanen</div>
+        </div>
+        <div class="row-arrow">➔</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- MODAL: HAPUS AKUN -->
+<div class="overlay" id="hapusOverlay">
+  <div class="modal-box">
+    <h3 class="modal-title">Hapus Akun Permanen?</h3>
+    <p class="modal-desc">Akun dan data profil Anda akan dihapus dan <b>tidak dapat dikembalikan</b>. Aduan &amp; komentar yang pernah Anda kirim dapat tetap tersimpan sebagai arsip RW tanpa terhubung ke akun Anda. Masukkan password untuk konfirmasi.</p>
+    <input type="password" id="hapusPassword" class="modal-input" placeholder="Password akun" autocomplete="current-password">
+    <div class="modal-status" id="hapusStatus" role="alert"></div>
+    <div class="modal-actions">
+      <button type="button" class="modal-btn" id="hapusBatal">Batal</button>
+      <button type="button" class="modal-btn modal-btn-danger" id="hapusYa">Hapus</button>
+    </div>
+  </div>
 </div>
 
 <!-- MODAL: PILIH TEMA -->
 <div class="overlay" id="themeOverlay">
   <div class="modal-box">
-    <h3 style="font-size:16px;font-weight:800;color:var(--ink-900);margin-bottom:16px">Tampilan Mode</h3>
+    <h3 class="modal-title">Tampilan Mode</h3>
     <div class="theme-picker">
       <div class="theme-opt" data-pref="light">
         <div class="t-icon">☀️</div>

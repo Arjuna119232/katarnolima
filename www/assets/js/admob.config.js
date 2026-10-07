@@ -8,4 +8,4 @@
  * ID iklan atau kredensial lain yang sensitif di sini.
  */
 window.KATARNOLIMA_ADMOB_BANNER_ID = "";
-window.KATARNOLIMA_ADMOB_IS_TESTING = true;
+window.KATARNOLIMA_ADMOB_IS_TESTING = false;

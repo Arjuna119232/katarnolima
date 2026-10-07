@@ -28,6 +28,55 @@ export function initDiskusi() {
     });
   }
 
+  // Laporan dari warga (tombol "Laporkan" di halaman Diskusi) — koleksi laporan_konten.
+  const listLaporanAdmin = document.getElementById('listLaporanAdmin');
+  if (listLaporanAdmin) {
+    onSnapshot(query(collection(db, "laporan_konten"), orderBy("createdAt", "desc"), limit(30)), (snap) => {
+      let html = '';
+      snap.forEach((docItem) => {
+        const d = docItem.data();
+        const timeStr = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleString('id-ID') : '-';
+        html += `<div class="laporan-item">
+          <div class="laporan-isi">
+            <div class="laporan-head"><b>${escapeHtml(d.namaPengirim || 'Warga')}</b> <span>• dilaporkan ${escapeHtml(d.pelapor || 'warga')} • ${escapeHtml(timeStr)}</span></div>
+            <div class="laporan-teks">${escapeHtml(d.teks || '')}</div>
+          </div>
+          <div class="laporan-aksi">
+            <button class="btn btn-red btn-sm" onclick="window.hapusKomentarDilaporkan(${jsArg(docItem.id)}, ${jsArg(d.refId || '')})">Hapus komentar</button>
+            <button class="btn btn-sm" onclick="window.tutupLaporan(${jsArg(docItem.id)})">Abaikan</button>
+          </div>
+        </div>`;
+      });
+      listLaporanAdmin.innerHTML = html || '<div class="laporan-kosong">Tidak ada laporan baru.</div>';
+    });
+  }
+
+  window.tutupLaporan = async function(laporanId) {
+    try {
+      await deleteDoc(doc(db, "laporan_konten", laporanId));
+    } catch(err) {
+      window.showModal({ title: 'Gagal', desc: err.message, icon: '❌' });
+    }
+  };
+
+  window.hapusKomentarDilaporkan = function(laporanId, komentarId) {
+    window.showModal({
+      title: 'Hapus Komentar Dilaporkan',
+      desc: 'Komentar akan dihapus dari forum dan laporan ini ditutup.',
+      icon: '🗑️',
+      type: 'confirm',
+      onYes: async () => {
+        try {
+          if (komentarId) await deleteDoc(doc(db, "diskusi_rw05", komentarId));
+          await deleteDoc(doc(db, "laporan_konten", laporanId));
+          window.showModal({ title: 'Selesai', desc: 'Komentar dihapus & laporan ditutup.', icon: '✅' });
+        } catch(err) {
+          window.showModal({ title: 'Gagal', desc: err.message, icon: '❌' });
+        }
+      }
+    });
+  };
+
   window.hapusDiskusiAdmin = function(id) {
     window.showModal({
       title: 'Hapus Komentar',

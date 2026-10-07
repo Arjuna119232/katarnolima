@@ -245,13 +245,13 @@ html, body {
 .status-unverified {
   font-size: 11px;
   font-weight: 700;
-  color: #ef4444;
+  color: var(--on-red);
   display: none;
 }
 .status-verified {
   font-size: 11px;
   font-weight: 700;
-  color: #16a34a;
+  color: var(--success-text);
   display: block;
 }
 

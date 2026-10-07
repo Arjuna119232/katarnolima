@@ -82,7 +82,7 @@ export function initUpdateApp() {
         const d = docItem.data();
         const timeStr = formatDateTimeDetailed(d.createdAt);
         const statusBadge = d.isAktif 
-          ? '<span style="color:#16a34a;font-weight:800;font-size:10px;background:var(--tint-green-100);padding:2px 6px;border-radius:4px;">AKTIF</span>' 
+          ? '<span style="color:var(--success-text);font-weight:800;font-size:10px;background:var(--tint-green-100);padding:2px 6px;border-radius:4px;">AKTIF</span>' 
           : '<span style="color:var(--ink-500);font-weight:700;font-size:10px;background:var(--surface-soft);padding:2px 6px;border-radius:4px;">NONAKTIF</span>';
 
         const safeData = JSON.stringify({
@@ -94,7 +94,7 @@ export function initUpdateApp() {
         html += `<tr>
           <td style="font-weight:800;color:var(--ink-900);">${escapeHtml(d.versi || '-')}</td>
           <td style="white-space:pre-line;font-size:11px;max-width:200px;">${escapeHtml(d.catatan || '-')}</td>
-          <td><a href="${escapeHtml(safeUrl(d.linkDownload) || '#')}" rel="noopener noreferrer" target="_blank" style="color:#2563eb;font-size:11px;">Buka Link</a></td>
+          <td><a href="${escapeHtml(safeUrl(d.linkDownload) || '#')}" rel="noopener noreferrer" target="_blank" style="color:var(--link);font-size:11px;">Buka Link</a></td>
           <td style="font-size:11px;color:var(--ink-500);">${escapeHtml(timeStr)}</td>
           <td>${statusBadge}</td>
           <td>

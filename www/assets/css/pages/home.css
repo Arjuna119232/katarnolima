@@ -46,7 +46,6 @@ body {
 }
 @keyframes zoomIn { 0% { transform: scale(0.2); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 @keyframes fadeIn { 0% { opacity: 0; transform: translateY(10px); } 100% { opacity: 1; transform: translateY(0); } }
-#splash-screen.fade-out { opacity: 0; visibility: hidden; pointer-events: none; }
 
 /* BANNER HEADER MODERN */
 .jaki-banner-abad {
@@ -72,7 +71,7 @@ body {
 .logo-5 {
   font-size: 20px;
   font-weight: 900;
-  color: var(--ink-900);
+  color: var(--on-accent);
   background: #fbbf24;
   padding: 6px 12px;
   border-radius: 12px;
@@ -289,7 +288,7 @@ body {
 .rekom-card:active { transform: scale(0.98); }
 .rekom-img { width: 72px; height: 72px; border-radius: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .rekom-text { flex: 1; }
-.rekom-label { font-size: 10px; font-weight: 800; color: #2563eb; text-transform: uppercase; letter-spacing: 0.5px; }
+.rekom-label { font-size: 10px; font-weight: 800; color: var(--link); text-transform: uppercase; letter-spacing: 0.5px; }
 .rekom-text h3 { font-size: 13px; font-weight: 800; color: var(--ink-900); line-height: 1.3; margin: 2px 0; }
 .rekom-text p { font-size: 11px; color: var(--ink-500); line-height: 1.3; }
 
@@ -366,3 +365,16 @@ body {
    supaya masalahnya terlihat tanpa harus melihat log. */
 #admob-native-card .admob-note { display: block; }
 #admob-native-card[data-admob="shown"] .admob-note { display: none; }
+
+/* Card iklan: gaya yang dulu inline di index.html. Semua warna lewat token tema. */
+.admob-card { margin: 0; position: relative; border: 1px dashed var(--border-strong); background: var(--surface); border-radius: 0; min-height: 50px; }
+.admob-label { position: absolute; top: 4px; right: 6px; z-index: 2; background: var(--border); color: var(--ink-600); font-size: 8px; font-weight: 900; padding: 2px 6px; border-radius: 4px; letter-spacing: 0.5px; }
+.admob-note { position: absolute; bottom: 4px; left: 8px; right: 60px; z-index: 2; color: var(--ink-600); font-size: 9px; font-weight: 700; line-height: 1.3; white-space: normal; }
+.admob-img { background: var(--surface-soft); }
+.admob-emoji { font-size: 30px; }
+.admob-sponsor { color: var(--on-amber); }
+.admob-card h3 { color: var(--ink-900); }
+/* Dipasang core/admob.js saat banner menempel: card dirapatkan persis seukuran banner. */
+.admob-card.admob-fit { margin: 0; padding: 0; overflow: hidden; border-radius: 0; }
+.admob-card.admob-fit .rekom-img,
+.admob-card.admob-fit .rekom-text { display: none; }

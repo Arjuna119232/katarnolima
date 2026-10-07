@@ -123,6 +123,115 @@ function formatDateLabel(dateObj) {
 const chatArea = document.getElementById('chatArea');
 const emptyChat = document.getElementById('emptyChat');
 
+// ============================================
+// MODERASI KONTEN BUATAN WARGA (syarat Google Play untuk konten pengguna)
+//  - Laporkan: kirim ke koleksi laporan_konten → ditinjau admin di panel Moderasi Diskusi
+//  - Blokir  : sembunyikan semua pesan dari nama itu di perangkat ini (bisa dibuka lagi)
+// ============================================
+const KEY_BLOKIR = 'rw05_diskusi_blokir';
+function ambilBlokir() {
+  try { return JSON.parse(localStorage.getItem(KEY_BLOKIR) || '[]'); } catch (e) { return []; }
+}
+function simpanBlokir(daftar) {
+  try { localStorage.setItem(KEY_BLOKIR, JSON.stringify(daftar)); } catch (e) { /* abaikan */ }
+}
+
+let pesanTerakhir = [];
+
+function renderChat() {
+  const blokir = ambilBlokir();
+  const tampilkan = pesanTerakhir.filter((m) => m.isAdmin || !blokir.includes(m.userName));
+
+  let html = '';
+  if (blokir.length) {
+    html += `<div class="blokir-info">🚫 ${blokir.length} pengguna diblokir di perangkat ini. <button type="button" class="blokir-buka" data-aksi="buka-blokir">Buka semua</button></div>`;
+  }
+  let lastDateKey = null;
+
+  tampilkan.forEach((m) => {
+    if (m.dateKey !== lastDateKey) {
+      const dateLabel = formatDateLabel(m.rawDate);
+      html += `<div class="date-separator">${dateLabel}</div>`;
+      lastDateKey = m.dateKey;
+    }
+
+    if (m.isAdmin) {
+      html += `
+        <div class="chat-row-admin">
+          <div class="chat-bubble admin-msg">
+            <div class="chat-user">
+              <span class="badge-admin">ADMIN RW</span>
+            </div>
+            <div class="chat-text">${escapeHtml(m.text)}</div>
+            <div class="chat-time">${m.time}</div>
+          </div>
+        </div>
+      `;
+    } else {
+      html += `
+        <div class="chat-row-user">
+          <div class="chat-avatar">${escapeHtml(m.userAvatar)}</div>
+          <div class="chat-bubble">
+            <div class="chat-user">${escapeHtml(m.userName)}</div>
+            <div class="chat-text">${escapeHtml(m.text)}</div>
+            <div class="chat-time">${m.time}</div>
+            <div class="chat-aksi">
+              <button type="button" class="chat-aksi-btn" data-aksi="laporkan" data-id="${escapeHtml(m.id)}">Laporkan</button>
+              <button type="button" class="chat-aksi-btn" data-aksi="blokir" data-nama="${escapeHtml(m.userName)}">Blokir</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+  });
+
+  if (chatArea) {
+    chatArea.innerHTML = html;
+    chatArea.scrollTop = chatArea.scrollHeight;
+  }
+}
+
+async function laporkanPesan(id) {
+  if (!checkAuthOrRedirect()) return;
+  const pesan = pesanTerakhir.find((m) => m.id === id);
+  if (!pesan) return;
+  if (!window.confirm('Laporkan komentar ini ke admin RW karena melanggar aturan (SARA, hoaks, kasar, spam)?')) return;
+  try {
+    await addDoc(collection(db, 'laporan_konten'), {
+      tipe: 'diskusi',
+      refId: id,
+      namaPengirim: pesan.userName,
+      teks: String(pesan.text).slice(0, 300),
+      pelapor: currentUserName,
+      createdAt: serverTimestamp()
+    });
+    window.alert('Terima kasih. Laporan Anda sudah dikirim ke admin RW.');
+  } catch (err) {
+    console.error('Gagal melapor:', err);
+    window.alert('❌ Laporan gagal dikirim. Periksa koneksi internet Anda.');
+  }
+}
+
+function blokirPengguna(nama) {
+  if (!nama) return;
+  if (!window.confirm('Blokir "' + nama + '"? Semua komentarnya akan disembunyikan di perangkat ini.')) return;
+  const daftar = ambilBlokir();
+  if (!daftar.includes(nama)) daftar.push(nama);
+  simpanBlokir(daftar);
+  renderChat();
+}
+
+if (chatArea && typeof chatArea.addEventListener === 'function') {
+  chatArea.addEventListener('click', (e) => {
+    const el = e.target && e.target.closest ? e.target.closest('[data-aksi]') : null;
+    if (!el) return;
+    const aksi = el.getAttribute('data-aksi');
+    if (aksi === 'laporkan') laporkanPesan(el.getAttribute('data-id'));
+    else if (aksi === 'blokir') blokirPengguna(el.getAttribute('data-nama'));
+    else if (aksi === 'buka-blokir') { simpanBlokir([]); renderChat(); }
+  });
+}
+
 // REALTIME LISTENER CHAT (LIMIT 30)
 const qDiskusi = query(collection(db, "diskusi_rw05"), orderBy("createdAt", "desc"), limit(30));
 
@@ -156,47 +265,8 @@ onSnapshot(qDiskusi, (snap) => {
   });
 
   messages.reverse();
-
-  let html = '';
-  let lastDateKey = null;
-
-  messages.forEach((m) => {
-    if (m.dateKey !== lastDateKey) {
-      const dateLabel = formatDateLabel(m.rawDate);
-      html += `<div class="date-separator">${dateLabel}</div>`;
-      lastDateKey = m.dateKey;
-    }
-
-    if (m.isAdmin) {
-      html += `
-        <div class="chat-row-admin">
-          <div class="chat-bubble admin-msg">
-            <div class="chat-user">
-              <span class="badge-admin">ADMIN RW</span>
-            </div>
-            <div class="chat-text">${escapeHtml(m.text)}</div>
-            <div class="chat-time">${m.time}</div>
-          </div>
-        </div>
-      `;
-    } else {
-      html += `
-        <div class="chat-row-user">
-          <div class="chat-avatar">${escapeHtml(m.userAvatar)}</div>
-          <div class="chat-bubble">
-            <div class="chat-user">${escapeHtml(m.userName)}</div>
-            <div class="chat-text">${escapeHtml(m.text)}</div>
-            <div class="chat-time">${m.time}</div>
-          </div>
-        </div>
-      `;
-    }
-  });
-
-  if (chatArea) {
-    chatArea.innerHTML = html;
-    chatArea.scrollTop = chatArea.scrollHeight;
-  }
+  pesanTerakhir = messages;
+  renderChat();
 });
 
 // HANDLER KIRIM PESAN

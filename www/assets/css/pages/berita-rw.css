@@ -133,7 +133,7 @@ body {
   font-size: 10px;
   font-weight: 800;
   background: var(--tint-blue-50);
-  color: #2563eb;
+  color: var(--link);
   padding: 4px 10px;
   border-radius: 8px;
   margin-bottom: 10px;
@@ -177,7 +177,7 @@ body {
   font-weight: 800;
   text-decoration: none;
   background: var(--tint-green-50);
-  color: #16a34a;
+  color: var(--success-text);
   padding: 6px 12px;
   border-radius: 10px;
   transition: background 0.15s ease;
@@ -191,11 +191,11 @@ body {
 }
 .news-card-item.urgent .news-card-badge {
   background: var(--tint-red-50);
-  color: #dc2626;
+  color: var(--on-red);
 }
 .news-card-item.urgent .btn-read-more {
   background: var(--tint-red-50);
-  color: #dc2626;
+  color: var(--on-red);
 }
 
 /* LOADING STATE & EMPTY STATE */

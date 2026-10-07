@@ -100,35 +100,45 @@ jobs:
       - name: Siapkan keystore
         run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/release.p12
 
-      - name: Build APK rilis (signed)
+      - name: Build APK + AAB rilis (signed)
+        # APK untuk dibagikan langsung / uji di HP. AAB (.aab) adalah format WAJIB untuk
+        # unggah ke Google Play (APK tidak diterima untuk aplikasi baru).
         working-directory: android
         run: |
           python3 ../scripts/patch_android.py signing
           chmod +x gradlew
-          ./gradlew assembleRelease -PMINIFY=${MINIFY}
+          ./gradlew assembleRelease bundleRelease -PMINIFY=${MINIFY}
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
-      - name: Kumpulkan APK
+      - name: Kumpulkan APK + AAB
         run: |
           mkdir -p dist
           APK="android/app/build/outputs/apk/release/app-release.apk"
           [ -f "$APK" ] || APK="$(find android -name '*.apk' | head -n 1)"
           cp "$APK" "dist/katarnolima-rw05-v${APP_VERSION}.apk"
+          AAB="android/app/build/outputs/bundle/release/app-release.aab"
+          [ -f "$AAB" ] || AAB="$(find android -name '*.aab' | head -n 1)"
+          [ -f "$AAB" ] || { echo "❌ AAB tidak ditemukan"; exit 1; }
+          cp "$AAB" "dist/katarnolima-rw05-v${APP_VERSION}.aab"
 
       - name: Unggah artefak
         uses: actions/upload-artifact@v4
         with:
           name: katarnolima-rw05-v${{ env.APP_VERSION }}
-          path: dist/katarnolima-rw05-v${{ env.APP_VERSION }}.apk
+          path: |
+            dist/katarnolima-rw05-v${{ env.APP_VERSION }}.apk
+            dist/katarnolima-rw05-v${{ env.APP_VERSION }}.aab
 
       - name: Buat GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ env.APP_VERSION }}.${{ github.run_number }}
           name: KATARNOLIMA RW05 v${{ env.APP_VERSION }} (build ${{ github.run_number }})
-          files: dist/katarnolima-rw05-v${{ env.APP_VERSION }}.apk
+          files: |
+            dist/katarnolima-rw05-v${{ env.APP_VERSION }}.apk
+            dist/katarnolima-rw05-v${{ env.APP_VERSION }}.aab
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

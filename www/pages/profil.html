@@ -95,13 +95,13 @@
     <div class="cards-row">
       <div class="card-jaki" onclick="window.showModal({ title: 'Informasi Wilayah', desc: 'Detail Wilayah Terdaftar: ' + (document.getElementById('rtFull').textContent || 'RT 03 / RW 05'), icon: '📍' })">
         <div class="card-jaki-head">
-          <span style="color:#2563eb">★</span> Akun Warga
+          <span style="color:var(--link)">★</span> Akun Warga
         </div>
         <div class="card-jaki-sub" id="rtFull">RT 03 / RW 05</div>
       </div>
       <div class="card-jaki" onclick="window.location.href='aduan-warga.html'">
         <div class="card-jaki-head">
-          <span style="color:#2563eb">📈</span> Laporan Saya
+          <span style="color:var(--link)">📈</span> Laporan Saya
         </div>
         <div class="card-jaki-sub">Lihat ringkasan aduan</div>
       </div>
@@ -119,7 +119,7 @@
       <div class="menu-item" onclick="window.location.href='pengaturan-akun.html'">
         <div class="menu-item-left">
           <div class="menu-icon">🎨</div>
-          <span>Tampilan Mode</span>
+          <span>Akun, Tampilan &amp; Privasi</span>
         </div>
         <div class="menu-arrow">➔</div>
       </div>
@@ -137,7 +137,7 @@
         </div>
         <div class="menu-arrow">➔</div>
       </div>
-      <div class="menu-item" onclick="window.showModal({ title: 'Kebijakan Privasi', desc: 'Data pribadi Anda (nama, email, RT) disimpan aman di server Firebase dan hanya digunakan untuk keperluan layanan RW 05. Kami tidak membagikan data ke pihak ketiga tanpa izin.', icon: '🛡️' })">
+      <div class="menu-item" onclick="window.location.href='kebijakan-privasi.html'">
         <div class="menu-item-left">
           <div class="menu-icon">🛡️</div>
           <span>Kebijakan Privasi</span>
@@ -147,9 +147,9 @@
       <div class="menu-item danger" id="menuKeluarProfil" style="cursor:pointer">
         <div class="menu-item-left">
           <div class="menu-icon">🚪</div>
-          <span style="color:#dc2626">Keluar Akun</span>
+          <span style="color:var(--on-red)">Keluar Akun</span>
         </div>
-        <div class="menu-arrow" style="color:#dc2626">➔</div>
+        <div class="menu-arrow" style="color:var(--on-red)">➔</div>
       </div>
       </div>
     </div>

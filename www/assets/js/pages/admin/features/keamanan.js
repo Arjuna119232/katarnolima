@@ -37,7 +37,7 @@ export function initKeamanan() {
           <div>
             <div style="font-size:13px;font-weight:800;color:var(--ink-900)">${escapeHtml(d.nama||'-')}</div>
             <div style="font-size:11px;color:var(--ink-500);margin-top:2px">Shift/Jam Jaga: ${escapeHtml(d.jadwal||'-')} • HP: ${escapeHtml(d.phone||'-')}</div>
-            <div style="font-size:11px;color:#be123c;margin-top:4px"><b>Himbauan:</b> ${escapeHtml(d.himbauan||'-')}</div>
+            <div style="font-size:11px;color:var(--on-red);margin-top:4px"><b>Himbauan:</b> ${escapeHtml(d.himbauan||'-')}</div>
           </div>
           <button class="btn btn-red btn-sm" onclick="window.hapusKeamanan(${jsArg(docItem.id)})">Hapus</button>
         </div>`;

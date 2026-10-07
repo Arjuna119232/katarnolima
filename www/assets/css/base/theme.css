@@ -38,6 +38,22 @@
   --shadow-soft:0 8px 24px rgba(15,23,42,0.08);
   --shadow-strong:0 12px 32px rgba(15,23,42,0.16);
   --header-bg:rgba(248,250,252,0.92);
+
+  /* Teks berwarna (tema-sadar). Pakai token ini, JANGAN hex, untuk teks hijau/biru/merah/dst.
+     Pasangan terang dipilih agar kontras >= 4.5:1 di atas --tint-*-50 / --surface. */
+  --link:#2563eb;
+  --success-text:#16a34a;
+  --on-green:#166534;
+  --on-blue:#1e40af;
+  --on-red:#b91c1c;
+  --on-pink:#9d174d;
+  --on-amber:#b45309;
+  --on-purple:#7e22ce;
+  --on-accent:#171308;          /* teks di atas latar kuning --accent (selalu gelap) */
+  --btn-solid-bg:#0f172a;       /* tombol solid utama */
+  --btn-solid-fg:#ffffff;
+
+  color-scheme:light;
 }
 
 html[data-theme="dark"]{
@@ -76,11 +92,26 @@ html[data-theme="dark"]{
   --shadow-soft:0 8px 24px rgba(0,0,0,0.35);
   --shadow-strong:0 14px 36px rgba(0,0,0,0.5);
   --header-bg:rgba(10,15,26,0.92);
+
+  --link:#60a5fa;
+  --success-text:#4ade80;
+  --on-green:#86efac;
+  --on-blue:#93c5fd;
+  --on-red:#fca5a5;
+  --on-pink:#f9a8d4;
+  --on-amber:#fcd34d;
+  --on-purple:#d8b4fe;
+  --on-accent:#171308;
+  --btn-solid-bg:#2563eb;
+  --btn-solid-fg:#ffffff;
+
+  color-scheme:dark;
 }
 
-/* Smooth, professional cross-fade whenever the theme changes */
-html, body, .app-jaki, .profil-jaki, [class]{
-  transition:background-color .25s ease, border-color .25s ease, color .25s ease, box-shadow .25s ease;
+/* Cross-fade halus saat tema berganti (hanya html/body; selector [class] dulu memasang
+   transition ke SETIAP elemen dan membuat scroll berat). */
+html, body{
+  transition:background-color .25s ease, color .25s ease;
 }
 
 html, body{ background:var(--bg-page) !important; }

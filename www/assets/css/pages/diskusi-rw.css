@@ -87,7 +87,7 @@ input:checked + .slider:before { transform: translateX(16px); }
   align-items: center;
   gap: 4px;
   background: var(--tint-amber-50);
-  color: #b45309;
+  color: var(--on-amber);
   font-size: 10px;
   font-weight: 800;
   padding: 5px 10px;
@@ -151,7 +151,7 @@ input:checked + .slider:before { transform: translateX(16px); }
   max-width: 100%;
   word-break: break-word;
 }
-.chat-user { font-size: 11px; font-weight: 800; color: #2563eb; margin-bottom: 2px; }
+.chat-user { font-size: 11px; font-weight: 800; color: var(--link); margin-bottom: 2px; }
 .chat-text { font-size: 13px; line-height: 1.45; word-break: break-word; color: var(--ink-700); }
 .chat-time { font-size: 9px; color: var(--ink-400); font-weight: 600; margin-top: 4px; text-align: right; }
 
@@ -227,3 +227,9 @@ input:checked + .slider:before { transform: translateX(16px); }
 .btn-send:active { transform: scale(0.92); }
 
 .empty-chat { text-align: center; padding: 40px 20px; color: var(--ink-500); font-size: 12px; font-weight: 600; }
+
+/* Laporkan / Blokir (moderasi konten warga) */
+.chat-aksi { display:flex; gap:12px; margin-top:6px; }
+.chat-aksi-btn { background:none; border:none; padding:2px 0; font-size:10px; font-weight:700; color:var(--ink-500); cursor:pointer; text-decoration:underline; }
+.blokir-info { margin:8px 12px; padding:8px 12px; border-radius:12px; background:var(--tint-amber-50); border:1px solid var(--tint-amber-100); color:var(--on-amber); font-size:11px; font-weight:700; }
+.blokir-buka { background:none; border:none; color:var(--link); font-weight:800; font-size:11px; cursor:pointer; text-decoration:underline; }

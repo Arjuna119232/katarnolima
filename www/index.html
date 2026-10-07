@@ -56,35 +56,35 @@
   <div class="grid-8-container">
     <div class="grid-8">
       <a class="g8-item" href="pages/aduan-warga.html">
-        <div class="g8-icon" style="background:var(--tint-red-50); color:#e11d48;">📢</div>
+        <div class="g8-icon" style="background:var(--tint-red-50); color:var(--on-red);">📢</div>
         <p>Aduan<br>Warga</p>
       </a>
       <a class="g8-item" href="pages/berita-rw.html">
-        <div class="g8-icon" style="background:var(--tint-blue-50); color:#0284c7;">📰</div>
+        <div class="g8-icon" style="background:var(--tint-blue-50); color:var(--on-blue);">📰</div>
         <p>Berita<br>RW</p>
       </a>
       <a class="g8-item" href="pages/iuran-warga.html">
-        <div class="g8-icon" style="background:var(--tint-amber-50); color:#d97706;">💰</div>
+        <div class="g8-icon" style="background:var(--tint-amber-50); color:var(--on-amber);">💰</div>
         <p>Iuran<br>Warga</p>
       </a>
       <div class="g8-item" data-modal="sembako">
-        <div class="g8-icon" style="background:var(--tint-green-50); color:#059669;">🛒</div>
+        <div class="g8-icon" style="background:var(--tint-green-50); color:var(--success-text);">🛒</div>
         <p>Harga<br>Sembako</p>
       </div>
       <a class="g8-item" onclick="openSatpamModal()">
-        <div class="g8-icon" style="background:var(--tint-blue-50); color:#4f46e5;">🛡️</div>
+        <div class="g8-icon" style="background:var(--tint-blue-50); color:var(--link);">🛡️</div>
         <p>Keamanan<br>Satpam</p>
       </a>
       <div class="g8-item" data-modal="lingkungan">
-        <div class="g8-icon" style="background:var(--tint-green-50); color:#16a34a;">🧹</div>
+        <div class="g8-icon" style="background:var(--tint-green-50); color:var(--success-text);">🧹</div>
         <p>Lingkungan<br>Bersih</p>
       </div>
       <div class="g8-item" data-modal="petaBalai">
-        <div class="g8-icon" style="background:var(--tint-blue-50); color:#2563eb;">📍</div>
+        <div class="g8-icon" style="background:var(--tint-blue-50); color:var(--link);">📍</div>
         <p>Peta<br>Balai</p>
       </div>
       <a class="g8-item" href="pages/semua-layanan.html">
-        <div class="g8-icon" style="background:var(--tint-purple-50); color:#9333ea;">⊞</div>
+        <div class="g8-icon" style="background:var(--tint-purple-50); color:var(--on-purple);">⊞</div>
         <p>Semua<br>Layanan</p>
       </a>
     </div>
@@ -93,16 +93,15 @@
   <!-- CARD IKLAN (AdMob). core/admob.js menyesuaikan tinggi/lebar card supaya banner
        duduk pas persis di dalam kartu ini, dan memindahkannya lagi setiap kali posisi
        card berubah. Jangan dihapus / dipindah. -->
-  <div class="rekom-card" id="admob-native-card" data-admob="idle" style="margin: 0; position: relative; border: 1px dashed var(--border-strong); background: var(--surface); border-radius: 0; min-height: 50px;">
-    <span id="admob-card-label" style="position: absolute; top: 4px; right: 6px; z-index: 2; background: var(--border); color: var(--ink-600); font-size: 8px; font-weight: 900; padding: 2px 6px; border-radius: 4px; letter-spacing: 0.5px;">IKLAN</span>
-    <span class="admob-note" style="position: absolute; bottom: 4px; left: 8px; right: 60px; z-index: 2; color: var(--ink-600); font-size: 9px; font-weight: 700; line-height: 1.3; white-space: normal;"></span>
-    <div class="rekom-img" style="background:var(--surface-soft)">
-      <div style="font-size:30px">📢</div>
+  <div class="rekom-card admob-card" id="admob-native-card" data-admob="idle">
+    <span id="admob-card-label" class="admob-label">IKLAN</span>
+    <span class="admob-note"></span>
+    <div class="rekom-img admob-img">
+      <div class="admob-emoji">📢</div>
     </div>
     <div class="rekom-text">
-      <span class="rekom-label" style="color:#d97706;">Sponsor Lokal</span>
-      <h3 style="color:var(--ink-900);">Ruang Iklan / AdMob</h3>
-      <p style="color:var(--ink-500);">Dukung operasional aplikasi warga RW 05.</p>
+      <span class="rekom-label admob-sponsor">Iklan</span>
+      <h3>Memuat iklan…</h3>
     </div>
   </div>
 
@@ -143,7 +142,7 @@
         <div class="mitigasi-card" style="background:#0284c7; color:#ffffff;">
           <div>
             <h3 style="color:#ffffff;">Kritik, Saran &<br>Lapor Error Aplikasi</h3>
-            <button style="background:var(--surface); color:#0284c7;" onclick="window.open('https://wa.me/6289673580756?text=Halo%20Admin%20KATARNOLIMA,%20saya%20ingin%20menyampaikan%20saran/laporan%20bug%20aplikasi.','_blank')">Kirim Pesan</button>
+            <button style="background:var(--surface); color:var(--on-blue);" onclick="window.open('https://wa.me/6289673580756?text=Halo%20Admin%20KATARNOLIMA,%20saya%20ingin%20menyampaikan%20saran/laporan%20bug%20aplikasi.','_blank')">Kirim Pesan</button>
           </div>
           <div class="mit-icon">💡</div>
         </div>
@@ -171,7 +170,7 @@
   <div class="section-jaki">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px">
       <h2 class="h2-jaki">Rekomendasi Buat Kamu</h2>
-      <a href="pages/semua-layanan.html" style="color:#2563eb; font-size:13px; font-weight:700; text-decoration:none">Lihat Semua</a>
+      <a href="pages/semua-layanan.html" style="color:var(--link); font-size:13px; font-weight:700; text-decoration:none">Lihat Semua</a>
     </div>
 
     <!-- FITUR KHUSUS RW 05 -->
@@ -198,7 +197,7 @@
 
     <div style="text-align:center; padding:28px 16px 0; color:var(--ink-500); font-size:12px; line-height:1.5">
       Kamu sudah sampai di akhir halaman.<br>
-      <a href="https://wa.me/6289673580756?text=Saran%20Fitur%20RW05" style="color:#2563eb; font-weight:700; text-decoration:none">Yuk kirim saranmu!</a>
+      <a href="https://wa.me/6289673580756?text=Saran%20Fitur%20RW05" style="color:var(--link); font-weight:700; text-decoration:none">Yuk kirim saranmu!</a>
     </div>
   </div>
 
@@ -327,16 +326,16 @@
         </div>
         <div style="padding:20px;">
             <div style="background:var(--surface-warm); border:1.5px solid var(--ink-900); border-radius:12px; padding:14px; margin-bottom:14px;">
-                <div style="font-size:11px; font-weight:800; color:#173d1f; text-transform:uppercase; margin-bottom:4px;">Jam Operasional Jaga</div>
+                <div style="font-size:11px; font-weight:800; color:var(--on-green); text-transform:uppercase; margin-bottom:4px;">Jam Operasional Jaga</div>
                 <div id="info-jam-jaga" style="font-size:14px; font-weight:800; color:var(--ink-900);">Belum diatur admin</div>
             </div>
             <div style="background:var(--surface-warm); border:1.5px solid var(--ink-900); border-radius:12px; padding:14px; margin-bottom:14px;">
-                <div style="font-size:11px; font-weight:800; color:#173d1f; text-transform:uppercase; margin-bottom:4px;">Petugas yang Berjaga</div>
-                <div id="info-nama-petugas" style="font-size:15px; font-weight:800; color:#2563eb;">Belum diatur admin</div>
+                <div style="font-size:11px; font-weight:800; color:var(--on-green); text-transform:uppercase; margin-bottom:4px;">Petugas yang Berjaga</div>
+                <div id="info-nama-petugas" style="font-size:15px; font-weight:800; color:var(--link);">Belum diatur admin</div>
             </div>
             <div style="background:var(--tint-red-50); border:1.5px solid #e11d48; border-radius:12px; padding:14px;">
-                <div style="font-size:12px; font-weight:800; color:#be123c; margin-bottom:6px;">🚨 Himbauan Keamanan</div>
-                <p id="info-himbauan-keamanan" style="font-size:12px; color:#881337; margin:0; line-height:1.5;">Belum diatur admin</p>
+                <div style="font-size:12px; font-weight:800; color:var(--on-red); margin-bottom:6px;">🚨 Himbauan Keamanan</div>
+                <p id="info-himbauan-keamanan" style="font-size:12px; color:var(--on-red); margin:0; line-height:1.5;">Belum diatur admin</p>
             </div>
         </div>
     </div>
@@ -346,7 +345,7 @@
 <div id="modalPushUpdateApp" class="modal-overlay" style="position:fixed; top:0; left:0; width:100%; height:100%; z-index:1000001; display:none; align-items:center; justify-content:center; padding:16px;">
   <div class="modal-box" style="background:var(--surface); width:100%; max-width:380px; border-radius:24px; border:2px solid var(--ink-900); box-shadow:0 10px 25px rgba(0,0,0,0.2); overflow:hidden; text-align:center; padding:24px;">
     <div style="width:64px; height:64px; background:var(--tint-amber-50); border-radius:20px; display:flex; align-items:center; justify-content:center; font-size:32px; margin:0 auto 12px;">🚀</div>
-    <div style="font-size:10px; font-weight:800; color:#2563eb; letter-spacing:1px; text-transform:uppercase; margin-bottom:4px;">Pembaruan Aplikasi Tersedia</div>
+    <div style="font-size:10px; font-weight:800; color:var(--link); letter-spacing:1px; text-transform:uppercase; margin-bottom:4px;">Pembaruan Aplikasi Tersedia</div>
     <h3 id="appUpdateVersi" style="font-size:20px; font-weight:900; color:var(--ink-900); margin-bottom:12px;">Versi Baru</h3>
     <div style="background:var(--bg-page); border:1px solid var(--border); border-radius:14px; padding:12px; text-align:left; margin-bottom:18px;">
       <div style="font-size:11px; font-weight:800; color:var(--ink-500); margin-bottom:6px;">Catatan Perubahan:</div>

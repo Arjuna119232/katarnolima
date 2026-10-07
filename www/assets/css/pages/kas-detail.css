@@ -147,8 +147,8 @@ body {
   font-size: 16px;
   flex-shrink: 0;
 }
-.trans-icon.masuk { background: var(--tint-green-100); color: #16a34a; }
-.trans-icon.keluar { background: var(--tint-red-50); color: #dc2626; }
+.trans-icon.masuk { background: var(--tint-green-100); color: var(--success-text); }
+.trans-icon.keluar { background: var(--tint-red-50); color: var(--on-red); }
 
 .trans-info b {
   font-size: 13px;
@@ -170,8 +170,8 @@ body {
   text-align: right;
   flex-shrink: 0;
 }
-.trans-right.masuk { color: #16a34a; }
-.trans-right.keluar { color: #dc2626; }
+.trans-right.masuk { color: var(--success-text); }
+.trans-right.keluar { color: var(--on-red); }
 
 /* STATE STATE EMPTY / LOADING */
 .state-box {

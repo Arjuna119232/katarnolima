@@ -18,7 +18,7 @@ export function initIuran() {
         html += `<tr>
           <td style="font-family:monospace;font-weight:700;">${escapeHtml(d.nik || '-')}</td>
           <td style="font-weight:700;color:var(--ink-900);">${escapeHtml(d.bulan || '-')}</td>
-          <td style="color:#16a34a;font-weight:800;">Rp ${Number(d.nominal||0).toLocaleString('id-ID')}</td>
+          <td style="color:var(--success-text);font-weight:800;">Rp ${Number(d.nominal||0).toLocaleString('id-ID')}</td>
           <td><span style="background:var(--border);padding:2px 6px;border-radius:4px;font-weight:700;font-size:10px;">${escapeHtml(d.rt || '-')}</span></td>
           <td style="text-align:center;">${imgThumb}</td>
           <td style="font-size:11px;color:var(--ink-500);">${escapeHtml(detailTime)}</td>

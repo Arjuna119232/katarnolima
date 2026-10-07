@@ -12,9 +12,9 @@
   "icons": [
     {
       "src": "assets/img/katar-app-icon.png",
-      "sizes": "512x512",
+      "sizes": "2048x2048",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     }
   ]
 }

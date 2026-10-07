@@ -18,11 +18,20 @@ Ditemukan saat restrukturisasi dan audit 2026-10-06.
 | 10 | `junit/`, `LICENSE-junit.txt`, `*.proto` ikut di APK | **Selesai** — dibuang `scripts/patch_android.py cleanup` |
 | 11 | Plugin AdMob tidak mendukung native ads; banner di semua halaman & card "Ruang Iklan" justru disembunyikan | **Selesai (2026-10-06)** — banner sekarang duduk persis di dalam `#admob-native-card` di beranda; UMP consent ditambahkan; `isTesting` dikendalikan dari `native/admob.config.json` |
 
+## Ditangani di 2.3.4 (2026-10-08)
+
+| # | Masalah | Status |
+|---|---|---|
+| 11 (ikon) | Ikon PNG 2,3 MB | **Selesai** — 240 KB, dimensi tetap |
+| 17 | Hapus akun hanya menghapus dokumen profil | **Sebagian** — warga kini bisa hapus akun sendiri (Auth + profil). Penghapusan oleh admin tetap hanya dokumen |
+| 22 | (terkait) Bug AdMob membuat banner tidak mengikuti card | **Selesai** — lihat CHANGELOG 2.3.4 |
+| — | Mode malam: teks tak terbaca, warna hex tanpa token | **Selesai** — token di `theme.css` + tes `theme.test.mjs` |
+| — | Tidak ada AAB, hapus akun, URL privasi, laporan konten | **Selesai** — lihat `docs/CHECKLIST-PLAY-STORE.md` |
+
 ## Belum ditangani — butuh keputusan pemilik
 
 | # | Masalah | Lokasi | Saran |
 |---|---|---|---|
-| 11 | Ikon PNG 2,3 MB (2048×2048) = 15% ukuran APK | `www/assets/img/katar-app-icon.png` | Jangan sekadar diperkecil: `generate_icons.py` memakai ukuran asli sebagai kanvas. Ubah skripnya bersamaan, atau kompres PNG **tanpa mengubah dimensi** |
 | 12 | `admin.css` (± 470 baris) masih satu berkas + banyak gaya inline di template HTML string | `css/pages/admin.css`, modul `admin/features/*` | Pecah CSS per tab; pindahkan gaya inline berulang ke kelas CSS |
 | 13 | Tes otomatis hanya mencakup panel admin + 3 halaman warga | `tests/` | Perluas ke `home.js`, `aduan-warga.js`, `profil.js`, `iuran-warga.js` dengan pola stub yang sama |
 | 14 | Versi library npm di CI tidak dipatok (selalu terbaru) | `build-apk.yml` | Patok versi + commit `package-lock.json` agar build dapat diulang |
@@ -33,3 +42,7 @@ Ditemukan saat restrukturisasi dan audit 2026-10-06.
 | 20 | Kotlin dipatok `1.8.22` padahal Capacitor 8 butuh yang lebih baru | `native/signing.gradle` | Berisiko `NoSuchMethodError` saat runtime — harus diuji di perangkat nyata sebelum rilis |
 | 22 | Hanya 1 tayangan iklan (1 banner di beranda) — pendapatan kecil | `www/assets/js/core/admob.js` | Tambahkan **interstitial** saat pindah halaman: `prepareInterstitial()` + `showInterstitial()`. Format paling dihargai AdMob dan didukung penuh plugin ini |
 | 23 | Native ads butuh plugin Java sendiri (±200 baris) + ad unit "Native Advanced" baru | — | Baru dikerjakan setelah 2.3.0 stabil di perangkat |
+| 24 | ±250 `style=""` inline di HTML (index 107, admin 65, …) melanggar aturan "HTML hanya markup" | `www/index.html`, `pages/admin.html`, dll | **Sengaja belum diotomatiskan**: banyak elemen di-toggle JS lewat `el.style.display`; mengubahnya jadi kelas bisa merusak show/hide. Pindahkan per halaman sambil menguji |
+| 25 | SDK Firebase & Google Fonts dimuat dari internet tiap halaman → halaman gagal saat offline | semua halaman | Bundel SDK lewat npm + Vite/esbuild (butuh langkah build) dan simpan font lokal |
+| 26 | Aturan Firestore tidak ada di repo | Firebase Console | Simpan `firestore.rules` di repo & uji. Wajib mengizinkan: `laporan_konten` (create oleh user login, read/delete admin) dan hapus `users_profile/{uid}` oleh pemiliknya |
+| 27 | Blokir pengguna di Diskusi hanya lokal (per nama, per perangkat) | `pages/diskusi-rw.js` | Cukup untuk syarat Play; versi server-side butuh uid pada tiap pesan |

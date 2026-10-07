@@ -50,7 +50,7 @@ body {
   width: 42px;
   height: 42px;
   background: #fbbf24;
-  color: var(--ink-900);
+  color: var(--on-accent);
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -174,7 +174,7 @@ body {
 }
 .stat-card .sub {
   font-size: 11px;
-  color: #16a34a;
+  color: var(--success-text);
   font-weight: 700;
   margin-top: 4px;
 }
@@ -200,7 +200,7 @@ body {
   right: 16px;
   background: var(--tint-red-50);
   border: 1px solid #fecdd3;
-  color: #e11d48;
+  color: var(--on-red);
   border-radius: 10px;
   width: 32px;
   height: 32px;
@@ -304,7 +304,7 @@ textarea.form-control {
   border-radius: 10px;
   background: var(--tint-red-50);
   border: 1px solid var(--tint-red-100);
-  color: #ef4444;
+  color: var(--on-red);
   font-weight: 900;
   font-size: 14px;
   display: flex;
@@ -450,7 +450,7 @@ tr:hover td { background: var(--surface-warm); }
 }
 .gps-info-text {
   font-size: 11.5px;
-  color: #166534;
+  color: var(--on-green);
   font-weight: 700;
   word-break: break-all;
 }
@@ -467,3 +467,12 @@ tr:hover td { background: var(--surface-warm); }
   .hamburger { display: block; }
   .form-grid { grid-template-columns: 1fr; }
 }
+
+/* Laporan konten warga */
+.laporan-item { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; padding:14px; margin-bottom:10px; background:var(--tint-red-50); border:1px solid var(--tint-red-100); border-radius:12px; }
+.laporan-isi { flex:1; min-width:0; }
+.laporan-head { font-size:12px; color:var(--ink-900); margin-bottom:4px; }
+.laporan-head span { font-size:10px; color:var(--ink-500); }
+.laporan-teks { font-size:12px; color:var(--ink-700); line-height:1.4; word-break:break-word; }
+.laporan-aksi { display:flex; flex-direction:column; gap:6px; flex-shrink:0; }
+.laporan-kosong { font-size:12px; color:var(--ink-400); }

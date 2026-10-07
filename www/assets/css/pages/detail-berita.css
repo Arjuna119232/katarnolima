@@ -80,7 +80,7 @@ body {
     gap: 6px;
     font-size: 10px;
     font-weight: 800;
-    color: #2563eb;
+    color: var(--link);
     background: var(--tint-blue-50);
     padding: 4px 10px;
     border-radius: 8px;

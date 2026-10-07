@@ -9,5 +9,19 @@ html,body{background:var(--bg-page)!important}
 .overlay .modal-box{background:var(--surface);width:100%;max-width:420px;border-radius:24px 24px 0 0;padding:26px 22px 28px;position:relative;transform:translateY(30px);transition:transform .25s cubic-bezier(.34,1.56,.64,1)}
 .overlay.show .modal-box{transform:translateY(0)}
 .btn{border:none;border-radius:14px;padding:12px 16px;font-weight:800;font-size:13px;cursor:pointer}
-.btn-primary{background:var(--ink-900);color:#fff}
+.btn-primary{background:var(--btn-solid-bg);color:var(--btn-solid-fg)}
 .btn-outline{background:var(--surface-soft);color:var(--ink-800)}
+
+/* ===== Hapus akun & modal form (pengaturan-akun.html) ===== */
+a.settings-row{ text-decoration:none; color:inherit; }
+.danger-text{ color:var(--on-red); }
+.modal-title{ font-size:16px; font-weight:800; color:var(--ink-900); margin-bottom:12px; }
+.modal-desc{ font-size:12px; line-height:1.5; color:var(--ink-600); margin-bottom:14px; }
+.modal-input{ width:100%; padding:12px 14px; border-radius:12px; border:1.5px solid var(--border-strong); background:var(--surface-soft); color:var(--ink-900); font-size:14px; outline:none; }
+.modal-input:focus{ border-color:var(--primary); }
+.modal-status{ min-height:18px; margin:8px 0 4px; font-size:12px; font-weight:700; color:var(--on-red); }
+.modal-status.ok{ color:var(--success-text); }
+.modal-actions{ display:flex; gap:10px; margin-top:8px; }
+.modal-btn{ flex:1; padding:12px; border-radius:12px; border:1px solid var(--border-strong); background:var(--surface-soft); color:var(--ink-900); font-weight:800; font-size:13px; cursor:pointer; }
+.modal-btn-danger{ background:#dc2626; border-color:#dc2626; color:#fff; }
+.modal-btn:disabled{ opacity:.6; cursor:default; }

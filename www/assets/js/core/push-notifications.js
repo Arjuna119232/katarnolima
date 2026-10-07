@@ -36,26 +36,26 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  // Helper: Ambil uid dari session / auth
+  // Helper: ambil uid dari Firebase Auth (warga maupun admin login lewat jalur yang sama).
+  // Catatan perbaikan: dulu memakai `import { auth }` dari services/firebase.js, padahal
+  // modul itu tidak mengekspor `auth` → selalu error, ditelan catch, dan token FCM
+  // warga TIDAK PERNAH tersimpan. Sekarang auth dibuat dari `app`.
   async function getUid() {
-    // Cek admin session dulu
     try {
-      const sess = JSON.parse(localStorage.getItem('rw05_admin_session') || 'null');
-      if (sess && sess.uid) return sess.uid;
-    } catch (e) {}
-
-    // Kalau bukan admin, cek Firebase Auth (user biasa login lewat sini)
-    try {
-      const { auth } = await import('../services/firebase.js');
-      const { onAuthStateChanged } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js');
+      const { app } = await import('../services/firebase.js');
+      const { getAuth, onAuthStateChanged } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js');
+      const auth = getAuth(app);
       return await new Promise((resolve) => {
-        const unsub = onAuthStateChanged(auth, (user) => {
+        let unsub = () => {};
+        const timer = setTimeout(() => { unsub(); resolve(null); }, 3000);
+        unsub = onAuthStateChanged(auth, (user) => {
+          clearTimeout(timer);
           unsub();
           resolve(user ? user.uid : null);
         });
-        setTimeout(() => { unsub(); resolve(null); }, 3000);
       });
     } catch (e) {
+      console.error('getUid gagal:', e);
       return null;
     }
   }

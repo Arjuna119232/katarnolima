@@ -1,0 +1,12 @@
+/* KATARNOLIMA — halaman Kebijakan Privasi. Semua warna lewat token tema. */
+.kp-root{ max-width:640px; margin:0 auto; min-height:100vh; background:var(--bg-page); color:var(--ink-800); }
+.kp-header{ position:sticky; top:0; z-index:5; display:flex; align-items:center; gap:12px; padding:14px 16px; background:var(--header-bg); backdrop-filter:blur(10px); border-bottom:1px solid var(--border); }
+.kp-header h1{ font-size:16px; font-weight:800; color:var(--ink-900); }
+.kp-back{ width:36px; height:36px; display:flex; align-items:center; justify-content:center; border-radius:50%; background:var(--surface-soft); color:var(--ink-900); text-decoration:none; font-weight:800; }
+.kp-content{ padding:16px 18px 40px; font-size:13px; line-height:1.65; }
+.kp-content p{ margin-bottom:12px; color:var(--ink-700); }
+.kp-meta{ font-size:11px; font-weight:700; color:var(--ink-500) !important; }
+.kp-content h2{ font-size:14px; font-weight:800; color:var(--ink-900); margin:20px 0 8px; }
+.kp-content ul{ margin:0 0 12px 18px; color:var(--ink-700); }
+.kp-content li{ margin-bottom:6px; }
+.kp-content a{ color:var(--link); font-weight:700; }

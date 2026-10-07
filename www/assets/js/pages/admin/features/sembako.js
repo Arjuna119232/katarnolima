@@ -37,7 +37,7 @@ export function initSembako() {
         const d = docItem.data();
         html += `<tr>
           <td><b>${escapeHtml(d.nama||'-')}</b></td>
-          <td style="color:#2563eb;font-weight:800">Rp ${Number(d.harga||0).toLocaleString('id-ID')} / ${escapeHtml(d.satuan||'Kg')}</td>
+          <td style="color:var(--link);font-weight:800">Rp ${Number(d.harga||0).toLocaleString('id-ID')} / ${escapeHtml(d.satuan||'Kg')}</td>
           <td>${escapeHtml(d.pasar||'-')}</td>
           <td><span style="font-size:10px;color:var(--ink-500)">${escapeHtml(d.tanggalFormatted||'-')}</span></td>
           <td><button class="btn btn-red btn-sm" onclick="window.hapusSembako(${jsArg(docItem.id)})">Hapus</button></td>

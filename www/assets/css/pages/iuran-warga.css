@@ -119,15 +119,6 @@ body {
   padding: 16px;
   text-align: center;
 }
-.qris-img {
-  width: 170px;
-  height: 170px;
-  object-fit: contain;
-  border-radius: 12px;
-  margin: 10px 0;
-  border: 1px solid var(--border);
-  background: var(--surface);
-}
 .rekening-info {
   font-size: 12px;
   color: var(--ink-700);
@@ -138,7 +129,7 @@ body {
   margin-top: 8px;
   padding: 6px 14px;
   background: var(--tint-blue-50);
-  color: #2563eb;
+  color: var(--link);
   border: 1px solid var(--tint-blue-200);
   border-radius: 8px;
   font-size: 11px;

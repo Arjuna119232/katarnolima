@@ -1,5 +1,48 @@
 # Changelog
 
+## [2.3.4] — Perbaikan AdMob, Mode Malam & Persiapan Play Store (2026-10-08)
+
+### AdMob (iklan di card beranda)
+- **Bug `alasan is not defined`** di `core/admob.js` (`notif(alas)` memakai `alasan`): setiap
+  pemasangan banner melempar error *setelah* iklan tampil, sehingga pemantau scroll tidak
+  pernah dipasang.
+- **Bug `jedaPasang is not a function`**: `var jedaPasang` menimpa `function jedaPasang`,
+  jadi reposisi banner tidak pernah berjalan. Banner menempel di posisi layar awal dan tidak
+  ikut card saat di-scroll.
+- Penulisan ulang alur posisi: banner disembunyikan seketika saat scroll, dipasang lagi setelah
+  berhenti hanya bila card terlihat **penuh**; posisi sama → `resumeBanner` (tanpa request baru);
+  request iklan baru dibatasi 20 detik; coba ulang maks. 3×; periksa posisi berkala.
+- Pesan teknis ("Gagal: …") **hanya tampil di mode uji**. Teks "Dukung operasional…" dihapus
+  dari card (kebijakan AdMob melarang ajakan klik).
+- `native/admob.config.json`: `isTesting` → **false** (rilis memakai iklan sungguhan).
+  Untuk build uji di HP sendiri set `true` sementara — jangan klik iklan sendiri.
+
+### Mode malam
+- Token baru di `theme.css`: `--link`, `--success-text`, `--on-green/-blue/-red/-pink/-amber/-purple`,
+  `--on-accent`, `--btn-solid-bg/-fg`, plus `color-scheme`. 97 warna teks hex diganti token.
+- Teks yang dulu tak terbaca di mode malam: kartu pengguna & tombol utama di Pengaturan (1.1:1),
+  logo "05" dan badge "SOON" (1.5:1), modal layanan/beranda (1.8–2.5:1), badge status aduan.
+- `theme.css`: `transition` tidak lagi dipasang ke **semua** elemen `[class]` (membuat scroll berat).
+- Tombol tengah navigasi memakai teal lebih gelap agar teks putih terbaca.
+
+### Play Store
+- Workflow membangun **AAB** (`bundleRelease`) selain APK — Play hanya menerima AAB.
+- **Hapus Akun** di dalam aplikasi (Profil → Akun, Tampilan & Privasi) + **Ubah Password** (tautan reset email).
+- Halaman **Kebijakan Privasi** penuh (`pages/kebijakan-privasi.html`).
+- **Laporkan / Blokir** komentar di Diskusi Warga + panel "Laporan dari Warga" di admin
+  (koleksi Firestore baru `laporan_konten`).
+- Izin dirapikan: `READ_MEDIA_IMAGES/VIDEO` & izin storage dibuang; `POST_NOTIFICATIONS` dan `AD_ID` ditambahkan.
+
+### Bug lain
+- `push-notifications.js`: `import { auth }` dari modul yang tidak mengekspor `auth` → token FCM
+  warga **tidak pernah tersimpan**. Diperbaiki.
+- `admin/auth-gate.js`: cadangan sesi di `localStorage` (`rw05_admin_session`) bisa dipalsukan
+  untuk membuka tampilan admin → dihapus; gerbang hanya percaya Firebase Auth.
+- Versi disamakan ke 2.3.4 (`pengaturan.html`, `tentang.html`, `AGENTS.md` sebelumnya 2.2.0).
+- Ikon 2,3 MB → 240 KB (dimensi tetap 2048×2048; asli disimpan di `assets-source/`).
+- ±10 aturan CSS mati dihapus; `manifest.json` memakai ukuran ikon yang benar.
+- Tes baru: `admob.test.mjs`, `theme.test.mjs` → total 26 tes.
+
 ## [2.3.0] — Audit Keamanan & Pembersihan
 
 Audit menyeluruh atas source, konfigurasi build, dan isi APK (2026-10-06).

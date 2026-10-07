@@ -21,7 +21,6 @@ a{text-decoration:none;color:inherit}
 .grid-8{display:grid;grid-template-columns:repeat(4,1fr);gap:14px 8px;padding:22px 10px 10px}
 .g8-item{text-align:center;color:var(--ink-900);display:block;text-decoration:none;transition:transform 0.18s cubic-bezier(0.34,1.56,0.64,1);will-change:transform;position:relative;overflow:hidden;border-radius:16px}
 .g8-icon{width:56px;height:56px;background:var(--tint-amber-50);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 6px;font-size:24px;border:1px solid var(--tint-amber-100);transition:transform 0.22s cubic-bezier(0.34,1.56,0.64,1)}
-.g8-icon.blue{background:var(--tint-blue-100);border-color:var(--tint-blue-200)}
 .g8-item p{font-size:11px;line-height:1.15;font-weight:600;color:var(--ink-800);transition:transform 0.15s ease}
 .g8-item:active{transform:scale(0.86)}
 .g8-item:active .g8-icon{transform:scale(1.2) rotate(-6deg)}
@@ -75,7 +74,7 @@ a{text-decoration:none;color:inherit}
 .jaki-nav a{font-size:10px;color:var(--ink-500);display:flex;flex-direction:column;align-items:center;gap:4px;font-weight:500;min-width:56px;text-align:center;text-decoration:none;transition:transform 0.15s cubic-bezier(0.34,1.56,0.64,1)}
 .jaki-nav a.active{color:var(--ink-900);font-weight:800}
 .jaki-nav a:active{transform:scale(0.82) translateY(2px)}
-.jaki-nav a.center .cam{width:60px;height:60px;background:#0fb398;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:26px;margin-top:-32px;border:4px solid var(--surface);transition:transform 0.18s cubic-bezier(0.34,1.56,0.64,1)}
+.jaki-nav a.center .cam{width:60px;height:60px;background:#0f766e;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:26px;margin-top:-32px;border:4px solid var(--surface);transition:transform 0.18s cubic-bezier(0.34,1.56,0.64,1)}
 .jaki-nav a.center:active .cam{transform:scale(0.9)}
 .modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.58);backdrop-filter:blur(10px);z-index:200;display:none;align-items:center;justify-content:center;padding:16px}
 .modal-overlay.active{display:flex}
@@ -95,12 +94,10 @@ a{text-decoration:none;color:inherit}
 .chip-row{display:flex;gap:8px;padding:12px 16px;overflow-x:auto;white-space:nowrap;scrollbar-width:none}
 .chip{padding:8px 14px;border-radius:999px;border:1px solid var(--border);background:var(--surface);font-size:12px;font-weight:600;color:var(--ink-600);flex-shrink:0;cursor:pointer;transition:transform 0.15s ease, background 0.15s ease}
 .chip:active{transform:scale(0.92)}
-.chip.active{background:#111;color:#fff;border-color:var(--ink-900)}
+.chip.active{background:var(--btn-solid-bg);color:var(--btn-solid-fg);border-color:var(--btn-solid-bg)}
 .section-title{font-size:14px;font-weight:800;color:var(--ink-900);padding:22px 16px 8px;background:var(--surface);width:100%}
 .jaki-item{display:flex;gap:14px;padding:14px 16px;align-items:flex-start;cursor:pointer;width:100%;text-decoration:none;transition:transform 0.15s ease}
 .jaki-item:active{transform:scale(0.98);background:transparent!important}
-.jaki-item .jaki-icon{width:52px;height:52px;border-radius:50%;background:var(--tint-blue-50);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;transition:transform 0.18s cubic-bezier(0.34,1.56,0.64,1)}
-.jaki-item:active .jaki-icon{transform:scale(1.1)}
 .jaki-item h4{font-size:15px;font-weight:700;color:var(--ink-900);line-height:1.2}
 .jaki-item p{font-size:13px;color:var(--ink-600);margin-top:4px;line-height:1.3}
 .result-item{display:flex;gap:14px;padding:14px 16px;align-items:flex-start;cursor:pointer;border-bottom:1px solid var(--bg-page);text-decoration:none;color:inherit;transition:transform 0.15s ease}
@@ -158,7 +155,6 @@ a{text-decoration:none;color:inherit}
 .settings-row .row-icon{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;background:var(--tint-blue-50)}
 .settings-row .row-icon.amber{background:var(--tint-amber-50)}
 .settings-row .row-icon.green{background:var(--tint-green-50)}
-.settings-row .row-icon.red{background:var(--tint-red-50)}
 .settings-row .row-icon.purple{background:var(--tint-purple-50)}
 .settings-row .row-body{flex:1;min-width:0}
 .settings-row .row-title{font-size:14.5px;font-weight:700;color:var(--ink-900)}
@@ -183,7 +179,7 @@ a{text-decoration:none;color:inherit}
 .theme-opt .t-label{font-size:12px;font-weight:700;color:var(--ink-800)}
 .theme-opt.selected{border-color:var(--primary);background:var(--tint-blue-50)}
 
-.settings-user-card{margin:16px;padding:18px;border-radius:20px;background:linear-gradient(135deg,var(--ink-900) 0%,#1e293b 100%);color:#fff;display:flex;align-items:center;gap:14px;box-shadow:var(--shadow-strong)}
+.settings-user-card{margin:16px;padding:18px;border-radius:20px;background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);color:#fff;border:1px solid var(--border);display:flex;align-items:center;gap:14px;box-shadow:var(--shadow-strong)}
 .settings-user-card .avatar{width:54px;height:54px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:20px;color:#171308;flex-shrink:0}
 .settings-user-card .info b{display:block;font-size:15px;font-weight:800}
 .settings-user-card .info span{display:block;font-size:12px;opacity:.75;margin-top:2px}
@@ -191,12 +187,5 @@ a{text-decoration:none;color:inherit}
 .app-version-tag{text-align:center;font-size:11.5px;color:var(--ink-400);font-weight:600;padding:22px 0 6px}
 
 /* generic badge / status pill reused across pages */
-.badge-pill{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:3px 10px;border-radius:999px}
-.badge-pill.on{background:var(--tint-green-50);color:var(--success)}
-.badge-pill.off{background:var(--surface-soft);color:var(--ink-500)}
 
 /* empty state, reusable */
-.empty-state{text-align:center;padding:40px 20px;color:var(--ink-500)}
-.empty-state .e-icon{font-size:40px;margin-bottom:10px}
-.empty-state .e-title{font-size:14px;font-weight:800;color:var(--ink-800);margin-bottom:4px}
-.empty-state .e-desc{font-size:12.5px;line-height:1.5}

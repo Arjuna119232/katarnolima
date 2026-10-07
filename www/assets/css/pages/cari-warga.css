@@ -188,12 +188,12 @@ html, body {
 }
 
 /* COLOR VARIATIONS FOR CATEGORY ICONS */
-.result-icon.cat-laporan { background: var(--tint-red-50); color: #e11d48; }
-.result-icon.cat-iuran { background: var(--tint-amber-50); color: #d97706; }
-.result-icon.cat-berita { background: var(--tint-blue-50); color: #0284c7; }
-.result-icon.cat-darurat { background: var(--tint-red-50); color: #b91c1c; }
-.result-icon.cat-fasilitas { background: var(--tint-green-50); color: #16a34a; }
-.result-icon.cat-profil { background: var(--tint-purple-50); color: #9333ea; }
+.result-icon.cat-laporan { background: var(--tint-red-50); color: var(--on-red); }
+.result-icon.cat-iuran { background: var(--tint-amber-50); color: var(--on-amber); }
+.result-icon.cat-berita { background: var(--tint-blue-50); color: var(--on-blue); }
+.result-icon.cat-darurat { background: var(--tint-red-50); color: var(--on-red); }
+.result-icon.cat-fasilitas { background: var(--tint-green-50); color: var(--success-text); }
+.result-icon.cat-profil { background: var(--tint-purple-50); color: var(--on-purple); }
 .result-icon.cat-semua { background: var(--surface-soft); color: var(--ink-700); }
 
 .result-info {

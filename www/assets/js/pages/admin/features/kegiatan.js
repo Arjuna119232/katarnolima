@@ -37,7 +37,7 @@ export function initKegiatan() {
           <div style="display:flex;justify-content:space-between;align-items:flex-start">
             <div>
               <div style="font-size:13px;font-weight:800;color:var(--ink-900)">${escapeHtml(d.judul||'-')}</div>
-              <div style="font-size:11px;color:#2563eb;font-weight:700;margin-top:2px">⏰ ${escapeHtml(d.jadwal||'-')} • 👤 PJ: ${escapeHtml(d.pj||'-')}</div>
+              <div style="font-size:11px;color:var(--link);font-weight:700;margin-top:2px">⏰ ${escapeHtml(d.jadwal||'-')} • 👤 PJ: ${escapeHtml(d.pj||'-')}</div>
             </div>
             <button class="btn btn-red btn-sm" onclick="window.hapusKegiatan(${jsArg(docItem.id)})">Hapus</button>
           </div>

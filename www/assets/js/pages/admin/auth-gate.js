@@ -16,21 +16,16 @@ export function setupAuthGate(onReady) {
   function showGate(){ if(adminGate) adminGate.style.display='flex'; }
   function hideGate(){ if(adminGate) adminGate.style.display='none'; }
 
+  // Gerbang hanya terbuka bila Firebase Auth benar-benar punya sesi. Dulu ada cadangan
+  // "rw05_admin_session" di localStorage — itu bisa dipalsukan siapa saja dan membuka
+  // tampilan admin tanpa login. Keamanan data tetap ditegakkan Firestore Rules.
   onAuthStateChanged(auth, (user)=>{
     if(user){
-      localStorage.setItem('rw05_admin_session', JSON.stringify({email:user.email, uid:user.uid, loginAt:Date.now()}));
       hideGate();
       if(adminEmailLabel) adminEmailLabel.textContent = user.email || 'Admin';
       onReady();
     }else{
-      const sess = JSON.parse(localStorage.getItem('rw05_admin_session')||'null');
-      if(sess && Date.now()-sess.loginAt < 24*60*60*1000){
-        hideGate();
-        if(adminEmailLabel) adminEmailLabel.textContent = sess.email || 'Admin';
-        onReady();
-      }else{
-        showGate();
-      }
+      showGate();
     }
   });
 
@@ -57,7 +52,6 @@ export function setupAuthGate(onReady) {
       type: 'confirm',
       onYes: async () => {
         await signOut(auth); 
-        localStorage.removeItem('rw05_admin_session'); 
         window.location.href='profil.html';
       }
     });

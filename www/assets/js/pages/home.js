@@ -153,10 +153,10 @@ window.openUniversalModalIndex = function(type) {
         const d = docItem.data(); if(d.pasar) pasarLokasi = d.pasar;
         html += `<div style="background:var(--surface-warm); border:1.5px solid var(--ink-900); border-radius:12px; padding:10px 14px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
           <span style="font-size:13px; font-weight:800; color:var(--ink-900);">🌾 ${escapeHtml(d.nama || 'Sembako')}</span>
-          <span style="font-size:13px; font-weight:800; color:#2563eb;">Rp ${Number(d.harga||0).toLocaleString('id-ID')} /${escapeHtml(d.satuan||'Kg')}</span>
+          <span style="font-size:13px; font-weight:800; color:var(--link);">Rp ${Number(d.harga||0).toLocaleString('id-ID')} /${escapeHtml(d.satuan||'Kg')}</span>
         </div>`;
       });
-      html += `<div style="background:var(--tint-blue-50); border:1.5px solid #2563eb; border-radius:12px; padding:10px; font-size:11px; font-weight:800; color:#1e40af; margin-top:8px;">📍 Lokasi: ${escapeHtml(pasarLokasi)}</div>`;
+      html += `<div style="background:var(--tint-blue-50); border:1.5px solid #2563eb; border-radius:12px; padding:10px; font-size:11px; font-weight:800; color:var(--on-blue); margin-top:8px;">📍 Lokasi: ${escapeHtml(pasarLokasi)}</div>`;
       bodyEl.innerHTML = html;
     });
   } else if (type === 'lingkungan') {
@@ -165,7 +165,7 @@ window.openUniversalModalIndex = function(type) {
       if(snap.empty) { renderEmptyStateIndex(bodyEl, 'Jadwal kerja bakti lingkungan belum diupdate oleh pengurus RW 05.'); return; }
       snap.forEach((docItem) => {
         const d = docItem.data();
-        bodyEl.innerHTML = `<div style="background:var(--tint-green-50); border:1.5px solid #16a34a; border-radius:12px; padding:14px; margin-bottom:14px;"><div style="font-size:11px; font-weight:800; color:#166534; text-transform:uppercase; margin-bottom:4px;">🧹 ${escapeHtml(d.judul || 'Jadwal Kerja Bakti')}:</div><div style="font-size:14px; font-weight:800; color:#15803d;">${escapeHtml(d.tanggal || '-')}</div></div><div style="font-size:12px; color:var(--ink-700);">📍 <b>Titik Kumpul:</b> ${escapeHtml(d.lokasi || '-')}</div>`;
+        bodyEl.innerHTML = `<div style="background:var(--tint-green-50); border:1.5px solid #16a34a; border-radius:12px; padding:14px; margin-bottom:14px;"><div style="font-size:11px; font-weight:800; color:var(--on-green); text-transform:uppercase; margin-bottom:4px;">🧹 ${escapeHtml(d.judul || 'Jadwal Kerja Bakti')}:</div><div style="font-size:14px; font-weight:800; color:var(--on-green);">${escapeHtml(d.tanggal || '-')}</div></div><div style="font-size:12px; color:var(--ink-700);">📍 <b>Titik Kumpul:</b> ${escapeHtml(d.lokasi || '-')}</div>`;
       });
     });
   } else if (type === 'posyandu') {
@@ -174,7 +174,7 @@ window.openUniversalModalIndex = function(type) {
       if(snap.empty) { renderEmptyStateIndex(bodyEl, 'Jadwal pelayanan posyandu belum diupdate oleh pengurus RW 05.'); return; }
       snap.forEach((docItem) => {
         const d = docItem.data();
-        bodyEl.innerHTML = `<div style="background:var(--tint-red-50); border:1.5px solid #db2777; border-radius:12px; padding:14px; margin-bottom:14px;"><div style="font-size:11px; font-weight:800; color:#9d174d; text-transform:uppercase; margin-bottom:4px;">🏥 ${escapeHtml(d.judul || 'Jadwal Pelayanan')}:</div><div style="font-size:14px; font-weight:800; color:#be185d;">${escapeHtml(d.jadwal || '-')}</div></div><div style="font-size:12px; color:var(--ink-700);">💉 <b>Layanan:</b> ${escapeHtml(d.keterangan || '-')}</div>`;
+        bodyEl.innerHTML = `<div style="background:var(--tint-red-50); border:1.5px solid #db2777; border-radius:12px; padding:14px; margin-bottom:14px;"><div style="font-size:11px; font-weight:800; color:var(--on-pink); text-transform:uppercase; margin-bottom:4px;">🏥 ${escapeHtml(d.judul || 'Jadwal Pelayanan')}:</div><div style="font-size:14px; font-weight:800; color:var(--on-pink);">${escapeHtml(d.jadwal || '-')}</div></div><div style="font-size:12px; color:var(--ink-700);">💉 <b>Layanan:</b> ${escapeHtml(d.keterangan || '-')}</div>`;
       });
     });
   } else if (type === 'belajar') {
@@ -183,7 +183,7 @@ window.openUniversalModalIndex = function(type) {
       if(snap.empty) { renderEmptyStateIndex(bodyEl, 'Jadwal belajar bersama/bimbel belum diupdate oleh pengurus RW 05.'); return; }
       snap.forEach((docItem) => {
         const d = docItem.data();
-        bodyEl.innerHTML = `<div style="background:var(--tint-blue-50); border:1.5px solid #2563eb; border-radius:12px; padding:14px; margin-bottom:14px;"><div style="font-size:11px; font-weight:800; color:#1e40af; text-transform:uppercase; margin-bottom:4px;">🎓 ${escapeHtml(d.judul || 'Bimbel')}:</div><div style="font-size:14px; font-weight:800; color:#1d4ed8;">${escapeHtml(d.jadwal || '-')}</div></div><div style="font-size:12px; color:var(--ink-700);">✏️ <b>Detail:</b> ${escapeHtml(d.isi || '-')}</div>`;
+        bodyEl.innerHTML = `<div style="background:var(--tint-blue-50); border:1.5px solid #2563eb; border-radius:12px; padding:14px; margin-bottom:14px;"><div style="font-size:11px; font-weight:800; color:var(--on-blue); text-transform:uppercase; margin-bottom:4px;">🎓 ${escapeHtml(d.judul || 'Bimbel')}:</div><div style="font-size:14px; font-weight:800; color:var(--on-blue);">${escapeHtml(d.jadwal || '-')}</div></div><div style="font-size:12px; color:var(--ink-700);">✏️ <b>Detail:</b> ${escapeHtml(d.isi || '-')}</div>`;
       });
     });
   } else if (type === 'datawarga') {

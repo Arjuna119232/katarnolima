@@ -156,7 +156,7 @@ body {
   margin-bottom: 14px;
 }
 .section-header-row h3 { font-size: 15px; font-weight: 800; color: var(--ink-900); margin: 0; letter-spacing: -0.2px; }
-.section-header-row a { font-size: 12px; font-weight: 800; color: #2563eb; text-decoration: none; }
+.section-header-row a { font-size: 12px; font-weight: 800; color: var(--link); text-decoration: none; }
 
 /* KARTU DAFTAR LAPORAN */
 .active-report-card {
@@ -180,9 +180,9 @@ body {
 
 /* BADGE STATUS DINAMIS */
 .badge-status-dinamis { font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 8px; width: fit-content; text-align: center; letter-spacing: 0.3px; }
-.badge-status-dinamis.MenungguVerifikasi, .badge-status-dinamis.Menunggu { background: var(--tint-amber-50); color: #b45309; }
-.badge-status-dinamis.Diproses { background: var(--tint-blue-100); color: #0369a1; }
-.badge-status-dinamis.Selesai { background: var(--tint-green-100); color: #15803d; }
+.badge-status-dinamis.MenungguVerifikasi, .badge-status-dinamis.Menunggu { background: var(--tint-amber-50); color: var(--on-amber); }
+.badge-status-dinamis.Diproses { background: var(--tint-blue-100); color: var(--on-blue); }
+.badge-status-dinamis.Selesai { background: var(--tint-green-100); color: var(--on-green); }
 
 /* MODAL PANEL / BOTTOM SHEET */
 .form-panel-modal {
@@ -244,7 +244,7 @@ body {
   transition: transform 0.15s ease;
 }
 .btn-submit:active { transform: scale(0.97); }
-.badge-gps { display: inline-block; padding: 6px 12px; background: var(--tint-blue-100); color: #0369a1; border-radius: 12px; font-size: 11px; font-weight: 800; text-align: left; word-break: break-word; line-height: 1.4; }
+.badge-gps { display: inline-block; padding: 6px 12px; background: var(--tint-blue-100); color: var(--on-blue); border-radius: 12px; font-size: 11px; font-weight: 800; text-align: left; word-break: break-word; line-height: 1.4; }
 
 /* PRIVACY ANONIM TOGGLE BOX */
 .privacy-option-box {
@@ -363,10 +363,10 @@ input:checked + .slider:before { transform: translateX(20px); }
   justify-content: center;
   font-size: 32px;
 }
-.modern-dialog-icon.warning { background: var(--tint-amber-50); color: #d97706; }
-.modern-dialog-icon.success { background: var(--tint-green-100); color: #16a34a; }
-.modern-dialog-icon.error { background: var(--tint-red-50); color: #dc2626; }
-.modern-dialog-icon.info { background: var(--tint-blue-100); color: #0284c7; }
+.modern-dialog-icon.warning { background: var(--tint-amber-50); color: var(--on-amber); }
+.modern-dialog-icon.success { background: var(--tint-green-100); color: var(--success-text); }
+.modern-dialog-icon.error { background: var(--tint-red-50); color: var(--on-red); }
+.modern-dialog-icon.info { background: var(--tint-blue-100); color: var(--on-blue); }
 
 .modern-dialog-title {
   font-size: 16px;
