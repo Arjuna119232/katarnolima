@@ -17,14 +17,23 @@ let currentActiveUserName = '';
 
 let activeModalType = null;
 
-/* HELPER CEK DAN PERMINTAAN IZIN NATIVE CAPACITOR */
+/* HELPER CEK DAN PERMINTAAN IZIN NATIVE CAPACITOR
+ *
+ * CATATAN PENTING (perbaikan 2.3.6): izin 'photos' TIDAK lagi diminta.
+ * Aplikasi memotret lewat navigator.mediaDevices.getUserMedia (WebView), bukan
+ * Camera.getPhoto, jadi yang dibutuhkan hanya android.permission.CAMERA.
+ * Sebelumnya kode ikut meminta 'photos' (READ_MEDIA_IMAGES) yang sudah dibuang
+ * dari manifest — sehingga checkPermissions() selalu melaporkan photos != granted
+ * dan requestPermissions() dipanggil terus-menerus. Setelah warga menolak 2x,
+ * Android berhenti menampilkan dialog, jadi给人的 kesan "popup izinnya hilang".
+ * Lihat core/permissions.js untuk alur onboarding yang benar. */
 async function requestNativePermissions(type = 'camera') {
   if (window.Capacitor && window.Capacitor.Plugins) {
     try {
       if (type === 'camera' && window.Capacitor.Plugins.Camera) {
         const status = await window.Capacitor.Plugins.Camera.checkPermissions();
-        if (status.camera !== 'granted' || status.photos !== 'granted') {
-          await window.Capacitor.Plugins.Camera.requestPermissions({ permissions: ['camera', 'photos'] });
+        if (status.camera !== 'granted') {
+          await window.Capacitor.Plugins.Camera.requestPermissions({ permissions: ['camera'] });
         }
       } else if (type === 'location' && window.Capacitor.Plugins.Geolocation) {
         const status = await window.Capacitor.Plugins.Geolocation.checkPermissions();

@@ -1,0 +1,177 @@
+/* KATARNOLIMA — pages/izin.css
+ * Sheet onboarding izin Android (satu kali saat warga pertama membuka aplikasi).
+ * Terpisah dari home.css karena bukan bagian isi beranda, melainkan lapisan
+ * di atasnya. Semua warna lewat token tema supaya mode malam ikut benar.
+ */
+
+.izin-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 1000200;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(2, 6, 16, 0.62);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  padding: 0;
+}
+.izin-sheet.show { display: flex; }
+
+.izin-sheet-kartu {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  max-height: 88vh;
+  overflow-y: auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 22px 22px 0 0;
+  padding: 22px 18px calc(22px + env(safe-area-inset-bottom, 0px));
+  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.35);
+  animation: izin-naik 0.22s ease-out;
+}
+
+@keyframes izin-naik {
+  from { transform: translateY(18px); opacity: 0.6; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+.izin-sheet-tutup {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--surface-soft);
+  color: var(--ink-600);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.izin-sheet-kartu h2 {
+  margin: 0 0 6px;
+  padding-right: 36px;
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--ink-900);
+}
+
+.izin-sheet-sub {
+  margin: 0 0 16px;
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--ink-600);
+}
+
+.izin-daftar {
+  list-style: none;
+  margin: 0 0 18px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.izin-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 11px 12px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface-soft);
+}
+
+.izin-ikon { font-size: 19px; line-height: 1.2; flex: 0 0 auto; }
+
+.izin-teks {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.izin-teks strong {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-900);
+}
+.izin-alasan {
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: var(--ink-600);
+}
+
+.izin-status {
+  flex: 0 0 auto;
+  align-self: center;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--ink-600);
+  white-space: nowrap;
+}
+.izin-item[data-status="granted"] .izin-status {
+  border-color: var(--border-strong);
+  color: var(--success-text);
+}
+.izin-item[data-status="denied"] .izin-status {
+  border-color: var(--border-strong);
+  color: var(--on-red);
+}
+
+.izin-sheet-aksi {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.izin-btn {
+  flex: 1 1 0;
+  min-height: 46px;            /* target sentuh yang nyaman */
+  padding: 12px 14px;
+  border-radius: 14px;
+  font-size: 13px;
+  font-weight: 800;
+  font-family: inherit;
+  cursor: pointer;
+  border: 1px solid var(--border-strong);
+  background: var(--surface-soft);
+  color: var(--ink-900);
+}
+.izin-btn.primary {
+  border-color: transparent;
+  background: var(--btn-solid-bg, var(--accent, #2563eb));
+  color: var(--btn-solid-fg, #ffffff);
+}
+
+.izin-sheet-catatan {
+  margin: 0;
+  font-size: 10.5px;
+  line-height: 1.45;
+  text-align: center;
+  color: var(--ink-600);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .izin-sheet-kartu { animation: none; }
+}
+
+/* Layar kecil: kartu jadi lebih ringkas supaya tombol tetap terjangkau. */
+@media (max-width: 380px) {
+  .izin-sheet-kartu { padding: 18px 14px calc(18px + env(safe-area-inset-bottom, 0px)); }
+  .izin-sheet-kartu h2 { font-size: 16px; }
+  .izin-alasan { font-size: 11px; }
+}
+
+/* Tablet / desktop (mis. dibuka di browser): sheet jadi dialog tengah. */
+@media (min-width: 620px) {
+  .izin-sheet { align-items: center; padding: 24px; }
+  .izin-sheet-kartu { border-radius: 22px; max-width: 440px; }
+}

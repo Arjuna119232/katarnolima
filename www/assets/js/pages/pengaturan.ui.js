@@ -110,3 +110,20 @@ document.getElementById('btnClearCache').addEventListener('click', function(){
   });
 });
 
+// --- Ringkasan izin aplikasi ---
+// Menampilkan status tiap izin yang pernah diminta, supaya warga tahu
+// apa yang sedang aktif. Kalau core/permissions.js belum termuat (mis. di
+// browser tanpa Capacitor), blok ini diam-diam dilewati — bukan error.
+(function () {
+  var ringkas = document.getElementById('izin-ringkas');
+  if (!ringkas || !window.KATARNOLIMA_Izin) return;
+
+  window.KATARNOLIMA_Izin.ringkas().then(function (rows) {
+    var label = { granted: 'diizinkan', denied: 'ditolak', prompt: 'belum diizinkan' };
+    ringkas.textContent = rows.map(function (r) {
+      return r.judul + ': ' + (label[r.status] || r.status);
+    }).join(' · ');
+  }).catch(function () {
+    ringkas.textContent = 'Status izin tidak dapat dibaca di perangkat ini.';
+  });
+})();

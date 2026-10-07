@@ -112,6 +112,44 @@ if cfg_path.is_file() and (NATIVE / 'app-ads.txt').is_file():
         errors.append(f'native/app-ads.txt: publisher ID harus memuat pub-{pub} '
                       '(dari appId AdMob di native/admob.config.json)')
 
+# 3c. Aturan splash & izin (regresi 2.3.6)
+#  - Splash: aplikasi hanya boleh punya splash NATIVE Android. Overlay web
+#    #splash-screen membuat dua splash berturut-turut dan menambah ~1 detik.
+#  - Izin: core/permissions.js harus terdaftar di halaman yang memakainya, dan
+#    READ_MEDIA_IMAGES ('photos') tidak boleh diminta — izin itu dibuang dari
+#    manifest, jadi memintaWHMya membuat dialog tidak pernah muncul lagi.
+for html in sorted(WWW.rglob('*.html')):
+    teks = html.read_text(encoding='utf-8')
+    if 'id="splash-screen"' in teks:
+        errors.append(f'{rel(html)}: #splash-screen tidak boleh ada — aplikasi sudah punya '
+                      'splash native Android; overlay web membuat dua splash')
+
+izin_makai = False
+for js in sorted((WWW / 'assets' / 'js').rglob('*.js')):
+    if 'KATARNOLIMA_Izin' in js.read_text(encoding='utf-8'):
+        izin_makai = True
+        break
+if izin_makai:
+    # Hanya skrip yang benar-benar dimuat halaman itu yang diperiksa.
+    src_re = re.compile(r'<script[^>]*\bsrc=["\']([^"\']+)["\']')
+    for html in sorted(WWW.rglob('*.html')):
+        teks = html.read_text(encoding='utf-8')
+        skrip = []
+        for s in src_re.findall(teks):
+            p = (html.parent / s).resolve()
+            if p.is_file():
+                skrip.append(p)
+        pakai_api = any('KATARNOLIMA_Izin' in p.read_text(encoding='utf-8') for p in skrip)
+        if pakai_api and not any(p.name == 'permissions.js' for p in skrip):
+            errors.append(f'{rel(html)}: skrip halaman memakai window.KATARNOLIMA_Izin '
+                          'tapi core/permissions.js tidak dimuat — pemanggilnya jadi error '
+                          'saat warga menekan tombolnya')
+
+for js in sorted((WWW / 'assets' / 'js').rglob('*.js')):
+    if re.search(r'requestPermissions\(\s*\{[^}]*photos', js.read_text(encoding='utf-8')):
+        errors.append(f'{rel(js)}: meminta izin photos (READ_MEDIA_IMAGES) — izin itu sudah dibuang '
+                      'dari manifest sehingga dialog tidak akan pernah muncul lagi')
+
 for w in warnings:
     print('⚠️ ', w)
 for e in errors:

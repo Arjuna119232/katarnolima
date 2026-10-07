@@ -1,5 +1,65 @@
 # Changelog
 
+## [2.3.6] — Satu splash & pop-up perizinan yang benar (2026-10-08)
+
+Laporan warga: "splash screen ada dua masa" dan "popup perizinan APK-nya hilang
+semua". Dua masalah terpisah, keduanya diperbaiki.
+
+### 1. Dua splash screen
+Aplikasi punya dua splash berurutan: **splash native Android** (tema
+`AppTheme.NoActionBarLaunch`, dibuat `scripts/generate_splash.py`) yang tampil
+sejak proses aplikasi mulai, lalu **overlay `#splash-screen`** di
+`www/index.html` yang muncul 1 detik setelah DOM siap. Warga melihat dua kali
+splash, plus 1 detik menunggu tanpa perlu.
+
+- Overlay `#splash-screen` dihapus dari `index.html`; CSS-nya (`.splash-logo`,
+  `.splash-text`, keyframes `zoomIn`/`fadeIn`) ikut dibuang dari `home.css`
+  karena tidak dipakai halaman lain.
+- `core/splash.js` sekarang hanya mengurus sapaan "Dynamic Island" — sapaan
+  warga tetap ada, hanya mulai begitu aplikasi siap.
+- `validate.py` menolak `#splash-screen` yang muncul lagi di halaman mana pun.
+
+### 2. Popup perizinan hilang
+Penyebabnya bukan Android, tapi kode yang salah sasaran:
+
+- Izin **hanya diminta saat warga memakai fitur tertentu**, dan permintaannya
+  ikut menanyakan **READ_MEDIA_IMAGES (`photos`)** — izin yang sudah dibuang dari
+  manifest di 2.3.4. `checkPermissions()` lalu selalu melaporkan
+  `photos != granted`, sehingga `requestPermissions()` dipanggil terus-menerus.
+  Setelah warga menolak dua kali, **Android berhenti menampilkan dialog sama
+  sekali** — dialog hilang total.
+- Notifikasi di Android 13+ tidak pernah diminta otomatis, jadi pengumuman RW
+  tidak pernah sampai ke warga.
+
+**Perbaikan**
+
+- `www/assets/js/core/permissions.js` (baru): sheet perizinan yang muncul
+  **satu kali** saat warga pertama membuka aplikasi. Isinya: alasan setiap izin
+  dalam bahasa warga *sebelum* dialog sistem muncul, tombol "Izinkan" dan
+  "Nanti saja", serta status tiap izin yang ditampilkan jujur.
+- Izin diminta **berurutan satu per satu** (notifikasi -> kamera -> lokasi),
+  hanya yang statusnya belum diberikan — tidak menumpuk dialog Android.
+- Hanya `camera` yang diminta untuk kamera. Aplikasi memotret lewat
+  `navigator.mediaDevices.getUserMedia`, bukan `Camera.getPhoto`, jadi
+  READ_MEDIA_IMAGES tidak pernah dibutuhkan (`home.ui.js`, `aduan-warga.js`).
+- **Izin yang sudah ditolak permanen** tidak direquest lagi (dialognya memang
+  tidak akan muncul). Warga diberi arahan membuka
+  Pengaturan > Aplikasi > KATARNOLIMA > Izin lewat `App.openSettings()`.
+- Halaman **Pengaturan** dapat bagian "Izin Aplikasi": ringkasan status +
+  tombol "Atur Ulang Izin".
+- Tidak ada yang diblokir. Kalau warga menolak, seluruh fitur aplikasi tetap
+  bisa dipakai; hanya fungsi yang butuh izin itu yang tidak tersedia.
+- `validate.py`: halaman yang memakai `window.KATARNOLIMA_Izin` tapi tidak
+  memuat `core/permissions.js` → error; `requestPermissions({photos})` di mana
+  pun → error.
+
+### Test
+`tests/permissions.test.mjs` (baru, 11 check): urutan & satu dialog per izin,
+izin yang sudah granted tidak diganggu, hanya tampil sekali, tidak ada
+permintaan di browser, status tidak mengarang "diizinkan", serta penjaga agar
+`photos` dan splash overlay tidak bisa muncul lagi. Total suite: **42 check,
+0 gagal**.
+
 ## [2.3.5] — Iklan akhirnya tampil & app-ads.txt (2026-10-08)
 
 Laporan warga: "iklan memuat terus dan tidak muncul". Dua sebab, keduanya diperbaiki.

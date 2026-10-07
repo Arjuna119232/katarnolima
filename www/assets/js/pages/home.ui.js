@@ -176,13 +176,21 @@ async function openCustomCamera() {
   const videoEl = document.getElementById('cameraStream');
   if (!cameraOverlay || !videoEl) return;
 
-  // MINTA IZIN NATIVE CAPACITOR CAMERA TERLEBIH DAHULU AGAR POP-UP PERIZINAN MUNCUL
+  // Minta izin native kamera. Hanya 'camera' — aplikasi memotret lewat
+  // getUserMedia, jadi READ_MEDIA_IMAGES ('photos') tidak diperlukan dan
+  // sudah dibuang dari manifest (lihat catatan di aduan-warga.js).
   if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Camera) {
     try {
       const cameraPlugin = window.Capacitor.Plugins.Camera;
       let permStatus = await cameraPlugin.checkPermissions();
-      if (permStatus.camera !== 'granted' || permStatus.photos !== 'granted') {
-        await cameraPlugin.requestPermissions({ permissions: ['camera', 'photos'] });
+      if (permStatus.camera !== 'granted') {
+        // Sudah ditolak permanen? Dialog Android tidak akan muncul lagi —
+        // arahkan ke Pengaturan sistem, bukan memanggil request lalu diam.
+        if (permStatus.camera === 'denied' && window.KATARNOLIMA_Izin) {
+          window.KATARNOLIMA_Izin.arahkanSistem('kamera');
+        } else {
+          await cameraPlugin.requestPermissions({ permissions: ['camera'] });
+        }
       }
     } catch (err) {
       console.warn('Izin native kamera ditolak/dilewati:', err);

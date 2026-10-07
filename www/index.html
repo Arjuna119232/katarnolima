@@ -13,13 +13,23 @@
 <link rel="manifest" href="manifest.json">
 <link rel="stylesheet" href="assets/css/base/global.css">
 <link rel="stylesheet" href="assets/css/pages/home.css">
+<link rel="stylesheet" href="assets/css/pages/izin.css">
 </head>
 <body>
 
-<!-- SPLASH SCREEN -->
-<div id="splash-screen">
-  <img src="assets/img/logo-resmi-karang-taruna.jpg" alt="KATARNOLIMA Logo" class="splash-logo">
-  <div class="splash-text">KATARNOLIMA RW 05</div>
+<!-- ONBOARDING IZIN (satu kali saat pertama buka) -->
+<div id="izin-sheet" class="izin-sheet" role="dialog" aria-modal="true" aria-labelledby="izin-sheet-judul" aria-hidden="true">
+  <div class="izin-sheet-kartu">
+    <button type="button" class="izin-sheet-tutup" data-izin-tutup aria-label="Tutup">&times;</button>
+    <h2 id="izin-sheet-judul">Sebentar, izinkan dulu</h2>
+    <p class="izin-sheet-sub">Aplikasi ini butuh beberapa izin agar semua fitur bisa dipakai. Tidak ada yang keluar dari HP tanpa izinmu, dan kamu boleh menolak.</p>
+    <ul id="izin-daftar" class="izin-daftar"></ul>
+    <div class="izin-sheet-aksi">
+      <button type="button" id="izin-btn-nanti" class="izin-btn native secondary">Nanti saja</button>
+      <button type="button" id="izin-btn-izinkan" class="izin-btn native primary">Izinkan</button>
+    </div>
+    <p class="izin-sheet-catatan">Bisa diubah kapan saja di Pengaturan aplikasi HP.</p>
+  </div>
 </div>
 
 <div id="dynamic-island-greeting">
@@ -374,6 +384,7 @@
 <script src="assets/js/core/haptics.js"></script>
 <script src="assets/js/core/device.js"></script>
 <script src="assets/js/core/splash.js"></script>
+<script src="assets/js/core/permissions.js"></script>
 <script src="assets/js/core/push-notifications.js"></script>
 <script src="assets/js/core/network-status.js"></script>
 <script src="assets/js/core/app.js"></script>

@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="../assets/css/base/theme.css">
 <link rel="stylesheet" href="../assets/css/base/global.css?v=40">
 <link rel="stylesheet" href="../assets/css/pages/pengaturan.css?v=2">
+<link rel="stylesheet" href="../assets/css/pages/izin.css">
 </head>
 <body>
 <div class="page-root">
@@ -108,6 +109,28 @@
     </div>
   </div>
 
+  <!-- IZIN APLIKASI -->
+  <div class="settings-section">
+    <div class="settings-section-title">Izin Aplikasi</div>
+    <div class="settings-card" id="izin-card">
+      <div class="settings-row" style="cursor:default">
+        <div class="row-icon">&#128274;</div>
+        <div class="row-body">
+          <div class="row-title">Izin yang Diminta</div>
+          <div class="row-sub" id="izin-ringkas">Memuat&hellip;</div>
+        </div>
+      </div>
+      <div class="settings-row" onclick="window.KATARNOLIMA_Izin.reset()">
+        <div class="row-icon green">&#128276;</div>
+        <div class="row-body">
+          <div class="row-title">Atur Ulang Izin</div>
+          <div class="row-sub">Tampilkan lagi pop-up perizinan di aplikasi</div>
+        </div>
+        <div class="row-arrow">&rarr;</div>
+      </div>
+    </div>
+  </div>
+
   <!-- PREFERENSI -->
   <div class="settings-section">
     <div class="settings-section-title">Preferensi</div>
@@ -148,10 +171,26 @@
 <script src="../assets/js/core/haptics.js"></script>
 <script src="../assets/js/core/device.js"></script>
 <script src="../assets/js/core/splash.js"></script>
+<script src="../assets/js/core/permissions.js"></script>
 <script src="../assets/js/core/push-notifications.js"></script>
 <script src="../assets/js/core/network-status.js"></script>
 <script src="../assets/js/core/app.js"></script>
 <script src="../assets/js/pages/pengaturan.ui.js"></script>
 <script src="../assets/js/core/theme.js"></script>
+
+<!-- ONBOARDING IZIN (dipakai ulang saat warga menekan "Atur Ulang Izin") -->
+<div id="izin-sheet" class="izin-sheet" role="dialog" aria-modal="true" aria-labelledby="izin-sheet-judul" aria-hidden="true">
+  <div class="izin-sheet-kartu">
+    <button type="button" class="izin-sheet-tutup" data-izin-tutup aria-label="Tutup">&times;</button>
+    <h2 id="izin-sheet-judul">Sebentar, izinkan dulu</h2>
+    <p class="izin-sheet-sub">Aplikasi ini butuh beberapa izin agar semua fitur bisa dipakai. Tidak ada yang keluar dari HP tanpa izinmu, dan kamu boleh menolak.</p>
+    <ul id="izin-daftar" class="izin-daftar"></ul>
+    <div class="izin-sheet-aksi">
+      <button type="button" id="izin-btn-nanti" class="izin-btn native secondary">Nanti saja</button>
+      <button type="button" id="izin-btn-izinkan" class="izin-btn native primary">Izinkan</button>
+    </div>
+    <p class="izin-sheet-catatan">Bisa diubah kapan saja di Pengaturan aplikasi HP.</p>
+  </div>
+</div>
 </body>
 </html>

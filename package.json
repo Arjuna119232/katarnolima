@@ -1,6 +1,6 @@
 {
   "name": "katarnolima-rw05",
-  "version": "2.3.5",
+  "version": "2.3.6",
   "private": true,
   "description": "Aplikasi warga RW 05 — Karang Taruna KATARNOLIMA (Capacitor + Firebase)",
   "scripts": {
