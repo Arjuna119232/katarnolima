@@ -138,11 +138,29 @@ jobs:
             dist/katarnolima-rw05-v${{ env.APP_VERSION }}.apk
             dist/katarnolima-rw05-v${{ env.APP_VERSION }}.aab
 
+      - name: Siapkan catatan rilis
+        # Deskripsi GitHub Release diambil dari .github/notes/<versi>.md, yang
+        # ditulis singkat: apa yang diperbaiki, lalu tabel berkas APK/AAB.
+        # Kalau berkas itu belum ada, buat versi cadangan agar build tidak gagal.
+        run: |
+          NOTES=".github/notes/$APP_VERSION.md"
+          if [ ! -f "$NOTES" ]; then
+            mkdir -p .github/notes
+            {
+              echo "## Rilis v$APP_VERSION"
+              echo
+              echo "Catatan rilis belum ditulis. Lihat CHANGELOG.md untuk rincian."
+            } > "$NOTES"
+            echo "Catatan cadangan dibuat: $NOTES"
+          fi
+
       - name: Buat GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ env.APP_VERSION }}.${{ github.run_number }}
           name: KATARNOLIMA RW05 v${{ env.APP_VERSION }} (build ${{ github.run_number }})
+          body_path: .github/notes/${{ env.APP_VERSION }}.md
+          fail_on_unmatched_files: false
           files: |
             dist/katarnolima-rw05-v${{ env.APP_VERSION }}.apk
             dist/katarnolima-rw05-v${{ env.APP_VERSION }}.aab
