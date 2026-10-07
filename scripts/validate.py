@@ -16,6 +16,8 @@ import re, shutil, subprocess, sys, tempfile
 from pathlib import Path
 
 WWW = Path(__file__).resolve().parent.parent / 'www'
+ROOT = WWW.parent
+NATIVE = ROOT / 'native'
 errors, warnings = [], []
 
 # Catatan 2026-10-06: daftar KNOWN_BROKEN dihapus. Dua rujukan yang dulu rusak
@@ -80,6 +82,35 @@ if node:
                 errors.append(f'{rel(js)}: sintaks JS tidak valid\n    ' + r.stderr.strip().splitlines()[0:4].__str__())
 else:
     warnings.append('Node.js tidak ditemukan — pemeriksaan sintaks JS dilewati')
+
+# 3b. app-ads.txt
+# Tanpa file ini AdMob tidak menaruh iklan: banner dipanggil tapi tidak pernah
+# berisi kreatif (no fill) — yang dilihat pengguna: "iklan memuat terus". Publisher ID
+# harus cocok dengan appId di native/admob.config.json, kalau tidak AdMob
+# menganggap inventori ini milik akun lain.
+iab_re = re.compile(r'^[a-z0-9.-]+, pub-\d+, (DIRECT|RESELLER), [0-9a-f]+$')
+for ads_src in (NATIVE / 'app-ads.txt', WWW / 'app-ads.txt'):
+    if not ads_src.is_file():
+        errors.append(f'{rel(ads_src)}: tidak ada — AdMob tidak akan menaruh iklan '
+                      '(banner akan "memuat" tanpa pernah berisi)')
+        continue
+    baris = [b.strip() for b in ads_src.read_text(encoding='utf-8').splitlines()
+             if b.strip() and not b.strip().startswith('#')]
+    if not baris:
+        errors.append(f'{rel(ads_src)}: tidak punya baris data (semua baris komentar)')
+    for b in baris:
+        if not iab_re.match(b):
+            errors.append(f'{rel(ads_src)}: baris tidak sesuai format IAB → {b}')
+
+cfg_path = NATIVE / 'admob.config.json'
+if cfg_path.is_file() and (NATIVE / 'app-ads.txt').is_file():
+    import json
+    cfg = json.loads(cfg_path.read_text(encoding='utf-8'))
+    pub = (cfg.get('appId', '') or '').split('~')[0].replace('ca-app-pub-', '')
+    isi = (NATIVE / 'app-ads.txt').read_text(encoding='utf-8')
+    if pub and pub not in isi:
+        errors.append(f'native/app-ads.txt: publisher ID harus memuat pub-{pub} '
+                      '(dari appId AdMob di native/admob.config.json)')
 
 for w in warnings:
     print('⚠️ ', w)

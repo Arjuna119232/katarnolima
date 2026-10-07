@@ -97,6 +97,12 @@ jobs:
           npx cap copy android
           python3 scripts/patch_android.py cleanup
 
+      - name: Pasang app-ads.txt (wajib AdMob agar banner terisi)
+        # `cap copy` menaruh www/ di assets/public/, sedangkan Google Mobile Ads
+        # SDK membaca assets/app-ads.txt. Tanpa langkah ini banner dipanggil tapi
+        # tidak pernah berisi kreatif (no fill) -> "iklan memuat terus".
+        run: python3 scripts/patch_android.py appads
+
       - name: Siapkan keystore
         run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/release.p12
 

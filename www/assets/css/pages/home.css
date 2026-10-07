@@ -362,9 +362,29 @@ body {
 /* ===== SLOT IKLAN ADMOB (#admob-native-card) =====
    core/admob.js mengubah tinggi/lebar card ini mengikuti banner yang terpasang.
    .admob-note menampilkan alasan kalau iklan belum tampil (mis. menunggu persetujuan),
-   supaya masalahnya terlihat tanpa harus melihat log. */
+   supaya masalahnya terlihat tanpa harus melihat log.
+
+   Empat status lewat atribut data-admob:
+     idle    → belum request
+     loading → request terkirim, menunggu bannerAdLoaded (card normal + denyut)
+     shown   → banner benar-benar berisi kreatif (core/admob.js mengecilkan card)
+     failed  → tidak ada iklan setelah semua percobaan → card disembunyikan */
 #admob-native-card .admob-note { display: block; }
-#admob-native-card[data-admob="shown"] .admob-note { display: none; }
+#admob-native-card[data-admob="shown"] .admob-note,
+#admob-native-card[data-admob="failed"] .admob-note { display: none; }
+#admob-native-card[data-admob="failed"] { display: none; }
+
+/* Sedang memuat: card tetap menampilkan "Memuat ikon…" dengan denyut halus.
+   Ini yang membuat pengguna tahu iklannya sedang datang, bukan aplikasi macet. */
+#admob-native-card[data-admob="loading"] { animation: admob-denyut 1.4s ease-in-out infinite; }
+@keyframes admob-denyut {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+/* Hormati pengaturan pengguna yang mengurangi animasi di HP. */
+@media (prefers-reduced-motion: reduce) {
+  #admob-native-card[data-admob="loading"] { animation: none; }
+}
 
 /* Card iklan: gaya yang dulu inline di index.html. Semua warna lewat token tema. */
 .admob-card { margin: 0; position: relative; border: 1px dashed var(--border-strong); background: var(--surface); border-radius: 0; min-height: 50px; }

@@ -1,0 +1,21 @@
+# app-ads.txt — KATARNOLIMA RW 05
+# Source of truth. Publisher ID diambil dari native/admob.config.json
+# (prefix appId: ca-app-pub-2096155581034089).
+#
+# Tanpa file ini AdMob tidak menaruh iklan di aplikasi ini: banner tetap
+# dipanggil tapi tidak pernah berisi kreatif (no fill) — terlihat sebagai
+# "iklan memuat terus" tanpa gambar.
+#
+# File ini dibundel ke APK oleh scripts/patch_android.py appads, hasilnya:
+#   android/app/src/main/assets/app-ads.txt
+# Jalur itu yang dibaca Google Mobile Ads SDK di dalam aplikasi.
+#
+# Untuk verifikasi penuh AdMob juga membaca:
+#   https://<domain-resmi-kamu>/app-ads.txt
+# Domain diambil dari listing Google Play. Setelah dipasang, tunggu minimal
+# 24 jam sampai status app-ads.txt di AdMob console jadi "Approved".
+#
+# Format IAB: domain-pemasang, publisher-ID, DIRECT|RESELLER, ID-pemasang
+# Jangan tambah baris lain — hanya Google AdMob yang menjual inventori app ini.
+
+google.com, pub-2096155581034089, DIRECT, f08c47fec0942fa0

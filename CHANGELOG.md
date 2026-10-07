@@ -1,5 +1,52 @@
 # Changelog
 
+## [2.3.5] — Iklan akhirnya tampil & app-ads.txt (2026-10-08)
+
+Laporan warga: "iklan memuat terus dan tidak muncul". Dua sebab, keduanya diperbaiki.
+
+### 1. `app-ads.txt` tidak pernah ada (penyebab utama)
+Tanpa `app-ads.txt` AdMob tidak menaruh iklan sama sekali — banner dipanggil tapi
+tidak pernah berisi kreatif (*no fill*).
+
+- `native/app-ads.txt` = sumber kebenaran, isi satu baris publisher ID
+  `pub-2096155581034089` (cocok dengan `appId` di `native/admob.config.json`).
+- Salinan juga ada di `www/app-ads.txt` supaya bisa diambil dari WebView.
+- Perintah baru `python3 scripts/patch_android.py appads` menyalinnya ke
+  `android/app/src/main/assets/app-ads.txt`.
+  ⚠️ Jalur itu penting: `npx cap copy` menaruh `www/` di `assets/public/`, dan
+  Google Mobile Ads SDK **tidak** membaca `assets/public/app-ads.txt`.
+- Perintah menolak build (`exit 1`) kalau publisher ID di `app-ads.txt` tidak
+  cocok dengan `appId`, atau file-nya kosong — supaya tidak rilis diam-diam.
+- Langkah baru di workflow, dijalankan **setelah** `cap copy`.
+
+Verifikasi penuh AdMob tetap perlu file yang sama di-domain resmi
+(`https://<domain>/app-ads.txt`); statusnya di AdMob console jadi *Approved*
+setelah Google meng-crawl (minimal 24 jam).
+
+### 2. Kode menganggap iklan "tampil" terlalu cepat
+`showBanner()` hanya **membuat View dan mengirim request**; kreatifnya tiba
+terpisah lewat event `bannerAdLoaded`. Versi 2.3.4 menandai `tampil = true` dan
+mengecilkan card tepat setelah `showBanner()` resolve — hasilnya teks
+"Memuat iklan…" ikut tersembunyi, `data-admob` jadi `shown`, dan yang tersisa
+**kotak kosong selamanya** karena tidak ada yang mau request ulang.
+
+- Card hanya dianggap `shown` setelah `bannerAdLoaded` benar-benar datang.
+- Empat status eksplisit lewat `data-admob`: `idle` → `loading` → `shown`,
+  dan `failed` kalau memang tidak ada iklan.
+- `rapatkanCard()` hanya boleh dipanggil saat status `SHOWN`.
+- **Watchdog 15 detik**: kalau `bannerAdLoaded` tidak pernah datang, state
+  direset dan request dicoba lagi. Tanpa ini satu request yang hilang membuat
+  aplikasi selamanya menampilkan "memuat".
+- Setelah `MAKS_COBA_ULANG` gagal → **card disembunyikan**, bukan dibiarkan
+  jadi lubang kosong atau berputar tanpa akhir.
+- CSS: denyut halus saat `loading`, dan hormati `prefers-reduced-motion`.
+- `www/app-ads.txt` ikut divalidasi oleh `scripts/validate.py`.
+
+### Test
+`tests/admob.test.mjs` grew to 9 checks (from 5), including four new regressions
+for 2.3.5: not-shown before `bannerAdLoaded`, shown+snapped after it, watchdog
+retry, and hidden-after-exhausted-retries. Total suite: **31 check, 0 gagal**.
+
 ## [2.3.4] — Perbaikan AdMob, Mode Malam & Persiapan Play Store (2026-10-08)
 
 ### AdMob (iklan di card beranda)

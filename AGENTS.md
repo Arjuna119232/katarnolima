@@ -2,7 +2,7 @@
 
 Aplikasi warga RW 05 (Karang Taruna KATARNOLIMA). Web HTML/CSS/JS + Firebase,
 dibungkus jadi APK Android dengan Capacitor. Versi **2.3.4**, package
-`com.katarnolima.rw05`, repo GitHub `Arjuna119232/divjun-ai` ( privat).
+`com.katarnolima.rw05`, repo GitHub `Arjuna119232/katarnolima` (publik).
 
 Detail lengkap ada di `README.md` + `docs/` — **baca itu dulu**, jangan
 menebak. Ringkasan saja di sini.

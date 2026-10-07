@@ -7,12 +7,13 @@ Menyesuaikan proyek Android hasil `npx cap add android` (folder android/ tidak d
     python3 scripts/patch_android.py permissions
     python3 scripts/patch_android.py harden
     python3 scripts/patch_android.py cleanup
+    python3 scripts/patch_android.py appads
     python3 scripts/patch_android.py version <versionName> <versionCode>
     python3 scripts/patch_android.py signing
 
 Semua isi kustomisasi ada di folder native/ — ubah file di sana, bukan di skrip ini.
 """
-import re, shutil, sys
+import json, re, shutil, sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -207,11 +208,49 @@ def admob():
             print('⚠️ Verifikasi: meta-data mungkin masih di luar <application>.')
 
 
+def appads():
+    """Pasang app-ads.txt ke assets/app-ads.txt.
+
+    PENTING soal jalur: `npx cap copy` menaruh seluruh isi www/ ke
+    android/app/src/main/assets/public/. Jadi www/app-ads.txt berakhir di
+    assets/public/app-ads.txt -- itu TIDAK dibaca Google Mobile Ads SDK.
+
+    SDK membaca assets/app-ads.txt (yaitu android_asset/app-ads.txt). Karena
+    itu file-nya disalin dari native/app-ads.txt ke sana secara eksplisit.
+    Tanpa langkah ini banner dipanggil tapi tidak pernah berisi kreatif
+    (no fill) -- pengguna hanya melihat "iklan memuat terus".
+    """
+    src = NATIVE / 'app-ads.txt'
+    if not src.is_file():
+        print('❌ native/app-ads.txt tidak ada — AdMob tidak akan menaruh iklan.')
+        raise SystemExit(1)
+    isi = src.read_text(encoding='utf-8')
+    baris = [b.strip() for b in isi.splitlines()
+             if b.strip() and not b.strip().startswith('#')]
+    if not baris:
+        print('❌ native/app-ads.txt tidak punya baris data.')
+        raise SystemExit(1)
+
+    # Publisher ID harus cocok dengan appId di native/admob.config.json, kalau
+    # tidak AdMob akan menganggap inventory ini milik akun lain.
+    cfg = json.loads((NATIVE / 'admob.config.json').read_text(encoding='utf-8'))
+    pub = (cfg.get('appId', '') or '').split('~')[0].replace('ca-app-pub-', '')
+    if pub and not any(pub in b for b in baris):
+        print(f'❌ Publisher ID di app-ads.txt tidak cocok dengan appId AdMob ({pub}).')
+        raise SystemExit(1)
+
+    tujuan = ANDROID / 'app/src/main/assets/app-ads.txt'
+    tujuan.parent.mkdir(parents=True, exist_ok=True)
+    tujuan.write_text(isi, encoding='utf-8')
+    print(f'✅ app-ads.txt dipasang ke {rel_www(tujuan)} ({len(baris)} baris, pub-{pub}).')
+
+
 if __name__ == '__main__':
     cmd, args = (sys.argv[1] if len(sys.argv) > 1 else ''), sys.argv[2:]
     actions = {'firebase': firebase, 'activity': activity, 'permissions': permissions,
                'harden': harden, 'cleanup': cleanup,
-               'version': lambda: version(*args), 'signing': signing, 'admob': admob}
+               'version': lambda: version(*args), 'signing': signing, 'admob': admob,
+               'appads': appads}
     if cmd not in actions:
         raise SystemExit(__doc__)
     actions[cmd]()
