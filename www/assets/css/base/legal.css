@@ -1,4 +1,6 @@
-/* KATARNOLIMA — halaman Kebijakan Privasi. Semua warna lewat token tema. */
+/* KATARNOLIMA — base/legal.css
+ * Gaya halaman legal: Kebijakan Privasi & Syarat & Ketentuan. Dua halaman memakai
+ * berkas ini agar tampilan keduanya konsisten. Semua warna lewat token tema. */
 .kp-root{ max-width:640px; margin:0 auto; min-height:100vh; background:var(--bg-page); color:var(--ink-800); }
 .kp-header{ position:sticky; top:0; z-index:5; display:flex; align-items:center; gap:12px; padding:14px 16px; background:var(--header-bg); backdrop-filter:blur(10px); border-bottom:1px solid var(--border); }
 .kp-header h1{ font-size:16px; font-weight:800; color:var(--ink-900); }

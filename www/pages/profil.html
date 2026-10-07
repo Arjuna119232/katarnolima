@@ -50,6 +50,30 @@
 
     <!-- FORM DAFTAR -->
     <div id="formDaftar" style="display:none; margin-top:18px">
+
+      <!-- Persetujuan WAJIB. Taruh di atas kolom isian supaya warga membaca
+           syaratnya sebelum mengisi, bukan sesudah. Tombol Daftar tetap
+           terkunci sampai kedua kotak dicentang. -->
+      <div class="daftar-persetujuan">
+        <p class="daftar-persetujuan-judul">Sebelum mendaftar, baca dulu:</p>
+        <div class="daftar-tautan">
+          <a href="kebijakan-privasi.html">Kebijakan Privasi</a>
+          <span class="daftar-tautan-pemisah">dan</span>
+          <a href="syarat-ketentuan.html">Syarat &amp; Ketentuan</a>
+        </div>
+        <label class="daftar-centang">
+          <input type="checkbox" id="setujuPrivasi">
+          <span>Saya telah membaca dan menyetujui <b>Kebijakan Privasi</b>.</span>
+        </label>
+        <label class="daftar-centang">
+          <input type="checkbox" id="setujuKetentuan">
+          <span>Saya telah membaca dan menyetujui <b>Syarat &amp; Ketentuan</b>.</span>
+        </label>
+        <p class="daftar-persetujuan-catatan" id="daftarCatatanPersetujuan">
+          Centang keduanya dulu, baru bisa mendaftar.
+        </p>
+      </div>
+
       <span class="label-kecil">NAMA LENGKAP</span>
       <input id="inputNamaDaftar" class="input-jaki" placeholder="Contoh: Budi Santoso">
       <span class="label-kecil">RT / WILAYAH</span>
@@ -61,7 +85,7 @@
         <input id="inputPassDaftar" type="password" class="input-jaki" placeholder="••••••••">
         <button type="button" class="btn-toggle-eye" onclick="togglePasswordVisibility('inputPassDaftar', this)">👁️</button>
       </div>
-      <button id="btnDaftar" class="btn-masuk">Daftar Akun Baru</button>
+      <button id="btnDaftar" class="btn-masuk" disabled>Daftar Akun Baru</button>
     </div>
 
     <div class="register-area">

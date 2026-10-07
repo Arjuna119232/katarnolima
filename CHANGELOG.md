@@ -1,5 +1,50 @@
 # Changelog
 
+## [2.3.7] — Kamera & GPS, syarat & ketentuan (2026-10-08)
+
+### Kamera & GPS tidak bisa dipakai meski izin sudah diizinkan
+Penyebabnya **bukan Android**. Izin Android memang diberikan, tapi izin di
+level WebView selalu ditolak oleh `MainActivity.isOwnOrigin()`:
+
+```
+ALLOWED_ORIGINS  = "https://localhost"
+Uri.toString()   = "https://localhost/"      <- ada garis miring di akhir
+"https://localhost/".equalsIgnoreCase("https://localhost")  ->  false
+```
+
+Ketiga origin yang benar-benar dipakai Capacitor (`capacitor://localhost`,
+`http://localhost`, `https://localhost`) semuanya berakhiran `/`, jadi
+`request.deny()` berjalan tanpa pesan error sama sekali. Gejalanya persis seperti
+laporan warga: izin sudah "diizinkan", fitur tetap tidak bisa dipakai.
+
+- `isOwnOrigin()` kini menormalisasi origin (buang garis miring di akhir) lalu
+  membandingkan skema + host. Origin dengan path (`https://localhost/index.html`)
+  juga dikenali.
+- Asing tetap ditolak: `https://localhost.evil.example.com/`,
+  `http://evil.example.com/`, `ftp://localhost/`, `null`, dan string kosong.
+- Verifikasi manual: `native/MainActivity.java` dikompilasi dengan `javac`
+  terhadap stub Android, lalu `isOwnOrigin()` dijalankan sungguhan untuk 11
+  kasus. Logika versi lama dijalankan juga sebagai pembanding dan terbukti
+  menolak ketiga origin asli.
+
+### Persetujuan wajib saat pendaftaran
+- Halaman baru **Syarat & Ketentuan** (`pages/syarat-ketentuan.html`): ruang
+  lingkup, peran, akun, kewajiban warga, aduan & foto, diskusi, iuran & kas,
+  iklan, penegakan, hapus akun, perubahan, kontak.
+- **Kebijakan Privasi** diperluas: bagian perizinan Android, masa simpan data,
+  persetujuan & penolakan, dan tautan ke Syarat & Ketentuan.
+- Gaya kedua halaman dipindah ke `assets/css/base/legal.css` agar konsisten.
+- Di halaman daftar akun, blok persetujuan tampil **di atas** kolom isian, memuat
+  tautan ke kedua dokumen dan dua kotak centang. Tombol "Daftar Akun Baru"
+  terkunci sampai **keduanya** dicentang; ada penjaga kedua di dalam handler
+  (tombol yang dipaksa aktif tetap ditolak).
+- Tautan Syarat & Ketentuan ditambahkan di menu Privasi & Data.
+
+### Validasi
+- `tests/mainactivity-origin.test.mjs` (baru, 6 check) dan
+  `tests/persetujuan-daftar.test.mjs` (baru, 10 check).
+- Total: **58 check, 0 gagal**.
+
 ## [2.3.6] — Splash tunggal & pop-up perizinan (2026-10-08)
 
 ### Splash

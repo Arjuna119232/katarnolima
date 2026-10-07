@@ -383,3 +383,72 @@ html, body {
 .btn:active { transform: scale(0.96); }
 .btn-primary { background: #0f172a; color: #fbbf24; width: 100%; }
 .btn-outline { background: var(--bg-page); border: 1px solid var(--border); color: var(--ink-700); }
+
+/* ===== PERSETUJUAN WAJIB SAAT PENDAFTARAN (2.3.7) =====
+   Blok ini muncul di ATAS kolom isian daftar akun, supaya warga membaca
+   Kebijakan Privasi & Syarat & Ketentuan sebelum mengisi data — bukan sesudah.
+   Tombol "Daftar Akun Baru" tetap terkunci sampai kedua kotak dicentang. */
+.daftar-persetujuan {
+  margin: 0 0 18px;
+  padding: 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: 16px;
+  background: var(--surface-soft);
+}
+.daftar-persetujuan-judul {
+  margin: 0 0 6px;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--ink-900);
+}
+.daftar-tautan {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+.daftar-tautan a {
+  color: var(--link);
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.daftar-tautan-pemisah {
+  color: var(--ink-600);
+  font-size: 12px;
+}
+.daftar-centang {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  min-height: 44px;            /* target sentuh yang nyaman */
+  padding: 8px 9px;
+  margin-bottom: 6px;
+  border-radius: 11px;
+  background: var(--surface);
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--ink-700);
+}
+.daftar-centang:active { background: var(--tint-blue-50); }
+.daftar-centang input[type="checkbox"] {
+  width: 19px;
+  height: 19px;
+  margin: 1px 0 0;
+  flex: 0 0 auto;
+  accent-color: #0f172a;
+}
+.daftar-centang b { color: var(--ink-900); }
+.daftar-persetujuan-catatan {
+  margin: 8px 0 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--ink-600);
+}
+.daftar-persetujuan-catatan[data-lengkap="ya"] {
+  color: var(--success-text);
+  font-weight: 700;
+}

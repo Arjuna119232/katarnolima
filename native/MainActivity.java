@@ -36,16 +36,58 @@ public class MainActivity extends BridgeActivity {
     PermissionRequest.RESOURCE_AUDIO_CAPTURE
   );
 
+  /**
+   * Apakah origin ini memang aplikasi kita sendiri?
+   *
+   * PENTING (perbaikan 2.3.7): versi lama membandingkan string apa adanya:
+   *
+   *     "https://localhost/".equalsIgnoreCase("https://localhost")  -> false
+   *
+   * Android WebView selalu memberi origin dengan garis miring di akhir
+   * (dari Uri.toString() maupun parameter onGeolocationPermissionsShowPrompt).
+   * Akibatnya isOwnOrigin() selalu false, seluruh permintaan ditolak dengan
+   * request.deny() / callback.invoke(origin, false, false) — tanpa pesan error.
+   * Gejalanya persis seperti yang dilaporkan warga: izin Android sudah
+   * "diizinkan", tapi kamera dan GPS tetap tidak bisa dipakai.
+   *
+   * Sekarang dinormalisasi lebih dulu: garis miring di akhir dibuang, lalu
+   * dibandingkan pada level skema + host saja (path dan query diabaikan,
+   * karena origin murni memang tidak punya keduanya).
+   */
   private boolean isOwnOrigin(String origin) {
     if (origin == null) {
       return false;
     }
+    String bersih = origin.trim();
+    while (bersih.endsWith("/")) {
+      bersih = bersih.substring(0, bersih.length() - 1);
+    }
     for (String allowed : ALLOWED_ORIGINS) {
-      if (allowed.equalsIgnoreCase(origin)) {
+      if (allowed.equalsIgnoreCase(bersih)) {
+        return true;
+      }
+      // Bandingkan skema + host juga, supaya "https://localhost/index.html"
+      // tetap dikenali sebagai asal aplikasi ini.
+      if (akuSamaSkemaHost(bersih, allowed)) {
         return true;
       }
     }
     return false;
+  }
+
+  /** Bandingkan skema + host dua URL. Host kosong (mis. "capacitor://") tetap dianggap sama. */
+  private boolean akuSamaSkemaHost(String a, String b) {
+    Uri ua = Uri.parse(a);
+    Uri ub = Uri.parse(b);
+    if (ua == null || ub == null || ua.getScheme() == null || ub.getScheme() == null) {
+      return false;
+    }
+    if (!ua.getScheme().equalsIgnoreCase(ub.getScheme())) {
+      return false;
+    }
+    String ha = ua.getHost() == null ? "" : ua.getHost();
+    String hb = ub.getHost() == null ? "" : ub.getHost();
+    return ha.equalsIgnoreCase(hb);
   }
 
   @Override

@@ -154,8 +154,55 @@ if(btnMasuk){
 }
 
 const btnDaftar = document.getElementById('btnDaftar');
+
+// ---------------------------------------------------------------------------
+// Persetujuan WAJIB sebelum pendaftaran (2.3.7)
+// Kebijakan Privasi + Syarat & Ketentuan harus DICENTANG dua-duanya
+// sebelum tombol "Daftar Akun Baru" aktif. Satu centang saja tidak cukup.
+// ---------------------------------------------------------------------------
+const chkPrivasi = document.getElementById('setujuPrivasi');
+const chkKetentuan = document.getElementById('setujuKetentuan');
+const catatanPersetujuan = document.getElementById('daftarCatatanPersetujuan');
+
+function persetujuanLengkap() {
+  return !!(chkPrivasi && chkKetentuan && chkPrivasi.checked && chkKetentuan.checked);
+}
+
+function segarkanTombolDaftar() {
+  if (!btnDaftar) return;
+  const lengkap = persetujuanLengkap();
+  // Jangan buka tombol saat sedang mengirim (disabled dipakai proses lain).
+  const sedangProses = btnDaftar.textContent === "Mendaftarkan...";
+  btnDaftar.disabled = !lengkap || sedangProses;
+  if (catatanPersetujuan) {
+    catatanPersetujuan.textContent = lengkap
+      ? 'Terima kasih. Lanjut mengisi data akun.'
+      : 'Centang keduanya dulu, baru bisa mendaftar.';
+    catatanPersetujuan.setAttribute('data-lengkap', lengkap ? 'ya' : 'belum');
+  }
+}
+
+[chkPrivasi, chkKetentuan].forEach(function (chk) {
+  if (chk) chk.addEventListener('change', segarkanTombolDaftar);
+});
+
+// Panggil sekali saat halaman siap supaya tombol mulai dalam keadaan terkunci.
+document.addEventListener('DOMContentLoaded', segarkanTombolDaftar);
+segarkanTombolDaftar();
+
 if(btnDaftar){
   btnDaftar.addEventListener('click', async function(){
+    // Penjaga kedua: walau tombol terlihat aktif (mis. dibuka lewat devtools),
+    // pendaftaran tetap ditolak selama persetujuan belum lengkap.
+    if (!persetujuanLengkap()) {
+      window.showModal({
+        title: 'Persetujuan Diperlukan',
+        desc: 'Centang Kebijakan Privasi dan Syarat & Ketentuan terlebih dahulu sebelum mendaftar.',
+        icon: '📄'
+      });
+      return;
+    }
+
     const nama = document.getElementById('inputNamaDaftar')?.value.trim() || '';
     const rt = document.getElementById('inputRT')?.value.trim() || 'RT 03 / RW 05';
     const email = document.getElementById('inputEmailDaftar')?.value.trim() || '';
