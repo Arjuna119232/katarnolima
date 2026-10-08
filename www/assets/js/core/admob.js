@@ -1,165 +1,141 @@
 /**
  * KATARNOLIMA — core/admob.js
- * Menampilkan iklan Google AdMob (banner adaptif) di dalam CARD IKLAN beranda
- * (`#admob-native-card`).
+ * Banner Google AdMob yang menempel DI BAWAH LAYAR, tepat DI ATAS navigasi bawah.
  *
  * Plugin : @capacitor-community/admob (v8) — hanya jalan di APK Android.
  *
- * Kenapa tidak sesederhana "taruh sekali lalu diam":
- * banner AdMob adalah View Android yang melayang DI ATAS WebView pada koordinat
- * layar tertentu (BOTTOM_CENTER + margin bawah). Card-nya ikut ter-scroll bersama
- * halaman, jadi posisi harus dihitung ulang setiap kali card berpindah.
+ * Kenapa baris paling bawah, bukan di dalam card (perubahan 2.3.8):
+ *  Versi 2.3.4–2.3.7 memakai card iklan di dalam halaman beranda dan memindahkan
+ *  banner mengikuti posisi card. Cara itu rapuh: banner adalah View Android yang
+ *  melayang DI ATAS WebView, jadi begitu posisi card bergeser, banner ikut menutupi
+ *  tombol dan ikon di bawahnya. complaints warga: "iklan menutupi tombol".
+ *  Sekarang tidak ada card sama sekali. Banner hanya satu, di bawah, dan tinggi
+ *  posisinya dihitung dari navigasi bawah yang benar-benar ada di halaman.
  *
- * Alur:
- *   1. UMP consent → bila gagal/ditolak, lanjut dengan iklan NON-PERSONAL
- *   2. initialize()
- *   3. request banner, card tetap menampilkan "Memuat iklan…" (status loading)
- *   4. IKLAN baru dianggap tampil setelah event bannerAdLoaded benar-benar
- *      datang. showBanner() hanya membuat View + mengirim request; kreatifnya
- *      tiba terpisah. Kalau "tampil" diasumsikan begitu showBanner() resolve,
- *      card langsung dikecilkan jadi kotak kosong dan teks "Memuat ikon…"
- *      ikut hilang — gejalanya "iklan memuat terus" tanpa penjelasan.
- *   5. saat user scroll → banner yang SUDAH berisi kreatif disembunyikan; setelah
- *      scroll berhenti → ditampilkan lagi di posisi baru
- *   6. request iklan baru dibatasi (JEDA_MINIMAL_REQUEST_MS) supaya tidak melanggar
- *      batas refresh AdMob / memicu trafik tidak valid
- *   7. gagal terus (MAKS_COBA_ULANG) → card disembunyikan, bukan dibiarkan
- *      kosong berputar selamanya
+ * Cara menentukan posisi (tidak menebak angka):
+ *  1. Ukur tinggi `.jaki-nav` secara langsung dari DOM. Angka ini otomatis benar
+ *     di HP mana pun, ukuran font berapa pun, dan aman untuk safe area.
+ *  2. safe-area bawah ditambahkan supaya banner tidak menimpa navigasi yang sudah
+ *     menjauh dari tepi layar (HP dengan tombol gesture / notch).
+ *  3. Ruang kosong setinggi banner disisipkan di akhir halaman supaya konten
+ *     terakhir tetap bisa di-scroll melewati banner — tanpa ini, tombol paling
+ *     bawah tidak akan pernah bisa diklik.
  *
- * Pesan teknis ("Gagal: …") HANYA tampil di mode uji. Warga tidak pernah melihatnya.
- * ID iklan & mode uji dibaca dari www/assets/js/admob.config.js (dihasilkan CI dari
- * native/admob.config.json). Tidak ada ID yang ditulis manual di file ini.
+ * Status tampil (perbaikan 2.3.5, tetap dipertahankan):
+ *  `showBanner()` hanya membuat View dan mengirim request; kreatifnya tiba lewat
+ *  event `bannerAdLoaded`. Kalau banner dianggap tampil begitu `showBanner()`
+ *  resolve, hasilnya ruang kosong yang tidak pernah berisi apa pun.
+ *  Karena itu banner baru dianggap tampil setelah bannerAdLoaded.
+ *
+ * Pesan teknis hanya tampil di mode uji. ID iklan & mode uji dibaca dari
+ * www/assets/js/admob.config.js (dihasilkan CI dari native/admob.config.json).
  */
-
 (function () {
   'use strict';
 
-  var ESTIMASI_TINGGI_DP = 50;          // tinggi ADAPTIVE_BANNER potret, sebelum SizeChanged
-  var JEDA_MULAI_MS = 1500;
-  var JEDA_REPASANG_MS = 400;           // tunggu user berhenti scroll
+  var JEDA_MULAI_MS = 1200;
   var JEDA_LAGI_MS = 5000;              // jeda sebelum mencoba ulang kalau gagal
   var JEDA_MINIMAL_REQUEST_MS = 20000;  // jarak minimal antar request iklan baru
-  var MAKS_COBA_ULANG = 3;
   var SELESAI_MUAT_MS = 15000;          // watchdog: kalau bannerAdLoaded tak pernah datang
-  var PERIKSA_POSISI_MS = 2000;         // mendeteksi card bergeser tanpa scroll (data dimuat)
+  var MAKS_COBA_ULANG = 3;
+  var SELISIH_MARGIN_MIN = 4;           // abaikan perubahan margin yang sangat kecil
   var LOG = '[AdMob]';
 
-  // Status kartu. 'shown' HANYA boleh dipakai kalau banner benar-benar berisi
-  // kreatif (event bannerAdLoaded). Selain itu card menampilkan status memuat,
-  // atau disembunyikan kalau memang tidak ada iklan — tidak pernah kotak kosong.
-  var IDLE = 'idle', LOADING = 'loading', SHOWN = 'shown', FAILED = 'failed';
+  var PENYELAM_NASIONAL = '.jaki-nav';
+  var AKAR = document.documentElement;
+  var NAV = null;
 
-  var kartu = null;
-  var tinggiDp = ESTIMASI_TINGGI_DP;
-  var marginTerpasang = null;           // margin banner yang SUDAH berisi iklan
-  var marginPending = null;             // margin request yang masih berjalan
-  var adaBanner = false;                // View banner sudah dibuat di sisi native
-  var tampil = false;                   // banner benar-benar berisi kreatif & terlihat
-  var statusIklan = IDLE;
-  var dalamRequest = false;             // request sudah dikirim, menunggu bannerAdLoaded
+  var tinggiBanner = 0;
+  var marginDp = null;
+  var bannerAda = false;
+  var tampil = false;
+  var sedangRequest = false;
   var sudahMulai = false;
-  var dalamPemasangan = false;
-  var cobaUlang = 0;
+  var sedangPasang = false;
+  var percobaan = 0;
   var timerPasang = null;
   var timerWatchdog = null;
-  var requestTerakhir = -Infinity;       // belum pernah meminta iklan
+  var requestTerakhir = -Infinity;
   var modeUji = false;
   var nonPersonal = false;
 
   function log(pesan) { console.log(LOG + ' ' + pesan); }
-
-  /** Status di elemen card = attr data-admob (dipakai CSS untuk tiap tampilan). */
-  function notif(alasan) {
-    if (!kartu) return;
-    kartu.setAttribute('data-admob', statusIklan);
-    var ket = kartu.querySelector('.admob-note');
-    if (ket) ket.textContent = (modeUji && alasan) ? alasan : '';
-  }
-
-  /** Card disembunyikan total saat tidak ada iklan — lebih baik daripada lubang kosong. */
-  function sembunyikanCard() {
-    if (kartu) kartu.style.display = 'none';
-  }
-
-  function tampilkanCard() {
-    if (kartu) kartu.style.display = '';
-  }
-
 
   function plugin() {
     return window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.AdMob
       ? window.Capacitor.Plugins.AdMob : null;
   }
 
-  /** Margin bawah (dp) agar banner duduk tepat di dalam card. */
-  function marginButuh() {
-    var r = kartu.getBoundingClientRect();
-    return Math.max(0, Math.round(window.innerHeight - r.top - tinggiDp));
-  }
-
-  /** Card harus terlihat penuh; kalau tidak, banner akan menutupi konten lain. */
-  function kartuTerlihatPenuh() {
-    var r = kartu.getBoundingClientRect();
-    return r.top >= 0 && (r.top + tinggiDp) <= window.innerHeight;
-  }
-
-  function setLabel() {
-    var l = document.getElementById('admob-card-label');
-    if (l) l.textContent = modeUji ? 'IKLAN UJI' : 'IKLAN';
-  }
-
-  /** Samakan tinggi card dengan banner supaya tidak ada celah. */
-  function rapatkanCard() {
-    if (!kartu) return;
-    kartu.classList.add('admob-fit');
-    kartu.style.height = tinggiDp + 'px';
-  }
-
-  function longgarkanCard() {
-    if (!kartu) return;
-    kartu.classList.remove('admob-fit');
-    kartu.style.height = '';
-  }
-
-  /** Reset semua state request. Dipakai sebelum request baru & saat gagal. */
-  function resetRequest() {
-    dalamRequest = false;
-    marginPending = null;
-    marginTerpasang = null;
-    adaBanner = false;
-    tampil = false;
-    batalWatchdog();
+  function diApk() {
+    return !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
   }
 
   /**
-   * Watchdog: kalau bannerAdLoaded tidak pernah datang dalam SELESAI_MUAT_MS,
-   * state dikembalikan supaya request berikutnya boleh jalan. Tanpa ini satu
-   * request yang "hilang" membuat aplikasi selamanya menampilkan "memuat".
+   * Margin bawah banner dalam dp = TINGGI NAVIGASI BAWAH yang terukur.
+   *
+   * Di UKUR dari DOM, bukan ditebak dari angka tetap: kalau navigasi berubah
+   * (ikon baru, ukuran font layar, mode landscape) banner otomatis menyesuaikan.
+   *
+   * Safe area TIDAK ditambahkan di sini. Padding bawah navigasi (lihat
+   * global.css .jaki-nav) sudah memakai env(safe-area-inset-bottom), jadi
+   * getBoundingClientRect().height SUDAH termasuk jarak aman itu. Menambahkannya
+   * lagi akan membuat banner terdorong terlalu jauh ke atas — itu sebabnya
+   * perhitungan ulang ganda harus dihindari.
    */
-  function mulaiWatchdog() {
-    batalWatchdog();
-    timerWatchdog = setTimeout(function () {
-      timerWatchdog = null;
-      if (!dalamRequest) return;
-      log('bannerAdLoaded tidak datang dalam ' + SELESAI_MUAT_MS + 'ms — reset');
-      resetRequest();
-      longgarkanCard();
-      if (cobaUlang < MAKS_COBA_ULANG) {
-        cobaUlang += 1;
-        statusIklan = LOADING;
-        notif('timeout memuat');
-        tampilkanCard();
-        jadwalkanPasang(JEDA_LAGI_MS);
-      } else {
-        statusIklan = FAILED;
-        notif('iklan tidak merespons');
-        sembunyikanCard();
-      }
-    }, SELESAI_MUAT_MS);
+  function hitungMargin() {
+    var tinggiNav = 0;
+    var el = NAV || document.querySelector(PENYELAM_NASIONAL);
+    if (el) {
+      var r = el.getBoundingClientRect();
+      if (r && r.height) tinggiNav = r.height;
+    }
+    // Dibatasi supaya banner tidak terdorong terlalu tinggi di layar sangat pendek.
+    var dasar = Math.round(tinggiNav);
+    if (dasar < 0) dasar = 0;
+    if (dasar > 220) dasar = 220;
+    return dasar;
+  }
+
+  /** Sisipkan ruang kosong setinggi banner supaya konten terakhir bisa di-scroll. */
+  function sisipkanRuang(tinggi) {
+    if (!AKAR) return;
+    if (tinggi > 0) {
+      AKAR.style.setProperty('--admob-tinggi-banner', tinggi + 'px');
+      AKAR.setAttribute('data-admob-aktif', 'ya');
+    } else {
+      AKAR.style.setProperty('--admob-tinggi-banner', '0px');
+      AKAR.removeAttribute('data-admob-aktif');
+    }
+  }
+
+  /** Sembunyikan banner tanpa mengubah posisi (mis. saat halaman tidak aktif). */
+  async function sembunyi() {
+    var AdMob = plugin();
+    if (!AdMob || !tampil) return;
+    tampil = false;
+    try { await AdMob.hideBanner(); } catch (e) { /* abaikan */ }
   }
 
   function batalWatchdog() {
     if (timerWatchdog) { clearTimeout(timerWatchdog); timerWatchdog = null; }
+  }
+
+  function mulaiWatchdog() {
+    batalWatchdog();
+    timerWatchdog = setTimeout(function () {
+      timerWatchdog = null;
+      if (!sedangRequest) return;
+      log('bannerAdLoaded tidak datang dalam ' + SELESAI_MUAT_MS + 'ms — reset');
+      sedangRequest = false;
+      bannerAda = false;
+      tampil = false;
+      if (percobaan < MAKS_COBA_ULANG) {
+        percobaan += 1;
+        jadwalkanPasang(JEDA_LAGI_MS);
+      } else {
+        sisipkanRuang(0);
+      }
+    }, SELESAI_MUAT_MS);
   }
 
   function jadwalkanPasang(ms) {
@@ -170,63 +146,36 @@
     }, ms);
   }
 
-  /** Sembunyikan banner untuk sementara (mis. saat scroll). Layout card tidak diubah. */
-  async function sembunyikanSementara() {
-    var AdMob = plugin();
-    if (!AdMob || !tampil) return;
-    tampil = false;
-    try { await AdMob.hideBanner(); } catch (e) { /* abaikan */ }
-  }
-
   async function pasang() {
     var AdMob = plugin();
     var adId = window.KATARNOLIMA_ADMOB_BANNER_ID;
-    if (!AdMob || !kartu || dalamPemasangan) return;
-    if (!adId) { notif('ID iklan belum diisi'); return; }
+    if (!AdMob || sedangPasang) return;
+    if (!adId) { log('ID iklan belum diisi'); return; }
+    // Halaman tanpa navigasi bawah (mis. popup/embed) tidak perlu banner.
+    if (!NAV) { log('navigasi bawah tidak ditemukan — banner dilewati'); return; }
 
-    if (!kartuTerlihatPenuh()) { await sembunyikanSementara(); return; }
-
-    dalamPemasangan = true;
+    sedangPasang = true;
     try {
-      var m = marginButuh();
+      var m = hitungMargin();
 
-      // Sudah ada banner BERISI kreatif di posisi yang sama → cukup tampilkan lagi.
-      // Syarat status SHOWN itu penting: kalau masih LOADING, banner belum punya
-      // isi sehingga tidak boleh dianggap sudah terpasang.
-      if (adaBanner && statusIklan === SHOWN && marginTerpasang !== null
-          && Math.abs(m - marginTerpasang) < 6) {
-        if (!tampil && typeof AdMob.resumeBanner === 'function') {
-          await AdMob.resumeBanner();
-          tampil = true;
-          setLabel();
-          notif('');
-        }
+      // Posisi sama & banner sudah berisi iklan → cukup tampilkan lagi.
+      if (bannerAda && tampil && marginDp !== null && Math.abs(m - marginDp) < SELISIH_MARGIN_MIN) {
         return;
       }
+      // Request sebelumnya masih berjalan → jangan kirim yang kedua.
+      if (sedangRequest) return;
 
-      // Request sebelumnya masih menunggu bannerAdLoaded → jangan kirim yang kedua.
-      // Kalau card sudah bergeser, penurunan posisi ditangani oleh pemeriksaan
-      // berkala (pantauPosisi) setelah iklannya benar-benar termuat.
-      if (dalamRequest) return;
-
-      // Posisi berubah → butuh banner baru, tapi jangan terlalu sering meminta iklan.
+      // Hindari pergantian posisi terlalu sering (batas refresh AdMob).
+      if (marginDp !== null && Math.abs(m - marginDp) < SELISIH_MARGIN_MIN && bannerAda) return;
       var sisa = JEDA_MINIMAL_REQUEST_MS - (Date.now() - requestTerakhir);
       if (sisa > 0) { jadwalkanPasang(sisa + 50); return; }
 
-      if (adaBanner) { try { await AdMob.removeBanner(); } catch (e) { /* abaikan */ } }
-      resetRequest();
+      if (bannerAda) { try { await AdMob.removeBanner(); } catch (e) { /* abaikan */ } }
+      bannerAda = false;
+      tampil = false;
+      marginDp = m;
       requestTerakhir = Date.now();
-
-      // PENTING: showBanner() hanya membuat View + mengirim request; kreatifnya
-      // datang terpisah lewat bannerAdLoaded. Jadi card TIDAK dikecilkan di sini
-      // — kalau dikecilkan sekarang, teks "Memuat iklan…" ikut hilang dan yang
-      // tersisa kotak kosong selamanya (bug "iklan memuat terus").
-      statusIklan = LOADING;
-      marginPending = m;
-      dalamRequest = true;
-      setLabel();
-      tampilkanCard();
-      notif('memuat iklan');
+      sedangRequest = true;
       mulaiWatchdog();
 
       await AdMob.showBanner({
@@ -237,72 +186,58 @@
         isTesting: modeUji,
         npa: nonPersonal
       });
-      adaBanner = true;
-      log('request dikirim, margin ' + m + 'dp (mode ' + (modeUji ? 'uji' : 'produksi')
-        + (nonPersonal ? ', non-personal' : '') + ') — menunggu bannerAdLoaded');
-      // Belum tampil: menunggu bannerAdLoaded.
+      bannerAda = true;
+      log('request dikirim, margin ' + m + 'dp (nav bawah + safe area) — menunggu bannerAdLoaded');
     } catch (err) {
-      resetRequest();
-      longgarkanCard();
-      var pesan = (err && (err.message || err.toString())) || String(err);
-      notif('Gagal: ' + String(pesan).slice(0, 70));
+      sedangRequest = false;
+      batalWatchdog();
+      bannerAda = false;
+      tampil = false;
       log('showBanner gagal: ' + err);
-      if (cobaUlang < MAKS_COBA_ULANG) {
-        cobaUlang += 1;
-        statusIklan = LOADING;
+      if (percobaan < MAKS_COBA_ULANG) {
+        percobaan += 1;
         jadwalkanPasang(JEDA_LAGI_MS);
       } else {
-        statusIklan = FAILED;
-        sembunyikanCard();
+        marginDp = null;
+        sisipkanRuang(0);
       }
     } finally {
-      dalamPemasangan = false;
+      sedangPasang = false;
     }
   }
 
-  function pantauPosisi() {
-    // Saat scroll: sembunyikan seketika agar banner tidak "terbang" di atas konten lain.
-    window.addEventListener('scroll', function () {
-      if (tampil) sembunyikanSementara();
-      jadwalkanPasang(JEDA_REPASANG_MS);
-    }, { passive: true });
-    ['resize', 'orientationchange'].forEach(function (evt) {
-      window.addEventListener(evt, function () { jadwalkanPasang(JEDA_REPASANG_MS); }, { passive: true });
-    });
-    // Card bisa bergeser tanpa scroll (data beranda selesai dimuat) → periksa berkala.
-    setInterval(function () {
-      if (!tampil || dalamPemasangan || marginTerpasang === null) return;
-      if (!kartuTerlihatPenuh() || Math.abs(marginButuh() - marginTerpasang) >= 6) {
-        jadwalkanPasang(JEDA_REPASANG_MS);
+  function pantauPerubahan() {
+    // Navigasi bawah berubah tinggi (rotate, font besar, keyboard) → hitung ulang.
+    var cek = function () {
+      if (!NAV) return;
+      var baru = hitungMargin();
+      if (marginDp !== null && Math.abs(baru - marginDp) >= SELISIH_MARGIN_MIN) {
+        jadwalkanPasang(200);
       }
-    }, PERIKSA_POSISI_MS);
-  }
-
-  function alasanGagal(langkah, err) {
-    var pesan;
-    try {
-      pesan = (err && (err.message || err.toString())) || String(err || 'tidak diketahui');
-    } catch (e) { pesan = 'tidak diketahui'; }
-    return 'Gagal di ' + langkah + ': ' + String(pesan).slice(0, 70);
+      if (tampil) sisipkanRuang(tinggiBanner);
+    };
+    ['resize', 'orientationchange'].forEach(function (evt) {
+      window.addEventListener(evt, cek, { passive: true });
+    });
+    setInterval(cek, 3000);
   }
 
   async function mulai() {
     if (sudahMulai) return;
     sudahMulai = true;
-    if (!kartu) return;
+    if (!diApk()) return;
 
     var AdMob = plugin();
     if (!AdMob) {
-      // Di browser ini normal. Di APK berarti plugin gagal terdaftar.
-      notif(window.Capacitor ? 'plugin AdMob tidak terdaftar' : '');
-      log('plugin AdMob tidak ada');
+      log('plugin AdMob tidak terdaftar');
       return;
     }
 
+    NAV = document.querySelector(PENYELAM_NASIONAL);
     modeUji = window.KATARNOLIMA_ADMOB_IS_TESTING === true;
 
-    // UMP. Di EEA/UK/CH wajib; di wilayah lain biasanya NOT_REQUIRED. Kalau gagal tetap
-    // lanjut dengan iklan non-personal supaya aplikasi tidak ikut mati total.
+    // UMP consent. Bila gagal/ditolak, lanjut dengan iklan non-personal supaya
+    // aplikasi tidak ikut mati total.
     try {
       var info = await AdMob.requestConsentInfo();
       log('consent: status=' + info.status + ' form=' + info.isConsentFormAvailable);
@@ -310,75 +245,64 @@
         info = await AdMob.showConsentForm();
         log('consent form ditutup: status=' + info.status);
       }
-      if (!info.canRequestAds) {
-        nonPersonal = true;
-        notif('iklan non-personal (menunggu persetujuan)');
-      }
+      if (!info.canRequestAds) nonPersonal = true;
     } catch (err) {
       nonPersonal = true;
-      notif(alasanGagal('consent', err));
       log('consent gagal, lanjut non-personal: ' + err);
     }
 
     try {
       await AdMob.initialize({ initializeForTesting: false, testingDevices: [] });
     } catch (err) {
-      notif(alasanGagal('inisialisasi', err));
       log('initialize gagal: ' + err);
       return;
     }
 
     try {
-      // Iklan baru dianggap benar-benar tampil DI SINI. showBanner() yang
-      // resolve bukan bukti banner terisi — kreatifnya tiba lewat event ini.
+      // Banner baru dianggap benar-benar tampil DI SINI.
       AdMob.addListener('bannerAdLoaded', function () {
-        dalamRequest = false;
+        sedangRequest = false;
         batalWatchdog();
-        cobaUlang = 0;
-        statusIklan = SHOWN;
+        percobaan = 0;
         tampil = true;
-        adaBanner = true;
-        marginTerpasang = marginPending !== null ? marginPending : marginTerpasang;
-        marginPending = null;
-        rapatkanCard();
-        setLabel();
-        notif('');
-        log('iklan termuat, margin ' + marginTerpasang + 'dp, tinggi ' + tinggiDp + 'dp');
+        bannerAda = true;
+        if (window.innerHeight && window.innerWidth) {
+          // ADAPTIVE_BANNER di potret: tinggi banner ≈ 50dp. Dipakai untuk
+          // menyisipkan ruang bawah halaman.
+          tinggiBanner = window.innerWidth >= window.innerHeight ? 60 : 50;
+        } else {
+          tinggiBanner = 50;
+        }
+        sisipkanRuang(tinggiBanner);
+        log('iklan termuat, margin ' + marginDp + 'dp');
       });
 
       AdMob.addListener('bannerAdFailedToLoad', function (e) {
-        dalamRequest = false;
+        sedangRequest = false;
         batalWatchdog();
-        resetRequest();
-        longgarkanCard();
-        var kode = '';
-        try { kode = (e && (e.code || e.errorCode)) || ''; } catch (x) { /* abaikan */ }
+        bannerAda = false;
+        tampil = false;
         log('FailedToLoad: ' + JSON.stringify(e));
-        if (cobaUlang < MAKS_COBA_ULANG) {
-          cobaUlang += 1;
-          statusIklan = LOADING;
-          notif('iklan ditolak' + (kode ? ' (' + kode + ')' : '') + ', coba lagi');
+        if (percobaan < MAKS_COBA_ULANG) {
+          percobaan += 1;
           jadwalkanPasang(JEDA_LAGI_MS);
         } else {
-          // Berhenti berputar: card disembunyikan supaya tidak ada lubang kosong
-          // atau "memuat" yang tidak akan pernah selesai.
-          statusIklan = FAILED;
-          notif('iklan ditolak' + (kode ? ' (' + kode + ')' : ''));
-          sembunyikanCard();
+          // Berhenti berputar: jangan sisipkan ruang kosong untuk iklan yang
+          // tidak akan pernah muncul.
+          marginDp = null;
+          sisipkanRuang(0);
         }
       });
 
       AdMob.addListener('bannerAdSizeChanged', function (size) {
         if (!size || !size.height) return;
-        if (Math.abs(size.height - tinggiDp) < 4) return;
-        tinggiDp = size.height;
-        // Tingginya sudah pasti ada iklannya, jadi aman dirapatkan.
-        if (statusIklan === SHOWN) rapatkanCard();
-        jadwalkanPasang(JEDA_REPASANG_MS);
+        if (Math.abs(size.height - tinggiBanner) < 4) return;
+        tinggiBanner = size.height;
+        if (tampil) sisipkanRuang(tinggiBanner);
       });
     } catch (err) { log('gagal memasang listener: ' + err); }
 
-    pantauPosisi();
+    pantauPerubahan();
     await pasang();
   }
 
@@ -387,11 +311,24 @@
   }
 
   document.addEventListener('DOMContentLoaded', function () {
-    kartu = document.getElementById('admob-native-card');
-    if (!kartu) return;
+    NAV = document.querySelector(PENYELAM_NASIONAL);
+    if (!NAV) return;
     ['pointerdown', 'touchstart', 'scroll'].forEach(function (evt) {
       window.addEventListener(evt, function () { setTimeout(mulaiAman, 0); }, { once: true, passive: true });
     });
     setTimeout(mulaiAman, JEDA_MULAI_MS);
   });
+
+  // Dikembalikan agar halaman lain (atau test) bisa memeriksa/memaksa posisi.
+  window.KATARNOLIMA_AdMob = {
+    pasang: pasang,
+    sembunyi: sembunyi,
+    status: function () {
+      return {
+        tampil: tampil, bannerAda: bannerAda, marginDp: marginDp,
+        tinggiBanner: tinggiBanner, sedangRequest: sedangRequest
+      };
+    },
+    hitungMargin: hitungMargin
+  };
 })();

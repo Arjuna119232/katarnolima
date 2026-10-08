@@ -100,20 +100,11 @@
     </div>
   </div>
 
-  <!-- CARD IKLAN (AdMob). core/admob.js menyesuaikan tinggi/lebar card supaya banner
-       duduk pas persis di dalam kartu ini, dan memindahkannya lagi setiap kali posisi
-       card berubah. Jangan dihapus / dipindah. -->
-  <div class="rekom-card admob-card" id="admob-native-card" data-admob="idle">
-    <span id="admob-card-label" class="admob-label">IKLAN</span>
-    <span class="admob-note"></span>
-    <div class="rekom-img admob-img">
-      <div class="admob-emoji">📢</div>
-    </div>
-    <div class="rekom-text">
-      <span class="rekom-label admob-sponsor">Iklan</span>
-      <h3>Memuat iklan…</h3>
-    </div>
-  </div>
+  <!-- Catatan 2.3.8: CARD IKLAN (AdMob) DIHAYUS dari beranda.
+       Iklan sekarang hanya banner di bawah layar, duduk DI ATAS navigasi bawah
+       (core/admob.js mengukur tinggi .jaki-nav lalu menyesuaikan). Alasannya: banner
+       yang menempel di dalam halaman menutupi tombol & ikon navigasi bawah. -->
+
 
   <!-- KARTU KAS RW 05 -->
   <div class="kas-card" onclick="window.location.href='pages/kas-detail.html'">
@@ -214,6 +205,11 @@
   <div style="height:120px"></div>
 
   <!-- BOTTOM NAV -->
+  <!-- Ruang kosong setinggi banner AdMob. core/admob.js mengisi --admob-tinggi-banner
+       setelah iklan benar-benar termuat, jadi konten paling bawah tetap bisa
+       di-scroll melewati banner dan tidak ada ruang kosong sia-sia. -->
+  <div class="admob-spacer" aria-hidden="true"></div>
+
   <nav class="jaki-nav">
     <a class="active" href="index.html">🏠<span>Beranda</span></a>
     <a href="pages/diskusi-rw.html">💬<span>Diskusi</span></a>

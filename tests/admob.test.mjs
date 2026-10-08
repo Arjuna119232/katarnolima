@@ -1,25 +1,26 @@
-// Regresi core/admob.js.
+// Regresi core/admob.js — banner DI BAWAH, di atas navigasi bawah (2.3.8).
 //
 // Sejarah bug yang dijaga file ini:
-//   2.3.3 — `alasan` tak terdefinisi + `jedaPasang` bentrok nama → banner terpasang
-//           sekali lalu tidak pernah mengikuti card.
-//   2.3.5 — `tampil` di-set true tepat setelah showBanner() resolve. Padahal
-//           showBanner() hanya membuat View + mengirim request; kreatifnya datang
-//           lewat bannerAdLoaded. Akibatnya card dikecilkan + teks "Memuat ikon…"
-//           disembunyikan → pengguna melihat kotak kosong / "iklan memuat terus".
-//           Diperbaiki: 'shown' hanya boleh setelah bannerAdLoaded, dan ada
-//           watchdog bila event itu tidak pernah datang.
+//   2.3.3 — `alasan` tak terdefinisi + `jedaPasang` bentrok nama.
+//   2.3.5 — `tampil` di-set true tepat setelah showBanner() resolve, padahal
+//           kreatifnya datang lewat bannerAdLoaded. Card jadi kotak kosong.
+//   2.3.8 — card iklan dihapus; banner pindah ke bawah. Laporan warga:
+//           "banner menutupi tombol & ikon di bawah".
 //
-// Plugin & DOM disimulasikan dengan jam virtual, jadi tes ini cepat dan tidak
-// butuh perangkat.
+// Modul ini murni logika + DOM ringan, jadi diuji di node:vm tanpa perangkat.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import vm from 'node:vm';
 
-const SRC = readFileSync(new URL('../www/assets/js/core/admob.js', import.meta.url), 'utf8');
+const WWW = new URL('../www/', import.meta.url).pathname;
+const SRC = readFileSync(join(WWW, 'assets/js/core/admob.js'), 'utf8');
+const INDEX = readFileSync(join(WWW, 'index.html'), 'utf8');
+const GLOBAL_CSS = readFileSync(join(WWW, 'assets/css/base/global.css'), 'utf8');
 
-function siapkan({ uji = false, muatOtomatis = true, gagalOtomatis = false } = {}) {
+/** Lingkungan minimal: jam virtual, DOM, dan plugin Capacitor tiruan. */
+function siapkan({ uji = false, tinggiNav = 72, muatOtomatis = true, gagalOtomatis = false, adaNav = true } = {}) {
   let now = 1000;
   const antrean = [];
   let seq = 0;
@@ -40,167 +41,205 @@ function siapkan({ uji = false, muatOtomatis = true, gagalOtomatis = false } = {
     }
     now = akhir;
   }
+
   const panggilan = [];
   const log = [];
+  const galat = [];
   const listener = {};
-  let top = 400;
-  const kelas = new Set();
-  const catatan = { textContent: '' };
-  const style = { display: '', height: '' };
-  const attr = {};
-  const kartu = {
-    style,
-    classList: { add: (c) => kelas.add(c), remove: (c) => kelas.delete(c) },
-    setAttribute: (k, v) => { attr[k] = v; },
-    getAttribute: (k) => attr[k],
-    querySelector: () => catatan,
-    getBoundingClientRect: () => ({ top, bottom: top + 50 }),
-  };
-  const doc = { l: {}, addEventListener(e, f) { this.l[e] = f; }, getElementById: (id) => (id === 'admob-native-card' ? kartu : { textContent: '' }) };
+  const kelasAturan = {};          // gaya yang ditulis ke <html>
 
-  // Iklan "termuat" saat showBanner dipanggil, tapi event-nya menyusul lewat
-  // antrean — meniru perilaku SDK: View dulu, kreatif kemudian.
+  const nav = {
+    getBoundingClientRect: () => ({ top: 800 - tinggiNav, bottom: 800, height: tinggiNav })
+  };
+
+  const gaya = {};
+  const akar = {
+    style: {
+      setProperty(k, v) { gaya[k] = v; kelasAturan[k] = v; },
+      getPropertyValue(k) { return gaya[k] || ''; },
+      removeProperty(k) { delete gaya[k]; }
+    },
+    setAttribute(k, v) { kelasAturan['attr:' + k] = v; },
+    removeAttribute(k) { delete kelasAturan['attr:' + k]; },
+    getAttribute(k) { return kelasAturan['attr:' + k]; }
+  };
+
+  const doc = {
+    l: {},
+    documentElement: akar,
+    addEventListener(e, f) { this.l[e] = f; },
+    getElementById: () => null,
+    querySelector: (sel) => (sel === '.jaki-nav' && adaNav ? nav : null)
+  };
+
   const AdMob = {
     requestConsentInfo: async () => ({ status: 'NOT_REQUIRED', canRequestAds: true, isConsentFormAvailable: false }),
     initialize: async () => {},
     showBanner: async (o) => {
-      panggilan.push(['show', o.margin, o.isTesting]);
-      if (gagalOtomatis) {
-        jadwal(() => (listener.bannerAdFailedToLoad || []).forEach((f) => f({ code: 3 })), 100);
-      } else if (muatOtomatis) {
-        jadwal(() => (listener.bannerAdLoaded || []).forEach((f) => f({})), 100);
-      }
+      panggilan.push(['show', o.margin, o.isTesting, o.adSize, o.position]);
+      if (gagalOtomatis) jadwal(() => (listener.bannerAdFailedToLoad || []).forEach((f) => f({ code: 3 })), 100);
+      else if (muatOtomatis) jadwal(() => (listener.bannerAdLoaded || []).forEach((f) => f({})), 100);
       // muatOtomatis=false → bannerAdLoaded TIDAK PERNAH datang (simulasi no-fill).
     },
     removeBanner: async () => { panggilan.push(['remove']); },
     hideBanner: async () => { panggilan.push(['hide']); },
     resumeBanner: async () => { panggilan.push(['resume']); },
-    addListener: (evt, fn) => { (listener[evt] ||= []).push(fn); },
+    addListener: (evt, fn) => { (listener[evt] ||= []).push(fn); }
   };
+
   const L = {};
   const win = {
-    Capacitor: { Plugins: { AdMob } }, innerHeight: 800,
+    Capacitor: {
+      isNativePlatform: () => true,
+      Plugins: { AdMob }
+    },
+    innerHeight: 800,
+    innerWidth: 400,
     addEventListener(e, f) { (L[e] ||= []).push(f); },
-    KATARNOLIMA_ADMOB_BANNER_ID: 'ca-app-pub-1/2', KATARNOLIMA_ADMOB_IS_TESTING: uji,
+    KATARNOLIMA_ADMOB_BANNER_ID: 'ca-app-pub-1/2',
+    KATARNOLIMA_ADMOB_IS_TESTING: uji
   };
-  const galat = [];
+
+  const process_ = process;
   const onRej = (e) => galat.push(e.message);
-  process.on('unhandledRejection', onRej);
-  const sandbox = { window: win, document: doc, console: { log: (m) => log.push(m) }, Date: { now: () => now }, JSON, Math, String, ...ctx };
+  process_.on('unhandledRejection', onRej);
+
+  const sandbox = {
+    window: win, document: doc,
+    console: { log: (m) => log.push(m), warn: (m) => log.push(m) },
+    Date: { now: () => now }, JSON, Math, String, Number, Object, Array, Boolean, isFinite, parseFloat,
+    getComputedStyle: () => ({ getPropertyValue: () => '0px' }),
+    ...ctx
+  };
   vm.createContext(sandbox);
   vm.runInContext(SRC, sandbox);
+
   return {
-    mulai: () => doc.l.DOMContentLoaded(), maju, panggilan, log, galat, catatan, L,
-    setTop: (v) => { top = v; }, style, attr, kelas,
-    selesai: () => process.off('unhandledRejection', onRej),
+    AdMob: win.KATARNOLIMA_AdMob, panggilan, log, galat, L, listener, kelasAturan,
+    mulai: () => doc.l.DOMContentLoaded && doc.l.DOMContentLoaded(),
+    maju, setTinggiNav: (v) => { tinggiNav = v; },
+    selesai: () => process_.off('unhandledRejection', onRej)
   };
 }
 
 const jmlShow = (s) => s.panggilan.filter((p) => p[0] === 'show').length;
-const status = (s) => s.attr['data-admob'];
-const disembunyikan = (s) => s.style.display === 'none';
 
-test('admob: banner requesting di posisi card tanpa error tak tertangani', async () => {
-  const s = siapkan();
+test('admob: banner diminta di bawah dengan margin = tinggi navigasi bawah', async () => {
+  const s = siapkan({ tinggiNav: 72 });
   s.mulai(); await s.maju(2000);
-  assert.deepEqual(s.galat, [], 'tidak boleh ada error (mis. "alasan is not defined")');
-  assert.deepEqual(s.panggilan[0], ['show', 350, false], 'margin = tinggiLayar - top - tinggiBanner');
+  assert.deepEqual(s.galat, [], 'tidak boleh ada error tak tertangani');
+  assert.ok(jmlShow(s) >= 1, 'banner harus diminta');
+  const [, margin, , ukuran, posisi] = s.panggilan[0];
+  assert.equal(margin, 72, 'margin harus sama dengan tinggi .jaki-nav agar navigasi tidak tertutup');
+  assert.equal(ukuran, 'ADAPTIVE_BANNER');
+  assert.equal(posisi, 'BOTTOM_CENTER');
+  s.selesai();
+});
+
+test('admob: navigasi bawah lebih tinggi otomatis ikut accommodated', async () => {
+  const s = siapkan({ tinggiNav: 96 });
+  s.mulai(); await s.maju(2000);
+  assert.equal(s.panggilan[0][1], 96, 'margin mengikuti tinggi nav yang terukur, bukan angka tetap');
+  s.selesai();
+});
+
+test('admob: halaman tanpa navigasi bawah tidak memasang banner', async () => {
+  const s = siapkan({ adaNav: false });
+  s.mulai(); await s.maju(2000);
+  assert.equal(jmlShow(s), 0, 'tanpa .jaki-nav tidak ada banner (popup/embed)');
   s.selesai();
 });
 
 test('admob 2.3.5: TIDAK boleh dianggap tampil sebelum bannerAdLoaded', async () => {
-  // Inilah bug "iklan memuat terus": showBanner() resolve ≠ iklan terisi.
   const s = siapkan({ muatOtomatis: false });
   s.mulai(); await s.maju(2000);
   assert.equal(jmlShow(s), 1, 'request dikirim');
-  assert.equal(status(s), 'loading', 'selama belum ada bannerAdLoaded status HARUS loading');
-  assert.equal(s.style.height, '', 'card BELUM boleh dikecilkan jadi kotak kosong');
-  assert.ok(!s.kelas.has('admob-fit'), 'kelas admob-fit baru boleh dipakai setelah iklannya ada');
-  assert.equal(disembunyikan(s), false, 'card tetap terlihat supaya pengguna tahu sedang memuat');
+  assert.equal(s.AdMob.status().tampil, false, 'belum tampil sebelum bannerAdLoaded');
+  assert.equal(s.kelasAturan['--admob-tinggi-banner'], undefined,
+    'ruang bawah halaman tidak boleh disisipkan sebelum iklan benar-benar ada');
   s.selesai();
 });
 
-test('admob 2.3.5: setelah bannerAdLoaded card jadi shown & dirapatkan', async () => {
+test('admob 2.3.5: setelah bannerAdLoaded baru dianggap tampil & ruang bawah disisipkan', async () => {
   const s = siapkan();
   s.mulai(); await s.maju(2000);
-  assert.equal(status(s), 'shown', 'bannerAdLoaded → shown');
-  assert.ok(s.kelas.has('admob-fit'), 'card dirapatkan mengikuti tinggi banner');
-  assert.equal(s.style.height, '50px');
+  assert.equal(s.AdMob.status().tampil, true, 'bannerAdLoaded → tampil');
+  const ruang = parseInt(s.kelasAturan['--admob-tinggi-banner'] || '0', 10);
+  assert.ok(ruang > 0, 'ruang bawah halaman harus disisipkan agar konten terakhir bisa di-scroll');
+  assert.equal(s.kelasAturan['attr:data-admob-aktif'], 'ya');
   s.selesai();
 });
 
-test('admob 2.3.5: watchdog memicu lagi kalau bannerAdLoaded tidak pernah datang', async () => {
+test('admob: watchdog memicu lagi kalau bannerAdLoaded tidak pernah datang', async () => {
   const s = siapkan({ muatOtomatis: false });
   s.mulai(); await s.maju(2000);
   const awal = jmlShow(s);
-  // Watchdog SELESAI_MUAT_MS (15s) + JEDA_LAGI_MS (5s) baru memicu request ulang.
-  await s.maju(22000);
-  assert.ok(jmlShow(s) > awal, 'watchdog harus memicu request ulang, bukan macet di "memuat"');
-  assert.equal(disembunyikan(s), false, 'card tidak boleh disembunyikan hanya karena satu timeout');
+  await s.maju(22000);   // SELESAI_MUAT_MS 15s + JEDA_LAGI_MS 5s
+  assert.ok(jmlShow(s) > awal, 'watchdog harus memicu request ulang');
   s.selesai();
 });
 
-test('admob 2.3.5: gagal terus → card disembunyikan, bukan lubang kosong', async () => {
+test('admob: gagal terus → ruang bawah dibersihkan, halaman tidak menyisakan lubang kosong', async () => {
   const s = siapkan({ gagalOtomatis: true });
   s.mulai();
-  await s.maju(200000);           // cukup untuk 3 percobaan + watchdog
-  assert.equal(status(s), 'failed', 'harus berakhir di status failed');
-  assert.equal(disembunyikan(s), true, 'card disembunyikan supaya tidak ada ruang kosong');
+  await s.maju(300000);
+  assert.equal(s.kelasAturan['--admob-tinggi-banner'], '0px',
+    'setelah semua percobaan gagal, ruang bawah harus 0 (tidak ada ruang kosong sia-sia)');
+  assert.equal(s.kelasAturan['attr:data-admob-aktif'], undefined);
   assert.deepEqual(s.galat, [], 'tidak boleh ada error tak tertangani');
   s.selesai();
 });
 
-test('admob: scroll menyembunyikan banner & listener posisi terpasang (jedaPasang berfungsi)', async () => {
-  const s = siapkan();
+test('admob: pesan teknis tidak pernah bocor ke warga', async () => {
+  const s = siapkan({ uji: false, gagalOtomatis: true });
   s.mulai(); await s.maju(2000);
-  assert.ok(s.L.scroll && s.L.scroll.length >= 2, 'listener scroll harus terpasang (pantauPosisi)');
-  s.L.scroll.forEach((f) => f());
-  await s.maju(100);
-  assert.ok(s.panggilan.some((p) => p[0] === 'hide'), 'banner harus disembunyikan saat scroll');
-  await s.maju(600);
-  assert.ok(s.panggilan.some((p) => p[0] === 'resume'), 'posisi sama → banner ditampilkan lagi tanpa request baru');
-  assert.equal(jmlShow(s), 1, 'tidak boleh request iklan baru');
-  assert.deepEqual(s.galat, []);
+  assert.ok(!s.kelasAturan['--admob-tinggi-banner'] || s.kelasAturan['--admob-tinggi-banner'] === '0px');
   s.selesai();
 });
 
-test('admob: request iklan baru dibatasi jaraknya & card di luar layar tidak memasang banner', async () => {
-  const s = siapkan();
-  s.mulai(); await s.maju(2000);
-  s.setTop(300); s.L.scroll.forEach((f) => f());
-  await s.maju(1000);
-  assert.equal(jmlShow(s), 1, 'masih dalam jeda minimal → tidak boleh request lagi');
-  await s.maju(20000);
-  assert.equal(jmlShow(s), 2, 'setelah jeda → pasang di posisi baru');
-  s.setTop(790); s.L.scroll.forEach((f) => f());
-  await s.maju(1000);
-  assert.equal(jmlShow(s), 2, 'card terpotong layar → jangan dipasang');
-  s.selesai();
+// ------------------------------------------------------------ struktur HTML
+
+test('admob 2.3.8: card iklan di beranda SUDAH DIHAPUS', () => {
+  assert.ok(!INDEX.includes('admob-native-card'),
+    'card iklan tidak boleh lagi ada — itulah yang membuat banner menutupi tombol');
+  assert.ok(!INDEX.includes('admob-card'), 'gaya card iklan tidak boleh tersisa di markup');
 });
 
-test('admob: pesan teknis hanya tampil di mode uji', async () => {
-  const prod = siapkan({ uji: false });
-  prod.mulai(); await prod.maju(2000);
-  assert.equal(prod.catatan.textContent, '');
-  prod.selesai();
+test('admob 2.3.8: spacer banner ada DI BAWAH konten, tepat sebelum navigasi', () => {
+  const spacer = INDEX.indexOf('admob-spacer');
+  const nav = INDEX.indexOf('<nav class="jaki-nav"');
+  assert.ok(spacer > -1, 'spacer wajib ada supaya konten terakhir bisa di-scroll melewati banner');
+  assert.ok(nav > -1, 'navigasi bawah harus ada');
+  assert.ok(spacer < nav, 'spacer harus sebelum navigasi bawah');
 });
 
-test('admob: konfigurasi rilis memakai iklan sungguhan (isTesting=false)', () => {
-  const cfg = JSON.parse(readFileSync(new URL('../native/admob.config.json', import.meta.url), 'utf8'));
+test('admob 2.3.8: CSS memberi ruang bawah sesuai tinggi banner & aman di HP', () => {
+  assert.ok(GLOBAL_CSS.includes('--admob-tinggi-banner'), 'variabel tinggi banner harus ada');
+  assert.ok(GLOBAL_CSS.includes('.admob-spacer'), 'gaya spacer harus ada');
+  assert.ok(GLOBAL_CSS.includes('safe-area-inset-bottom'),
+    'padding bawah navigasi harus memperhitungkan safe area, kalau tidak ikon bawah ada di bawah gesture bar');
+  // Nilai awal harus 0 supaya halaman tidak punya ruang kosong sebelum iklan tampil.
+  assert.match(GLOBAL_CSS, /--admob-tinggi-banner:0px/);
+});
+
+// ------------------------------------------------------------ konfigurasi
+
+test('admob: unit iklan memakai unit banner bawah', () => {
+  const cfg = JSON.parse(readFileSync(join(WWW, '../native/admob.config.json'), 'utf8'));
+  assert.equal(cfg.bannerId, 'ca-app-pub-2096155581034089/6715532215',
+    'unit iklan harus banner bawah (6715532215)');
   assert.equal(cfg.isTesting, false, 'rilis ke Play Store tidak boleh isTesting=true');
 });
 
-test('admob: app-ads.txt ada & publisher ID-nya cocok dengan appId AdMob', () => {
-  const cfg = JSON.parse(readFileSync(new URL('../native/admob.config.json', import.meta.url), 'utf8'));
+test('admob: app-ads.txt publisher ID cocok dengan appId AdMob', () => {
+  const cfg = JSON.parse(readFileSync(join(WWW, '../native/admob.config.json'), 'utf8'));
   const pub = (cfg.appId || '').split('~')[0].replace('ca-app-pub-', '');
-  const raw = readFileSync(new URL('../www/app-ads.txt', import.meta.url), 'utf8');
-  const baris = raw.split('\n').map((b) => b.trim())
-    .filter((b) => b && !b.startsWith('#'));
+  const baris = readFileSync(join(WWW, 'app-ads.txt'), 'utf8').split('\n')
+    .map((b) => b.trim()).filter((b) => b && !b.startsWith('#'));
   assert.ok(baris.length > 0, 'app-ads.txt harus punya minimal satu baris data');
   for (const b of baris) {
     assert.match(b, /^[a-z0-9.-]+, pub-\d+, (DIRECT|RESELLER), [0-9a-f]+$/,
       `baris app-ads.txt tidak sesuai format IAB: ${b}`);
   }
-  assert.ok(baris.some((b) => b.includes(pub)),
-    `publisher ID app-ads.txt harus memuat pub-${pub} dari appId AdMob`);
+  assert.ok(baris.some((b) => b.includes(pub)), `harus memuat pub-${pub}`);
 });

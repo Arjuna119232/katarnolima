@@ -346,42 +346,8 @@ body {
 }
 .btn-shutter-outer:active .btn-shutter-inner { transform: scale(0.88); }
 
-/* ===== SLOT IKLAN ADMOB (#admob-native-card) =====
-   core/admob.js mengubah tinggi/lebar card ini mengikuti banner yang terpasang.
-   .admob-note menampilkan alasan kalau iklan belum tampil (mis. menunggu persetujuan),
-   supaya masalahnya terlihat tanpa harus melihat log.
-
-   Empat status lewat atribut data-admob:
-     idle    → belum request
-     loading → request terkirim, menunggu bannerAdLoaded (card normal + denyut)
-     shown   → banner benar-benar berisi kreatif (core/admob.js mengecilkan card)
-     failed  → tidak ada iklan setelah semua percobaan → card disembunyikan */
-#admob-native-card .admob-note { display: block; }
-#admob-native-card[data-admob="shown"] .admob-note,
-#admob-native-card[data-admob="failed"] .admob-note { display: none; }
-#admob-native-card[data-admob="failed"] { display: none; }
-
-/* Sedang memuat: card tetap menampilkan "Memuat ikon…" dengan denyut halus.
-   Ini yang membuat pengguna tahu iklannya sedang datang, bukan aplikasi macet. */
-#admob-native-card[data-admob="loading"] { animation: admob-denyut 1.4s ease-in-out infinite; }
-@keyframes admob-denyut {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.55; }
-}
-/* Hormati pengaturan pengguna yang mengurangi animasi di HP. */
-@media (prefers-reduced-motion: reduce) {
-  #admob-native-card[data-admob="loading"] { animation: none; }
-}
-
-/* Card iklan: gaya yang dulu inline di index.html. Semua warna lewat token tema. */
-.admob-card { margin: 0; position: relative; border: 1px dashed var(--border-strong); background: var(--surface); border-radius: 0; min-height: 50px; }
-.admob-label { position: absolute; top: 4px; right: 6px; z-index: 2; background: var(--border); color: var(--ink-600); font-size: 8px; font-weight: 900; padding: 2px 6px; border-radius: 4px; letter-spacing: 0.5px; }
-.admob-note { position: absolute; bottom: 4px; left: 8px; right: 60px; z-index: 2; color: var(--ink-600); font-size: 9px; font-weight: 700; line-height: 1.3; white-space: normal; }
-.admob-img { background: var(--surface-soft); }
-.admob-emoji { font-size: 30px; }
-.admob-sponsor { color: var(--on-amber); }
-.admob-card h3 { color: var(--ink-900); }
-/* Dipasang core/admob.js saat banner menempel: card dirapatkan persis seukuran banner. */
-.admob-card.admob-fit { margin: 0; padding: 0; overflow: hidden; border-radius: 0; }
-.admob-card.admob-fit .rekom-img,
-.admob-card.admob-fit .rekom-text { display: none; }
+/* Catatan 2.3.8: seluruh gaya SLOT IKLAN ADMOB (.admob-card, .admob-note,
+   .admob-label, keyframes admob-denyut) DIHAPUS dari file ini. Card iklan di
+   dalam halaman sudah dihapus; iklan kini hanya banner di bawah layar.
+   Ruang bawah halaman yang dipakai banner diatur core/admob.js lewat
+   --admob-tinggi-banner. */

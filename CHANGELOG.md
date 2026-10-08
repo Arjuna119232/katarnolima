@@ -1,5 +1,51 @@
 # Changelog
 
+## [2.3.8] — Banner bawah & splash modern (2026-10-08)
+
+### Unit iklan & card dihapus
+- Unit banner diganti ke `ca-app-pub-2096155581034089/6715532215`. Unit lama
+  `.../4236315324` dipakai card di dalam halaman beranda.
+- **Card iklan `#admob-native-card` dihapus dari beranda**, beserta markup dan
+  CSS-nya (`.admob-card`, `.admob-note`, `.admob-label`, keyframes
+  `admob-denyut`). Iklan sekarang hanya banner di bawah layar.
+
+### Banner tidak lagi menutupi tombol & ikon bawah
+Laporan warga: "banner menutupi tombol". Penyebabnya banner adalah View Android
+yang melayang DI ATAS WebView, sementara posisi card ikut berubah saat halaman
+di-scroll, sehingga banner ikut bergeser dan menutupi navigasi bawah.
+
+- `core/admob.js` ditulis ulang: tidak lagi mengikuti posisi card, tetapi
+  menempel tetap di bawah dengan margin yang **diukur** dari `.jaki-nav`
+  (`getBoundingClientRect().height`), bukan angka tetap.
+- `.jaki-nav` diberi `padding-bottom: calc(12px + env(safe-area-inset-bottom))`
+  supaya ikon navigasi tidak berada di bawah gesture bar / notch.
+- Spacer `.admob-spacer` disisipkan sebelum navigasi; `--admob-tinggi-banner`
+  diisi core/admob.js **hanya setelah `bannerAdLoaded`**, jadi konten paling
+  bawah tetap bisa di-scroll melewati banner dan tidak ada ruang kosong sia-sia.
+- Safe area **tidak** ditambah lagi ke margin: tinggi nav yang terukur sudah
+  memastikannya. Menjumlahkannya dua kali membuat banner terdorong terlalu tinggi.
+- Perilaku "tampil hanya setelah `bannerAdLoaded`" dari 2.3.5 tetap dipertahankan.
+
+### Splash lebih modern
+- Latar **gradasian navy `#0B1220` → teal `#0D4752`** (mengikuti palet aplikasi:
+  `.btn-masuk #0f172a`, tombol tengah nav `#0f766e`), bukan putih polos.
+- Logo diberi bentuk **lingkaran** + bayangan lembut + cahaya yang memelukinya.
+  ⚠️ Alasan: file ikon aplikasi **tidak transparan** (latar putih opak,
+  alpha 254–255). Ditempel di atas gradasian gelap tanpa bentuk, hasilnya kotak
+  putih besar — lebih buruk daripada splash polos. Sekaligus ini membuat ikon
+  Android 12+ (yang dipotong sistem menjadi lingkaran) tidak memotong apa pun.
+- `res/drawable/splash_background.xml` dibuat sebagai shape gradient dan dipasang
+  ke `windowSplashScreenBackground` — atribut itu hanya menerima satu warna solid,
+  jadi gradasi harus lewat drawable.
+- Ikon `drawable/splash_icon.png` memakai `ImageChops.multiply` untuk mask
+  lingkaran (jauh lebih cepat daripada loop per-piksel di CI).
+
+### Validasi
+- `tests/admob.test.mjs` ditulis ulang: 13 check, termasuk margin = tinggi nav
+  yang terukur, halaman tanpa nav tidak memasang banner, tidak ada ruang bawah
+  sebelum iklan termuat, dan ruang bawah dibersihkan setelah percobaan gagal.
+- Total: **61 check, 0 gagal**.
+
 ## [2.3.7] — Kamera & GPS, syarat & ketentuan (2026-10-08)
 
 ### Kamera & GPS tidak bisa dipakai meski izin sudah diizinkan
