@@ -301,50 +301,158 @@ body {
 #exit-toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
 
 /* OVERLAY UI KAMERA CUSTOM */
+/* ===== KAMERA LAPORAN =====
+   Layar penuh gelap. Semua kendali memakai GELAP KACA (glass): latar gelap
+   transparan + blur, tepi putih tipis, dan bayangan. Hasilnya terasa modern dan
+   tidak mengganggu isi foto karena transparansinya rendah.
+
+   Semua ukuran memakai px yang kecil dan tap target minimal 44px, aman untuk
+   jari. Padding atas/bawah memperhitungkan notch dan gesture bar lewat
+   safe-area. */
 .camera-overlay {
-  position: fixed; inset: 0; background: #000000; z-index: 999999;
-  display: none; flex-direction: column; justify-content: space-between; color: #ffffff;
+  position: fixed; inset: 0; z-index: 999999;
+  display: none; flex-direction: column;
+  background: #05070c; color: #ffffff;
+  overflow: hidden;
 }
-.camera-overlay.show { display: flex; }
+.camera-overlay.show { display: flex; animation: cam-masuk 0.22s ease-out; }
+@keyframes cam-masuk {
+  from { opacity: 0; transform: scale(1.02); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* --- Bilah atas --- */
 .camera-header {
-  padding: 18px 20px; display: flex; align-items: center; justify-content: space-between;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
-  position: absolute; top: 0; left: 0; right: 0; z-index: 10;
+  position: absolute; top: 0; left: 0; right: 0; z-index: 20;
+  display: flex; align-items: center; gap: 12px;
+  padding: calc(12px + env(safe-area-inset-top, 0px)) 14px 26px;
+  background: linear-gradient(to bottom, rgba(3,6,12,0.82), rgba(3,6,12,0));
+  pointer-events: none;
 }
-.camera-header button {
-  background: none; border: none; color: #fff; font-size: 18px; font-weight: 700; cursor: pointer;
-  display: flex; align-items: center; gap: 8px;
+.camera-header > * { pointer-events: auto; }
+.camera-header-tengah {
+  flex: 1 1 auto; min-width: 0; text-align: center;
+  display: flex; align-items: center; justify-content: center;
 }
-.btn-flash-toggle {
-  width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.2);
-  border: none; color: #ffffff; font-size: 16px; display: flex; align-items: center;
-  justify-content: center; cursor: pointer; backdrop-filter: blur(4px); transition: all 0.2s ease;
+.camera-judul {
+  font-size: 15px; font-weight: 700; letter-spacing: 0.2px;
+  color: #ffffff;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+.cam-glass-btn {
+  width: 44px; height: 44px; flex: 0 0 auto;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.16);
+  color: #ffffff; font-size: 17px; line-height: 1;
+  cursor: pointer;
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.35);
+  transition: background 0.18s ease, transform 0.12s ease, border-color 0.18s ease;
+}
+.cam-glass-btn:active {
+  transform: scale(0.92);
+  background: rgba(255,255,255,0.22);
 }
 .btn-flash-toggle.active {
-  background: #fbbf24 !important; color: #171308 !important; box-shadow: 0 0 12px rgba(251, 191, 36, 0.8);
+  background: #fbbf24 !important; color: #171308 !important;
+  border-color: #fcd34d !important;
+  box-shadow: 0 0 14px rgba(251,191,36,0.55) !important;
 }
-.camera-step-title { font-size: 14px; font-weight: 700; color: #ffffff; }
+
+/* --- Area bidik --- */
 .camera-viewport-wrap {
-  width: 100%; height: 100%; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center;
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
 }
 .camera-video-stream { width: 100%; height: 100%; object-fit: cover; }
+
+/* Bingkai bidik: empat sudut tipis sebagai penanda area yang akan diambil.
+   Sudut dibuat ANAK dari .camera-bidik-frame supaya posisinya pasti menempel
+   ke sisi bingkai. Versi lama posisi sudut ditulis dalam persen terhadap
+   LAYAR, sementara tinggi bingkai ditentukan aspect-ratio — keduanya tidak
+   pernah ketemu pas, jadi sudut meleset jauh dari bingkai. */
+/* Zona aman bidik: DIBATAS oleh bar atas dan bar bawah, bukan layar penuh.
+   Versi lama memakai inset:0 sehingga bingkai setinggi layar penuh sisi dan
+   sudut bawahnya tertutup bar kendali. */
+.camera-bidik {
+  position: absolute;
+  top: calc(84px + env(safe-area-inset-top, 0px));
+  bottom: calc(186px + env(safe-area-inset-bottom, 0px));
+  left: 0; right: 0;
+  pointer-events: none;
+  display: flex; align-items: center; justify-content: center;
+}
+.camera-bidik-frame {
+  position: relative;
+  height: 100%;
+  aspect-ratio: 3 / 4;
+  width: auto;
+  max-width: 84%;
+  border-radius: 20px;
+  /* Scrim gelap di luar bingkai. Nilai px besar (bukan vmax) supaya jalan di
+     WebView versi lama. */
+  box-shadow: 0 0 0 9999px rgba(3,6,12,0.34);
+}
+.camera-sudut {
+  position: absolute;
+  width: 32px; height: 32px;
+  border: 3px solid rgba(255,255,255,0.94);
+  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.55));
+}
+.camera-sudut-a { top: -2px; left: -2px;  border-right: none; border-bottom: none; border-top-left-radius: 18px; }
+.camera-sudut-b { top: -2px; right: -2px; border-left: none;  border-bottom: none; border-top-right-radius: 18px; }
+.camera-sudut-c { bottom: -2px; left: -2px;  border-right: none; border-top: none; border-bottom-left-radius: 18px; }
+.camera-sudut-d { bottom: -2px; right: -2px; border-left: none;  border-top: none; border-bottom-right-radius: 18px; }
+
+/* --- Bilah bawah --- */
 .camera-controls-bar {
-  padding: 30px 24px 40px; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
-  position: absolute; bottom: 0; left: 0; right: 0; display: flex; align-items: center; justify-content: space-around; z-index: 10;
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 20;
+  display: flex; flex-direction: column; align-items: center; gap: 16px;
+  padding: 40px 20px calc(20px + env(safe-area-inset-bottom, 0px));
+  background: linear-gradient(to top, rgba(3,6,12,0.90) 12%, rgba(3,6,12,0));
 }
-.btn-cam-side {
-  width: 48px; height: 48px; border-radius: 50%; background: rgba(255,255,255,0.2);
-  border: none; color: #fff; font-size: 18px; display: flex; align-items: center; justify-content: center;
-  cursor: pointer; backdrop-filter: blur(4px);
+.camera-controls-deretan {
+  display: flex; align-items: center; justify-content: center;
+  gap: clamp(28px, 11vw, 52px);
 }
+.camera-step-pill {
+  font-size: 11.5px; font-weight: 700; letter-spacing: 0.3px;
+  color: rgba(255,255,255,0.86);
+  padding: 6px 14px; border-radius: 999px;
+  background: rgba(255,255,255,0.09);
+  border: 1px solid rgba(255,255,255,0.14);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+
+.btn-cam-side { font-size: 18px; }
+
+/* Tombol rana: cincin putih tebal + inti biru, seperti aplikasi kamera resmi. */
 .btn-shutter-outer {
-  width: 72px; height: 72px; border-radius: 50%; border: 4px solid var(--surface);
-  display: flex; align-items: center; justify-content: center; background: transparent; cursor: pointer; padding: 0;
+  width: 76px; height: 76px; border-radius: 50%;
+  border: 3px solid rgba(255,255,255,0.94);
+  display: flex; align-items: center; justify-content: center;
+  background: transparent; cursor: pointer; padding: 0;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.45);
+  transition: transform 0.12s ease, border-color 0.18s ease;
 }
 .btn-shutter-inner {
-  width: 56px; height: 56px; border-radius: 50%; background: #2563eb; transition: transform 0.1s ease;
+  width: 60px; height: 60px; border-radius: 50%;
+  background: linear-gradient(160deg, #3b82f6, #1d4ed8);
+  box-shadow: inset 0 -2px 6px rgba(0,0,0,0.22), inset 0 2px 4px rgba(255,255,255,0.28);
+  transition: transform 0.12s ease, background 0.18s ease;
 }
-.btn-shutter-outer:active .btn-shutter-inner { transform: scale(0.88); }
+.btn-shutter-outer:active .btn-shutter-inner { transform: scale(0.86); }
+
+@media (prefers-reduced-motion: reduce) {
+  .camera-overlay.show { animation: none; }
+  .cam-glass-btn, .btn-shutter-inner { transition: none; }
+}
 
 /* Catatan 2.3.8: seluruh gaya SLOT IKLAN ADMOB (.admob-card, .admob-note,
    .admob-label, keyframes admob-denyut) DIHAPUS dari file ini. Card iklan di

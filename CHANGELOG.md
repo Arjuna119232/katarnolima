@@ -1,6 +1,57 @@
 # Changelog
 
-## [2.3.8] — Banner bawah & splash modern (2026-10-08)
+## [2.3.10] — Splash premium & tampilan Kamera Lapor (2026-10-08)
+
+### Splash screen didesain ulang
+Pengguna menilai hasil 2.3.8 "jelek banget". Perbaikan:
+
+- **Latar gradasian 3 titik** (`#080E1E` → `#0D1E36` → `#0B2C37`) plus **vignette**
+  di sudut, supaya terasa punya kedalaman.
+- **Logo berbentuk squircle** (superellipse `|x|^4.6 + |y|^4.6 = 1`) — bentuk ikon
+  iOS/Android modern, bukan lingkaran biasa.
+- **Nama aplikasi tercetak**: "KATARNOLIMA" dengan letter-spacing + subjudul "RW 05".
+  Pillow tidak punya letter-spacing, jadi teks digambar huruf demi huruf.
+  Font dicari di 6 lokasi umum; kalau tidak ada, teks dilewati dan build tetap
+  jalan (splash tetap benar, hanya tanpa nama).
+- **Aura cahaya** lembut di belakang logo.
+
+**Dua bug pada versi sebelumnya yang ditemukan lewat pengukuran piksel, bukan
+perkiraan:**
+
+1. `vignette()` memakai lingkaran dengan radius dalam piksel absolut, jadi
+   radiusnya jauh melebihi ukuran gambar dan **seluruh kanvas ikut tergelap** —
+   termasuk logo putih di tengah. Terukur: `#FEFEFE` menjadi `#6E6F72` (gelap
+   56%). Diperbaiki dengan mask 64×64 yang dinormalisasi lalu diperbesar.
+2. `radial()` menggambar lingkaran dari **kecil ke besar** padahal
+   `ImageDraw.ellipse` **menimpa, bukan mencampur**. Akibatnya cahaya paling
+   terang berada di **tepi**, dan di layar terbaca sebagai **lingkaran gelap
+   mengelilingi logo**. Diperbaiki: gambar dari besar ke kecil.
+
+### Kamera Lapor: tampilan baru
+- Kendali atas & bawah memakai **gelas kaca** (latar transparan + blur + tepi
+  putih tipis + bayangan), bukan tombol datar.
+- **Bingkai bidik** (empat sudut tipis) sebagai penanda area yang akan diambil,
+  dengan scrim gelap di luar bingkai.
+- **Indikator langkah berupa pill** ("Langkah 1/5").
+- Tombol rana dibesar (76px) dengan cincin putih dan inti bergradien.
+- Animasi masuk halus; hormati `prefers-reduced-motion`.
+
+**Bug pada versi lama yang ketahuan dari render mock:** posisi sudut bingkai
+ditulis dalam **persen terhadap layar**, sedangkan tinggi bingkai ditentukan
+`aspect-ratio` — keduanya tidak pernah ketemu pas, dan sudut bawah tertutup bar
+kendali. Sekarang sudut menjadi anak `.camera-bidik-frame`, dan zona bidik
+dibatasi `top`/`bottom` sehingga tidak menutupi bar kendali.
+
+Semua `id` dan `onclick` sengaja dipertahankan agar `home.ui.js` tidak perlu
+diubah — satu `id` yang hilang akan membuat tombolnya diam saja.
+
+### Validasi
+- `tests/kamera-tampilan.test.mjs` (baru, 9 check): id kamera utuh, handler
+  utuh, bingkai berbatas, sudut menempel, tap target ≥44px, safe area, serta
+  penjaga agar vignette & aura tidak lagi mengalahgelapkan logo.
+- Total: **71 check, 0 gagal**.
+
+## [2.3.8 / 2.3.9] — Banner bawah, splash, ID AdMob resmi (2026-10-08)
 
 ### ID AdMob & card dihapus
 - ID resmi dari AdMob console dipakai sekarang:

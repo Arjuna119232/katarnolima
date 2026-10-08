@@ -1,154 +1,326 @@
 #!/usr/bin/env python3
 """
 Mengganti splash screen NATIVE Android (yang tampil sebelum WebView siap) dengan
-tampilan yang modern & profesional (2.3.8).
+tampilan premium (2.3.10).
 
 Dijalankan CI sesudah `npx cap add android` dan generate_icons.py:
 
     python3 scripts/generate_splash.py
 
-Yang dilakukan:
-  1. Semua res/drawable*/splash.png bawaan Capacitor diganti: latar GRADIENT navy
-     -> teal (mengikuti palet aplikasi: .btn-masuk #0f172a, tombol tengah #0f766e)
-     plus logo di tengah dengan halo lembut. Versi lama memakai latar putih polos
-     yang terlihat seperti aplikasi yang belum selesai.
-  2. res/drawable/splash_background.xml dibuat sebagai shape gradient, lalu
-     dipakai sebagai windowSplashScreenBackground di tema Android 12+. Android 12+
-     hanya menerima satu warna solid lewat atribut itu; memakai drawable memberi
-     gradasi yang sama seperti splash gambar penuh.
-  3. res/drawable/splash_icon.png dibuat untuk ikon splash Android 12+ dengan
-     ruang aman lingkaran (±2/3 kanvas) dan cakram graded sebagai latar, supaya
-     saat sistem memotongnya menjadi lingkaran tetap terlihat rapi.
-  4. styles.xml diberi windowSplashScreenBackground + windowSplashScreenAnimatedIcon
-     bila belum ada.
+Rancangan:
+  1. Latar bergradasi NAVY dalam (bukan putih polos) + cahaya lembut berwarna
+     merek (amber) di belakang logo + vignette di sudut supaya terasa punya
+     kedalaman, bukan bidang datar.
+  2. Logo diberi bentuk SQUIRCLE (superellipse, gaya ikon iOS/Android modern)
+     dengan garis aksen tipis, bayangan jatuh, dan cahaya yang memelukinya.
+  3. Nama aplikasi "KATARNOLIMA" + subjudul "RW 05" digambar di bawah logo.
+     Font dicari di beberapa lokasi umum. Kalau TIDAK ada font yang bisa
+     ditemukan, teks dilewati dan skrip hanya memberi catatan — hasil splash
+     tetap benar, build tidak pernah gagal karena font.
+  4. res/drawable/splash_background.xml (shape gradient) dipasang ke
+     windowSplashScreenBackground, karena atribut itu hanya menerima satu warna
+     solid (gradasi harus lewat drawable).
+  5. res/drawable/splash_icon.png untuk ikon splash Android 12+.
 
-Semua langkah bersifat menambal: bila struktur tidak dikenali, skrip memberi
-peringatan dan TIDAK menggagalkan build.
+Semua langkah bersifat menambal: struktur yang tidak dikenali menghasilkan
+peringatan, bukan kegagalan build.
 Variabel lingkungan ANDROID_RES dapat dipakai untuk menguji di folder lain.
 """
 import os, re
 from pathlib import Path
-from PIL import Image, ImageChops, ImageDraw, ImageFilter
+from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageFont
 
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / 'www/assets/img/katar-app-icon.png'
 RES = Path(os.environ.get('ANDROID_RES', ROOT / 'android/app/src/main/res'))
 
-# Palet aplikasi (lihat www/assets/css/base/theme.css & .btn-masuk di profil.css).
-NAVY_ATAS = (11, 18, 32)      # #0B1220  deep navy
-NAVY_BAWAH = (13, 71, 82)     # #0D4752  teal gelap
-DISK = (19, 35, 54)           # #132336  cakram di belakang logo
-BG_HEX = '#0B1220'
+# Palet (lihat www/assets/css/base/theme.css, .btn-masuk & tombol tengah nav).
+LATAR_ATAS = (8, 14, 30)        # #080E1E  navy indigo
+LATAR_TENGAH = (13, 30, 54)    # #0D1E36  biru malam
+LATAR_BAWAH = (11, 44, 55)     # #0B2C37  teal sangat gelap
+CAHAYA = (255, 226, 138, 46)   # cahaya hangat lembut di belakang logo
+INKA = (255, 255, 255)
+INKA_MUDA = (255, 255, 255)
 
-LEGACY_RATIO = 0.42   # lebar logo relatif terhadap sisi terpendek layar
-ICON_SIZE = 1152      # 288dp @ xxxhdpi — ukuran ikon splash Android 12+
-ICON_RATIO = 0.58     # logo harus muat di lingkaran ±2/3 kanvas
+NAMA = 'KATARNOLIMA'
+SUBJUDUL = 'RW 05'
 
+LEGACY_RATIO = 0.36    # lebar logo relatif terhadap sisi terpendek layar
+SQUIRCLE_N = 4.6       # eksponen superellipse (4 = kotak, ~5 = iOS squircle)
+SQUIRCLE_RADIUS = 0.235  # rasio radius dalam kanvas squircle
+ICON_SIZE = 1152       # 288dp @ xxxhdpi — ikon splash Android 12+
+ICON_RATIO = 0.66      # logo di dalam kanvas ikon Android 12+
+
+# Lokasi font yang mungkin ada (Ubuntu CI, Termux, Android). Teks dilewati kalau
+# tidak ada satu pun yang cocok.
+KANDIDAT_FONT = [
+    '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf',
+    '/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf',
+    '/usr/share/fonts/truetype/noto/NotoSans-Bold.ttf',
+    '/usr/share/fonts/TTF/DejaVuSans-Bold.ttf',
+    '/system/fonts/Roboto-Bold.ttf',
+    '/system/fonts/DroidSans-Bold.ttf',
+]
+KANDIDAT_FONT_REGULER = [
+    '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',
+    '/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf',
+    '/usr/share/fonts/TTF/DejaVuSans.ttf',
+    '/system/fonts/Roboto-Regular.ttf',
+]
+
+
+# --------------------------------------------------------------- util warna
+
+def gradien(size, atas, bawah, tengah=None):
+    """Gradasi vertikal; opsional titik tengah untuk kesan lebih dalam."""
+    w, h = size
+    kolom = Image.new('RGB', (1, h))
+    px = kolom.load()
+    for y in range(h):
+        t = y / max(1, h - 1)
+        if tengah is not None and t < 0.5:
+            u = t / 0.5
+            a, b = atas, tengah
+        elif tengah is not None:
+            u = (t - 0.5) / 0.5
+            a, b = tengah, bawah
+        else:
+            u = t
+            a, b = atas, bawah
+        px[0, y] = (
+            int(a[0] + (b[0] - a[0]) * u),
+            int(a[1] + (b[1] - a[1]) * u),
+            int(a[2] + (b[2] - a[2]) * u),
+        )
+    return kolom.resize((w, h), Image.Resampling.BILINEAR)
+
+
+def radial(size, warna, ss=2):
+    """Cahaya radial lembut di belakang logo.
+
+    Aliasing: mask digambar pada kanvas ss-kali lalu diperbesar, jauh lebih
+    murah daripada GaussianBlur pada kanvas besar.
+    """
+    w, h = size
+    kecil = 96
+    lapis = Image.new('L', (kecil, kecil), 0)
+    d = ImageDraw.Draw(lapis)
+    c = (kecil - 1) / 2
+    # ImageDraw.ellipse MENIMPA, bukan mencampur. Jadi lingkaran harus digambar
+    # dari YANG BESAR dulu (nilai redup) lalu makin keciL (nilai terang):
+    # bagian tengah terakhir ditimpa paling terang, cincin luar tetap redup.
+    # Urutan terbalik menghasilkan halo terbalik: cahaya hanya terang di tepi,
+    # yang di layar terbaca sebagai lingkaran gelap mengelilingi logo.
+    for i in range(12):
+        k = i / 11
+        rr = c * (0.94 - k * 0.80)
+        d.ellipse((c - rr, c - rr, c + rr, c + rr),
+                  fill=int(warna[3] * (k ** 1.7)))
+    lapis = lapis.resize((w, h), Image.Resampling.BILINEAR)
+    out = Image.new('RGBA', (w, h), (0, 0, 0, 0))
+    out.paste(Image.new('RGBA', (w, h), warna[:3] + (255,)), (0, 0), lapis)
+    return out
+
+
+def vignette(size, kekuatan=70):
+    """Sudut sedikit lebih gelap supaya pusat terlihat menonjol.
+
+    PENTING: versi lama memakai lingkaran dengan radius dalam piksel absolut,
+    jadi radiusnya jauh lebih besar dari gambar dan seluruh kanvas ikut
+    tergelap — termasuk logo di tengah (terukur: logo putih #FEFFFFFF menjadi
+    #6E6F72, gelap ~56%). Sekarang masanya dinormalisasi dan mask-nya dibuat di
+    kanvas kecil lalu diperbesar, sehingga cepat dan hanya sudut yang gelap.
+    """
+    import math
+    w, h = size
+    kecil = 64
+    topeng = Image.new('L', (kecil, kecil), 0)
+    px = topeng.load()
+    c = (kecil - 1) / 2
+    maks = math.hypot(c, c)
+    for y in range(kecil):
+        for x in range(kecil):
+            d = math.hypot(x - c, y - c) / maks
+            # Mulai gelap hanya setelah 45% dari pusat.
+            t = (d - 0.45) / 0.55
+            t = 0.0 if t < 0 else (1.0 if t > 1 else t)
+            px[x, y] = int((t ** 2.0) * kekuatan)
+    topeng = topeng.resize((w, h), Image.Resampling.BILINEAR)
+    out = Image.new('RGBA', (w, h), (0, 0, 0, 0))
+    out.paste(Image.new('RGBA', (w, h), (2, 6, 14, 255)), (0, 0), topeng)
+    return out
+
+
+# ------------------------------------------------------------------- bentuk
 
 def fit(logo, side):
-    """Perkecil logo tanpa kehilangan ketajaman (LANCZOS), dikembalikan RGBA."""
     img = logo.convert('RGBA')
     img.thumbnail((side, side), Image.Resampling.LANCZOS)
     return img
 
 
-def gradient(size, atas, bawah):
-    """Gradien vertikal sederhana, tanpa dependensi lain."""
-    w, h = size
-    img = Image.new('RGB', (1, h))
-    px = img.load()
-    for y in range(h):
-        t = y / max(1, h - 1)
-        px[0, y] = (
-            int(atas[0] + (bawah[0] - atas[0]) * t),
-            int(atas[1] + (bawah[1] - atas[1]) * t),
-            int(atas[2] + (bawah[2] - atas[2]) * t),
-        )
-    return img.resize((w, h), Image.Resampling.BILINEAR)
-
-
-def halo(ukuran, warna, kekuatan):
-    """Cakram blur lembut sebagai cahaya di belakang logo."""
-    lapis = Image.new('RGBA', (ukuran, ukuran), (0, 0, 0, 0))
-    d = ImageDraw.Draw(lapis)
-    d.ellipse((ukuran * 0.14, ukuran * 0.14, ukuran * 0.86, ukuran * 0.86), fill=warna)
-    return lapis.filter(ImageFilter.GaussianBlur(kekuatan))
-
-
-def mask_lingkaran(img, rasio=0.485, ss=4):
-    """Berikan alpha berbentuk lingkaran pada logo.
-
-    PENTING: file ikon aplikasi ini TIDAK transparan — latarbornya putih opak
-    (alpha 254-255 di seluruh kanvas). Kalau ditempel langsung di atas gradasian
-    gelap, hasilnya kotak putih besar yang justru lebih buruk daripada splash
-    polos. Memberi bentuk lingkaran menyelesaikan dua masalah sekaligus: latar
-    putih terlihat disengaja, dan Android 12+ yang memotong ikon menjadi
-    lingkaran tidak memotong apa pun yang penting.
-
-    `rasio` sedikit di bawah 0.5 supaya ada jarak aman dari tepi. Diperiksa:
-    sekitar 97% konten non-putih berada di dalam lingkaran rasio ini.
-    """
-    w, h = img.size
-    topeng = Image.new('L', (w * ss, h * ss), 0)
+def topeng_squircle(size, n=SQUIRCLE_N, ss=4):
+    """Superellipse |x|^n + |y|^n = 1 -> bentuk ikon iOS/Android modern."""
+    import math
+    besar = size * ss
+    topeng = Image.new('L', (besar, besar), 0)
     d = ImageDraw.Draw(topeng)
-    sisi = max(w, h) * ss
-    r = sisi * rasio
-    cx, cy = (w * ss) / 2, (h * ss) / 2
-    d.ellipse((cx - r, cy - r, cx + r, cy + r), fill=255)
-    topeng = topeng.resize((w, h), Image.Resampling.LANCZOS)
+    c = besar / 2
+    titik = 1440
+    pts = []
+    for i in range(titik):
+        th = 2 * math.pi * i / titik
+        ct, st = math.cos(th), math.sin(th)
+        x = math.copysign(abs(ct) ** (2.0 / n), ct)
+        y = math.copysign(abs(st) ** (2.0 / n), st)
+        pts.append((c + x * c, c + y * c))
+    d.polygon(pts, fill=255)
+    return topeng.resize((size, size), Image.Resampling.LANCZOS)
 
-    alpha_lama = img.split()[3]
-    alpha = ImageChops.multiply(alpha_lama, topeng)
-    hasil = img.copy()
+
+def terapkan_bentuk(img, n=SQUIRCLE_N):
+    """Berikan alpha berbentuk squircle pada logo."""
+    w, h = img.size
+    sisi = max(w, h)
+    kanvas = Image.new('RGBA', (sisi, sisi), (0, 0, 0, 0))
+    kanvas.paste(img, ((sisi - w) // 2, (sisi - h) // 2))
+    topeng = topeng_squircle(sisi, n)
+    alpha = ImageChops.multiply(kanvas.split()[3], topeng)
+    hasil = kanvas.copy()
     hasil.putalpha(alpha)
     return hasil
 
 
-def bayangan(img, jarak,blur, alpha=110):
-    """Bayangan lembut di belakang logo agar terasa melayang."""
+def cincin_aksen(sisi, ketebalan, warna=(255, 255, 255, 46)):
+    """Garis tipis yang mengikuti tepi squircle."""
+    topeng = topeng_squircle(sisi)
+    dalam = Image.new('L', topeng.size, 0)
+    d = ImageDraw.Draw(dalam)
+    d.rectangle((ketebalan, ketebalan,
+                 topeng.size[0] - ketebalan, topeng.size[1] - ketebalan), fill=255)
+    cincin = ImageChops.subtract(topeng, dalam)
+    cincin = cincin.filter(ImageFilter.GaussianBlur(max(1, ketebalan * 0.35)))
+    out = Image.new('RGBA', (sisi, sisi), (0, 0, 0, 0))
+    out.paste(Image.new('RGBA', (sisi, sisi), warna[:3] + (255,)), (0, 0), cincin)
+    return out
+
+
+def bayangan(img, jarak, blur, alpha=140):
     w, h = img.size
     kanvas = Image.new('RGBA', (w, h), (0, 0, 0, 0))
-    bay = Image.new('RGBA', (w, h), (0, 0, 0, 0))
-    bay.paste((2, 6, 12, alpha), (0, 0), img.split()[3])
-    bay = bay.filter(ImageFilter.GaussianBlur(blur))
-    kanvas.alpha_composite(bay, (0, jarak))
+    lapis = Image.new('RGBA', (w, h), (0, 0, 0, 0))
+    lapis.paste((0, 4, 10, alpha), (0, 0), img.split()[3])
+    lapis = lapis.filter(ImageFilter.GaussianBlur(blur))
+    kanvas.alpha_composite(lapis, (0, jarak))
     kanvas.alpha_composite(img, (0, 0))
     return kanvas
 
 
+# --------------------------------------------------------------------- font
+
+def cari_font(daftar, ukuran_px):
+    for p in daftar:
+        if Path(p).is_file():
+            try:
+                return ImageFont.truetype(p, ukuran_px)
+            except Exception:
+                continue
+    return None
+
+
+def teks_berjarak(d, xy, teks, font, fill, jarak):
+    """Gambar teks huruf demi huruf dengan jarak tambahan.
+
+    Pillow tidak punya letter-spacing, dan teks nama aplikasi tanpa jarak
+    terlihat menyempit/kurang "~premium". Jarak tracking halus Ini yang bikin
+    nama produk terbaca lebih mahal.
+    """
+    x, y = xy
+    for ch in teks:
+        d.text((x, y), ch, font=font, fill=fill)
+        adv = d.textlength(ch, font=font)
+        x += adv + jarak
+    return x
+
+
+def teks_splash(ukuran_teks, ukuran_sub):
+    """Nama aplikasi + subjudul. None kalau font tidak ditemukan."""
+    f1 = cari_font(KANDIDAT_FONT, ukuran_teks)
+    f2 = cari_font(KANDIDAT_FONT_REGULER, ukuran_sub)
+    if not f1 or not f2:
+        return None, False
+
+    probe = ImageDraw.Draw(Image.new('RGBA', (8, 8)))
+    jarak1 = max(2, int(ukuran_teks * 0.16))
+    jarak2 = max(1, int(ukuran_sub * 0.30))
+    lebar1 = sum(probe.textlength(c, font=f1) for c in NAMA) + jarak1 * (len(NAMA) - 1)
+    lebar2 = sum(probe.textlength(c, font=f2) for c in SUBJUDUL) + jarak2 * (len(SUBJUDUL) - 1)
+
+    pad = 30
+    w = int(max(lebar1, lebar2)) + pad * 2
+    tinggi = int(ukuran_teks * 2.9)
+    img = Image.new('RGBA', (w, tinggi), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    b1 = probe.textbbox((0, 0), NAMA, font=f1)
+    b2 = probe.textbbox((0, 0), SUBJUDUL, font=f2)
+    y1 = 10
+    y2 = 10 + (b1[3] - b1[1]) + int(ukuran_teks * 0.42)
+    teks_berjarak(d, (pad, y1), NAMA, f1, INKA + (255,), jarak1)
+    teks_berjarak(d, (pad + 1, y2), SUBJUDUL, f2, (255, 255, 255, 165), jarak2)
+    return img, True
+
+
+# ------------------------------------------------------------------ splash
+
 def make_legacy(logo, size):
-    """Splash gambar penuh: gradasian navy -> teal, logo lingkaran melayang."""
     w, h = size
-    canvas = gradient(size, NAVY_ATAS, NAVY_BAWAH).convert('RGBA')
+    tengah = LATAR_TENGAH
+    canvas = gradien(size, LATAR_ATAS, LATAR_BAWAH, tengah=tengah).convert('RGBA')
 
     sisi = int(min(w, h) * LEGACY_RATIO)
-    mark = bayangan(mask_lingkaran(fit(logo, sisi)), jarak=max(2, sisi // 40),
-                    blur=max(2, sisi // 26))
 
-    # Cahaya lembut yang MEMELUKI logo. Wajib dipositionkan mengikuti tengah
-    # logo — kalau ditempel di (0,0) hasilnya gumpalan blur melayang jauh di atas
-    # logo dan terlihat seperti noda, bukan efek pencahayaan.
-    px_ = (w - mark.width) // 2
-    py_ = (h - mark.height) // 2
-    g = int(sisi * 1.55)
-    canvas.alpha_composite(
-        halo(g, (255, 224, 150, 34), sisi * 0.09),
-        (px_ + (mark.width - g) // 2, py_ + (mark.height - g) // 2),
-    )
+    # Aura merek di belakang logo (dipasang DITENGAH ke logo — kalau di pojok
+    # hasilnya terlihat seperti noda, bukan cahaya).
+    g = int(sisi * 2.9)
+    aura = radial((g, g), CAHAYA)
+    cx, cy = w // 2, int(h * 0.44)
+    canvas.alpha_composite(aura, (cx - g // 2, cy - g // 2))
 
-    canvas.alpha_composite(mark, (px_, py_))
-    return canvas.convert('RGB')
+    mark = terapkan_bentuk(fit(logo, sisi))
+    cincin = cincin_aksen(max(mark.size), max(2, sisi // 44))
+    mark_full = Image.new('RGBA', mark.size, (0, 0, 0, 0))
+    mark_full.alpha_composite(mark)
+    mark_full.alpha_composite(cincin)
+
+    bay = bayangan(mark_full, jarak=max(3, sisi // 26), blur=max(4, sisi // 16))
+    pos = (cx - bay.width // 2, cy - bay.height // 2)
+    canvas.alpha_composite(bay, pos)
+
+    # Nama aplikasi di bawah logo.
+    ukuran_teks = max(16, int(sisi * 0.20))
+    ukuran_sub = max(11, int(sisi * 0.105))
+    blok, ada_font = teks_splash(ukuran_teks, ukuran_sub)
+    if blok is not None:
+        canvas.alpha_composite(
+            blok,
+            (cx - blok.width // 2, pos[1] + bay.height + int(sisi * 0.26)),
+        )
+
+    canvas.alpha_composite(vignette(size))
+    return canvas.convert('RGB'), ada_font
 
 
 def make_icon(logo):
-    """Ikon splash Android 12+: logo lingkaran, siap dipotong sistem.
+    """Ikon splash Android 12+: logo squircle.
 
-    Sistem menampilkan ikon ini di dalam lingkaran dan hanya memperlihatkan
-    bagian tengah ±2/3 kanvas. Karena logonya sudah berbentuk lingkaran penuh,
-    pemotongan sistem tidak mengubah tampilan sama sekali.
+    Sistem hanya menampilkan bagian tengah ±2/3 kanvas, jadi logo dibuat
+    proporsional kecil. Bentuk squircle berarti pemotongan lingkaran oleh
+    sistem tidak merusak tampilan.
     """
-    mark = fit(logo, ICON_SIZE)
-    return mask_lingkaran(mark, rasio=0.485)
+    kanvas = Image.new('RGBA', (ICON_SIZE, ICON_SIZE), (0, 0, 0, 0))
+    mark = terapkan_bentuk(fit(logo, int(ICON_SIZE * ICON_RATIO)))
+    kanvas.alpha_composite(mark, ((ICON_SIZE - mark.width) // 2, (ICON_SIZE - mark.height) // 2))
+    return kanvas
 
 
 BACKGROUND_XML = """<?xml version="1.0" encoding="utf-8"?>
@@ -158,8 +330,9 @@ BACKGROUND_XML = """<?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
     <gradient
-        android:startColor="{atas}"
-        android:endColor="{bawah}"
+        android:startColor="#070C17"
+        android:centerColor="#0B1B2A"
+        android:endColor="#0C2B36"
         android:angle="270"
         android:type="linear" />
 </shape>
@@ -167,14 +340,9 @@ BACKGROUND_XML = """<?xml version="1.0" encoding="utf-8"?>
 
 
 def tulis_background():
-    """Buat res/drawable/splash_background.xml (shape gradient)."""
     d = RES / 'drawable'
     d.mkdir(parents=True, exist_ok=True)
-    isi = BACKGROUND_XML.format(
-        atas='#%02X%02X%02X' % NAVY_ATAS,
-        bawah='#%02X%02X%02X' % NAVY_BAWAH,
-    )
-    (d / 'splash_background.xml').write_text(isi, encoding='utf-8')
+    (d / 'splash_background.xml').write_text(BACKGROUND_XML, encoding='utf-8')
     print('drawable/splash_background.xml dibuat (gradasian navy -> teal).')
 
 
@@ -213,15 +381,21 @@ def main():
     logo = Image.open(SRC).convert('RGBA')
 
     files = sorted(RES.glob('drawable*/splash.png'))
+    ada_font = True
     for f in files:
         with Image.open(f) as old:
             size = old.size
-        make_legacy(logo, size).save(f, optimize=True)
-    print(f'{len(files)} berkas splash.png diganti: gradian navy -> teal + logo + halo.')
+        hasil, ok = make_legacy(logo, size)
+        ada_font = ada_font and ok
+        hasil.save(f, optimize=True)
+    print(f'{len(files)} berkas splash.png diganti: gradasian navy + squircle logo + nama aplikasi.')
+    if not ada_font:
+        print('Catatan: font tidak ditemukan di runner ini — nama aplikasi dilewati. '
+              'Tambahkan satu berkas .ttf ke repo bila ingin teks selalu tampil.')
 
     (RES / 'drawable').mkdir(parents=True, exist_ok=True)
     make_icon(logo).save(RES / 'drawable/splash_icon.png', optimize=True)
-    print('drawable/splash_icon.png dibuat (cakram graded + logo, aman untuk lingkaran Android 12+).')
+    print('drawable/splash_icon.png dibuat (squircle, aman untuk lingkaran Android 12+).')
 
     tulis_background()
     patch_styles()

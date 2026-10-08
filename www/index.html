@@ -220,26 +220,44 @@
 </div>
 
 <!-- OVERLAY KAMERA CUSTOM DENGAN TOMBOL FLASH -->
+<!-- KAMERA LAPORAN (2.3.10)
+     Rancangan: layar penuh gelap, kendali berupa KACA (glass) bukan tombol datar,
+     bingkai BIDIK sebagai penanda area yang akan diambil, dan indikator langkah
+     berupa pill. Semua id & onclick sengaja DIJAGA SAMA supaya home.ui.js tidak
+     perlu diubah. -->
 <div class="camera-overlay" id="cameraOverlay">
   <div class="camera-header">
-    <button onclick="closeCustomCamera()">← Ambil foto laporan</button>
-    <div style="display:flex; align-items:center; gap:12px;">
-      <button class="btn-flash-toggle" id="btnToggleFlash" onclick="toggleCameraFlash()" title="Senter / Flash">⚡</button>
-      <span class="camera-step-title">Langkah 1/5</span>
+    <button type="button" class="cam-glass-btn" onclick="closeCustomCamera()" title="Kembali" aria-label="Kembali">
+      &#8592;
+    </button>
+    <div class="camera-header-tengah">
+      <span class="camera-judul">Ambil foto laporan</span>
     </div>
+    <button type="button" class="btn-flash-toggle cam-glass-btn" id="btnToggleFlash" onclick="toggleCameraFlash()" title="Senter / Flash" aria-label="Senter">&#9889;</button>
   </div>
 
   <div class="camera-viewport-wrap">
     <video id="cameraStream" class="camera-video-stream" autoplay playsinline></video>
     <canvas id="cameraCanvas" style="display:none;"></canvas>
+    <div class="camera-bidik" aria-hidden="true">
+      <div class="camera-bidik-frame">
+        <span class="camera-sudut camera-sudut-a"></span>
+        <span class="camera-sudut camera-sudut-b"></span>
+        <span class="camera-sudut camera-sudut-c"></span>
+        <span class="camera-sudut camera-sudut-d"></span>
+      </div>
+    </div>
   </div>
 
   <div class="camera-controls-bar">
-    <button class="btn-cam-side" onclick="triggerFileInputFallback()" title="Pilih dari Galeri">🖼️</button>
-    <button class="btn-shutter-outer" onclick="capturePhotoFromCamera()">
-      <div class="btn-shutter-inner"></div>
-    </button>
-    <button class="btn-cam-side" id="btnToggleCamFacing" onclick="toggleCameraFacing()" title="Ganti Kamera">🔄</button>
+    <span class="camera-step-title camera-step-pill">Langkah 1/5</span>
+    <div class="camera-controls-deretan">
+      <button type="button" class="btn-cam-side cam-glass-btn" onclick="triggerFileInputFallback()" title="Pilih dari Galeri" aria-label="Pilih dari galeri">&#128444;</button>
+      <button type="button" class="btn-shutter-outer" onclick="capturePhotoFromCamera()" aria-label="Ambil foto">
+        <div class="btn-shutter-inner"></div>
+      </button>
+      <button type="button" class="btn-cam-side cam-glass-btn" id="btnToggleCamFacing" onclick="toggleCameraFacing()" title="Ganti Kamera" aria-label="Ganti kamera">&#128260;</button>
+    </div>
   </div>
 
   <input type="file" id="fallbackFileInput" accept="image/*" style="display:none;">
