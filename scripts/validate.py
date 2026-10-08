@@ -150,6 +150,33 @@ for js in sorted((WWW / 'assets' / 'js').rglob('*.js')):
         errors.append(f'{rel(js)}: meminta izin photos (READ_MEDIA_IMAGES) — izin itu sudah dibuang '
                       'dari manifest sehingga dialog tidak akan pernah muncul lagi')
 
+# 3d. ID AdMob (regresi 2.3.8)
+# Dua ID sering tertukar karena bentuknya mirip:
+#   App ID  : ca-app-pub-<publisher>~<apps>      (tilde)
+#   Unit ID : ca-app-pub-<publisher>/<unit>       (slash)
+# Salah pasang = APPLICATION_ID ditolak Android, banner tidak pernah muncul, dan
+# tidak ada pesan error yang jelas.
+admob_cfg = NATIVE / 'admob.config.json'
+if admob_cfg.is_file():
+    import json as _json
+    _cfg = _json.loads(admob_cfg.read_text(encoding='utf-8'))
+    _app = _cfg.get('appId', '') or ''
+    _unit = _cfg.get('bannerId', '') or ''
+    if not re.fullmatch(r'ca-app-pub-\d+~\d+', _app):
+        errors.append(f'native/admob.config.json: appId harus bentuk '
+                      f'"ca-app-pub-<publisher>~<apps>", dapat "{_app}" '
+                      '(unit ID tidak bisa dipakai sebagai APPLICATION_ID)')
+    if not re.fullmatch(r'ca-app-pub-\d+/\d+', _unit):
+        errors.append(f'native/admob.config.json: bannerId harus bentuk '
+                      f'"ca-app-pub-<publisher>/<unit>", dapat "{_unit}"')
+    _ap, _bagi, _unit_app = _app.partition('~')
+    if _bagi and '/' in _unit and _unit.split('/')[0] != _ap:
+        errors.append(f'native/admob.config.json: appId dan bannerId harus punya '
+                      f'publisher yang sama ({_ap} vs {_unit.split("/")[0]})')
+    if _cfg.get('isTesting'):
+        errors.append('native/admob.config.json: isTesting=true akan ikut terkirim '
+                      'ke semua yang memasang APK — hanya untuk build uji di HP sendiri')
+
 for w in warnings:
     print('⚠️ ', w)
 for e in errors:

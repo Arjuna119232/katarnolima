@@ -2,9 +2,14 @@
 
 ## [2.3.8] — Banner bawah & splash modern (2026-10-08)
 
-### Unit iklan & card dihapus
-- Unit banner diganti ke `ca-app-pub-2096155581034089/6715532215`. Unit lama
-  `.../4236315324` dipakai card di dalam halaman beranda.
+### ID AdMob & card dihapus
+- ID resmi dari AdMob console dipakai sekarang:
+  **App ID** `ca-app-pub-2096155581034089~4852943754`,
+  **unit banner** `ca-app-pub-2096155581034089/6549270430`.
+  ID sebelumnya (`~3671813314`, `/6715532215`, `/4236315324`) bukan milik app ini.
+- `validate.py` kini menolak `appId` tanpa `~`, `bannerId` tanpa `/`, publisher
+  yang tidak sama antara keduanya, dan `isTesting: true` yang akan ikut terkirim
+  ke semua yang memasang APK.
 - **Card iklan `#admob-native-card` dihapus dari beranda**, beserta markup dan
   CSS-nya (`.admob-card`, `.admob-note`, `.admob-label`, keyframes
   `admob-denyut`). Iklan sekarang hanya banner di bawah layar.

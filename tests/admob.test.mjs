@@ -224,11 +224,29 @@ test('admob 2.3.8: CSS memberi ruang bawah sesuai tinggi banner & aman di HP', (
 
 // ------------------------------------------------------------ konfigurasi
 
-test('admob: unit iklan memakai unit banner bawah', () => {
+test('admob: ID AdMob resmi (app ID & unit banner bawah)', () => {
   const cfg = JSON.parse(readFileSync(join(WWW, '../native/admob.config.json'), 'utf8'));
-  assert.equal(cfg.bannerId, 'ca-app-pub-2096155581034089/6715532215',
-    'unit iklan harus banner bawah (6715532215)');
+  assert.equal(cfg.appId, 'ca-app-pub-2096155581034089~4852943754',
+    'app ID resmi dari AdMob console');
+  assert.equal(cfg.bannerId, 'ca-app-pub-2096155581034089/6549270430',
+    'unit iklan resmi dari AdMob console');
   assert.equal(cfg.isTesting, false, 'rilis ke Play Store tidak boleh isTesting=true');
+});
+
+test('admob: format ID AdMob benar (tilde untuk app, slash untuk unit)', () => {
+  const cfg = JSON.parse(readFileSync(join(WWW, '../native/admob.config.json'), 'utf8'));
+  // App ID WAJIB berakhiran ~angka. Salah format (pakai /) = unit ID, dan itu
+  // tidak bisa dipakai sebagai com.google.android.gms.ads.APPLICATION_ID.
+  assert.match(cfg.appId, /^ca-app-pub-\d+~\d+$/,
+    `app ID harus bentuk ca-app-pub-<publisher>~<apps>: ${cfg.appId}`);
+  // Unit WAJIB bentuk publisher/nomor.
+  assert.match(cfg.bannerId, /^ca-app-pub-\d+\/\d+$/,
+    `unit harus bentuk ca-app-pub-<publisher>/<unit>: ${cfg.bannerId}`);
+  const appPub = cfg.appId.split('~')[0];
+  const unitPub = cfg.bannerId.split('/')[0];
+  assert.equal(appPub, unitPub,
+    'app ID dan unit iklan harus milik publisher yang sama');
+  assert.ok(!cfg.bannerId.includes('~'), 'unit ID tidak boleh memakai tilde');
 });
 
 test('admob: app-ads.txt publisher ID cocok dengan appId AdMob', () => {
